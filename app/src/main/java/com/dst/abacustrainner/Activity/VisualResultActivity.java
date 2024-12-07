@@ -30,6 +30,7 @@ public class VisualResultActivity extends AppCompatActivity {
     String enteredAnswer ;
     String correctAnswer ;
     long time;
+    int id;
     double timeInSeconds;
     String studentName,startedOn;
 
