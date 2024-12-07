@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="margin_main">16dp</dimen>
+    <dimen name="margin_middle">14dp</dimen>
+
+    //ImageView Margins
+    <dimen name="margin_left">20dp</dimen>
+    <dimen name="margin_right">20dp</dimen>
+    <dimen name="margin_top">20dp</dimen>
+
+    //EdidText Width
+    <dimen name="width">50dp</dimen>
+
+    <dimen name="bottom_nav_icon_size">24dp</dimen>
+    <dimen name="spinner_height">50dp</dimen>
+
+    <dimen name="spinner_left">10dp</dimen>
+    <dimen name="spinner_right">10dp</dimen>
+    <dimen name="spinner_bottom">2dp</dimen>
+    <dimen name="button_margin_left">8dp</dimen>
+    <dimen name="button_margin_right">8dp</dimen>
+    <dimen name="button_margin_top">8dp</dimen>
+    <dimen name="button_margin_bottom">8dp</dimen>
+    <dimen name="textview_left_margin">10dp</dimen>
+    <dimen name="question_margin_left">20dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+</resources>

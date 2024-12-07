@@ -1,0 +1,342 @@
+<resources>
+    <string name="app_name">AbacusTrainer.com</string>
+    <string name="home">Home</string>
+    <string name="clas">Class</string>
+    <string name="notes">Practice Notes</string>
+    <string name="compitation">Compitation</string>
+    <string name="profile">Profile</string>
+
+    <string name="nameerror">Enter a valid First name</string>
+    <string name="lastnameerror">Enter a valid Last name</string>
+    <string name="emailerror">Enter a valid Email</string>
+    <string name="mobileerror">Enter a valid Mobile Number</string>
+    <string name="tongueerror">Enter a Valid Mother Tongue</string>
+
+    <string name="select_operation">Select Operation</string>
+    <string name="select_operand_count">Select Operand Count</string>
+    <string name="select_total_questions">Select the Total Questions</string>
+
+    <string name="web_client_id">64901688535-1t5b63tvi3qhnbv23uesq1evp51sup0n.apps.googleusercontent.com</string>
+
+
+    <string-array name="operations">
+        <item>Select the Option</item>
+        <item>Addition</item>
+        <item>Multiplication</item>
+    </string-array>
+
+    <string-array name="operands">
+        <item>Select the Total Numbers</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="dropdown_values">
+        <item>Select the Range</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+
+    <string-array name="total_questions">
+        <item>Select the Total Questions</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
+        <item>80</item>
+        <item>90</item>
+        <item>100</item>
+    </string-array>
+
+    <string-array name="time_inerval">
+        <item>Select the Time Interval</item>
+        <item>1000</item>
+        <item>2000</item>
+        <item>3000</item>
+        <item>4000</item>
+        <item>5000</item>
+    </string-array>
+
+    <string-array name="operands_for_operation_0">
+        <item>Operand 0-1</item>
+        <item>Operand 0-2</item>
+        <!-- Add more items as needed -->
+    </string-array>
+
+    <string-array name="operands_for_operation_1">
+        <item>Operand 1-1</item>
+        <item>Operand 1-2</item>
+        <!-- Add more items as needed -->
+    </string-array>
+
+    <string-array name="dynamic_spinner_values">
+        <item>Value 1</item>
+        <item>Value 2</item>
+        <item>Value 3</item>
+        <item>Value 4</item>
+        <!-- Add more items as needed -->
+    </string-array>
+
+    <string-array name="operand_values">
+        <item>Select the Range</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="levels">
+        <item>Select the Level</item>
+        <item>Level-1</item>
+        <item>Level-2</item>
+        <item>Level-3</item>
+        <item>Level-4</item>
+        <item>Level-5</item>
+
+    </string-array>
+
+    <array name="questions_array">
+        <item>2 +1 +2</item>
+        <item>1 +3 +2</item>
+        <item>4 +2 -1</item>
+        <item>4 +2 +2</item>
+        <item>3 +2 -5</item>
+        <item>1 +3 +2 +2</item>
+        <item>3 +2 +2 +2</item>
+        <item>1 +2 +2 +3</item>
+        <item>3 +2 +4 -5</item>
+        <item>1 +2 +2 +4</item>
+        <item>4 +2 -5 +1 +3</item>
+        <item>8 -5 +2 -5 +6</item>
+        <item>1 +2 +2 +2 -4</item>
+        <item>3 +1 +1 +1 -5</item>
+        <item>4 +2 -5 +2 +4</item>
+        <item>8 -6 +3 -5 +6 -5</item>
+        <item>5 -4 +4 -2 +4 -6</item>
+        <item>4 +4 +5 -7 +8 +8 -6</item>
+        <item>6 +5 -7 +8 -5 +4 +3</item>
+        <item>1 +4 +5 -8 +7 +5 -3</item>
+    </array>
+
+    <array name="visulization_questions_array">
+        <item>2 +1 +2</item>
+        <item>1 +3 +2</item>
+        <item>4 +2 -1</item>
+        <item>4 +2 +2</item>
+        <item>3 +2 -5</item>
+        <item>1 +3 +2 +2</item>
+        <item>3 +2 +2 +2</item>
+        <item>1 +2 +2 +3</item>
+        <item>3 +2 +4 -5</item>
+        <item>1 +2 +2 +4</item>
+        <item>4 +2 -5 +1 +3</item>
+        <item>8 -5 +2 -5 +6</item>
+        <item>1 +2 +2 +2 -4</item>
+        <item>3 +1 +1 +1 -5</item>
+        <item>4 +2 -5 +2 +4</item>
+        <item>8 -6 +3 -5 +6 -5</item>
+        <item>5 -4 +4 -2 +4 -6</item>
+        <item>4 +4 +5 -7 +8 +8 -6</item>
+        <item>6 +5 -7 +8 -5 +4 +3</item>
+        <item>1 +4 +5 -8 +7 +5 -3</item>
+    </array>
+
+    <array name="second_array">
+        <item>5 +1 -1</item>
+        <item>2 +6 -3</item>
+        <item>4 +5 -5</item>
+        <item>3 +6 -9</item>
+        <item>2 +7 -3 -1</item>
+        <item>9 -3 -1 -5</item>
+        <item>4 +5 -6 -1</item>
+        <item>7 +6 -2 6</item>
+        <item>3 +5 +6 -4</item>
+        <item>12 +12 +55</item>
+        <item>10 +35 -20</item>
+        <item>15 +50 -55</item>
+        <item>33 +51 -62</item>
+        <item>55 +21 -51 -15</item>
+        <item>33 +11 +55 -66</item>
+        <item>14 +35 -12 -25</item>
+        <item>66 +39 -45 +29 -11</item>
+        <item>92 -63 +61 +15 +21</item>
+        <item>76 +34 +88 -69 +43</item>
+        <item>88 -34 +49 -36 +21</item>
+    </array>
+    <array name="visualiztion_second_array">
+        <item>5 +1 -1</item>
+        <item>2 +6 -3</item>
+        <item>4 +5 -5</item>
+        <item>3 +6 -9</item>
+        <item>2 +7 -3 -1</item>
+        <item>9 -3 -1 -5</item>
+        <item>4 +5 -6 -1</item>
+        <item>7 +6 -2 6</item>
+        <item>3 +5 +6 -4</item>
+        <item>12 +12 +55</item>
+        <item>10 +35 -20</item>
+        <item>15 +50 -55</item>
+        <item>33 +51 -62</item>
+        <item>55 +21 -51 -15</item>
+        <item>33 +11 +55 -66</item>
+        <item>14 +35 -12 -25</item>
+        <item>66 +39 -45 +29 -11</item>
+        <item>92 -63 +61 +15 +21</item>
+        <item>76 +34 +88 -69 +43</item>
+        <item>88 -34 +49 -36 +21</item>
+    </array>
+
+    <array name="third_array">
+        <item>1 +3 +3</item>
+        <item>4 +3 +1</item>
+        <item>3 +1 +3</item>
+        <item>4 -1 +3</item>
+        <item>2 +3 +1</item>
+        <item>3 +3 +2</item>
+        <item>4 +3 +2</item>
+        <item>1 +3 +3 +2</item>
+        <item>2 +3 +3 -2</item>
+        <item>2 +3 +2 -6</item>
+        <item>4 +3 +2 -8</item>
+        <item>4 +5 +3</item>
+        <item>6 +3 +3 +3</item>
+        <item>2 +2 +5 +3</item>
+        <item>2 +8 -7</item>
+        <item>5 +5 -7</item>
+        <item>10 -7 +2</item>
+        <item>10 -7 +5</item>
+        <item>6 +4 -7</item>
+        <item>3 +4 +3 -7</item>
+
+    </array>
+
+    <array name="visualization_third_array">
+        <item>1 +3 +3</item>
+        <item>4 +3 +1</item>
+        <item>3 +1 +3</item>
+        <item>4 -1 +3</item>
+        <item>2 +3 +1</item>
+        <item>3 +3 +2</item>
+        <item>4 +3 +2</item>
+        <item>1 +3 +3 +2</item>
+        <item>2 +3 +3 -2</item>
+        <item>2 +3 +2 -6</item>
+        <item>4 +3 +2 -8</item>
+        <item>4 +5 +3</item>
+        <item>6 +3 +3 +3</item>
+        <item>2 +2 +5 +3</item>
+        <item>2 +8 -7</item>
+        <item>5 +5 -7</item>
+        <item>10 -7 +2</item>
+        <item>10 -7 +5</item>
+        <item>6 +4 -7</item>
+        <item>3 +4 +3 -7</item>
+
+    </array>
+
+    <array name="forth_array">
+        <item>5 *6</item>
+        <item>6 *7</item>
+        <item>6 *9</item>
+        <item>6 *7</item>
+        <item>7 *9</item>
+        <item>5 *80</item>
+        <item>4 *63</item>
+        <item>3 *17</item>
+        <item>6 *52</item>
+        <item>4 *96</item>
+        <item>5 *85</item>
+        <item>6 *35</item>
+        <item>6 *27</item>
+        <item>2 *61</item>
+        <item>8 *54</item>
+        <item>67 *8</item>
+        <item>64 *3</item>
+        <item>88 *9</item>
+        <item>87 *5</item>
+        <item>37 *8</item>
+    </array>
+
+    <array name="visualization_forth_array">
+        <item>5 *6</item>
+        <item>6 *7</item>
+        <item>6 *9</item>
+        <item>6 *7</item>
+        <item>7 *9</item>
+        <item>5 *80</item>
+        <item>4 *63</item>
+        <item>3 *17</item>
+        <item>6 *52</item>
+        <item>4 *96</item>
+        <item>5 *85</item>
+        <item>6 *35</item>
+        <item>6 *27</item>
+        <item>2 *61</item>
+        <item>8 *54</item>
+        <item>67 *8</item>
+        <item>64 *3</item>
+        <item>88 *9</item>
+        <item>87 *5</item>
+        <item>37 *8</item>
+    </array>
+
+    <array name="fifth_array">
+        <item>67 *5</item>
+        <item>25 *7</item>
+        <item>5 *19</item>
+        <item>6 *36</item>
+        <item>6 *25</item>
+        <item>9 *44</item>
+        <item>5 *63</item>
+        <item>96 *20</item>
+        <item>21 *17</item>
+        <item>91 *59</item>
+        <item>22 *39</item>
+        <item>37 *20</item>
+        <item>20 *33</item>
+        <item>47 *49</item>
+        <item>20 *67</item>
+        <item>6 *750</item>
+        <item>8 *521</item>
+        <item>8 *779</item>
+        <item>6 *758</item>
+        <item>8 *326</item>
+    </array>
+    <array name="visualization_fifth_array">
+        <item>67 *5</item>
+        <item>25 *7</item>
+        <item>5 *19</item>
+        <item>6 *36</item>
+        <item>6 *25</item>
+        <item>9 *44</item>
+        <item>5 *63</item>
+        <item>96 *20</item>
+        <item>21 *17</item>
+        <item>91 *59</item>
+        <item>22 *39</item>
+        <item>37 *20</item>
+        <item>20 *33</item>
+        <item>47 *49</item>
+        <item>20 *67</item>
+        <item>6 *750</item>
+        <item>8 *521</item>
+        <item>8 *779</item>
+        <item>6 *758</item>
+        <item>8 *326</item>
+    </array>
+
+
+</resources>

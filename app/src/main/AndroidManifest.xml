@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AbacusTrainer"
+        tools:targetApi="31">
+        <activity
+            android:name=".Activity.VisualizationFifthLevelResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VisualizationForthLevelResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VisualizationThirdLevelResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VisualizationSecondLevelResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VisualizationFirstLevelResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VisualizationFifthLevelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VisualizationForthLevelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VisualizationThirdLevelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VisualizationSecondLevelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VisualizationFirstLevelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VisualResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VisualQuizActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VisualiztionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.FifthLevelResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.FifthLevelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ForthLevelResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ForthLevelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ThirdLevelResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ThirdLevelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.SecondLevelResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.SecondLevelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.FirstLevelResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.FirstLevelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.AssignmentResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.QuizActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.PlayWithNumbersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.BatchDatesDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.AssignmentPracticeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.NoDataActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.PracticeListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.TopicPracticeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ViewResultAssignmentDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ViewAssignmentListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ViewResultDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ViewPracticeListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.AssignmentListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.TopicListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ViewDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".User.HomeActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".User.ForgotPasswordActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".User.VerifyActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".User.RegisterActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".User.LoginActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".SpalashActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
