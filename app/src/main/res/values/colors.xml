@@ -13,6 +13,9 @@
 
     <color name="highlightColor">#8F4949</color>
 
+    <color name="purple">#4e148c</color> <!-- Purple color -->
+    <color name="grey">#A3A6A8</color> <!-- Grey color -->
+
     <color name="dot_dark_screen1">#5165D5</color>
     <color name="dot_dark_screen2">#5165D5</color>
     <color name="dot_dark_screen3">#5165D5</color>
