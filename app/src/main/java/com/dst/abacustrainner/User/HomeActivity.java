@@ -51,9 +51,6 @@ public class HomeActivity extends AppCompatActivity{
             Toast.makeText(HomeActivity.this, "Student ID not available. Please log in again.", Toast.LENGTH_LONG).show();
         }
 
-
-
-
     }
 
     private void loadHomeFragmentWithStudentId(String studentId) {
