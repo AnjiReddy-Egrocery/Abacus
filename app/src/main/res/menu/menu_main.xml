@@ -5,27 +5,27 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/home_icon"
-        android:title="@string/home"
-        style="@style/BottomNavStyle"/>
+        android:title=""
+        />
     <item
         android:id="@+id/navigation_cla"
-        android:icon="@drawable/class_icon"
-        android:title="@string/clas"
-        style="@style/BottomNavStyle"/>
+        android:icon="@drawable/baseline_search_24"
+        android:title=""
+        />
     <item
         android:id="@+id/navigation_practice"
-        android:icon="@drawable/notes"
-        android:title="Practice Notes"
-        style="@style/BottomNavStyle"/>
+        android:icon="@drawable/ai_icon"
+        android:title=""
+        />
     <item
         android:id="@+id/navigation_compitation"
         android:icon="@drawable/compitation_icon"
-        android:title="@string/compitation"
-        style="@style/BottomNavStyle"/>
+        android:title=""
+        />
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/profile_image"
-        android:title="@string/profile"
-        style="@style/BottomNavStyle"/>
+        android:title=""
+        />
 
 </menu>

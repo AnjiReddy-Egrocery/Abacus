@@ -1,0 +1,15 @@
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+<!-- Transparent center -->
+<solid android:color="@android:color/transparent" />
+
+<!-- Ring color and thickness -->
+<stroke
+    android:width="4dp"
+    android:color="#6A1B9A" />
+
+<!-- Optional size (if needed to constrain dimensions) -->
+<size
+    android:width="40dp"
+    android:height="40dp" />
+</shape>

@@ -3,19 +3,26 @@ package com.dst.abacustrainner.Activity;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.database.ParcelableLong;
@@ -24,14 +31,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class FirstLevelActivity extends AppCompatActivity {
-    private Button btnNextQuestion, btnPreviousQuestion,butSubmit;
-    private TextView textViewQuestion, txtDisplayQuestion, txtTimer;
+
+    private TextView textViewQuestion, txtDisplayQuestion, txtTimer,  txtTotalTimer;
+    LinearLayout btnPreviousQuestion,btnNextQuestion,butSubmit;
+    final Handler handler = new Handler();
 
     private EditText edtAnswer;
     private CountDownTimer countDownTimer;
@@ -43,6 +54,7 @@ public class FirstLevelActivity extends AppCompatActivity {
     private long interval = 1000;
 
     private boolean timerRunning = false;
+    private boolean totalTimerRunning= false;
     private long currentTime = 0;
     private long currentTimeOnSaveAndNext = 0;
     private List<Boolean> isQuestionAnswered = new ArrayList<>();
@@ -56,21 +68,57 @@ public class FirstLevelActivity extends AppCompatActivity {
 
     ArrayList<String> originalAnswers = new ArrayList<>();
     private List<CountDownTimer> questionTimers ;
+    private int currentStep = 0;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_level);
-
         textViewQuestion = findViewById(R.id.textViewQuestion);
         txtDisplayQuestion = findViewById(R.id.textQuestion);
         txtTimer = findViewById(R.id.timerTextView);
+        txtTotalTimer= findViewById(R.id.total_timer_display_id);
         btnNextQuestion = findViewById(R.id.btnNext);
         btnPreviousQuestion = findViewById(R.id.prv_qus);
         edtAnswer = findViewById(R.id.answerEditText);
         gridLayout = findViewById(R.id.gridLayoutButtons);
         butSubmit=findViewById(R.id.but_submit);
+
+
+        // Initialize the TextView
+
+
+        // Create and start the countdown timer
+        final long[] totalElapsedTime = {0};
+        final long interval = 1000; // Update interval in milliseconds
+
+// Used for formatting digits to be in 2 digits only
+        final NumberFormat f = new DecimalFormat("00");
+
+// Create a handler to manage the count-up process
+
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                long hour = (totalElapsedTime[0] / 3600000) % 24;
+                long min = (totalElapsedTime[0] / 60000) % 60;
+                long sec = (totalElapsedTime[0] / 1000) % 60;
+
+                // Update the timer text
+                txtTotalTimer.setText(f.format(hour) + ":" + f.format(min) + ":" + f.format(sec));
+
+                // Increment the total elapsed time
+                totalElapsedTime[0] += interval;
+
+                // Schedule the next update
+                handler.postDelayed(this, interval);
+            }
+        };
+
+// Start the count-up timer
+        handler.post(runnable);
+        // handler.removeCallbacks(runnable);
         btnNextQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,9 +131,11 @@ public class FirstLevelActivity extends AppCompatActivity {
                 onPreviousButtonClick(view);
             }
         });
+
         butSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                handler.removeCallbacks(runnable);
                 saveTimerState();
                 showCurrentQuestion();
                 edtAnswer.getText().clear();
@@ -93,14 +143,17 @@ public class FirstLevelActivity extends AppCompatActivity {
                 showCompletionPopup();
             }
         });
+
         questions = getResources().getStringArray(R.array.questions_array);
         //isQuestionAnswered = new ArrayList<>(questions.length);
         answers = new ArrayList<>(Collections.nCopies(questions.length, ""));
         questionTimes = new ArrayList<>(Collections.nCopies(questions.length, 0L));
         questionTimers = new ArrayList<>();
+
         for (int i = 0; i < questions.length; i++) {
             questionTimers.add(createCountDownTimer(i));
         }
+
         for (int i = 0; i < questions.length; i++) {
             isQuestionAnswered.add(false);
         }
@@ -109,11 +162,14 @@ public class FirstLevelActivity extends AppCompatActivity {
             originalAnswers.add(generateOriginalAnswer(question));
         }
 
+        currentStep = Math.max(0,Math.min(currentStep,questions.length - 1));
+
 
         // Display the first question
         showCurrentQuestion();
         startTimer();
     }
+
     private CountDownTimer createCountDownTimer(final int questionIndex) {
         final long smallerInterval = 500;
         return new CountDownTimer(Long.MAX_VALUE, interval) {
@@ -122,7 +178,7 @@ public class FirstLevelActivity extends AppCompatActivity {
                 if (timerRunning) {
                     currentTime += 1000; // Increase the time by 1 second
                     long seconds = currentTime / 1000;
-                    txtTimer.setText("Countdown: " + seconds + " sec");
+                    txtTimer.setText("Time Spent: " + seconds + " sec");
                 }
             }
             @Override
@@ -131,14 +187,20 @@ public class FirstLevelActivity extends AppCompatActivity {
             }
         };
     }
+
     private void showCurrentQuestion() {
         if (currentQuestionIndex >= 0 && currentQuestionIndex < questions.length) {
-            textViewQuestion.setText("Question " + (currentQuestionIndex + 1) + ":");
-            txtDisplayQuestion.setGravity(Gravity.RIGHT);
+            textViewQuestion.setText("Question " + (currentQuestionIndex + 1) +"/"+"20"+ ":");
+
+//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) txtDisplayQuestion.getLayoutParams();
+//            params.setMargins(96, 32, 96, 32);
+//            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            txtDisplayQuestion.setGravity(Gravity.CENTER_VERTICAL);
+            txtDisplayQuestion.setGravity(Gravity.CENTER_HORIZONTAL);
             txtDisplayQuestion.setText(questions[currentQuestionIndex].replace(" ", "\n"));
+//            txtDisplayQuestion.setBackgroundColor(ContextCompat.getColor(this, R.color.unansweredButtonColor));
             generateButtons();
         } else {
-
             showCompletionPopup();
         }
 
@@ -173,8 +235,8 @@ public class FirstLevelActivity extends AppCompatActivity {
         timerRunning = true;
         countDownTimer = createCountDownTimer(currentQuestionIndex);
         countDownTimer.start();
-
     }
+
     private void stopTimer() {
         timerRunning = false;
         if (countDownTimer != null) {
@@ -182,18 +244,29 @@ public class FirstLevelActivity extends AppCompatActivity {
         }
     }
 
+    private void startTotalTimer(){
+        totalTimerRunning=true;
+
+    }
+
+    private void stopTotalTimer(){
+        totalTimerRunning=true;
+
+    }
+
     private void onSaveAndNextButtonClick(View view) {
+
         stopTimer();
         saveTimerState();
         String ans = edtAnswer.getText().toString();
         boolean isEmptyAnswer = ans.isEmpty();
-        if (!isEmptyAnswer){
+
+        if (!isEmptyAnswer) {
             answers.set(currentQuestionIndex, ans);
-            questionTimes.set(currentQuestionIndex,currentTime);
+            questionTimes.set(currentQuestionIndex, currentTime);
         }
-        // Check if there are more questions
+
         if (currentQuestionIndex >= 0 && currentQuestionIndex < questions.length) {
-            // Display the next question
             String enteredAnswer = edtAnswer.getText().toString();
             answers.add(enteredAnswer);
 
@@ -205,38 +278,46 @@ public class FirstLevelActivity extends AppCompatActivity {
 
             if (originalAnswers != null && currentQuestionIndex < originalAnswers.size()) {
                 boolean correctAnswer = enteredAnswer.equals(originalAnswers.get(currentQuestionIndex));
-                Log.e("DebugTag", "Correct Answer Comparison: " + correctAnswer);
                 isQuestionCorrect.add(correctAnswer);
             } else {
-                // Handle the case where the originalAnswers list is null or the index is out of bounds
-                // Add a default value or set isQuestionCorrect to false for this question
-                Log.e("DebugTag", "Error: originalAnswers is null or index out of bounds");
-                isQuestionCorrect.add(false);  // Assuming a default value of false for incorrect
-                // You might want to adjust this based on your application's logic
+                isQuestionCorrect.add(false); // Default to false
             }
+
+            int previousButtonIndex = (currentQuestionIndex - 1) * 2; // Previous button index
+            int currentButtonIndex = currentQuestionIndex * 2;       // Current button index
+
+            // Reset previous question's button color
+            if (previousButtonIndex >= 0 && previousButtonIndex < gridLayout.getChildCount()) {
+                View previousButtonView = gridLayout.getChildAt(previousButtonIndex);
+                if (previousButtonView instanceof Button) {
+                    Button previousButton = (Button) previousButtonView;
+                    previousButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor)); // Answered color
+                }
+            }
+
             if (!enteredAnswer.isEmpty()) {
-                int clickedButtonIndex = currentQuestionIndex;
-                if (clickedButtonIndex >= 0 && clickedButtonIndex < gridLayout.getChildCount()) {
-                    Button clickedButton = (Button) gridLayout.getChildAt(clickedButtonIndex);
-                    clickedButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
-                    isQuestionAnswered.set(clickedButtonIndex, true);
+                int buttonIndex = currentQuestionIndex * 2; // Step buttons are at even indices
+                if (buttonIndex >= 0 && buttonIndex < gridLayout.getChildCount()) {
+                    View buttonView = gridLayout.getChildAt(buttonIndex);
+                    if (buttonView instanceof Button) {
+                        Button stepButton = (Button) buttonView;
+                        stepButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
+                        isQuestionAnswered.set(currentQuestionIndex, true);
+                    }
                 }
             }
         }
 
-        if (currentQuestionIndex < questions.length-1) {
-            if (currentQuestionIndex < questions.length) {
-                currentQuestionIndex++;
-                showCurrentQuestion();
-                edtAnswer.getText().clear();
-                currentTime = questionTimes.get(currentQuestionIndex);
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            currentStep = currentQuestionIndex;
+            showCurrentQuestion();
+            edtAnswer.getText().clear();
+            currentTime = questionTimes.get(currentQuestionIndex);
 
-                // Update UI with the timer
-                restoreTimerState(); // Restore timer state for the next question
-                startTimer();
-            }
-        }
-       else {
+            restoreTimerState();
+            startTimer();
+        } else {
             Toast.makeText(FirstLevelActivity.this, "Level is Completed", Toast.LENGTH_SHORT).show();
             showCompletionPopup();
         }
@@ -346,7 +427,7 @@ public class FirstLevelActivity extends AppCompatActivity {
     }
 
 
-    private void generateButtons() {
+    /*private void generateButtons() {
         gridLayout.removeAllViews();
 
         int marginLeftInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_left);
@@ -389,6 +470,71 @@ public class FirstLevelActivity extends AppCompatActivity {
             // Add the button to the layout
             gridLayout.addView(button);
         }
+    }*/
+
+    private void generateButtons() {
+        gridLayout.removeAllViews();
+
+        int totalSteps = questions.length; // Total steps (buttons)
+        int totalColumns = totalSteps * 2 - 1; // Steps + Connectors
+
+        for (int i = 0; i < totalColumns; i++) {
+            if (i % 2 == 0) {
+                // Create a circular step button
+                Button stepButton = new Button(this);
+                stepButton.setText(String.valueOf((i / 2) + 1)); // Step number
+                stepButton.setGravity(Gravity.CENTER);
+                stepButton.setTextColor(Color.BLACK);
+                stepButton.setTextSize(14);
+                stepButton.setTypeface(null, Typeface.BOLD);
+
+                // Set background color based on status
+                int stepIndex = i / 2; // Determine the step index
+                if (isQuestionAnswered.size() > stepIndex && isQuestionAnswered.get(stepIndex)) {
+                    stepButton.setBackground(getDrawable(R.drawable.circle_green)); // Answered
+                } else if (stepIndex == currentStep) {
+                    stepButton.setBackground(getDrawable(R.drawable.circle_orange)); // Current step
+                } else {
+                    stepButton.setBackground(getDrawable(R.drawable.circle_gray)); // Unanswered
+                }
+
+                // Set layout parameters for the step button
+                GridLayout.LayoutParams stepParams = new GridLayout.LayoutParams();
+                stepParams.width = dpToPx(40); // Circular size
+                stepParams.height = dpToPx(40);
+                stepParams.setMargins(dpToPx(8), dpToPx(16), dpToPx(8), dpToPx(16));
+                stepButton.setLayoutParams(stepParams);
+
+                // Add click listener for the step button
+                stepButton.setTag(stepIndex);
+                stepButton.setOnClickListener(view -> {
+                    int clickedStep = (int) view.getTag();
+
+                    onButtonClicked(clickedStep);
+                });
+
+                // Add the step button to the GridLayout
+                gridLayout.addView(stepButton);
+            } else {
+                // Create a connector line
+                View connector = new View(this);
+                connector.setBackgroundColor(Color.GRAY); // Connector color
+                // Set layout parameters for the connector
+                GridLayout.LayoutParams connectorParams = new GridLayout.LayoutParams();
+                connectorParams.width = dpToPx(30); // Connector width
+                connectorParams.height = dpToPx(2); // Connector height
+                connectorParams.setMargins(0, dpToPx(35), 0, dpToPx(0)); // Vertical alignment
+                connector.setLayoutParams(connectorParams);
+
+                // Add the connector to the GridLayout
+                gridLayout.addView(connector);
+            }
+        }
+    }
+
+    // Helper method to convert dp to px
+    private int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
     }
     private void onButtonClicked(int tag) {
         // Handle button click, update currentQuestionIndex, and display the question
@@ -396,6 +542,30 @@ public class FirstLevelActivity extends AppCompatActivity {
 
         currentQuestionIndex = tag;
         Log.e("Reddy", "Button Clicked - Index: " + tag);
+
+        // Iterate through GridLayout children
+        for (int i = 0; i < gridLayout.getChildCount(); i++) {
+            View child = gridLayout.getChildAt(i);
+
+            if (child instanceof Button) {
+                int stepIndex = (int) child.getTag();
+
+                // Set background color for the button
+                if (stepIndex == currentQuestionIndex) {
+                    Log.d("Reddy", "Changing color to ORANGE for index: " + stepIndex);
+                    child.setBackgroundColor(Color.parseColor("#FFA500")); // Direct color change
+                } else if (isQuestionAnswered.size() > stepIndex && isQuestionAnswered.get(stepIndex)) {
+                    Log.d("Reddy", "Changing color to GREEN for index: " + stepIndex);
+                    child.setBackgroundColor(Color.parseColor("#4CAF50")); // Green color
+                } else {
+                    Log.d("Reddy", "Changing color to GRAY for index: " + stepIndex);
+                    child.setBackgroundColor(Color.parseColor("#B0B0B0")); // Gray color
+                }
+
+                child.invalidate(); // Force redraw
+                child.requestLayout(); // Ensure layout update
+            }
+        }
         showCurrentQuestion();
         String storedAnswer = answers.get(currentQuestionIndex);
         edtAnswer.setText(storedAnswer);
@@ -412,7 +582,7 @@ public class FirstLevelActivity extends AppCompatActivity {
         if (currentQuestionIndex >= 0 && currentQuestionIndex < questionTimes.size()) {
             currentTime = questionTimes.get(currentQuestionIndex);
             // Update UI with the restored timer
-            txtTimer.setText("Countdown: " + currentTime / 1000 + " sec");
+            txtTimer.setText("Time Spent: " + currentTime / 1000 + " sec");
         }
     }
     private void startTimerForQuestion(int questionIndex) {

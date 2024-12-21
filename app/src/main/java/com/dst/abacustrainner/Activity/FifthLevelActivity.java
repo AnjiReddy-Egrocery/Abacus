@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.database.ParcelableLong;
@@ -214,7 +215,11 @@ public class FifthLevelActivity extends AppCompatActivity {
                 int clickedButtonIndex = currentQuestionIndex;
                 if (clickedButtonIndex >= 0 && clickedButtonIndex < gridLayout.getChildCount()) {
                     Button clickedButton = (Button) gridLayout.getChildAt(clickedButtonIndex);
-                    clickedButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
+                    // Clear previous background state
+//                    clickedButton.setBackground(null);
+//                    clickedButton.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_green));
+                    //clickedButton.setBackgroundColor(R.drawable.circle_green);
+                    clickedButton.setBackgroundResource(R.drawable.circle_green);
                     isQuestionAnswered.set(clickedButtonIndex, true);
                 }
             }
