@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -63,6 +66,7 @@ public class UserCreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_create);
 
+
         layoutheaderSignIn = findViewById(R.id.layout_header_signin);
         layoutheaderSignUp = findViewById(R.id.layout_header_signup);
 
@@ -82,6 +86,8 @@ public class UserCreateActivity extends AppCompatActivity {
 
         edtEmail=findViewById(R.id.edt_parent_email);
         edtPassword=findViewById(R.id.edt_password);
+
+
 
         edtFirstName=findViewById(R.id.edt_first_name);
         edtLastName=findViewById(R.id.edt_last_name);
@@ -163,6 +169,23 @@ public class UserCreateActivity extends AppCompatActivity {
         ).show();
     }
 
+
+    public void ShowHidePass(View view) {
+
+        if(view.getId()==R.id.show_pass_btn){
+            if(edtPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())){
+                ((ImageView)(view)).setImageResource(R.drawable.visiablityoff);
+                //Show Password
+                edtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            }
+            else{
+                ((ImageView)(view)).setImageResource(R.drawable.visiablity);
+                //Hide Password
+                edtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            }
+        }
+    }
+
     private void FormLoginMethod() {
         boolean b_user = SharedPrefManager.getInstance(getApplicationContext()).isLoggedIn();
         if (b_user) {
@@ -210,9 +233,9 @@ public class UserCreateActivity extends AppCompatActivity {
         layoutSignInForm.setVisibility(View.VISIBLE);
         layoutSignUpForm.setVisibility(View.GONE);
 
-        layoutTextSignIn.setVisibility(View.VISIBLE);
+//        layoutTextSignIn.setVisibility(View.VISIBLE);
 
-        butLogin.setVisibility(View.VISIBLE);
+
 
 
     }
@@ -356,7 +379,7 @@ public class UserCreateActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     StudentRegistationResponse registrationResponse = response.body();
                     if (registrationResponse.getErrorCode().equals("202")){
-                        Toast.makeText(UserCreateActivity.this, "Some thing went wrong, please Check Email and Password.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserCreateActivity.this, "Incorrect , please Check Email and Password.", Toast.LENGTH_SHORT).show();
                     }else if (registrationResponse.getErrorCode().equals("200")) {
                         SharedPrefManager.getInstance(getApplicationContext()).insertData(response.body());
                         Toast.makeText(UserCreateActivity.this, "Student Login Completed Successfully.", Toast.LENGTH_SHORT).show();
@@ -393,9 +416,9 @@ public class UserCreateActivity extends AppCompatActivity {
         layoutSignInForm.setVisibility(View.GONE);
         layoutSignUpForm.setVisibility(View.VISIBLE);
 
-        layoutTextSignIn.setVisibility(View.GONE);
+//        layoutTextSignIn.setVisibility(View.GONE);
 
-        butLogin.setVisibility(View.GONE);
+
 
     }
 }

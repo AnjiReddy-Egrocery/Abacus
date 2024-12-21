@@ -118,7 +118,7 @@ public class VerifyActivity extends AppCompatActivity {
                         parentEmailId=result.getParentEmail();
                         password= result.getPassword();
 
-                        Intent intent = new Intent(VerifyActivity.this, UserCreateActivity.class);
+                        Intent intent = new Intent(VerifyActivity.this, UserCreateActivity .class);
                         intent.putExtra("parentEmail",parentEmailId);
                         intent.putExtra("password",password);
                         startActivity(intent);

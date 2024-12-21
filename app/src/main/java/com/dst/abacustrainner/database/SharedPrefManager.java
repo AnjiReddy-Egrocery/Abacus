@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.User.LoginActivity;
+import com.dst.abacustrainner.User.UserCreateActivity;
 
 
 public class SharedPrefManager {
@@ -67,7 +68,7 @@ public class SharedPrefManager {
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.clear();
         editor.apply();
-        Intent intent = new Intent(mContext, LoginActivity.class);
+        Intent intent = new Intent(mContext, UserCreateActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         mContext.startActivity(intent);
     }
