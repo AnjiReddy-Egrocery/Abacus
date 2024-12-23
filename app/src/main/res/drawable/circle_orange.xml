@@ -4,7 +4,7 @@
 
     <!-- Ring color and thickness -->
     <stroke
-        android:width="4dp"
+        android:width="5dp"
     android:color="#FF6600" />
 
     <!-- Optional size (if needed to constrain dimensions) -->

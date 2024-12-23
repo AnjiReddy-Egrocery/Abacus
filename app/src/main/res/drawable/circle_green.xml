@@ -2,10 +2,11 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
     <!-- Circle Stroke -->
     <stroke
-        android:width="4dp"
-        android:color="#2D5B2D" /> <!-- Green circle color -->
+        android:width="5dp"
+        android:color="#7D807D" /> <!-- Green circle color -->
     <!-- Transparent center -->
-    <solid android:color="@android:color/transparent" />
+    <solid android:color="#4E148C" />
+
     <!-- Size of the circle -->
     <size
         android:width="25dp"

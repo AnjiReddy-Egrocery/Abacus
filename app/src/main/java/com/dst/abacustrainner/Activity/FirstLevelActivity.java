@@ -484,12 +484,18 @@ public class FirstLevelActivity extends AppCompatActivity {
                 Button stepButton = new Button(this);
                 stepButton.setText(String.valueOf((i / 2) + 1)); // Step number
                 stepButton.setGravity(Gravity.CENTER);
-                stepButton.setTextColor(Color.BLACK);
+                int stepIndex = i / 2; // Determine the step index
+                if (isQuestionAnswered.size() > stepIndex && isQuestionAnswered.get(stepIndex)){
+                    stepButton.setTextColor(Color.WHITE);
+                }else{
+                    stepButton.setTextColor(Color.BLACK);
+                }
+
                 stepButton.setTextSize(14);
                 stepButton.setTypeface(null, Typeface.BOLD);
 
                 // Set background color based on status
-                int stepIndex = i / 2; // Determine the step index
+
                 if (isQuestionAnswered.size() > stepIndex && isQuestionAnswered.get(stepIndex)) {
                     stepButton.setBackground(getDrawable(R.drawable.circle_green)); // Answered
                 } else if (stepIndex == currentStep) {
@@ -502,14 +508,13 @@ public class FirstLevelActivity extends AppCompatActivity {
                 GridLayout.LayoutParams stepParams = new GridLayout.LayoutParams();
                 stepParams.width = dpToPx(40); // Circular size
                 stepParams.height = dpToPx(40);
-                stepParams.setMargins(dpToPx(8), dpToPx(16), dpToPx(8), dpToPx(16));
+                stepParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(0), dpToPx(16));
                 stepButton.setLayoutParams(stepParams);
 
                 // Add click listener for the step button
                 stepButton.setTag(stepIndex);
                 stepButton.setOnClickListener(view -> {
                     int clickedStep = (int) view.getTag();
-
                     onButtonClicked(clickedStep);
                 });
 
@@ -521,8 +526,8 @@ public class FirstLevelActivity extends AppCompatActivity {
                 connector.setBackgroundColor(Color.GRAY); // Connector color
                 // Set layout parameters for the connector
                 GridLayout.LayoutParams connectorParams = new GridLayout.LayoutParams();
-                connectorParams.width = dpToPx(30); // Connector width
-                connectorParams.height = dpToPx(2); // Connector height
+                connectorParams.width = dpToPx(15); // Connector width
+                connectorParams.height = dpToPx(4); // Connector height
                 connectorParams.setMargins(0, dpToPx(35), 0, dpToPx(0)); // Vertical alignment
                 connector.setLayoutParams(connectorParams);
 
