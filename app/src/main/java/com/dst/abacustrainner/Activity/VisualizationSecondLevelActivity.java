@@ -5,6 +5,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -41,12 +43,12 @@ import java.util.List;
 import java.util.Locale;
 
 public class VisualizationSecondLevelActivity extends AppCompatActivity  {
-    private Button btnNextQuestion, btnPreviousQuestion,butSubmit;
-
+    LinearLayout btnPreviousQuestion,btnNextQuestion,butSubmit;
     ImageView imageView;
     private TextView textViewQuestion, txtDisplayQuestion, txtTimer;
 
     private EditText edtAnswer;
+    private int currentStep = 0;
 
     private CountDownTimer countDownTimer;
     private String[] questions;
@@ -407,62 +409,71 @@ public class VisualizationSecondLevelActivity extends AppCompatActivity  {
 
 
     private void onSaveAndNextButtonClick(View view) {
+
         stopTimer();
         saveTimerState();
-        txtTimer.setVisibility(View.INVISIBLE);
-
         disableComponents();
-        String ans=edtAnswer.getText().toString();
+        String ans = edtAnswer.getText().toString();
         boolean isEmptyAnswer = ans.isEmpty();
-        if (!isEmptyAnswer){
+
+        if (!isEmptyAnswer) {
             answers.set(currentQuestionIndex, ans);
-            questionTimes.set(currentQuestionIndex,currentTime);
+            questionTimes.set(currentQuestionIndex, currentTime);
         }
-        // Check if there are more questions
+
         if (currentQuestionIndex >= 0 && currentQuestionIndex < questions.length) {
-            // Display the next question
             String enteredAnswer = edtAnswer.getText().toString();
             answers.add(enteredAnswer);
+
+            Log.e("DebugTag", "Index: " + currentQuestionIndex);
+            Log.e("DebugTag", "Entered Answer: " + enteredAnswer);
 
             boolean attempted = !enteredAnswer.isEmpty();
             isQuestionAttempted.add(attempted);
 
-            // Check if the answer is correct
-            if (!originalAnswers.isEmpty() && currentQuestionIndex < originalAnswers.size()) {
+            if (originalAnswers != null && currentQuestionIndex < originalAnswers.size()) {
                 boolean correctAnswer = enteredAnswer.equals(originalAnswers.get(currentQuestionIndex));
                 isQuestionCorrect.add(correctAnswer);
             } else {
-                // Handle the case where the originalAnswers list is empty or the index is out of bounds
-                // You might want to display an error message, log a warning, or handle it according to your logic
-                // Toast.makeText(FirstLevelActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                isQuestionCorrect.add(false); // Default to false
+            }
+
+            int previousButtonIndex = (currentQuestionIndex - 1) * 2; // Previous button index
+            int currentButtonIndex = currentQuestionIndex * 2;       // Current button index
+
+            // Reset previous question's button color
+            if (previousButtonIndex >= 0 && previousButtonIndex < gridLayout.getChildCount()) {
+                View previousButtonView = gridLayout.getChildAt(previousButtonIndex);
+                if (previousButtonView instanceof Button) {
+                    Button previousButton = (Button) previousButtonView;
+                    previousButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor)); // Answered color
+                }
             }
 
             if (!enteredAnswer.isEmpty()) {
-                int clickedButtonIndex = currentQuestionIndex;
-                if (clickedButtonIndex >= 0 && clickedButtonIndex < gridLayout.getChildCount()) {
-                    Button clickedButton = (Button) gridLayout.getChildAt(clickedButtonIndex);
-                    clickedButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
-                    isQuestionAnswered.set(clickedButtonIndex, true);
+                int buttonIndex = currentQuestionIndex * 2; // Step buttons are at even indices
+                if (buttonIndex >= 0 && buttonIndex < gridLayout.getChildCount()) {
+                    View buttonView = gridLayout.getChildAt(buttonIndex);
+                    if (buttonView instanceof Button) {
+                        Button stepButton = (Button) buttonView;
+                        stepButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
+                        isQuestionAnswered.set(currentQuestionIndex, true);
+                    }
                 }
             }
         }
 
-        if (currentQuestionIndex < questions.length-1) {
+        if (currentQuestionIndex < questions.length - 1) {
             currentQuestionIndex++;
+            currentStep = currentQuestionIndex;
             showCurrentQuestion();
             edtAnswer.getText().clear();
+            currentTime = questionTimes.get(currentQuestionIndex);
 
-            // Update UI with the timer
-            restoreTimerState(); // Restore timer state for the next question
-            if (currentTime == 0) {
-                // If the timer was zero, start it for the next question
-                currentTime = 0;
-                txtTimer.setText("Countdown: 0 sec");
-            }
-        }
-        else {
+            restoreTimerState();
+            startTimer();
+        } else {
             Toast.makeText(VisualizationSecondLevelActivity.this, "Level is Completed", Toast.LENGTH_SHORT).show();
-            // saveDataAndShowCompletionPopup();
             showCompletionPopup();
         }
     }
@@ -565,50 +576,71 @@ public class VisualizationSecondLevelActivity extends AppCompatActivity  {
         }
     }
 
-
+    private int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
+    }
     private void generateButtons() {
         gridLayout.removeAllViews();
 
-        int marginLeftInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_left);
-        int marginRightInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_right);
-        int marginTopInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_top);
-        int marginBottomInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_bottom);
+        int totalSteps = questions.length; // Total steps (buttons)
+        int totalColumns = totalSteps * 2 - 1; // Steps + Connectors
 
-        // Create a button for each question
-        for (int i = 0; i < questions.length; i++) {
-            Button button = new Button(this);
-            button.setText(String.valueOf(i + 1));
-            button.setTag(i);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int clickedButtonTag = (int) view.getTag();
-                    onButtonClicked(clickedButtonTag);
+        for (int i = 0; i < totalColumns; i++) {
+            if (i % 2 == 0) {
+                // Create a circular step button
+                Button stepButton = new Button(this);
+                stepButton.setText(String.valueOf((i / 2) + 1)); // Step number
+                stepButton.setGravity(Gravity.CENTER);
+                int stepIndex = i / 2; // Determine the step index
+                if (isQuestionAnswered.size() > stepIndex && isQuestionAnswered.get(stepIndex)){
+                    stepButton.setTextColor(Color.WHITE);
+                }else{
+                    stepButton.setTextColor(Color.BLACK);
                 }
-            });
 
-            // Set layout parameters for the button in the grid
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.width = 0; // This will make buttons equally distribute in columns
-            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f); // Equally distribute columns
-            params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f); // Equally distribute rows
-            // Set margins for the button
-            params.leftMargin = marginLeftInDp;
-            params.rightMargin = marginRightInDp;
-            params.topMargin = marginTopInDp;
-            params.bottomMargin = marginBottomInDp;
-            Log.e("QuizActivity", "Before updating button background color: " + isQuestionAnswered.toString());
-            button.setLayoutParams(params);
-            Log.e("QuizActivity", "After updating button background color: " + isQuestionAnswered.toString());
-            // Set background color based on whether the question is answered
-            if (isQuestionAnswered.size() > i && isQuestionAnswered.get(i)) {
-                button.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
+                stepButton.setTextSize(14);
+                stepButton.setTypeface(null, Typeface.BOLD);
+
+                // Set background color based on status
+
+                if (isQuestionAnswered.size() > stepIndex && isQuestionAnswered.get(stepIndex)) {
+                    stepButton.setBackground(getDrawable(R.drawable.circle_green)); // Answered
+                } else if (stepIndex == currentStep) {
+                    stepButton.setBackground(getDrawable(R.drawable.circle_orange)); // Current step
+                } else {
+                    stepButton.setBackground(getDrawable(R.drawable.circle_gray)); // Unanswered
+                }
+
+                // Set layout parameters for the step button
+                GridLayout.LayoutParams stepParams = new GridLayout.LayoutParams();
+                stepParams.width = dpToPx(40); // Circular size
+                stepParams.height = dpToPx(40);
+                stepParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(0), dpToPx(16));
+                stepButton.setLayoutParams(stepParams);
+
+                // Add click listener for the step button
+                stepButton.setTag(stepIndex);
+                stepButton.setOnClickListener(view -> {
+                    int clickedStep = (int) view.getTag();
+                    onButtonClicked(clickedStep);
+                });
+
+                // Add the step button to the GridLayout
+                gridLayout.addView(stepButton);
             } else {
-                button.setBackgroundColor(getResources().getColor(R.color.unansweredButtonColor));
+                // Create a connector line
+                View connector = new View(this);
+                connector.setBackgroundColor(Color.GRAY); // Connector color
+                // Set layout parameters for the connector
+                GridLayout.LayoutParams connectorParams = new GridLayout.LayoutParams();
+                connectorParams.width = dpToPx(15); // Connector width
+                connectorParams.height = dpToPx(4); // Connector height
+                connectorParams.setMargins(0, dpToPx(35), 0, dpToPx(0)); // Vertical alignment
+                connector.setLayoutParams(connectorParams);
+
+                // Add the connector to the GridLayout
+                gridLayout.addView(connector);
             }
-            // Add the button to the layout
-            gridLayout.addView(button);
         }
     }
     private void onButtonClicked(int tag) {
