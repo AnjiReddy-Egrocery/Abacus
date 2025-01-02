@@ -2,10 +2,16 @@ package com.dst.abacustrainner.User;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.dst.abacustrainner.Fragment.ClassFragment;
@@ -19,9 +25,10 @@ import com.dst.abacustrainner.database.SharedPrefManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 
-public class HomeActivity extends AppCompatActivity{
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     String studentId;
     String displayName;
@@ -29,6 +36,12 @@ public class HomeActivity extends AppCompatActivity{
     String idToken;
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
+
+    NavigationView mNavigationView;
+    DrawerLayout drawerLayout;
+    Toolbar toolbar;
+    ActionBarDrawerToggle toggle;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -50,6 +63,21 @@ public class HomeActivity extends AppCompatActivity{
         } else {
             Toast.makeText(HomeActivity.this, "Student ID not available. Please log in again.", Toast.LENGTH_LONG).show();
         }
+
+        drawerLayout = findViewById(R.id.drawerLayout);
+        mNavigationView = findViewById(R.id.navigation_view);
+
+        toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.nav_open, R.string.nav_close);
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.white));
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+
+
+        mNavigationView.setNavigationItemSelectedListener(this);
+
+
 
     }
 
@@ -92,4 +120,27 @@ public class HomeActivity extends AppCompatActivity{
             return true;
         }
     };
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (toggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 }

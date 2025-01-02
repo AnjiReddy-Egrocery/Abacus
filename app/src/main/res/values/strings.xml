@@ -6,6 +6,9 @@
     <string name="compitation">Compitation</string>
     <string name="profile">Profile</string>
 
+    <string name="nav_open" translatable="false">Open</string>
+    <string name="nav_close" translatable="false">Close</string>
+
     <string name="nameerror">Enter a valid First name</string>
     <string name="lastnameerror">Enter a valid Last name</string>
     <string name="emailerror">Enter a valid Email</string>
