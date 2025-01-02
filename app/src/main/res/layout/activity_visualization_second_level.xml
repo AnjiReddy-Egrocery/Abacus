@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_inner"
     tools:context=".Activity.ViewResultDetailsActivity">
 
     <LinearLayout
@@ -13,12 +14,148 @@
         android:orientation="vertical"
         android:layout_margin="14dp">
 
-        <ImageView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:src="@drawable/big_logo_total"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Beat the clock with numbers"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"
+                android:textColor="#FFF"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/star_line"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="-20dp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="-15dp"
+            android:background="@drawable/back_ground_white">
+
+            <!--  <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:gravity="center_vertical"
+                  android:layout_margin="14dp"
+                  android:orientation="horizontal">
+
+                &lt;!&ndash;  <ImageView
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:src="@drawable/baseline_arrow_back_ios_24" />
+
+                  <ImageView
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:src="@drawable/baseline_keyboard_arrow_right_24" />
+  &ndash;&gt;
+              </LinearLayout>-->
+
+
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp">
+
+
+                <!-- GridLayout inside HorizontalScrollView -->
+
+                <GridLayout
+                    android:id="@+id/gridLayoutButtons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_row="0"
+                        android:layout_column="0"
+
+                        android:text="Button 1"
+                        android:textColor="@android:color/black" />
+
+                    <Button
+                        android:text="Button 2"
+                        android:textColor="@android:color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <Button
+                        android:text="Button 3"
+                        android:textColor="@android:color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </GridLayout>
+
+            </HorizontalScrollView>
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"
+                android:fillViewport="true">
+
+
+
+            </HorizontalScrollView>
+
+            <LinearLayout
+                android:layout_width="20dp"
+                android:orientation="horizontal"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/right_arrow_ques"
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Time : "
+                android:textSize="20dp"
+                android:textColor="#fff"
+                />
+            <TextView
+                android:id="@+id/total_timer_display_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textSize="20dp"
+                android:layout_marginStart="3dp"
+                android:textColor="#fff"
+                />
+
+        </LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -28,7 +165,15 @@
                 android:layout_height="wrap_content"
                 android:visibility="visible"
                 android:id="@+id/layout_data"
+                android:background="@drawable/back_ground_white"
                 android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -104,6 +249,7 @@
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -140,51 +286,184 @@
                     android:weightSum="2"
                     android:layout_marginTop="20dp"
                     android:orientation="horizontal">
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Privous Question"
+<!--                    <Button-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Privous Question"-->
+<!--                        android:id="@+id/prv_qus"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:textSize="16dp"-->
+<!--                        android:layout_marginRight="8dp"-->
+<!--                        android:textColor="#000"-->
+<!--                        android:backgroundTint="#CCC4C4"/>-->
+
+                    <LinearLayout
                         android:id="@+id/prv_qus"
-                        android:textStyle="bold"
-                        android:layout_weight="1"
-                        android:textSize="16dp"
-                        android:layout_marginRight="8dp"
-                        android:textColor="#000"
-                        android:backgroundTint="#CCC4C4"/>
-                    <Button
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Save and Next"
-                        android:layout_marginLeft="8dp"
+                        android:background="@drawable/prev_button_border"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/circle_image_blue"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="15dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginStart="4dp"
+                                    android:src="@drawable/round_arrow" />
+
+                                <ImageView
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:layout_marginStart="-5dp"
+                                    android:src="@drawable/round_arrow" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="9dp"
+                                android:gravity="center_horizontal"
+                                android:paddingEnd="5dp"
+                                android:text="PREV"
+                                android:textStyle="bold"
+                                android:textColor="#4E148C"
+                                android:textSize="20dp" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+<!--                    <Button-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Save and Next"-->
+<!--                        android:layout_marginLeft="8dp"-->
+<!--                        android:id="@+id/btnNext"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:textFontWeight="1"-->
+<!--                        android:textSize="16dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:textColor="#FFF"-->
+<!--                        android:backgroundTint="#98CA5F"/>-->
+
+                    <LinearLayout
                         android:id="@+id/btnNext"
-                        android:textStyle="bold"
-                        android:textFontWeight="1"
-                        android:textSize="16dp"
-                        android:layout_weight="1"
-                        android:textColor="#FFF"
-                        android:backgroundTint="#98CA5F"/>
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="35dp"
+                        android:background="@drawable/save_next_btn"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginRight="3dp"
+                                android:layout_marginBottom="10dp"
+                                android:text="SAVE AND NEXT"
+                                android:textColor="#fff"
+                                android:textSize="20dp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="4dp"
+
+                                android:background="@drawable/circle_image_white"
+                                android:orientation="horizontal">
+
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:src="@drawable/front_arrow_navigate" />
+
+                                <ImageView
+                                    android:layout_width="25dp"
+                                    android:layout_height="25dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginLeft="-13dp"
+                                    android:layout_marginRight="2dp"
+                                    android:src="@drawable/front_arrow_navigate" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
-                <Button
+<!--                <Button-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Submit Exam"-->
+<!--                    android:id="@+id/but_submit"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="16dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:textColor="#FFF"-->
+<!--                    android:backgroundTint="#D81E1E"/>-->
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Submit Exam"
-                    android:id="@+id/but_submit"
-                    android:textStyle="bold"
-                    android:textSize="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_weight="1"
-                    android:textColor="#FFF"
-                    android:backgroundTint="#D81E1E"/>
-                <GridLayout
-                    android:id="@+id/gridLayoutButtons"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/textQuestion"
-                    android:layout_marginTop="16dp"
-                    android:columnCount="5"
-                    android:rowCount="4"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_margin="18dp"
+                    android:gravity="center">
+
+                    <LinearLayout
+                        android:id="@+id/but_submit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/purple_bg">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginBottom="12dp"
+                            android:gravity="center"
+                            android:text="submit exam"
+                            android:textColor="#ffF"
+                            android:textSize="25dp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+<!--                <GridLayout-->
+<!--                    android:id="@+id/gridLayoutButtons"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@id/textQuestion"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:columnCount="5"-->
+<!--                    android:rowCount="4"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_marginBottom="16dp"/>-->
+
+            </LinearLayout>
             </LinearLayout>
 
         </ScrollView>
