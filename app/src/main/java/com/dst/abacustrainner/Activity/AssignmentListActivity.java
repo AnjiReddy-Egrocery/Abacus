@@ -45,15 +45,11 @@ public class AssignmentListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assignment_list);
-
         txtName=findViewById(R.id.txt_batch_name);
         txtDate=findViewById(R.id.txt_date);
         txtStartTime=findViewById(R.id.txt_time);
         txtEndTime=findViewById(R.id.txtdate);
-
         Bundle bundle=getIntent().getExtras();
-
-
         dateid=bundle.getString("dateId");
         studentid=bundle.getString("studentId");
         name=bundle.getString("batchName");
@@ -61,7 +57,6 @@ public class AssignmentListActivity extends AppCompatActivity {
         startTime=bundle.getString("startTime");
         endTime=bundle.getString("endTime");
         progressBar= findViewById(R.id.progress);
-
         txtStartTime.setText(startTime);
         txtEndTime.setText(endTime);
         txtName.setText(name);
@@ -74,8 +69,6 @@ public class AssignmentListActivity extends AppCompatActivity {
         recyclerAssignList.setLayoutManager(layoutManager);
 
         VerifyMethod(dateid,studentid);
-
-
 
     }
 
@@ -123,6 +116,7 @@ public class AssignmentListActivity extends AppCompatActivity {
             public void onFailure(Call<AssignmentListResponse> call, Throwable t) {
 
             }
+
         });
     }
 }

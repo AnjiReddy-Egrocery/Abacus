@@ -41,7 +41,6 @@ public class BatchDatesDetailsActivity extends AppCompatActivity {
 
     String id="";
 
-
     TextView txtName;
     BatchDatesDetailsAdapter batchDatesDetailsAdapter;
 

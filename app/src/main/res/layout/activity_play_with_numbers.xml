@@ -5,172 +5,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/signin_background"
     tools:context=".Activity.ViewResultDetailsActivity">
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="14dp">
-
-        <ImageView
+        android:layout_height="wrap_content"
+         android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:src="@drawable/big_logo_total"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="20dp"
+            >
+            <LinearLayout
+                android:id="@+id/btn_back_to_home"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:orientation="vertical"
+                android:background="@drawable/circle_image">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:src="@drawable/baseline_arrow_back_ios_new_24"/>
+            </LinearLayout>
 
-        <ScrollView
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Play with number"
+                android:textStyle="bold"
+                android:textSize="25dp"
+                android:gravity="center_vertical"
+                android:textColor="#FFF"
+                android:layout_marginLeft="16dp"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
+            android:orientation="vertical"
+            android:background="@drawable/back_ground_white"
+            android:layout_margin="14dp">
 
-            <LinearLayout
+            <!--        <ImageView-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="150dp"-->
+            <!--            android:src="@drawable/big_logo_total"-->
+            <!--            android:adjustViewBounds="true"-->
+            <!--            android:scaleType="fitCenter"/>-->
+
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                >
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="14dp">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Start : Play with Number Game"
-                        android:textStyle="bold"
-                        android:textSize="20dp"
-                        android:textColor="#000"
-                        android:padding="12dp"
-                        android:fontFamily="@font/regular"/>
-
-                    <Spinner
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        style="@android:style/Widget.Holo.Light.Spinner"
-                        android:padding="10dp"
-                        android:background="@drawable/spinner_bg"
-                        android:paddingLeft="4dp"
-                        android:id="@+id/spinnerSelectedLevel"
-                        android:entries="@array/levels"
-                        android:layout_marginBottom="2dp"/>
-                    <Button
-                        android:id="@+id/but_start_game"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:text="Start Game"
-                        android:textSize="18dp"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/regular"
-                        android:textColor="#FFF"
-                        android:layout_marginTop="18dp"
-                        android:layout_marginBottom="20dp"
-                        android:backgroundTint="#FD6801"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="14dp"
                     android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Create : Play with Number Game"
-                        android:textStyle="bold"
-                        android:textSize="20dp"
-                        android:textColor="#000"
-                        android:padding="12dp"
-                        android:fontFamily="@font/regular"/>
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_marginTop="14dp">
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Select Total Operations"
-                            android:textSize="14dp"
-                            android:layout_marginLeft="10dp"
+                            android:text="Start : Play with Number Game"
+                            android:textStyle="bold"
+                            android:textSize="20dp"
                             android:textColor="#000"
-                            android:layout_marginTop="1dp"
-                            android:textStyle="bold"/>
+                            android:padding="12dp"
+                            android:fontFamily="@font/regular"/>
+
                         <Spinner
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginTop="2dp"
-                            style="@android:style/Widget.Holo.Light.Spinner"
-                            android:padding="10dp"
-                            android:background="@drawable/spinner_bg"
-                            android:paddingLeft="4dp"
-                            android:id="@+id/spinnerOperation"
-                            android:entries="@array/operations"
-                            android:layout_marginBottom="2dp"/>
-                    </LinearLayout>
-
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Select Total Numbers"
-                            android:textSize="14dp"
-                            android:id="@+id/txt_total_numbers"
-                            android:layout_marginLeft="10dp"
-                            android:textColor="#000"
-                            android:layout_marginTop="12dp"
-                            android:textStyle="bold"/>
-                        <Spinner
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginTop="2dp"
-                            style="@android:style/Widget.Holo.Light.Spinner"
-                            android:padding="10dp"
-                            android:background="@drawable/spinner_bg"
-                            android:paddingLeft="4dp"
-                            android:id="@+id/spinnerOperands"
-                            android:entries="@array/operands"
-                            android:layout_marginBottom="2dp"/>
-                    </LinearLayout>
-
-
-
-                    <!-- Add dynamic dropdowns based on the selected number of operands -->
-                    <LinearLayout
-                        android:id="@+id/dropdownContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/spinnerOperands"
-                        android:layout_marginTop="16dp"
-                        android:orientation="vertical">
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Select Total Questions"
-                            android:textSize="14dp"
-                            android:layout_marginLeft="10dp"
-                            android:textColor="#000"
-                            android:layout_marginTop="12dp"
-                            android:textStyle="bold"/>
-                        <Spinner
-                            android:id="@+id/spinnerTotalQuestions"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginLeft="10dp"
@@ -179,110 +88,245 @@
                             android:padding="10dp"
                             android:background="@drawable/spinner_bg"
                             android:paddingLeft="4dp"
-                            android:entries="@array/total_questions"
-                            android:layout_marginTop="2dp"
+                            android:id="@+id/spinnerSelectedLevel"
+                            android:entries="@array/levels"
                             android:layout_marginBottom="2dp"/>
 
+                        <Button
+                            android:id="@+id/but_start_game"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="18dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:backgroundTint="#FD6801"
+                            android:fontFamily="@font/regular"
+                            android:text="Start Game"
+                            android:textColor="#FFF"
+                            android:textSize="18dp"
+                            android:textStyle="bold" />
                     </LinearLayout>
-
-                    <Button
-                        android:id="@+id/btnStartPlay"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:text="Create a Number Game"
-                        android:textSize="18dp"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/regular"
-                        android:textColor="#FFF"
-                        android:layout_marginTop="18dp"
-                        android:layout_marginBottom="20dp"
-                        android:backgroundTint="#FD6801"/>
-
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:id="@+id/layout_data"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="14dp"
                         android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Create : Play with Number Game"
+                            android:textStyle="bold"
+                            android:textSize="20dp"
+                            android:textColor="#000"
+                            android:padding="12dp"
+                            android:fontFamily="@font/regular"/>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:weightSum="2"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Select Total Operations"
+                                android:textSize="14dp"
+                                android:layout_marginLeft="10dp"
+                                android:textColor="#000"
+                                android:layout_marginTop="1dp"
+                                android:textStyle="bold"/>
+                            <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="2dp"
+                                style="@android:style/Widget.Holo.Light.Spinner"
+                                android:padding="10dp"
+                                android:background="@drawable/spinner_bg"
+                                android:paddingLeft="4dp"
+                                android:id="@+id/spinnerOperation"
+                                android:entries="@array/operations"
+                                android:layout_marginBottom="2dp"/>
+                        </LinearLayout>
+
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Select Total Numbers"
+                                android:textSize="14dp"
+                                android:id="@+id/txt_total_numbers"
+                                android:layout_marginLeft="10dp"
+                                android:textColor="#000"
+                                android:layout_marginTop="12dp"
+                                android:textStyle="bold"/>
+                            <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="2dp"
+                                style="@android:style/Widget.Holo.Light.Spinner"
+                                android:padding="10dp"
+                                android:background="@drawable/spinner_bg"
+                                android:paddingLeft="4dp"
+                                android:id="@+id/spinnerOperands"
+                                android:entries="@array/operands"
+                                android:layout_marginBottom="2dp"/>
+                        </LinearLayout>
+
+
+
+                        <!-- Add dynamic dropdowns based on the selected number of operands -->
+                        <LinearLayout
+                            android:id="@+id/dropdownContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/spinnerOperands"
+                            android:layout_marginTop="16dp"
+                            android:orientation="vertical">
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Select Total Questions"
+                                android:textSize="14dp"
+                                android:layout_marginLeft="10dp"
+                                android:textColor="#000"
+                                android:layout_marginTop="12dp"
+                                android:textStyle="bold"/>
+                            <Spinner
+                                android:id="@+id/spinnerTotalQuestions"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                style="@android:style/Widget.Holo.Light.Spinner"
+                                android:padding="10dp"
+                                android:background="@drawable/spinner_bg"
+                                android:paddingLeft="4dp"
+                                android:entries="@array/total_questions"
+                                android:layout_marginTop="2dp"
+                                android:layout_marginBottom="2dp"/>
+
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btnStartPlay"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:text="Create a Number Game"
+                            android:textSize="18dp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/regular"
+                            android:textColor="#FFF"
+                            android:layout_marginTop="18dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:backgroundTint="#FD6801"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:id="@+id/layout_data"
+                            android:orientation="vertical">
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:id="@+id/textViewQuestion"
+                                android:layout_marginTop="12dp"
+                                android:weightSum="2"
+                                android:orientation="horizontal">
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text=""
-                                    android:textSize="18dp"
-                                    android:textColor="#000"/>
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:id="@+id/textViewQuestion"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text=""
+                                        android:textSize="18dp"
+                                        android:textColor="#000"/>
+                                </LinearLayout>
+                                <TextView
+                                    android:id="@+id/timerTextView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="00:00"
+                                    android:padding="5dp"
+                                    android:layout_weight="1"
+                                    android:textColor="#000"
+                                    android:textSize="18dp"/>
                             </LinearLayout>
-                            <TextView
-                                android:id="@+id/timerTextView"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="00:00"
-                                android:padding="5dp"
-                                android:layout_weight="1"
-                                android:textColor="#000"
-                                android:textSize="18dp"/>
-                        </LinearLayout>
 
-                        <EditText
-                            android:id="@+id/answerEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:paddingLeft="10dp"
-                            android:inputType="number"
-                            android:textColorHint="#000"
-                            android:textColor="#000"
-                            android:background="@drawable/back_ground"
-                            android:layout_marginTop="12dp"
-                            android:hint="Enter your answer" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:weightSum="2"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginBottom="20dp"
-                            android:orientation="horizontal">
-                            <Button
+                            <EditText
+                                android:id="@+id/answerEditText"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Privous Question"
-                                android:id="@+id/prv_qus"
-                                android:textStyle="bold"
-                                android:layout_weight="1"
-                                android:textSize="16dp"
-                                android:layout_marginRight="8dp"
+                                android:layout_height="50dp"
+                                android:paddingLeft="10dp"
+                                android:inputType="number"
+                                android:textColorHint="#000"
                                 android:textColor="#000"
-                                android:backgroundTint="#CCC4C4"/>
-                            <Button
+                                android:background="@drawable/back_ground"
+                                android:layout_marginTop="12dp"
+                                android:hint="Enter your answer" />
+
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Save and Next"
-                                android:layout_marginLeft="8dp"
-                                android:id="@+id/btnNext"
-                                android:textStyle="bold"
-                                android:textFontWeight="1"
-                                android:textSize="16dp"
-                                android:layout_weight="1"
-                                android:textColor="#FFF"
-                                android:backgroundTint="#98CA5F"/>
+                                android:weightSum="2"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginBottom="20dp"
+                                android:orientation="horizontal">
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Privous Question"
+                                    android:id="@+id/prv_qus"
+                                    android:textStyle="bold"
+                                    android:layout_weight="1"
+                                    android:textSize="16dp"
+                                    android:layout_marginRight="8dp"
+                                    android:textColor="#000"
+                                    android:backgroundTint="#CCC4C4"/>
+                                <Button
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Save and Next"
+                                    android:layout_marginLeft="8dp"
+                                    android:id="@+id/btnNext"
+                                    android:textStyle="bold"
+                                    android:textFontWeight="1"
+                                    android:textSize="16dp"
+                                    android:layout_weight="1"
+                                    android:textColor="#FFF"
+                                    android:backgroundTint="#98CA5F"/>
+                            </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
-        </ScrollView>
+            </ScrollView>
+        </LinearLayout>
     </LinearLayout>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

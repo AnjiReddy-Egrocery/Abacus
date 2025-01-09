@@ -5,20 +5,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/signin_background"
     tools:context=".Activity.ViewResultDetailsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="14dp">
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
 
-        <ImageView
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="16dp">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:src="@drawable/big_logo_total"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="20dp"
+            >
+            <LinearLayout
+                android:id="@+id/btn_back_to_home_vis"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:orientation="vertical"
+                android:background="@drawable/circle_image">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:src="@drawable/baseline_arrow_back_ios_new_24"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Visualization game"
+                android:textStyle="bold"
+                android:textSize="25dp"
+                android:gravity="center_vertical"
+                android:textColor="#FFF"
+                android:layout_marginLeft="16dp"/>
+        </LinearLayout>
+
+        <!--        <ImageView-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="150dp"-->
+        <!--            android:src="@drawable/big_logo_total"-->
+        <!--            android:adjustViewBounds="true"-->
+        <!--            android:scaleType="fitCenter"/>-->
 
         <ScrollView
             android:layout_width="match_parent"
@@ -27,47 +61,56 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/back_ground_white"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="14dp">
+                    android:layout_marginTop="14dp"
+                    android:orientation="vertical">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Start : Visualization Play with Number Game"
-                        android:textStyle="bold"
-                        android:textSize="16dp"
-                        android:textColor="#000"
+                        android:fontFamily="@font/regular"
                         android:padding="12dp"
-                        android:fontFamily="@font/regular"/>
+                        android:text="Start : Visualization Play with Number Game"
+                        android:textColor="#000"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
 
                     <Spinner
+                        android:id="@+id/spinnerSelectedLevel"
+                        style="@android:style/Widget.Holo.Light.Spinner"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        style="@android:style/Widget.Holo.Light.Spinner"
-                        android:padding="10dp"
+                        android:layout_marginBottom="2dp"
                         android:background="@drawable/spinner_bg"
-                        android:paddingLeft="4dp"
-                        android:id="@+id/spinnerSelectedLevel"
                         android:entries="@array/levels"
-                        android:layout_marginBottom="2dp"/>
+                        android:padding="10dp"
+                        android:paddingLeft="4dp" />
+
                     <Button
                         android:id="@+id/but_start_game"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:text="Start Game"
-                        android:textSize="18dp"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/regular"
-                        android:textColor="#FFF"
                         android:layout_marginTop="18dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
                         android:layout_marginBottom="20dp"
-                        android:backgroundTint="#FD6801"/>
+                        android:backgroundTint="#FD6801"
+                        android:fontFamily="@font/regular"
+                        android:text="Start Game"
+                        android:textColor="#FFF"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -77,72 +120,74 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Create : Visualization Play with Number Game"
-                        android:textStyle="bold"
-                        android:textSize="16dp"
-                        android:textColor="#000"
+                        android:fontFamily="@font/regular"
                         android:padding="12dp"
-                        android:fontFamily="@font/regular"/>
+                        android:text="Create : Visualization Play with Number Game"
+                        android:textColor="#000"
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Select Total Operations"
-                            android:textSize="14dp"
                             android:layout_marginLeft="10dp"
-                            android:textColor="#000"
                             android:layout_marginTop="1dp"
-                            android:textStyle="bold"/>
+                            android:text="Select Total Operations"
+                            android:textColor="#000"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+
                         <Spinner
+                            android:id="@+id/spinnerOperation"
+                            style="@android:style/Widget.Holo.Light.Spinner"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
                             android:layout_marginTop="2dp"
-                            style="@android:style/Widget.Holo.Light.Spinner"
-                            android:padding="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="2dp"
                             android:background="@drawable/spinner_bg"
-                            android:paddingLeft="4dp"
-                            android:id="@+id/spinnerOperation"
                             android:entries="@array/operations"
-                            android:layout_marginBottom="2dp"/>
+                            android:padding="10dp"
+                            android:paddingLeft="4dp" />
                     </LinearLayout>
-
 
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+
                         <TextView
+                            android:id="@+id/txt_total_numbers"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Select Total Numbers"
-                            android:textSize="14dp"
-                            android:id="@+id/txt_total_numbers"
                             android:layout_marginLeft="10dp"
-                            android:textColor="#000"
                             android:layout_marginTop="12dp"
-                            android:textStyle="bold"/>
+                            android:text="Select Total Numbers"
+                            android:textColor="#000"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+
                         <Spinner
+                            android:id="@+id/spinnerOperands"
+                            style="@android:style/Widget.Holo.Light.Spinner"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
                             android:layout_marginTop="2dp"
-                            style="@android:style/Widget.Holo.Light.Spinner"
-                            android:padding="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="2dp"
                             android:background="@drawable/spinner_bg"
-                            android:paddingLeft="4dp"
-                            android:id="@+id/spinnerOperands"
                             android:entries="@array/operands"
-                            android:layout_marginBottom="2dp"/>
+                            android:padding="10dp"
+                            android:paddingLeft="4dp" />
                     </LinearLayout>
-
 
 
                     <!-- Add dynamic dropdowns based on the selected number of operands -->
@@ -152,35 +197,36 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/spinnerOperands"
                         android:layout_marginTop="16dp"
-                        android:orientation="vertical">
-                    </LinearLayout>
+                        android:orientation="vertical"></LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Select Total Questions"
-                            android:textSize="14dp"
                             android:layout_marginLeft="10dp"
-                            android:textColor="#000"
                             android:layout_marginTop="12dp"
-                            android:textStyle="bold"/>
+                            android:text="Select Total Questions"
+                            android:textColor="#000"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+
                         <Spinner
                             android:id="@+id/spinnerTotalQuestions"
+                            style="@android:style/Widget.Holo.Light.Spinner"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            style="@android:style/Widget.Holo.Light.Spinner"
-                            android:padding="10dp"
-                            android:background="@drawable/spinner_bg"
-                            android:paddingLeft="4dp"
-                            android:entries="@array/total_questions"
                             android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp"/>
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="2dp"
+                            android:background="@drawable/spinner_bg"
+                            android:entries="@array/total_questions"
+                            android:padding="10dp"
+                            android:paddingLeft="4dp" />
 
                     </LinearLayout>
 
@@ -188,28 +234,30 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Select Time Interval"
-                            android:textSize="14dp"
                             android:layout_marginLeft="10dp"
-                            android:textColor="#000"
                             android:layout_marginTop="12dp"
-                            android:textStyle="bold"/>
+                            android:text="Select Time Interval"
+                            android:textColor="#000"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+
                         <Spinner
                             android:id="@+id/spinnerTimeInterval"
+                            style="@android:style/Widget.Holo.Light.Spinner"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            style="@android:style/Widget.Holo.Light.Spinner"
-                            android:padding="10dp"
-                            android:background="@drawable/spinner_bg"
-                            android:paddingLeft="4dp"
-                            android:entries="@array/time_inerval"
                             android:layout_marginTop="2dp"
-                            android:layout_marginBottom="2dp"/>
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="2dp"
+                            android:background="@drawable/spinner_bg"
+                            android:entries="@array/time_inerval"
+                            android:padding="10dp"
+                            android:paddingLeft="4dp" />
 
                     </LinearLayout>
 
@@ -217,14 +265,16 @@
                         android:id="@+id/btnStartPlay"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:text="Start Game"
-                        android:textSize="18dp"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/regular"
-                        android:textColor="#FFF"
                         android:layout_marginTop="18dp"
                         android:layout_marginBottom="20dp"
-                        android:backgroundTint="#FD6801"/>
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:backgroundTint="#FD6801"
+                        android:fontFamily="@font/regular"
+                        android:text="Start Game"
+                        android:textColor="#FFF"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
             </LinearLayout>

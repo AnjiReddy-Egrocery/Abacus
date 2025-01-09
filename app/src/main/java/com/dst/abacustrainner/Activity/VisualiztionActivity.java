@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.User.HomeActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import java.util.Random;
 
 public class VisualiztionActivity extends AppCompatActivity {
     private Spinner spinnerOperation, spinnerOperands, spinnerTotalQuestions,spinnerTimeInterval ,spinnerSelectedLevel;
-    private LinearLayout dropdownContainer;
+    private LinearLayout dropdownContainer,btnBack;
     private Button butStartGame,butStartNumberGame;
 
     private List<String> questions;
@@ -62,10 +63,19 @@ public class VisualiztionActivity extends AppCompatActivity {
         textViewTotalNumbers = findViewById(R.id.txt_total_numbers);
         spinnerSelectedLevel = findViewById(R.id.spinnerSelectedLevel);
         butStartNumberGame = findViewById(R.id.but_start_game);
+        btnBack=findViewById(R.id.btn_back_to_home_vis);
 
         Bundle bundle=getIntent().getExtras();
         studentid=bundle.getString("studentId");
         studentName = bundle.getString("firstName");
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(VisualiztionActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
         butStartGame.setOnClickListener(new View.OnClickListener() {
             @Override

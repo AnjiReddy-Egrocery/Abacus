@@ -87,8 +87,6 @@ public class UserCreateActivity extends AppCompatActivity {
         edtEmail=findViewById(R.id.edt_parent_email);
         edtPassword=findViewById(R.id.edt_password);
 
-
-
         edtFirstName=findViewById(R.id.edt_first_name);
         edtLastName=findViewById(R.id.edt_last_name);
         edtMotherTongue=findViewById(R.id.edt_tongue);
