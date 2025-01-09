@@ -170,12 +170,12 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            layoutParams.setMargins(
+            /*layoutParams.setMargins(
                     (int) getResources().getDimension(R.dimen.textview_left_margin),
                     0,
                     0,
                     0
-            );
+            );*/
             textView.setLayoutParams(layoutParams);
 
             dropdownContainer.addView(textView);

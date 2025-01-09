@@ -12,12 +12,11 @@
     <!-- Profile Image -->
     <ImageView
         android:id="@+id/profile_image"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_icon"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:scaleType="centerCrop"
         android:layout_marginEnd="12dp"
-        android:background="@drawable/circle_background" />
+        android:background="@drawable/headerprofile" />
 
     <!-- Welcome Text -->
     <LinearLayout
@@ -33,15 +32,16 @@
             android:text="Hello, Welcome"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
-            android:textSize="16sp" />
+            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Divya"
+            android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:textSize="14sp" />
+            android:textSize="16dp" />
     </LinearLayout>
 
     <!-- Close Icon -->
