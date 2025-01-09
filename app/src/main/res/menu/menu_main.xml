@@ -4,28 +4,26 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/home_icon"
-        android:title=""
+        android:icon="@drawable/bottom_home"
+        android:title="Home"
         />
     <item
         android:id="@+id/navigation_cla"
         android:icon="@drawable/baseline_search_24"
-        android:title=""
-        />
+        android:title="Search"/>
+
     <item
-        android:id="@+id/navigation_practice"
+        android:id="@+id/navigation_cla1"
         android:icon="@drawable/ai_icon"
-        android:title=""
-        />
+        android:title=""/>
+
     <item
         android:id="@+id/navigation_compitation"
         android:icon="@drawable/compitation_icon"
-        android:title=""
-        />
+        android:title="Schedule"/>
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/profile_image"
-        android:title=""
-        />
+        android:title="Profile"/>
 
 </menu>
