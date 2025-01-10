@@ -8,25 +8,20 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.text.Layout;
-import android.text.method.Touch;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.database.ParcelableLong;
@@ -50,6 +45,7 @@ public class FirstLevelActivity extends AppCompatActivity {
 
     private EditText edtAnswer;
     private CountDownTimer countDownTimer;
+    private Bundle savedLevelData;
 
     private String[] questions;
     private int currentQuestionIndex = 0;
@@ -62,6 +58,8 @@ public class FirstLevelActivity extends AppCompatActivity {
     private boolean totalTimerRunning= false;
     private long currentTime = 0;
     private long currentTimeOnSaveAndNext = 0;
+
+
     private List<Boolean> isQuestionAnswered = new ArrayList<>();
     private List<String> answers ;
     private List<Long> questionTimes ;
@@ -94,6 +92,9 @@ public class FirstLevelActivity extends AppCompatActivity {
         btn_back=findViewById(R.id.btn_back_level_select);
 
         // Initialize the TextView
+
+        Intent intents = getIntent();
+        int levelValue = intents.getIntExtra("level", 0);
 
 
         // Create and start the countdown timer
@@ -161,8 +162,38 @@ public class FirstLevelActivity extends AppCompatActivity {
             }
         });
 
-        questions = getResources().getStringArray(R.array.questions_array);
-        //isQuestionAnswered = new ArrayList<>(questions.length);
+        Bundle data = getSavedLevelData();
+        if (data != null) {
+            data.putInt("level", levelValue);
+        } else {
+            // If data is null, initialize it
+            savedLevelData = new Bundle();
+            savedLevelData.putInt("level", levelValue);
+        }
+
+        switch (levelValue) {
+            case 1:
+                questions = getResources().getStringArray(R.array.questions_array);
+                break;
+            case 2:
+                questions = getResources().getStringArray(R.array.second_array);
+                break;
+            case 3:
+                questions =getResources().getStringArray(R.array.third_array);
+                break;
+            case 4:
+                questions=getResources().getStringArray(R.array.forth_array);
+                break;
+            case 5:
+                questions=getResources().getStringArray(R.array.fifth_array);
+                break;
+            default:
+                questions = new String[] {"No questions available"};
+                break;
+        }
+
+//        questions = getResources().getStringArray(R.array.questions_array);
+        isQuestionAnswered = new ArrayList<>(questions.length);
         answers = new ArrayList<>(Collections.nCopies(questions.length, ""));
         questionTimes = new ArrayList<>(Collections.nCopies(questions.length, 0L));
         questionTimers = new ArrayList<>();
@@ -181,15 +212,6 @@ public class FirstLevelActivity extends AppCompatActivity {
 
         currentStep = Math.max(0,Math.min(currentStep,questions.length - 1));
 
-//        leftIcon.setOnClickListener(new View.OnClickListener() {
-//
-//
-//            @Override
-//            public void onClick(View view) {
-//                Touch horizontalScrollView = null;
-////                horizontalScrollView.scrollTo(10, y);
-//            }
-//        });
 
         leftIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -266,9 +288,6 @@ public class FirstLevelActivity extends AppCompatActivity {
         if (currentQuestionIndex >= 0 && currentQuestionIndex < questions.length) {
             textViewQuestion.setText("Question " + (currentQuestionIndex + 1) +"/"+"20"+ ":");
 
-//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) txtDisplayQuestion.getLayoutParams();
-//            params.setMargins(96, 32, 96, 32);
-//            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             txtDisplayQuestion.setGravity(Gravity.CENTER_VERTICAL);
             txtDisplayQuestion.setGravity(Gravity.CENTER_HORIZONTAL);
             txtDisplayQuestion.setText(questions[currentQuestionIndex].replace(" ", "\n"));
@@ -279,31 +298,6 @@ public class FirstLevelActivity extends AppCompatActivity {
         }
 
     }
-
-//    private void onPreviousButtonClick(View view) {
-//        stopTimer();
-//
-//        // Reset the timer to the saved time
-//        saveTimerState();
-//
-//            currentQuestionIndex--;
-//            if (currentQuestionIndex >= 0 && currentQuestionIndex < questions.length) {
-//                showCurrentQuestion();
-//                if (!answers.isEmpty() && currentQuestionIndex < answers.size()) {
-//                    String storedAnswer = answers.get(currentQuestionIndex);
-//                    edtAnswer.setText(storedAnswer);
-//                }else {
-//                    // Handle the case where answers list is empty or index is out of bounds
-//                    edtAnswer.getText().clear();
-//                }
-//
-//            } else {
-//                Toast.makeText(FirstLevelActivity.this, "No previous questions available", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            restoreTimerState(); // Restore timer state for the previous question
-//            startTimer();
-//    }
 
     private void onPreviousButtonClick(View view) {
         stopTimer();
@@ -426,15 +420,6 @@ public class FirstLevelActivity extends AppCompatActivity {
         }
     }
 
-    private void startTotalTimer(){
-        totalTimerRunning=true;
-
-    }
-
-    private void stopTotalTimer(){
-        totalTimerRunning=true;
-
-    }
 
     private void onSaveAndNextButtonClick(View view) {
 
@@ -489,6 +474,7 @@ public class FirstLevelActivity extends AppCompatActivity {
                     }
                 }
             }
+
         }
 
         if (currentQuestionIndex < questions.length - 1) {
@@ -561,6 +547,9 @@ public class FirstLevelActivity extends AppCompatActivity {
 
     private void ReportMethod() {
                 Toast.makeText(FirstLevelActivity.this,"All Questions are Submited",Toast.LENGTH_LONG).show();
+        for (String question : questions) {
+            originalAnswers.add(generateOriginalAnswer(question));
+        }
                 ArrayList<String> stringIsQuestionAttempted = convertBooleanListToStringList(isQuestionAttempted);
                 ArrayList<String> stringIsQuestionCorrect = convertBooleanListToStringList(isQuestionCorrect);
                 Intent intent = new Intent(FirstLevelActivity.this, FirstLevelResultActivity.class);
@@ -591,11 +580,64 @@ public class FirstLevelActivity extends AppCompatActivity {
         return stringList;
     }
 
+
+  public Bundle getSavedLevelData() {
+      if (savedLevelData == null) {
+          savedLevelData = new Bundle();
+      }
+      return savedLevelData;
+    }
+
+
+    public int getLevelValue() {
+        if (savedLevelData != null) {
+            return savedLevelData.getInt("level", 0); // Default to 0 if key doesn't exist
+        }
+        return 0; // Default value if savedLevelData is null
+    }
+      //  int levelValue =getLevelValue();
+      //  int levelValue=1;
+
     private String generateOriginalAnswer(String question) {
-        String[] originalAnswers = {
-                "5","6","5","8","0","8","9","8","4","9",
-                "5","6","3","1","7","1","1","16","14","11"
-        };
+        String[] originalAnswers ;// Initialize to an empty array to avoid null pointer issues
+        int levelValue = getLevelValue();
+        Log.e("levelCheck",String.valueOf(levelValue));
+        switch (levelValue) {
+            case 1:
+                originalAnswers = new String[] {
+                        "5", "6", "5", "8", "0", "8", "9", "8", "4", "9",
+                        "5", "6", "3", "1", "7", "1", "1", "16", "14", "11"
+                };
+                break;
+            case 2:
+                originalAnswers = new String[] {
+                        "5", "5", "4", "0", "5", "0", "2", "17", "10", "79",
+                        "25", "15", "22", "10", "33", "12", "78", "126", "172", "88"
+                };
+                break;
+            case 3:
+                originalAnswers = new String[] {
+                        "7","8","7","6","6","8","9","9","6","1",
+                        "1","12","15","12","3","3","5","8","3","3"
+                };
+                break;
+            case 4:
+                originalAnswers = new String[] {
+                        "30","42","54","42","63","400","252","51","312","384",
+                        "425","210","162","122","432","536","192","792","435","296"
+                };
+                break;
+
+            case 5:
+                originalAnswers = new String[] {
+                        "335","175","95","216","150","396","315","1920","357","5369",
+                        "858","740","660","2303","1340","4500","4168","6232","4548","2608"
+                };
+                break;
+            default:
+                originalAnswers = new String[] {"No answers available"};
+                break;
+        }
 
         // Find the index of the current question in the array
         int questionIndex = Arrays.asList(questions).indexOf(question);
@@ -610,50 +652,6 @@ public class FirstLevelActivity extends AppCompatActivity {
     }
 
 
-    /*private void generateButtons() {
-        gridLayout.removeAllViews();
-
-        int marginLeftInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_left);
-        int marginRightInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_right);
-        int marginTopInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_top);
-        int marginBottomInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_bottom);
-
-        // Create a button for each question
-        for (int i = 0; i < questions.length; i++) {
-            Button button = new Button(this);
-            button.setText(String.valueOf(i + 1));
-            button.setTag(i);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int clickedButtonTag = (int) view.getTag();
-                    onButtonClicked(clickedButtonTag);
-                }
-            });
-
-            // Set layout parameters for the button in the grid
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.width = 0; // This will make buttons equally distribute in columns
-            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f); // Equally distribute columns
-            params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f); // Equally distribute rows
-            // Set margins for the button
-            params.leftMargin = marginLeftInDp;
-            params.rightMargin = marginRightInDp;
-            params.topMargin = marginTopInDp;
-            params.bottomMargin = marginBottomInDp;
-
-            button.setLayoutParams(params);
-
-            if (isQuestionAnswered.size() > i && isQuestionAnswered.get(i)) {
-                button.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
-            } else {
-                button.setBackgroundColor(getResources().getColor(R.color.unansweredButtonColor));
-            }
-            // Add the button to the layout
-            gridLayout.addView(button);
-        }
-    }*/
 
     private void generateButtons() {
         gridLayout.removeAllViews();
@@ -728,40 +726,7 @@ public class FirstLevelActivity extends AppCompatActivity {
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);
     }
-//    private void onButtonClicked(int tag) {
-//        // Handle button click, update currentQuestionIndex, and display the question
-//        saveTimerState();
-//        currentQuestionIndex = tag;
-//        Log.e("Reddy", "Button Clicked - Index: " + tag);
-//
-//        // Iterate through GridLayout children and update button backgrounds
-//        for (int i = 0; i < gridLayout.getChildCount(); i++) {
-//            View child = gridLayout.getChildAt(i);
-//
-//            if (child instanceof Button) { // Check if the child is a button
-//                int stepIndex = (int) child.getTag();
-//
-//                // Update the background color based on the step index
-//                if (stepIndex == currentQuestionIndex) {
-//                    child.setBackground(getDrawable(R.drawable.circle_orange)); // Current step
-//                    child.invalidate(); // Force redraw
-//                } else if (isQuestionAnswered.size() > stepIndex && isQuestionAnswered.get(stepIndex)) {
-//                    child.setBackground(getDrawable(R.drawable.circle_green)); // Answered
-//                } else {
-//                    child.setBackground(getDrawable(R.drawable.circle_gray)); // Unanswered
-//                }
-//            }
-//        }
-//
-//        // Display the selected question and restore its answer
-//        showCurrentQuestion();
-//        String storedAnswer = answers.get(currentQuestionIndex);
-//        edtAnswer.setText(storedAnswer);
-//        restoreTimerState();
-//
-//        // Invalidate GridLayout to ensure changes are visible
-//        gridLayout.invalidate();
-//    }
+
     int temp=0;
     private void onButtonClicked(int tag) {
     // Stop the current timer before changing the question

@@ -81,6 +81,7 @@
                 android:layout_width="25dp"
                 android:layout_height="match_parent"
                 android:id="@+id/left_icon_click"
+
                 >
                 <ImageView
                     android:layout_width="wrap_content"
@@ -97,8 +98,6 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp">
-
-
                 <!-- GridLayout inside HorizontalScrollView -->
                 <GridLayout
                     android:id="@+id/gridLayoutButtons"
@@ -111,7 +110,6 @@
                         android:layout_height="wrap_content"
                         android:layout_row="0"
                         android:layout_column="0"
-
                         android:text="Button 1"
                         android:textColor="@android:color/black" />
 

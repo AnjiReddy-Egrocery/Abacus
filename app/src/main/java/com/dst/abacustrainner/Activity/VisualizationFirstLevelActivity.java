@@ -60,6 +60,7 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
     private int currentQuestionIndex = 0;
     GridLayout gridLayout;
     private int savedQuestionCount = 0;
+    private Bundle savedLevelData;
     private LinearLayout leftIcon,rightIcon;
     private long interval = 1000;
 
@@ -120,6 +121,10 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
 
 // Used for formatting digits to be in 2 digits only
         final NumberFormat f = new DecimalFormat("00");
+
+        Intent intents = getIntent();
+        int levelValue = intents.getIntExtra("level", 0);
+
 
 // Create a handler to manage the count-up process
 
@@ -278,7 +283,38 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
                 repeatCurrentQuestion();
             }
         });
-        questions = getResources().getStringArray(R.array.visulization_questions_array);
+
+        Bundle data = getSavedLevelData();
+        if (data != null) {
+            data.putInt("level", levelValue);
+        } else {
+            // If data is null, initialize it
+            savedLevelData = new Bundle();
+            savedLevelData.putInt("level", levelValue);
+        }
+
+        switch (levelValue) {
+            case 1:
+                questions = getResources().getStringArray(R.array.visulization_questions_array);
+                break;
+            case 2:
+                questions = getResources().getStringArray(R.array.visualiztion_second_array);
+                break;
+            case 3:
+                questions =getResources().getStringArray(R.array.visualization_third_array);
+                break;
+            case 4:
+                questions=getResources().getStringArray(R.array.visualization_forth_array);
+                break;
+            case 5:
+                questions=getResources().getStringArray(R.array.visualization_fifth_array);
+                break;
+            default:
+                questions = new String[] {"No questions available"};
+                break;
+        }
+
+//        questions = getResources().getStringArray(R.array.visulization_questions_array);
         Log.e("Reddy", "Questions" + questions);
 //        isQuestionAnswered = new ArrayList<>(questions.length);
         answers = new ArrayList<>(Collections.nCopies(questions.length, ""));
@@ -611,6 +647,21 @@ private void onPreviousButtonClick(View view) {
         Toast.makeText(VisualizationFirstLevelActivity.this, "No previous questions available", Toast.LENGTH_SHORT).show();
     }
 }
+
+    public Bundle getSavedLevelData() {
+        if (savedLevelData == null) {
+            savedLevelData = new Bundle();
+        }
+        return savedLevelData;
+    }
+
+
+    public int getLevelValue() {
+        if (savedLevelData != null) {
+            return savedLevelData.getInt("level", 0); // Default to 0 if key doesn't exist
+        }
+        return 0; // Default value if savedLevelData is null
+    }
     private void restoreTimerState() {
             currentTime = questionTimes.get(currentQuestionIndex);
             // Update UI with the restored timer
@@ -798,17 +849,52 @@ private void onPreviousButtonClick(View view) {
     }
 
     private String generateOriginalAnswer(String question) {
-        String[] originalAnswersArray = {
-                "5","6","5","8","0","8","9","8","4","9",
-                "5","6","3","1","7","1","1","16","14","11"
-        };
+        String[] originalAnswers ;
+        int levelValue = getLevelValue();
+
+        switch (levelValue) {
+            case 1:
+                originalAnswers = new String[] {
+                        "5", "6", "5", "8", "0", "8", "9", "8", "4", "9",
+                        "5", "6", "3", "1", "7", "1", "1", "16", "14", "11"
+                };
+                break;
+            case 2:
+                originalAnswers = new String[] {
+                        "5", "5", "4", "0", "5", "0", "2", "17", "10", "79",
+                        "25", "15", "22", "10", "33", "12", "78", "126", "172", "88"
+                };
+                break;
+            case 3:
+                originalAnswers = new String[] {
+                        "7","8","7","6","6","8","9","9","6","1",
+                        "1","12","15","12","3","3","5","8","3","3"
+                };
+                break;
+            case 4:
+                originalAnswers = new String[] {
+                        "30","42","54","42","63","400","252","51","312","384",
+                        "425","210","162","122","432","536","192","792","435","296"
+                };
+                break;
+
+            case 5:
+                originalAnswers = new String[] {
+                        "335","175","95","216","150","396","315","1920","357","5369",
+                        "858","740","660","2303","1340","4500","4168","6232","4548","2608"
+                };
+                break;
+            default:
+                originalAnswers = new String[] {"No answers available"};
+                break;
+        }
 
         // Find the index of the current question in the array
         int questionIndex = Arrays.asList(questions).indexOf(question);
 
         // Check if the question index is valid
-        if (questionIndex >= 0 && questionIndex < originalAnswersArray.length) {
-            return originalAnswersArray[questionIndex];
+        if (questionIndex >= 0 && questionIndex < originalAnswers.length) {
+            return originalAnswers[questionIndex];
         } else {
             // Return a default value or handle the case where the index is out of bounds
             return "";
@@ -1081,7 +1167,12 @@ private void onPreviousButtonClick(View view) {
             if (element.startsWith("+")) {
                 // Positive number, add "plus" before the number
                 finalText.append("plus ").append(element.substring(1)).append(" ");
-            } else if (element.startsWith("-")) {
+            }
+            else if (element.startsWith("*")) {
+                // Positive number, add "plus" before the number
+                finalText.append("into ").append(element.substring(1)).append(" ");
+            }
+            else if (element.startsWith("-")) {
                 // Negative number, add "minus" before the number
                 finalText.append("minus ").append(element.substring(1)).append(" ");
             } else {

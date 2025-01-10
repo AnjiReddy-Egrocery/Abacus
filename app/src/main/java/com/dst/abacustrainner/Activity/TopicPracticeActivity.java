@@ -8,14 +8,17 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.text.Spanned;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,6 +40,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +59,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class TopicPracticeActivity extends AppCompatActivity {
 
     LinearLayout butPreviousQuestion, butSave, butSubmit;
-    TextView txtTimer, questionTextView, txtTopicName,txtdisplayquestion;
+    TextView txtTimer, questionTextView, txtTopicName,txtdisplayquestion,txtTotalTimer;
     private EditText answerEditText;
     private int currentQuestionIndex = 0;
 
@@ -116,6 +121,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
     private List<CountDownTimer> questionTimers ;
     private Handler handler = new Handler();
     private static final int MAX_QUESTIONS = 20;
+    LinearLayout leftIcon,rightIcon;
 
 
     @SuppressLint("MissingInflatedId")
@@ -123,18 +129,20 @@ public class TopicPracticeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_practice);
-
         butPreviousQuestion = findViewById(R.id.prv_qus);
         questionTextView = findViewById(R.id.questionTextView);
         txtdisplayquestion =findViewById(R.id.displaytextvie);
+        txtTotalTimer= findViewById(R.id.total_timer_display_id);
         answerEditText = findViewById(R.id.answerEditText);
         txtTimer = findViewById(R.id.timerTextView);
         butSave = findViewById(R.id.btnNext);
         butSubmit = findViewById(R.id.but_submit);
         //imageLeft = findViewById(R.id.leftArrow);
-       // imageRight = findViewById(R.id.rightArrow);
+        // imageRight = findViewById(R.id.rightArrow);
         gridLayout = findViewById(R.id.gridLayoutButtons);
         txtTopicName = findViewById(R.id.topic_name);
+        leftIcon =findViewById(R.id.left_icon_click);
+        rightIcon =findViewById(R.id.right_icon_click);
 
 
         Bundle bundle = getIntent().getExtras();
@@ -170,6 +178,35 @@ public class TopicPracticeActivity extends AppCompatActivity {
 
             }
         });
+
+        final long interval = 1000; // Update interval in milliseconds
+        final NumberFormat f = new DecimalFormat("00");
+        final long startTime = SystemClock.elapsedRealtime(); // Capture the start time
+
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                // Calculate elapsed time using the system clock
+                long currentTime = SystemClock.elapsedRealtime();
+                long elapsedMillis = currentTime - startTime;
+
+                // Calculate hours, minutes, and seconds
+                long hours = (elapsedMillis / 3600000) % 24;
+                long minutes = (elapsedMillis / 60000) % 60;
+                long seconds = (elapsedMillis / 1000) % 60;
+
+                // Update the timer text
+                txtTotalTimer.setText(f.format(hours) + ":" + f.format(minutes) + ":" + f.format(seconds));
+
+                // Calculate the exact time for the next tick
+                long nextTick = interval - (elapsedMillis % interval);
+                handler.postDelayed(this, nextTick);
+            }
+        };
+
+// Start the timer
+        handler.post(runnable);
+
 
         butSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,6 +273,53 @@ public class TopicPracticeActivity extends AppCompatActivity {
         });
 
 
+        leftIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Ensure horizontalScrollView is initialized
+                HorizontalScrollView horizontalScrollView = findViewById(R.id.horizontalScrollView);
+
+                if (horizontalScrollView != null) {
+                    // Get the current X position
+                    int currentScrollX = horizontalScrollView.getScrollX();
+
+                    // Convert 20dp to pixels
+                    int dpToPx = (int) TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            40,
+                            view.getContext().getResources().getDisplayMetrics()
+                    );
+
+                    // Smoothly scroll to the new position
+                    horizontalScrollView.smoothScrollTo(currentScrollX - dpToPx, horizontalScrollView.getScrollY());
+                }
+            }
+        });
+
+        rightIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Ensure horizontalScrollView is initialized
+                HorizontalScrollView horizontalScrollView = findViewById(R.id.horizontalScrollView);
+
+                if (horizontalScrollView != null) {
+                    // Get the current X position
+                    int currentScrollX = horizontalScrollView.getScrollX();
+
+                    // Convert 20dp to pixels
+                    int dpToPx = (int) TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            40,
+                            view.getContext().getResources().getDisplayMetrics()
+                    );
+
+                    // Smoothly scroll to the new position
+                    horizontalScrollView.smoothScrollTo(currentScrollX + dpToPx, horizontalScrollView.getScrollY());
+                }
+            }
+        });
+
+
         /*imageLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -274,14 +358,57 @@ public class TopicPracticeActivity extends AppCompatActivity {
 
         Log.e("Anji","Data"+listData);
 
-        if (isQuestionAnswered != null && !isQuestionAnswered.isEmpty()) {
-            // Display the next question
+//        if (isQuestionAnswered != null && !isQuestionAnswered.isEmpty()) {
+//            // Display the next question
+//            String enteredAnswer = answerEditText.getText().toString();
+//            enteredAnswers.add(enteredAnswer);
+//
+//            boolean attempted = !enteredAnswer.isEmpty();
+//            isQuestionAttempted.add(attempted);
+//            int previousButtonIndex = currentQuestionIndex - 1 ; // Previous button index
+//            int currentButtonIndex = currentQuestionIndex * 2;       // Current button index
+//
+//            // Reset previous question's button color
+//            if (previousButtonIndex >= 0 && previousButtonIndex < gridLayout.getChildCount()) {
+//                View previousButtonView = gridLayout.getChildAt(previousButtonIndex);
+//                if (previousButtonView instanceof Button) {
+//                    Button previousButton = (Button) previousButtonView;
+//                    previousButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor)); // Answered color
+//                }
+//            }
+//
+//            if (!enteredAnswer.isEmpty()) {
+//                int buttonIndex = currentQuestionIndex*2; // Step buttons are at even indices
+//                if (buttonIndex >= 0 && buttonIndex < gridLayout.getChildCount()) {
+//                    View buttonView = gridLayout.getChildAt(buttonIndex);
+//                    if (buttonView instanceof Button) {
+//                        Button stepButton = (Button) buttonView;
+//                        stepButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
+//                        isQuestionAnswered.set(currentQuestionIndex, true);
+//                    }
+//                }
+//            }
+//        }
+
+
+        if (currentQuestionIndex >= 0 && currentQuestionIndex < questionsArray.length) {
             String enteredAnswer = answerEditText.getText().toString();
             enteredAnswers.add(enteredAnswer);
 
+            Log.e("DebugTag", "Index: " + currentQuestionIndex);
+            Log.e("DebugTag", "Entered Answer: " + enteredAnswer);
+
             boolean attempted = !enteredAnswer.isEmpty();
             isQuestionAttempted.add(attempted);
-            int previousButtonIndex = currentQuestionIndex - 1 ; // Previous button index
+
+//            if (originalAnswers != null && currentQuestionIndex < originalAnswers.size()) {
+//                boolean correctAnswer = enteredAnswer.equals(originalAnswers.get(currentQuestionIndex));
+//                isQuestionCorrect.add(correctAnswer);
+//            } else {
+//                isQuestionCorrect.add(false); // Default to false
+//            }
+
+            int previousButtonIndex = (currentQuestionIndex - 1) * 2; // Previous button index
             int currentButtonIndex = currentQuestionIndex * 2;       // Current button index
 
             // Reset previous question's button color
@@ -294,7 +421,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
             }
 
             if (!enteredAnswer.isEmpty()) {
-                int buttonIndex = currentQuestionIndex; // Step buttons are at even indices
+                int buttonIndex = currentQuestionIndex * 2; // Step buttons are at even indices
                 if (buttonIndex >= 0 && buttonIndex < gridLayout.getChildCount()) {
                     View buttonView = gridLayout.getChildAt(buttonIndex);
                     if (buttonView instanceof Button) {
@@ -305,10 +432,8 @@ public class TopicPracticeActivity extends AppCompatActivity {
                     }
                 }
             }
+
         }
-
-
-
 
 
         if (isCorrected.equals("1")) {
@@ -333,6 +458,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
             }
             if (currentQuestionIndex < questionsArray.length-1) {
                 currentQuestionIndex++; // Increment index first
+                currentStep = currentQuestionIndex; // Sync the step index
                 displayQuestion(currentQuestionIndex); // Display next question
                 answerEditText.setText(""); // Clear the answer field for the next question
                 currentTime = questionTimes.get(currentQuestionIndex); // Restore timer state for the next question
@@ -438,10 +564,10 @@ public class TopicPracticeActivity extends AppCompatActivity {
                 stepButton.setText(String.valueOf((i / 2) + 1)); // Step number
                 stepButton.setGravity(Gravity.CENTER);
                 final int[] stepIndex = {i / 2}; // Determine the step index
-                if (isQuestionAnswered != null && isQuestionAnswered.size() > i && isQuestionAnswered.get(i)) {
-               stepButton.setTextColor(Color.WHITE);
+                if (isQuestionAnswered != null && isQuestionAnswered.size() > i && isQuestionAnswered.get(i/2)) {
+                   stepButton.setTextColor(Color.WHITE);
             } else {
-                stepButton.setTextColor(Color.BLACK);
+                   stepButton.setTextColor(Color.BLACK);
             }
 
 
@@ -450,7 +576,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
 
                 // Set background color based on status
 
-                if (isQuestionAnswered != null && isQuestionAnswered.size() > i && isQuestionAnswered.get(i)) {
+                if (isQuestionAnswered != null && isQuestionAnswered.size() > i && isQuestionAnswered.get(i/2)) {
                     stepButton.setBackground(getDrawable(R.drawable.circle_green)); // Answered
                 } else if (stepIndex[0] == currentStep) {
                     stepButton.setBackground(getDrawable(R.drawable.circle_orange)); // Current step
@@ -511,10 +637,6 @@ public class TopicPracticeActivity extends AppCompatActivity {
             currentStep = currentQuestionIndex;
             Log.e("Reddy", "Button Clicked - Index: " + tag);
             // Save the answer and time for the current question (before navigating)        // Update the answer and time for the current question if needed
-
-
-
-
 
             // Update button colors based on answered state
             for (int i = 0; i < gridLayout.getChildCount(); i++) {

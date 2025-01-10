@@ -176,34 +176,34 @@ public class VisualiztionActivity extends AppCompatActivity {
         if (!"Select the Level".equals(selectedLevel)) {
             // Create an intent to start the appropriate LevelActivity based on the selected level
 
+            Intent intents =new Intent(VisualiztionActivity.this, VisualizationFirstLevelActivity.class);
+            int level = 0; // Default level value
+
             switch (selectedLevel) {
                 case "Level-1":
-                    Intent intent = new Intent(VisualiztionActivity.this, VisualizationFirstLevelActivity.class);
-                    startActivity(intent);
+                    level = 1;
                     break;
                 case "Level-2":
-                    Intent intent1 = new Intent(VisualiztionActivity.this, VisualizationSecondLevelActivity.class);
-                    startActivity(intent1);
-
+                    level= 2;
                     break;
                 case "Level-3":
-                    Intent intent2 = new Intent(VisualiztionActivity.this,VisualizationThirdLevelActivity.class);
-                    startActivity(intent2);
+                    level = 3;
                     break;
                 // Add more cases for additional levels as needed
                 case "Level-4":
-                    Intent intent3 = new Intent(VisualiztionActivity.this, VisualizationForthLevelActivity.class);
-                    startActivity(intent3);
+                    level = 4;
                     break;
                 case "Level-5":
-                    Intent intent4 = new Intent(VisualiztionActivity.this, VisualizationFifthLevelActivity.class);
-                    startActivity(intent4);
+                    level = 5;
                     break;
                 default:
-                    // Handle unexpected level (optional)
+                    Toast.makeText(VisualiztionActivity.this, "Unexpected level selected", Toast.LENGTH_SHORT).show();
                     return;
 
             }
+
+            intents.putExtra("level", level);
+            startActivity(intents);
 
             // Pass any data you need to the LevelActivity
             //intent.putExtra("studentId", studentid);
