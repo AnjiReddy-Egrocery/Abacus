@@ -12,12 +12,42 @@
         android:orientation="vertical"
         android:layout_margin="14dp">
 
-        <ImageView
+<!--        <ImageView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="150dp"-->
+<!--            android:src="@drawable/big_logo_total"-->
+<!--            android:adjustViewBounds="true"-->
+<!--            android:scaleType="fitCenter"/>-->
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:src="@drawable/big_logo_total"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
+            android:layout_height="wrap_content"
+            android:textSize="24dp"
+            android:gravity="center"
+            android:text="Exam Report"
+            android:textColor="@color/purple"
+            android:textStyle="bold"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Level"
+                android:layout_weight="3"
+                />
+<!--            <TextView-->
+<!--                android:id="@+id/"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Play with number"-->
+<!--                android:layout_weight="2"-->
+<!--                />-->
+        </LinearLayout>
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

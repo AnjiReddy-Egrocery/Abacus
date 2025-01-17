@@ -116,7 +116,7 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
         txtTotalTimer= findViewById(R.id.total_timer_display_id);
         btn_prev=findViewById(R.id.go_toPrev);
 
-        final long[] totalElapsedTime = {0};
+        final long[] totalElapsedTime = {1000};
         final long interval = 1000; // Update interval in milliseconds
 
 // Used for formatting digits to be in 2 digits only
@@ -959,7 +959,7 @@ private void onPreviousButtonClick(View view) {
                 connector.setBackgroundColor(Color.GRAY); // Connector color
                 // Set layout parameters for the connector
                 GridLayout.LayoutParams connectorParams = new GridLayout.LayoutParams();
-                connectorParams.width = dpToPx(15); // Connector width
+                connectorParams.width = dpToPx(7); // Connector width
                 connectorParams.height = dpToPx(4); // Connector height
                 connectorParams.setMargins(0, dpToPx(35), 0, dpToPx(0)); // Vertical alignment
                 connector.setLayoutParams(connectorParams);

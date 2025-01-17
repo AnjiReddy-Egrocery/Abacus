@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,6 +37,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,14 +56,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AssignmentPracticeActivity extends AppCompatActivity {
 
     LinearLayout butPreviousQuestion,butSave,butSubmit,butBack;
-    TextView txtTimer,questionTextView,txtTopicName,txtdisplayquestion;
+    TextView txtTimer,questionTextView,txtTopicName,txtdisplayquestion,txtTotalTimer;
     private EditText answerEditText;
 
     private int currentQuestionIndex = 0;
     private long currentTime = 0;
     private CountDownTimer countDownTimer;
     private long currentStep = 0;
-    private long interval = 1000;
+    final Handler handler = new Handler();
+
 
     private boolean timerRunning = false;
     ImageView imageLeft,imageRight;
@@ -91,6 +95,7 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
     String originalAnswer;
     private int correctAnswers = 0;
     private int wrongAnswers = 0;
+    final long interval = 1000; // Update interval in milliseconds
 
     private int attemptedQuestions = 0;
     private int notAttemptedQuestions = 0;
@@ -109,7 +114,9 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
 
 
 
-    @SuppressLint("MissingInflatedId")
+
+
+    @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,10 +132,41 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
         imageRight=findViewById(R.id.rightArrow);*/
         gridLayout=findViewById(R.id.grid_layout);
         txtTopicName=findViewById(R.id.topic_name);
+        txtTotalTimer= findViewById(R.id.total_timer_display_id);
         gridLayout = findViewById(R.id.gridLayoutButtons);
         butBack = findViewById(R.id.btn_back_to_home);
 
         txtdisplayquestion=findViewById(R.id.displaytextvie);
+
+        // Create and start the countdown timer
+        final long[] totalElapsedTime = {1000};
+
+
+        // Used for formatting digits to be in 2 digits only
+        final NumberFormat f = new DecimalFormat("00");
+
+// Create a handler to manage the count-up process
+
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                long hour = (totalElapsedTime[0] / 3600000) % 24;
+                long min = (totalElapsedTime[0] / 60000) % 60;
+                long sec = (totalElapsedTime[0] / 1000) % 60;
+
+                // Update the timer text
+                txtTotalTimer.setText(f.format(hour) + ":" + f.format(min) + ":" + f.format(sec));
+
+                // Increment the total elapsed time
+                totalElapsedTime[0] += interval;
+
+                // Schedule the next update
+
+                handler.postDelayed(this, interval);
+            }
+        };
+
+        handler.post(runnable);
 
         Bundle bundle=getIntent().getExtras();
 
@@ -576,7 +614,7 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
                 connector.setBackgroundColor(Color.GRAY); // Connector color
                 // Set layout parameters for the connector
                 GridLayout.LayoutParams connectorParams = new GridLayout.LayoutParams();
-                connectorParams.width = dpToPx(15); // Connector width
+                connectorParams.width = dpToPx(7); // Connector width
                 connectorParams.height = dpToPx(4); // Connector height
                 connectorParams.setMargins(0, dpToPx(35), 0, dpToPx(0)); // Vertical alignment
                 connector.setLayoutParams(connectorParams);
@@ -823,7 +861,7 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
                 if (timerRunning) {
                     currentTime +=1000;
                     long seconds = currentTime / 1000;// Increase the time by 1 second
-                    txtTimer.setText("Countdown: " + seconds  + " sec");
+                    txtTimer.setText("TimeSpent: " + seconds  + " sec");
                 }
             }
             @Override

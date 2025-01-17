@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_inner"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
@@ -11,13 +12,48 @@
         android:layout_margin="14dp"
         android:orientation="vertical">
 
-        <ImageView
+<!--        <ImageView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:src="@drawable/big_logo_total"-->
+<!--            android:id="@+id/image_view"-->
+<!--            android:adjustViewBounds="true"-->
+<!--            android:scaleType="fitCenter"/>-->
+
+        <LinearLayout
+            android:id="@+id/layout_header_signin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/big_logo_total"
-            android:id="@+id/image_view"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/btn_practice_to_home"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/circle_image"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:src="@drawable/baseline_arrow_back_ios_new_24" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:gravity="center_vertical"
+                android:text="Practice"
+                android:textColor="#FFF"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,7 +62,7 @@
             android:weightSum="2"
             android:gravity=""
             android:layout_marginTop="12dp"
-            android:layout_below="@+id/image_view">
+            android:layout_below="@+id/layout_header_signin">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,7 +77,7 @@
                     android:textStyle="bold"
                     android:textSize="16dp"
                     android:fontFamily="@font/regular"
-                    android:textColor="#000"
+                    android:textColor="#fff"
                     android:id="@+id/txt_batch_name"/>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -55,7 +91,7 @@
                         android:textSize="16dp"
                         android:fontFamily="@font/regular"
                         android:textStyle="bold"
-                        android:textColor="#000"/>
+                        android:textColor="#fff"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -63,7 +99,7 @@
                         android:textSize="14dp"
                         android:fontFamily="@font/regular"
                         android:textStyle="normal"
-                        android:textColor="#000"
+                        android:textColor="#fff"
                         android:id="@+id/txt_date"/>
                 </LinearLayout>
 
@@ -77,7 +113,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Timing : "
-                        android:textColor="#000"
+                        android:textColor="#fff"
                         android:textStyle="bold"
                         android:fontFamily="@font/regular"
                         android:textSize="16dp" />
@@ -93,7 +129,7 @@
                             android:text=""
                             android:fontFamily="@font/regular"
                             android:id="@+id/txt_time"
-                            android:textColor="#000"
+                            android:textColor="#fff"
                             android:textStyle="normal"
                             android:textSize="14dp"/>
                         <TextView
@@ -103,7 +139,7 @@
                             android:text="-"
                             android:fontFamily="@font/regular"
                             android:textStyle="normal"
-                            android:textColor="#000"
+                            android:textColor="#fff"
                             android:textSize="14dp"/>
                         <TextView
                             android:layout_width="wrap_content"
@@ -113,7 +149,7 @@
                             android:fontFamily="@font/regular"
                             android:textStyle="normal"
                             android:id="@+id/txtdate"
-                            android:textColor="#000"
+                            android:textColor="#fff"
                             android:textSize="14dp"/>
                     </LinearLayout>
                 </LinearLayout>

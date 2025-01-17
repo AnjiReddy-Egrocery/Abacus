@@ -98,7 +98,7 @@ public class FirstLevelActivity extends AppCompatActivity {
 
 
         // Create and start the countdown timer
-        final long[] totalElapsedTime = {0};
+        final long[] totalElapsedTime = {1000};
         final long interval = 1000; // Update interval in milliseconds
 
 // Used for formatting digits to be in 2 digits only
@@ -124,7 +124,7 @@ public class FirstLevelActivity extends AppCompatActivity {
             }
         };
 
-// Start the count-up timer
+        // Start the count-up timer
         handler.post(runnable);
         // handler.removeCallbacks(runnable);
         btn_back.setOnClickListener(new View.OnClickListener() {
@@ -711,7 +711,7 @@ public class FirstLevelActivity extends AppCompatActivity {
                 connector.setBackgroundColor(Color.GRAY); // Connector color
                 // Set layout parameters for the connector
                 GridLayout.LayoutParams connectorParams = new GridLayout.LayoutParams();
-                connectorParams.width = dpToPx(15); // Connector width
+                connectorParams.width = dpToPx(7); // Connector width
                 connectorParams.height = dpToPx(4); // Connector height
                 connectorParams.setMargins(0, dpToPx(35), 0, dpToPx(0)); // Vertical alignment
                 connector.setLayoutParams(connectorParams);

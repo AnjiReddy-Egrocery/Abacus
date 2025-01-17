@@ -58,7 +58,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TopicPracticeActivity extends AppCompatActivity {
 
-    LinearLayout butPreviousQuestion, butSave, butSubmit;
+    LinearLayout butPreviousQuestion, butSave, butSubmit,btnBack;
     TextView txtTimer, questionTextView, txtTopicName,txtdisplayquestion,txtTotalTimer;
     private EditText answerEditText;
     private int currentQuestionIndex = 0;
@@ -143,6 +143,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
         txtTopicName = findViewById(R.id.topic_name);
         leftIcon =findViewById(R.id.left_icon_click);
         rightIcon =findViewById(R.id.right_icon_click);
+        btnBack=findViewById(R.id.btn_back_level_select);
 
 
         Bundle bundle = getIntent().getExtras();
@@ -179,28 +180,36 @@ public class TopicPracticeActivity extends AppCompatActivity {
             }
         });
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showExitConfirmationDialog();
+            }
+        });
+
+        final long[] totalElapsedTime = {1000};
         final long interval = 1000; // Update interval in milliseconds
+
+// Used for formatting digits to be in 2 digits only
         final NumberFormat f = new DecimalFormat("00");
-        final long startTime = SystemClock.elapsedRealtime(); // Capture the start time
+
+// Create a handler to manage the count-up process
 
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                // Calculate elapsed time using the system clock
-                long currentTime = SystemClock.elapsedRealtime();
-                long elapsedMillis = currentTime - startTime;
-
-                // Calculate hours, minutes, and seconds
-                long hours = (elapsedMillis / 3600000) % 24;
-                long minutes = (elapsedMillis / 60000) % 60;
-                long seconds = (elapsedMillis / 1000) % 60;
+                long hour = (totalElapsedTime[0] / 3600000) % 24;
+                long min = (totalElapsedTime[0] / 60000) % 60;
+                long sec = (totalElapsedTime[0] / 1000) % 60;
 
                 // Update the timer text
-                txtTotalTimer.setText(f.format(hours) + ":" + f.format(minutes) + ":" + f.format(seconds));
+                txtTotalTimer.setText(f.format(hour) + ":" + f.format(min) + ":" + f.format(sec));
 
-                // Calculate the exact time for the next tick
-                long nextTick = interval - (elapsedMillis % interval);
-                handler.postDelayed(this, nextTick);
+                // Increment the total elapsed time
+                totalElapsedTime[0] += interval;
+
+                // Schedule the next update
+                handler.postDelayed(this, interval);
             }
         };
 
@@ -610,7 +619,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
                 connector.setBackgroundColor(Color.GRAY); // Connector color
                 // Set layout parameters for the connector
                 GridLayout.LayoutParams connectorParams = new GridLayout.LayoutParams();
-                connectorParams.width = dpToPx(15); // Connector width
+                connectorParams.width = dpToPx(8); // Connector width
                 connectorParams.height = dpToPx(4); // Connector height
                 connectorParams.setMargins(0, dpToPx(35), 0, dpToPx(0)); // Vertical alignment
                 connector.setLayoutParams(connectorParams);
@@ -687,7 +696,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
 
         currentTime = questionTimes.get(currentQuestionIndex);
         // Update UI with the restored timer
-        txtTimer.setText("Countdown: " + currentTime / 1000 + " sec");
+        txtTimer.setText("TimeSpent: " + currentTime / 1000 + " sec");
     }
     private void startTimerForQuestion(int questionIndex) {
         questionTimers.get(questionIndex).start();
@@ -783,7 +792,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
                 if (timerRunning) {
                     currentTime +=1000; // Increase the time by 1 second
                     long seconds = currentTime / 1000;
-                    txtTimer.setText("Countdown: " + seconds + " sec");
+                    txtTimer.setText("TimeSpent: " + seconds + " sec");
                 }
             }
             @Override

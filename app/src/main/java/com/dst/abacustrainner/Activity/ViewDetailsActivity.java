@@ -3,6 +3,7 @@ package com.dst.abacustrainner.Activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.dst.abacustrainner.Model.StudentScheduleInfo;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
+import com.dst.abacustrainner.User.HomeActivity;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -27,7 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ViewDetailsActivity extends AppCompatActivity {
 
-    LinearLayout layoutTopics,layoutAssignments;
+    LinearLayout layoutTopics,layoutAssignments,btnBack;
     String dateid="",studentid="";
     String name="",date="",startTime="",endTime="";
     String topic="";
@@ -51,7 +53,7 @@ public class ViewDetailsActivity extends AppCompatActivity {
         txtDate=findViewById(R.id.txt_date);
         txtStartTime=findViewById(R.id.txt_time);
         txtEndTime=findViewById(R.id.txtdate);
-
+        btnBack=findViewById(R.id.btn_practice_to_home);
 
         Bundle bundle=getIntent().getExtras();
         dateid=bundle.getString("dateId");
@@ -67,7 +69,17 @@ public class ViewDetailsActivity extends AppCompatActivity {
         txtDate.setText(date);
 
         VerifyMethod(dateid,studentid);
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(ViewDetailsActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
+
 
     private void VerifyMethod(String dateid, String studentid) {
 

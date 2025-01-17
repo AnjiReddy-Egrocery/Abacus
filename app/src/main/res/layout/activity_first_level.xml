@@ -249,10 +249,9 @@
                                 android:id="@+id/timerTextView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
+                                android:layout_marginStart="10dp"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/regular"
-
                                 android:text="00:00"
                                 android:textColor="#000"
                                 android:textSize="16dp"

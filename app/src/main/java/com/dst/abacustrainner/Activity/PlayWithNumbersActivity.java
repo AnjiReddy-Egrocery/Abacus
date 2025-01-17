@@ -33,7 +33,7 @@ import java.util.Random;
 public class PlayWithNumbersActivity extends AppCompatActivity {
 
     private Spinner spinnerOperation, spinnerOperands, spinnerTotalQuestions,spinnerSelectedLevel;
-    private LinearLayout dropdownContainer;
+    private LinearLayout dropdownContainer,btnBack;
     private Button btnStartPlay,butStartNumberGame;
 
     private List<String> questions;
@@ -61,6 +61,7 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
         spinnerSelectedLevel = findViewById(R.id.spinnerSelectedLevel);
         butStartNumberGame = findViewById(R.id.but_start_game);
         textViewTotalNumbers = findViewById(R.id.txt_total_numbers);
+        btnBack=findViewById(R.id.btn_back_to_home);
 
         Bundle bundle=getIntent().getExtras();
         studentid=bundle.getString("studentId");
@@ -79,6 +80,13 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(PlayWithNumbersActivity.this, HomeActivity.class);
+                startActivity(intent);
             }
         });
         butStartNumberGame.setOnClickListener(new View.OnClickListener() {
@@ -150,8 +158,6 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
 
     private void createDynamicOperandTextViews(int selectedOperandCount) {

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FirstLevelResultActivity extends AppCompatActivity {
-    TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer;
+    TextView txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer;
     TableLayout tableLayout;
     private int currentQuestionIndex = 0;
     String enteredAnswer;
@@ -39,7 +39,7 @@ public class FirstLevelResultActivity extends AppCompatActivity {
 
         txtTotalQuestions=findViewById(R.id.txt_questions);
         txtAttemtedQueston=findViewById(R.id.txt_attemted_question);
-        txtNotAttemtedQuestion=findViewById(R.id.txt_not_questions);
+        //txtNotAttemtedQuestion=findViewById(R.id.txt_not_questions);
         txtCorrectAnswer=findViewById(R.id.txt_correct_answer);
         txtworngAnswer=findViewById(R.id.txt_wrong_answer);
         tableLayout=findViewById(R.id.tablelayout);
@@ -85,7 +85,7 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         int wrongAnswerCount = attemptedQuestions - correctCount;
         // Set the statistics in the TextViews
 
-        txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
+        //txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
         // txtCorrectAnswer.setText(String.valueOf(correctAnswerCount));
         txtworngAnswer.setText(String.valueOf(wrongAnswerCount));
 
