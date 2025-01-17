@@ -1,0 +1,22 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Shadow -->
+    <item android:left="0dp" android:right="0dp" android:top="8dp" android:bottom="0dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="25dp" />
+            <solid android:color="#55000000" /> <!-- Semi-transparent black -->
+        </shape>
+    </item>
+
+    <!-- Gradient Card -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#39ffb8"
+                android:endColor="#00bfff"
+                android:angle="45" /> <!-- Gradient direction -->
+            <corners android:radius="25dp" />
+        </shape>
+    </item>
+
+</layer-list>
