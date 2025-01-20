@@ -8,23 +8,47 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.User.HomeActivity;
 import com.dst.abacustrainner.database.ParcelableLong;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
 public class FirstLevelResultActivity extends AppCompatActivity {
-    TextView txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer;
+    TextView txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer,showLevelTop,showLevelCompleted,dateTime;
+    LinearLayout btnSubmit,RetakeTest,NextLevel;
     TableLayout tableLayout;
     private int currentQuestionIndex = 0;
+    private PieChart pieChart;
     String enteredAnswer;
     long time;
     double timeInSeconds;
@@ -43,6 +67,12 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         txtCorrectAnswer=findViewById(R.id.txt_correct_answer);
         txtworngAnswer=findViewById(R.id.txt_wrong_answer);
         tableLayout=findViewById(R.id.tablelayout);
+        btnSubmit =findViewById(R.id.but_submit_result_first);
+        RetakeTest =findViewById(R.id.retake);
+        NextLevel =findViewById(R.id.next_level);
+        showLevelTop=findViewById(R.id.display_level);
+        showLevelCompleted=findViewById(R.id.combined_text_view);
+        dateTime = findViewById(R.id.txtDate);
 
         Intent intent = getIntent();
         ArrayList<String> questions = intent.getStringArrayListExtra("questions");
@@ -52,6 +82,39 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         ArrayList<String> stringIsQuestionCorrect = getIntent().getStringArrayListExtra("isQuestionCorrect");
         List<Long> questionTimes = new ArrayList<>();
 
+        Intent intents = getIntent();
+        int levelValue = intents.getIntExtra("level", 0);
+
+
+        String combinedText1 =String.format("Level Play with number game level %s.", levelValue);
+        showLevelTop.setText(String.valueOf(combinedText1));
+
+        String combinedText =String.format("Great job on completing level %s. Keep practicing!", levelValue);
+        showLevelCompleted.setText(combinedText);
+
+        RetakeTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intents =new Intent(FirstLevelResultActivity.this,FirstLevelActivity.class);
+                intents.putExtra("level", levelValue);
+                startActivity(intents);
+            }
+        });
+
+        NextLevel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intents =new Intent(FirstLevelResultActivity.this,FirstLevelActivity.class);
+                if(levelValue==5){
+                    Toast.makeText(FirstLevelResultActivity.this, "No further level", Toast.LENGTH_SHORT).show();
+                }else{
+                    intents.putExtra("level", levelValue+1);
+                    startActivity(intents);
+                }
+
+            }
+        });
+
         // Retrieve ParcelableLong list and convert it back to Long list
         ArrayList<ParcelableLong> parcelableTimes = intent.getParcelableArrayListExtra("questionTimes");
         if (parcelableTimes != null) {
@@ -59,6 +122,8 @@ public class FirstLevelResultActivity extends AppCompatActivity {
                 questionTimes.add(parcelableLong.getValue());
             }
         }
+
+
 
         ArrayList<Boolean> isQuestionAttempted = convertStringListToBooleanList(stringIsQuestionAttempted);
         ArrayList<Boolean> isQuestionCorrect = convertStringListToBooleanList(stringIsQuestionCorrect);
@@ -89,11 +154,136 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         // txtCorrectAnswer.setText(String.valueOf(correctAnswerCount));
         txtworngAnswer.setText(String.valueOf(wrongAnswerCount));
 
+        // Get current date and time
+        String currentDateTime = getCurrentDateTime();
+
+        // Display the date and time in the TextView
+        dateTime.setText(currentDateTime);
+
 
         Log.e("Reddy","Questions"+questions);
         Log.e("Reddy","Given"+enteredAnswers);
         Log.e("Reddy","ANswer"+originalAnswers);
         Log.e("Reddy","Times"+questionTimes);
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(FirstLevelResultActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+        // ************ Graph part ***************************** //
+
+        pieChart = findViewById(R.id.pieChart);
+
+        ArrayList<PieEntry> pieEntries = new ArrayList<>();
+        pieEntries.add(new PieEntry(attemptedCount, "Attempted"));
+        pieEntries.add(new PieEntry(notAttemptedQuestions, "Not Attempted"));
+        pieEntries.add(new PieEntry(correctCount, "Correct"));
+        pieEntries.add(new PieEntry(wrongAnswerCount, "Incorrect"));
+
+        // Sample data for the Pie Chart
+        PieDataSet dataSet = new PieDataSet(pieEntries, "Sample Data");
+        dataSet.setColors(new int[]{
+                ContextCompat.getColor(this, R.color.purple),
+                ContextCompat.getColor(this, R.color.orange),
+                ContextCompat.getColor(this, R.color.dark_green),
+                ContextCompat.getColor(this, R.color.dark_red),});
+        dataSet.setValueTextSize(14f);
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setDrawIcons(false);
+
+
+        PieData pieData = new PieData(dataSet);
+
+        // Customize the chart
+        pieChart.setData(pieData);
+        pieChart.setUsePercentValues(true);
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setHoleRadius(40f);
+        pieChart.setTransparentCircleRadius(50f);
+        pieChart.setCenterText("Pie Chart");
+        pieChart.setCenterTextSize(16f);
+
+        // Set labels and values outside the slices
+        dataSet.setValueLinePart1Length(0.5f);
+        dataSet.setValueLinePart2Length(0.8f);
+        dataSet.setValueLineColor(Color.BLACK);
+        dataSet.setUsingSliceColorAsValueLineColor(true);
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+        // Set offset for better visibility
+        dataSet.setValueLineVariableLength(true);
+
+        // Disable description text
+        Description description = new Description();
+        description.setText("");
+        pieChart.setDescription(description);
+        // Refresh chart
+        pieChart.setData(pieData);
+        pieChart.invalidate();
+
+
+//        HorizontalBarChart barChart = findViewById(R.id.barChart);
+//
+//// Prepare data entries
+//        ArrayList<BarEntry> barEntries = new ArrayList<>();
+//        barEntries.add(new BarEntry(0, attemptedCount));
+//        barEntries.add(new BarEntry(1, notAttemptedQuestions));
+//        barEntries.add(new BarEntry(2, correctCount));
+//        barEntries.add(new BarEntry(3, wrongAnswerCount));
+//
+//// Create dataset
+//        BarDataSet barDataSet = new BarDataSet(barEntries, "Question Statistics");
+//        barDataSet.setColors(new int[]{Color.MAGENTA, Color.YELLOW, Color.GREEN, Color.RED});
+//        barDataSet.setValueTextSize(14f);
+//        barDataSet.setValueTextColor(Color.BLACK);
+//        barDataSet.setDrawValues(false);
+//
+//
+//// Custom ValueFormatter to show labels on top of bars
+//        barDataSet.setValueFormatter(new ValueFormatter() {
+//            @Override
+//            public String getBarLabel(BarEntry barEntry) {
+//                // Define the labels for each bar
+//                String[] labels = {"Attempted", "Not Attempted", "Correct", "Incorrect"};
+//                int index = (int) barEntry.getX();
+//                return labels[index];
+//            }
+//        });
+//
+//// Customize the BarData
+//        BarData barData = new BarData(barDataSet);
+//        barData.setBarWidth(0.5f); // Set bar width
+//
+//// Customize the chart
+//        barChart.setData(barData);
+//        barChart.setFitBars(true);
+//        barChart.getDescription().setEnabled(false); // Disable description
+//        barChart.getLegend().setEnabled(false); // Disable legend
+//
+//// Set labels for the Y-axis (categories)
+//        String[] labels = new String[]{"Attempted", "Not Attempted", "Correct", "Incorrect"};
+//        XAxis xAxis = barChart.getXAxis();
+//        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+//        xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE);
+//        xAxis.setDrawAxisLine(false);
+//        xAxis.setDrawGridLines(false);
+//        xAxis.setGranularity(1f);
+//        xAxis.setGranularityEnabled(true);
+//
+//// Customize Y-axis
+//        barChart.getAxisLeft().setEnabled(false); // Hide left Y-axis
+//        barChart.getAxisRight().setDrawGridLines(false);
+//        barChart.getAxisRight().setDrawAxisLine(false);
+//        barChart.getAxisRight().setAxisMinimum(0f); // Start Y-axis from 0
+//
+//// Refresh the chart
+//        barChart.invalidate();
 
 
         for (int i = 0; i < questions.size(); i++) {
@@ -215,6 +405,13 @@ public class FirstLevelResultActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private String getCurrentDateTime() {
+        // Format for date and time
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy | hh:mm a", Locale.getDefault());
+        // Get current date and time
+        return sdf.format(new Date());
     }
 
     private int getAttemptedQuestionsCount(ArrayList<Boolean> isQuestionAttempted) {

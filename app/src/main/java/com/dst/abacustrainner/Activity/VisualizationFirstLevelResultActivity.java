@@ -13,9 +13,20 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.database.ParcelableLong;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -25,7 +36,7 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
     TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer;
     TableLayout tableLayout;
     private int currentQuestionIndex = 0;
-
+    private PieChart pieChart;
     double timeInSeconds;
     String orginalAnswer;
     String question;
@@ -97,6 +108,61 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
         Log.e("Reddy","Given"+enteredAnswers);
         Log.e("Reddy","ANswer"+originalAnswers);
         Log.e("Reddy","Times"+questionTimes);
+
+        // ************************** Graph part ***************************** //
+
+
+        pieChart = findViewById(R.id.pieChart);
+
+        ArrayList<PieEntry> pieEntries = new ArrayList<>();
+        pieEntries.add(new PieEntry(attemptedCount, "Attempted"));
+        pieEntries.add(new PieEntry(notAttemptedQuestions, "Not Attempted"));
+        pieEntries.add(new PieEntry(correctCount, "Correct"));
+        pieEntries.add(new PieEntry(wrongAnswerCount, "Incorrect"));
+
+        // Sample data for the Pie Chart
+        PieDataSet dataSet = new PieDataSet(pieEntries, "Sample Data");
+        dataSet.setColors(new int[]{
+                ContextCompat.getColor(this, R.color.purple),
+                ContextCompat.getColor(this, R.color.orange),
+                ContextCompat.getColor(this, R.color.dark_green),
+                ContextCompat.getColor(this, R.color.dark_red),});
+        dataSet.setValueTextSize(14f);
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setDrawIcons(false);
+
+
+        PieData pieData = new PieData(dataSet);
+
+        // Customize the chart
+        pieChart.setData(pieData);
+        pieChart.setUsePercentValues(true);
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setHoleRadius(40f);
+        pieChart.setTransparentCircleRadius(50f);
+        pieChart.setCenterText("Pie Chart");
+        pieChart.setCenterTextSize(16f);
+
+        // Set labels and values outside the slices
+        dataSet.setValueLinePart1Length(0.5f);
+        dataSet.setValueLinePart2Length(0.8f);
+        dataSet.setValueLineColor(Color.BLACK);
+        dataSet.setUsingSliceColorAsValueLineColor(true);
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+        // Set offset for better visibility
+        dataSet.setValueLineVariableLength(true);
+
+        // Disable description text
+        Description description = new Description();
+        description.setText("");
+        pieChart.setDescription(description);
+        // Refresh chart
+        pieChart.setData(pieData);
+        pieChart.invalidate();
+
+
 
         for (int i = 0; i < questions.size(); i++) {
             if (i<questions.size()){
@@ -215,6 +281,8 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
         }
 
     }
+
+
 
     private int getAttemptedQuestionsCount(ArrayList<Boolean> isQuestionAttempted) {
         int count = 0;

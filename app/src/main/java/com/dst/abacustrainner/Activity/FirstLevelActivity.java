@@ -568,6 +568,7 @@ public class FirstLevelActivity extends AppCompatActivity {
                     parcelableTimes.add(new ParcelableLong(time));
                 }
                 intent.putParcelableArrayListExtra("questionTimes", parcelableTimes);
+                intent.putExtra("level", getLevelValue());
                 startActivity(intent);
                 finish();
     }
