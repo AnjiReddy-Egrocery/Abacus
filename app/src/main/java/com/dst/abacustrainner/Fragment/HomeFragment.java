@@ -50,7 +50,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
     Button butViewDetrails;
-    TextView txtSchedule,txtName,txtTime,txtTime1,txtData,txtTimeText,txtFirstName;
+    TextView txtSchedule,txtName,txtTime,txtTime1,txtData,txtTimeText;
 
     ImageView imgCalender;
     String currentDate,textWithBrackets;
@@ -75,7 +75,7 @@ public class HomeFragment extends Fragment {
         txtTime1=view.findViewById(R.id.txtdate);
         txtData=view.findViewById(R.id.txt_data);
         txtTimeText=view.findViewById(R.id.time_txt);
-        txtFirstName=view.findViewById(R.id.txt_firstname);
+
         layoutData=view.findViewById(R.id.layout_data);
         progressBar= view.findViewById(R.id.progress);
         layoutPlayWithNumbers=view.findViewById(R.id.layout_play_numbers);
@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment {
         StudentRegistationResponse.Result result= SharedPrefManager.getInstance(getContext().getApplicationContext()).getUserData();
         id=result.getStudentId();
         firsstname=" Hello " +  result.getFirstName() + "";
-        txtFirstName.setText(firsstname);
+
         recyclerViewBatches = view.findViewById(R.id.recycler_baches);
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
         recyclerViewBatches.setLayoutManager(layoutManager);
