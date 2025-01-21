@@ -10,81 +10,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/render_image"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/layout_profile"
-            android:layout_marginTop="18dp">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_view"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                card_view:cardCornerRadius="16dp"
-                android:layout_marginLeft="18dp"
-                android:layout_marginRight="18dp"
-                android:layout_marginTop="24dp"
-                card_view:cardBackgroundColor="#FFF8F8">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_margin="14dp">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/profile_icon"
-                        android:adjustViewBounds="true"
-                        android:scaleType="fitCenter"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text=""
-                            android:id="@+id/txt_firstname"
-                            android:textSize="18dp"
-                            android:fontFamily="@font/regular"
-                            android:gravity="center"
-                            android:textStyle="bold"
-                            android:textColor="#000"/>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Welcome to Abacus"
-                            android:textSize="16dp"
-                            android:fontFamily="@font/regular"
-                            android:gravity="center"
-                            android:layout_marginTop="12dp"
-                            android:textStyle="bold"
-                            android:textColor="#000"/>
-
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/layout_profile">
+            android:background="#E7E8FA"
+            >
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
