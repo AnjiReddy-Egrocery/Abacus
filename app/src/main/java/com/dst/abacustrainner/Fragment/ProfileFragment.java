@@ -18,7 +18,7 @@ import com.dst.abacustrainner.database.SharedPrefManager;
 
 public class ProfileFragment extends Fragment {
 
-    LinearLayout layoutPassword, layoutSettings,layoutTermsCondition,layoutLogOut;
+    /*LinearLayout layoutPassword, layoutSettings,layoutTermsCondition,layoutLogOut;*/
 
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -26,7 +26,9 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_profile,container,false);
 
-        layoutPassword=view.findViewById(R.id.layout_password);
+
+
+      /*  layoutPassword=view.findViewById(R.id.layout_password);
         layoutSettings=view.findViewById(R.id.layout_settings);
         layoutTermsCondition=view.findViewById(R.id.layout_conditions);
         layoutLogOut=view.findViewById(R.id.layout_logout);
@@ -54,7 +56,7 @@ public class ProfileFragment extends Fragment {
             public void onClick(View view) {
                 SharedPrefManager.getInstance(getActivity().getApplicationContext()).isLoggedOut();
             }
-        });
+        });*/
         return view;
     }
 }
