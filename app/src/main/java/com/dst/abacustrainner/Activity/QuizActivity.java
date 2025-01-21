@@ -903,6 +903,7 @@ private void generateButtons() {
                             parcelableTimes.add(new ParcelableLong(time));
                         }
                         intent.putParcelableArrayListExtra("questionTimes", parcelableTimes);
+
                         startActivity(intent);
                         finish();
                     }
