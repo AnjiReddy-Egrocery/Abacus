@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -27,6 +28,8 @@ import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.database.SharedPrefManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -90,6 +93,19 @@ public class HomeActivity extends AppCompatActivity{
 
         navigationView.setItemIconSize(80);
 
+        View headerView = navigationView.getHeaderView(0);
+        ImageView closeIcon = headerView.findViewById(R.id.close_icon);
+
+
+        closeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START); // NavigationView మూసివేయండి
+                }
+            }
+        });
+
 
 // Enable the "hamburger" icon to open the drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -105,6 +121,7 @@ public class HomeActivity extends AppCompatActivity{
         layoutAI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
                 Fragment aiFragment=new AIGenrationFragment();
                 getSupportFragmentManager()
@@ -143,8 +160,8 @@ public class HomeActivity extends AppCompatActivity{
                 selectedFragment =new ClassFragment();
             }else if(itemView == R.id.navigation_cla1){
                 selectedFragment =new AIGenrationFragment();
-            }else if(itemView == R.id.navigation_schedules){
-                selectedFragment =new SchedulesFragment();
+            }else if(itemView == R.id.navigation_compitation){
+                selectedFragment =new CompitationFragment();
             }else if(itemView == R.id.navigation_profile){
                 selectedFragment =new ProfileFragment();
             }
@@ -165,12 +182,8 @@ public class HomeActivity extends AppCompatActivity{
 
             if (itemView == R.id.nav_dashboard) {
                 selectedFragment = new HomeFragment();
-            }
-            else if(itemView == R.id.nav_events){
-                selectedFragment = new CompetitionFragment();
-            }
-            else if(itemView == R.id.nav_schedules){
-                selectedFragment = new SchedulesFragment();
+            }else if (itemView == R.id.nav_logout) {
+                SharedPrefManager.getInstance(getApplicationContext().getApplicationContext()).isLoggedOut();
             }
 
             if (selectedFragment != null) {

@@ -8,9 +8,11 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -33,8 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
-    TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer;
+    TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer,showLevelTop,showLevelCompleted,dateTime;
     TableLayout tableLayout;
+    LinearLayout btnSubmit,RetakeTest,NextLevel;
     private int currentQuestionIndex = 0;
     private PieChart pieChart;
     double timeInSeconds;
@@ -55,6 +58,11 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
         txtCorrectAnswer=findViewById(R.id.txt_correct_answer);
         txtworngAnswer=findViewById(R.id.txt_wrong_answer);
         tableLayout=findViewById(R.id.tablelayout);
+        RetakeTest =findViewById(R.id.retake);
+        NextLevel =findViewById(R.id.next_level);
+        showLevelTop=findViewById(R.id.display_level);
+        showLevelCompleted=findViewById(R.id.combined_text_view);
+        dateTime = findViewById(R.id.txtDate);
 
         Intent intent = getIntent();
         ArrayList<String> questions = intent.getStringArrayListExtra("questions");
@@ -63,6 +71,15 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
         ArrayList<String> stringIsQuestionAttempted = getIntent().getStringArrayListExtra("isQuestionAttempted");
         ArrayList<String> stringIsQuestionCorrect = getIntent().getStringArrayListExtra("isQuestionCorrect");
         List<Long> questionTimes = new ArrayList<>();
+
+        Intent intents = getIntent();
+        int levelValue = intents.getIntExtra("level", 0);
+
+        String combinedText1 =String.format("Level Visualization game level %s.", levelValue);
+        showLevelTop.setText(String.valueOf(combinedText1));
+
+        String combinedText =String.format("Great job on completing level %s. Keep practicing!", levelValue);
+        showLevelCompleted.setText(combinedText);
 
         // Retrieve ParcelableLong list and convert it back to Long list
         ArrayList<ParcelableLong> parcelableTimes = intent.getParcelableArrayListExtra("questionTimes");
@@ -79,6 +96,7 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
 
         Log.e("Reddy","OrginalAns"+originalAnswers);
 
+
         int totalQuestions = questions.size();
         int attemptedCount = getAttemptedQuestionsCount(isQuestionAttempted);
         int correctCount = getCorrectAnswersCount(isQuestionAttempted, isQuestionCorrect);
@@ -91,9 +109,34 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
 
         txtTotalQuestions.setText(String.valueOf(totalQuestions));
 
+
+
         int attemptedQuestions = getAttemptedQuestionsCount(isQuestionAttempted);
         int notAttemptedQuestions = totalQuestions - attemptedQuestions;
         //int correctAnswerCount = getCorrectAnswersCount(isQuestionCorrect);
+
+        RetakeTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intents =new Intent(VisualizationFirstLevelResultActivity.this,VisualizationFirstLevelActivity.class);
+                intents.putExtra("level", levelValue);
+                startActivity(intents);
+            }
+        });
+
+        NextLevel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intents =new Intent(VisualizationFirstLevelResultActivity.this,VisualizationFirstLevelActivity.class);
+                if(levelValue==5){
+                    Toast.makeText(VisualizationFirstLevelResultActivity.this, "No further level", Toast.LENGTH_SHORT).show();
+                }else{
+                    intents.putExtra("level", levelValue+1);
+                    startActivity(intents);
+                }
+
+            }
+        });
 
 
 
@@ -161,7 +204,6 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
         // Refresh chart
         pieChart.setData(pieData);
         pieChart.invalidate();
-
 
 
         for (int i = 0; i < questions.size(); i++) {

@@ -44,6 +44,10 @@ public class ViewListTopicAdapter extends RecyclerView.Adapter<ViewListTopicAdap
      String practiceDate="Practiced On : " + practices.getStartedOn() + "";
      String examNo=practices.getExamRnm();
      String topicName=practices.getTopicName();
+     String totalattamtedquestion = "0";
+     String attamted= "0";
+     String correect = "0";
+     String inCorrect = "0";
      holder.txtPractice.setText(practiceDate);
      holder.butResult.setOnClickListener(new View.OnClickListener() {
          @Override
@@ -51,6 +55,10 @@ public class ViewListTopicAdapter extends RecyclerView.Adapter<ViewListTopicAdap
              Intent intent=new Intent(mContext, ViewResultDetailsActivity.class);
              intent.putExtra("examRnm",examNo);
              intent.putExtra("topicName",topicName);
+             intent.putExtra("AQuestion",totalattamtedquestion);
+             intent.putExtra("Attemted",attamted);
+             intent.putExtra("Correct",correect);
+             intent.putExtra("InCorrect",inCorrect);
              mContext.startActivity(intent);
          }
      });

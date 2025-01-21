@@ -18,29 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-<!--            <LinearLayout-->
-<!--                android:id="@+id/btn_back_first_level_visualization"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="vertical"-->
-<!--                android:gravity="center">-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/go_toPrev"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:src="@drawable/round_arrow" />-->
-<!--            </LinearLayout>-->
-
             <LinearLayout
-                android:id="@+id/btn_back_first_level_visualization"
+                android:id="@+id/btn_visualiztaion_first"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center">
 
                 <ImageView
-                    android:id="@+id/go_toPrev"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/round_arrow" />

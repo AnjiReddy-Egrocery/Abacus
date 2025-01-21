@@ -30,19 +30,15 @@
             android:layout_marginStart="15dp"
             >
 
-                <TextView
-                    android:id="@+id/display_level"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:layout_weight="1"
-                    android:textSize="18dp"
-                    android:textStyle="bold"
-                    android:layout_marginStart="5dp"
-                    />
-
-
-
+            <TextView
+                android:id="@+id/display_level"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
