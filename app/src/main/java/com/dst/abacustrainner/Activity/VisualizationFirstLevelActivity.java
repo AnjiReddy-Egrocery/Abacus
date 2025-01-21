@@ -836,6 +836,7 @@ private void onPreviousButtonClick(View view) {
         }
         intent.putParcelableArrayListExtra("questionTimes", parcelableTimes);
         Log.e("Reddy","Times"+parcelableTimes);
+        intent.putExtra("level", getLevelValue());
         startActivity(intent);
         finish();
     }

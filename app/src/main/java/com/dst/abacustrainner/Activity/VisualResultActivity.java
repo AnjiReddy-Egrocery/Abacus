@@ -8,24 +8,37 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 ;
 
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.User.HomeActivity;
 import com.dst.abacustrainner.database.ParcelableLong;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class VisualResultActivity extends AppCompatActivity {
-    TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer,txtstudent,txtstartedon;
+    TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer,txtstudent,txtstartedon,showLevelTop,showLevelCompleted,dateTime;
+    private PieChart pieChart;
     TableLayout tableLayout;
+    LinearLayout btnSubmit,RetakeTest,NextLevel;
     String question ;
     String enteredAnswer ;
     String correctAnswer ;
@@ -43,12 +56,18 @@ public class VisualResultActivity extends AppCompatActivity {
 
         txtTotalQuestions=findViewById(R.id.txt_questions);
         txtAttemtedQueston=findViewById(R.id.txt_attemted_question);
-        txtNotAttemtedQuestion=findViewById(R.id.txt_not_questions);
+//        txtNotAttemtedQuestion=findViewById(R.id.txt_not_questions);
         txtCorrectAnswer=findViewById(R.id.txt_correct_answer);
         txtworngAnswer=findViewById(R.id.txt_wrong_answer);
         tableLayout=findViewById(R.id.tablelayout);
-        txtstudent = findViewById(R.id.txt_student);
-        txtstartedon =findViewById(R.id.txt_submitted_on);
+//        txtstudent = findViewById(R.id.txt_student);
+//        txtstartedon =findViewById(R.id.txt_submitted_on);
+        showLevelTop=findViewById(R.id.display_level);
+        showLevelCompleted=findViewById(R.id.combined_text_view);
+        btnSubmit =findViewById(R.id.but_submit_result_first);
+//        RetakeTest =findViewById(R.id.retake);
+        dateTime = findViewById(R.id.txtDate);
+
 
         Intent intent = getIntent();
         studentName =intent.getStringExtra("firstName");
@@ -62,8 +81,16 @@ public class VisualResultActivity extends AppCompatActivity {
         ArrayList<Boolean> isQuestionAttempted = convertStringListToBooleanList(stringIsQuestionAttempted);
         ArrayList<Boolean> isQuestionCorrect = convertStringListToBooleanList(stringIsQuestionCorrect);
 
-        txtstudent.setText(studentName);
-        txtstartedon.setText(startedOn);
+//        txtstudent.setText(studentName);
+//        txtstartedon.setText(startedOn);
+
+
+        String combinedText1 =String.format("%s in Number game.",studentName);
+        showLevelTop.setText(String.valueOf(combinedText1));
+
+        String combinedText =String.format("Great job %s Keep practicing!", studentName);
+        showLevelCompleted.setText(combinedText);
+
 
 
         List<Long> questionTimes = new ArrayList<>();
@@ -92,7 +119,7 @@ public class VisualResultActivity extends AppCompatActivity {
         // Set the statistics in the TextViews
         txtTotalQuestions.setText(String.valueOf(totalQuestions));
         //txtAttemtedQueston.setText(String.valueOf(attemptedQuestions));
-        txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
+//        txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
         // txtCorrectAnswer.setText(String.valueOf(correctAnswerCount));
         txtworngAnswer.setText(String.valueOf(wrongAnswerCount));
 
@@ -102,6 +129,73 @@ public class VisualResultActivity extends AppCompatActivity {
         Log.e("Reddy","Given"+enteredAnswers);
         Log.e("Reddy","ANswer"+correctedAnswer);
         Log.e("Reddy","Times"+questionTimes);
+
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(VisualResultActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Get current date and time
+        String currentDateTime = getCurrentDateTime();
+
+        // Display the date and time in the TextView
+        dateTime.setText(currentDateTime);
+        // ************ Graph part ***************************** //
+
+        pieChart = findViewById(R.id.pieChart);
+
+        ArrayList<PieEntry> pieEntries = new ArrayList<>();
+        pieEntries.add(new PieEntry(attemptedCount, "Attempted"));
+        pieEntries.add(new PieEntry(notAttemptedQuestions, "Not Attempted"));
+        pieEntries.add(new PieEntry(correctCount, "Correct"));
+        pieEntries.add(new PieEntry(wrongAnswerCount, "Incorrect"));
+
+        // Sample data for the Pie Chart
+        PieDataSet dataSet = new PieDataSet(pieEntries, "Sample Data");
+        dataSet.setColors(new int[]{
+                ContextCompat.getColor(this, R.color.purple),
+                ContextCompat.getColor(this, R.color.orange),
+                ContextCompat.getColor(this, R.color.dark_green),
+                ContextCompat.getColor(this, R.color.dark_red),});
+        dataSet.setValueTextSize(14f);
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setDrawIcons(false);
+
+
+        PieData pieData = new PieData(dataSet);
+
+        // Customize the chart
+        pieChart.setData(pieData);
+        pieChart.setUsePercentValues(true);
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setHoleRadius(40f);
+        pieChart.setTransparentCircleRadius(50f);
+        pieChart.setCenterText("Pie Chart");
+        pieChart.setCenterTextSize(16f);
+
+        // Set labels and values outside the slices
+        dataSet.setValueLinePart1Length(0.5f);
+        dataSet.setValueLinePart2Length(0.8f);
+        dataSet.setValueLineColor(Color.BLACK);
+        dataSet.setUsingSliceColorAsValueLineColor(true);
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+        // Set offset for better visibility
+        dataSet.setValueLineVariableLength(true);
+
+        // Disable description text
+        Description description = new Description();
+        description.setText("");
+        pieChart.setDescription(description);
+        // Refresh chart
+        pieChart.setData(pieData);
+        pieChart.invalidate();
+
 
         for (int i = 0; i < questions.size(); i++) {
 
@@ -230,6 +324,13 @@ public class VisualResultActivity extends AppCompatActivity {
     private String formatTime(double timeInSeconds) {
         DecimalFormat decimalFormat = new DecimalFormat("#0");
         return decimalFormat.format(timeInSeconds);
+    }
+
+    private String getCurrentDateTime() {
+        // Format for date and time
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy | hh:mm a", Locale.getDefault());
+        // Get current date and time
+        return sdf.format(new Date());
     }
 
 }
