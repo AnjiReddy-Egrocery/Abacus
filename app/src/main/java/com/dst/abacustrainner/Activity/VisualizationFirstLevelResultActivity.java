@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.User.HomeActivity;
 import com.dst.abacustrainner.database.ParcelableLong;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
@@ -31,8 +32,11 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
     TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer,showLevelTop,showLevelCompleted,dateTime;
@@ -63,7 +67,7 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
         showLevelTop=findViewById(R.id.display_level);
         showLevelCompleted=findViewById(R.id.combined_text_view);
         dateTime = findViewById(R.id.txtDate);
-
+        btnSubmit =findViewById(R.id.but_submit_result_first);
         Intent intent = getIntent();
         ArrayList<String> questions = intent.getStringArrayListExtra("questions");
         ArrayList<String> enteredAnswers = intent.getStringArrayListExtra("enteredAnswers");
@@ -137,6 +141,20 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
 
             }
         });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(VisualizationFirstLevelResultActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Get current date and time
+        String currentDateTime = getCurrentDateTime();
+
+        // Display the date and time in the TextView
+        dateTime.setText(currentDateTime);
 
 
 
@@ -368,5 +386,12 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
     private String formatTime(double timeInSeconds) {
         DecimalFormat decimalFormat = new DecimalFormat("#0");
         return decimalFormat.format(timeInSeconds);
+    }
+
+    private String getCurrentDateTime() {
+        // Format for date and time
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy | hh:mm a", Locale.getDefault());
+        // Get current date and time
+        return sdf.format(new Date());
     }
 }
