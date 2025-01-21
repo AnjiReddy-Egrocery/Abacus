@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -19,10 +20,12 @@ import androidx.fragment.app.Fragment;
 
 import com.dst.abacustrainner.Fragment.AIGenrationFragment;
 import com.dst.abacustrainner.Fragment.ClassFragment;
-import com.dst.abacustrainner.Fragment.CompitationFragment;
+
+import com.dst.abacustrainner.Fragment.CompetitionFragment;
 import com.dst.abacustrainner.Fragment.HomeFragment;
 import com.dst.abacustrainner.Fragment.PracticeFragment;
 import com.dst.abacustrainner.Fragment.ProfileFragment;
+import com.dst.abacustrainner.Fragment.SchedulesFragment;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.database.SharedPrefManager;
@@ -160,8 +163,8 @@ public class HomeActivity extends AppCompatActivity{
                 selectedFragment =new ClassFragment();
             }else if(itemView == R.id.navigation_cla1){
                 selectedFragment =new AIGenrationFragment();
-            }else if(itemView == R.id.navigation_compitation){
-                selectedFragment =new CompitationFragment();
+            }else if(itemView == R.id.navigation_schedules){
+                selectedFragment =new SchedulesFragment();
             }else if(itemView == R.id.navigation_profile){
                 selectedFragment =new ProfileFragment();
             }
@@ -184,6 +187,12 @@ public class HomeActivity extends AppCompatActivity{
                 selectedFragment = new HomeFragment();
             }else if (itemView == R.id.nav_logout) {
                 SharedPrefManager.getInstance(getApplicationContext().getApplicationContext()).isLoggedOut();
+            }else if (itemView == R.id.nav_events) {
+                selectedFragment = new CompetitionFragment();
+            }else if (itemView == R.id.nav_schedules) {
+                selectedFragment = new SchedulesFragment();
+            }else if (itemView == R.id.nav_profile) {
+                selectedFragment = new ProfileFragment();
             }
 
             if (selectedFragment != null) {
