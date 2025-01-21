@@ -104,7 +104,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
 
     private boolean isComponentsEnabled = false;
 
-    LinearLayout linearRepeat;
+    LinearLayout linearRepeat, layoutQuiz;
     private boolean isFirstRepetition = true;
 
 
@@ -127,6 +127,8 @@ public class VisualQuizActivity extends AppCompatActivity  {
         leftIcon =findViewById(R.id.left_icon_click1);
         rightIcon =findViewById(R.id.right_icon_click1);
         txtTotalTimer= findViewById(R.id.total_timer_display_id);
+
+        layoutQuiz = findViewById(R.id.button_visualiztion_quiz);
 
         final long[] totalElapsedTime = {0};
         final long interval = 1000; // Update interval in milliseconds
@@ -154,6 +156,13 @@ public class VisualQuizActivity extends AppCompatActivity  {
             }
         };
         handler.post(runnable);
+
+        layoutQuiz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showExitConfirmationDialog();
+            }
+        });
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

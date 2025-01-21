@@ -205,11 +205,6 @@ public class VisualiztionActivity extends AppCompatActivity {
             intents.putExtra("level", level);
             startActivity(intents);
 
-            // Pass any data you need to the LevelActivity
-            //intent.putExtra("studentId", studentid);
-
-            // Start the appropriate LevelActivity
-
         } else {
             // Show a toast message indicating that the user needs to select a level
             Toast.makeText(VisualiztionActivity.this, "Please select a level", Toast.LENGTH_SHORT).show();

@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -97,6 +98,19 @@ public class HomeActivity extends AppCompatActivity{
 
         navigationView.setItemIconSize(80);
 
+        View headerView = navigationView.getHeaderView(0);
+        ImageView closeIcon = headerView.findViewById(R.id.close_icon);
+
+
+        closeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START); // NavigationView మూసివేయండి
+                }
+            }
+        });
+
 
 // Enable the "hamburger" icon to open the drawer
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -112,6 +126,7 @@ public class HomeActivity extends AppCompatActivity{
         layoutAI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
                 Fragment aiFragment=new AIGenrationFragment();
                 getSupportFragmentManager()
@@ -172,6 +187,8 @@ public class HomeActivity extends AppCompatActivity{
 
             if (itemView == R.id.nav_dashboard) {
                 selectedFragment = new HomeFragment();
+            }else if (itemView == R.id.nav_logout) {
+                SharedPrefManager.getInstance(getApplicationContext().getApplicationContext()).isLoggedOut();
             }
 
             if (selectedFragment != null) {

@@ -16,6 +16,7 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -48,7 +49,8 @@ import java.util.Locale;
 public class VisualizationFirstLevelActivity extends AppCompatActivity {
 
 
-    LinearLayout btnPreviousQuestion,btnNextQuestion,butSubmit,btnBack;
+    LinearLayout btnPreviousQuestion,btnNextQuestion,butSubmit;
+    LinearLayout buttonBackVisualiztion;
     ImageView imageView,btn_prev;
     final Handler handler = new Handler();
     private TextView textViewQuestion, txtDisplayQuestion, txtTimer, txtTotalTimer;
@@ -104,7 +106,6 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
         txtDisplayQuestion = findViewById(R.id.textQuestion);
         btnNextQuestion = findViewById(R.id.btnNext);
         btnPreviousQuestion = findViewById(R.id.prv_qus);
-        btnBack =findViewById(R.id.btn_back_first_level_visualization);
         txtTimer = findViewById(R.id.timerTextView);
         edtAnswer = findViewById(R.id.answerEditText);
         gridLayout = findViewById(R.id.gridLayoutButtons);
@@ -115,6 +116,10 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
         rightIcon =findViewById(R.id.right_icon_click1);
         txtTotalTimer= findViewById(R.id.total_timer_display_id);
         btn_prev=findViewById(R.id.go_toPrev);
+
+        buttonBackVisualiztion = findViewById(R.id.btn_visualiztaion_first);
+
+
 
         final long[] totalElapsedTime = {1000};
         final long interval = 1000; // Update interval in milliseconds
@@ -147,30 +152,10 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
         };
         handler.post(runnable);
 
-//        btnBack.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(VisualizationFirstLevelActivity.this,"Back is Working",Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
-      /*  btnBack.setOnClickListener(new View.OnClickListener() {
+        buttonBackVisualiztion.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-//               Intent intent =new Intent(Vis)
-                Log.e("clickCheck","back button pressed");
-                showExitConfirmationDialog();
-            }
-        });*/
-
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                Intent intent =new Intent(FirstLevelActivity.this, PlayWithNumbersActivity.class);
-//                startActivity(intent);
-                Log.e("clickCheck","back button pressed");
-                Toast.makeText(VisualizationFirstLevelActivity.this,"Back is Working",Toast.LENGTH_SHORT).show();
-                showExitConfirmationDialog();
+            public void onClick(View v) {
+               showExitConfirmationDialog();
             }
         });
 
@@ -209,12 +194,12 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
                 showCompletionPopup();
             }
         });
-        btn_prev.setOnClickListener(new View.OnClickListener() {
+   /*     btn_prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                Intent intent=new Intent(VisualizationFirstLevelActivity.this,VisualizationActivity.class);
             }
-        });
+        });*/
 
         leftIcon.setOnClickListener(new View.OnClickListener() {
             @Override
