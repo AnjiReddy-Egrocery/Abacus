@@ -14,16 +14,27 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 
 
 import com.dst.abacustrainner.Model.ViewAssignmentResultResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -38,7 +49,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
     String examRnm="",topicName="",firstName="",startDate="";
     TableLayout tabLayout;
-    TextView txtName,txtStartDate,txtTopicName;
+    TextView txtName,txtStartDate,txtTopicName,dateTime;
+    private PieChart pieChart;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -47,9 +59,10 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_result_assignment_details);
 
         tabLayout = findViewById(R.id.tablelayout);
-        txtName=findViewById(R.id.txt_stu_name);
-        txtStartDate=findViewById(R.id.txt_date_start);
+       // txtName=findViewById(R.id.txt_stu_name);
+       //txtStartDate=findViewById(R.id.txt_date_start);
         txtTopicName=findViewById(R.id.txt_topic_name);
+        dateTime = findViewById(R.id.txtDate);
 
         Bundle bundle=getIntent().getExtras();
         examRnm=bundle.getString("examRnm");
@@ -57,6 +70,63 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
         Log.d("Reddy","Id"+examRnm);
 
         ViewMethod(examRnm);
+
+        pieChart = findViewById(R.id.pieChart);
+
+        ArrayList<PieEntry> pieEntries = new ArrayList<>();
+        pieEntries.add(new PieEntry(4, "Attempted"));
+        pieEntries.add(new PieEntry(4, "Not Attempted"));
+        pieEntries.add(new PieEntry(1, "Correct"));
+        pieEntries.add(new PieEntry(0, "Incorrect"));
+
+        // Sample data for the Pie Chart
+        PieDataSet dataSet = new PieDataSet(pieEntries, "Sample Data");
+        dataSet.setColors(new int[]{
+                ContextCompat.getColor(this, R.color.purple),
+                ContextCompat.getColor(this, R.color.orange),
+                ContextCompat.getColor(this, R.color.dark_green),
+                ContextCompat.getColor(this, R.color.dark_red),});
+        dataSet.setValueTextSize(14f);
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setDrawIcons(false);
+
+
+        PieData pieData = new PieData(dataSet);
+
+        // Customize the chart
+        pieChart.setData(pieData);
+        pieChart.setUsePercentValues(true);
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setHoleRadius(40f);
+        pieChart.setTransparentCircleRadius(50f);
+        pieChart.setCenterText("Pie Chart");
+        pieChart.setCenterTextSize(16f);
+
+        // Set labels and values outside the slices
+        dataSet.setValueLinePart1Length(0.5f);
+        dataSet.setValueLinePart2Length(0.8f);
+        dataSet.setValueLineColor(Color.BLACK);
+        dataSet.setUsingSliceColorAsValueLineColor(true);
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+        // Set offset for better visibility
+        dataSet.setValueLineVariableLength(true);
+
+        // Disable description text
+        Description description = new Description();
+        description.setText("");
+        pieChart.setDescription(description);
+        // Refresh chart
+        pieChart.setData(pieData);
+        pieChart.invalidate();
+
+        String currentDateTime = getCurrentDateTime();
+
+        // Display the date and time in the TextView
+        dateTime.setText(currentDateTime);
+
+
     }
 
     private void ViewMethod(String examRnm) {
@@ -83,11 +153,9 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
                     Log.d("Response","Anji"+result);
                     if (result != null) {
                         ViewAssignmentResultResponse.Result viewTopicResult=result.getResult();
-                        firstName=viewTopicResult.getFirstName();
-                        startDate=viewTopicResult.getStartedOn();
+
                         topicName=viewTopicResult.getTopicName();
-                        txtName.setText(firstName);
-                        txtStartDate.setText(startDate);
+
                         txtTopicName.setText(topicName);
                         String questionsListJsonString = viewTopicResult.getQuestionsList();
                         if (questionsListJsonString != null) {
@@ -175,5 +243,11 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
 
             }
         });
+    }
+    private String getCurrentDateTime() {
+        // Format for date and time
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy | hh:mm a", Locale.getDefault());
+        // Get current date and time
+        return sdf.format(new Date());
     }
 }
