@@ -57,7 +57,7 @@ public class PracticeListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice_list);
 
-        txtTopicName = findViewById(R.id.txt_subject);
+        //txtTopicName = findViewById(R.id.txt_subject);
 //        txtName =findViewById(R.id.txt_name);
 //        txtStartedOn = findViewById(R.id.txt_date);
         txtTotalQuestions = findViewById(R.id.txt_questions);

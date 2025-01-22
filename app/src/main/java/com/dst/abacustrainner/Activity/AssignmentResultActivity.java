@@ -1,5 +1,6 @@
 package com.dst.abacustrainner.Activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,23 +8,35 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.User.HomeActivity;
 import com.dst.abacustrainner.database.ParcelableLong;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AssignmentResultActivity extends AppCompatActivity {
 
-    TextView txtTopicName,txtName,txtStartedOn,txtTotalQuestions,txtCorrectAnswer,txtWrongAnswer,txtAttemtedQuestion,txtNotAttemtedQuestion;
-
+    TextView txtTopicName,txtName,txtStartedOn,txtTotalQuestions,txtCorrectAnswer,txtWrongAnswer,txtAttemtedQuestion,txtNotAttemtedQuestion,showLevelTop,showLevelCompleted,dateTime;
+    private PieChart pieChart;
+    LinearLayout btnSubmit,RetakeTest,NextLevel;
     String topicName="";
     String studentName="";
 
@@ -40,20 +53,25 @@ public class AssignmentResultActivity extends AppCompatActivity {
 
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assignment_result);
 
 
-        txtTopicName = findViewById(R.id.txt_subject);
-        txtName =findViewById(R.id.txt_name);
-        txtStartedOn = findViewById(R.id.txt_date);
+        //txtTopicName = findViewById(R.id.txt_subject);
+       /* txtName =findViewById(R.id.txt_name);
+        txtStartedOn = findViewById(R.id.txt_date);*/
         txtTotalQuestions = findViewById(R.id.txt_questions);
         txtCorrectAnswer = findViewById(R.id.txt_correct_answer);
         txtWrongAnswer =findViewById(R.id.txt_wrong_answer);
         txtAttemtedQuestion = findViewById(R.id.txt_attemted_question);
-        txtNotAttemtedQuestion = findViewById(R.id.txt_not_questions);
+        btnSubmit =findViewById(R.id.but_submit_result_first);
+        dateTime = findViewById(R.id.txtDate);
+        showLevelTop=findViewById(R.id.display_level);
+        showLevelCompleted=findViewById(R.id.combined_text_view);
+        /*txtNotAttemtedQuestion = findViewById(R.id.txt_not_questions);*/
 
         Intent intent = getIntent();
         topicName = intent.getStringExtra("topicName");
@@ -80,9 +98,16 @@ public class AssignmentResultActivity extends AppCompatActivity {
             }
         }
 
-        txtTopicName.setText(topicName);
+      /*  txtTopicName.setText(topicName);
         txtName.setText(studentName);
         txtStartedOn.setText(startedOn);
+*/
+        String combinedText1 =String.format("Hello %s here is your result.", studentName);
+        showLevelTop.setText(String.valueOf(combinedText1));
+
+        String combinedText =String.format("Great job %s  . Keep practicing!", studentName);
+        showLevelCompleted.setText(combinedText);
+
 
         int correctCount = 0;
         int wrongCount = 0;
@@ -94,16 +119,27 @@ public class AssignmentResultActivity extends AppCompatActivity {
 
         txtTotalQuestions.setText(String.valueOf(totalQuestions));
         txtAttemtedQuestion.setText(String.valueOf(attemptedCount));
-        txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
+//        txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
+        int wrongAnswerCount = attemptedQuestions - correctCount;
 
-        Log.e("Reddy","TName"+topicName);
-        Log.e("Reddy","firstName"+studentName);
-        Log.e("Reddy","StartDate"+startedOn);
-        Log.e("Reddy","Questions"+questions);
-        Log.e("Reddy","Given"+enteredAnswers);
-        Log.e("Reddy","ANswer"+orginalAnswers);
-        Log.e("Reddy","Times"+questionTimes);
+        txtTotalQuestions.setText(String.valueOf(totalQuestions));
+        txtAttemtedQuestion.setText(String.valueOf(attemptedCount));
+
         tableLayout = findViewById(R.id.tablelayout);
+
+        String currentDateTime = getCurrentDateTime();
+
+        // Display the date and time in the TextView
+        dateTime.setText(currentDateTime);
+
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(AssignmentResultActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Loop through questions and answers to dynamically create TableRow elements
         for (int i = 0; i < questions.size(); i++) {
@@ -135,6 +171,56 @@ public class AssignmentResultActivity extends AppCompatActivity {
                 // Handle the case where the index is out of bounds
                 Log.e("Error", "Index out of bounds for questionTimes: " + i);
             }
+
+            pieChart = findViewById(R.id.pieChart);
+
+            ArrayList<PieEntry> pieEntries = new ArrayList<>();
+            pieEntries.add(new PieEntry(attemptedCount, "Attempted"));
+            pieEntries.add(new PieEntry(notAttemptedQuestions, "Not Attempted"));
+            pieEntries.add(new PieEntry(correctCount, "Correct"));
+            pieEntries.add(new PieEntry(wrongAnswerCount, "Incorrect"));
+
+            // Sample data for the Pie Chart
+            PieDataSet dataSet = new PieDataSet(pieEntries, "Sample Data");
+            dataSet.setColors(new int[]{
+                    ContextCompat.getColor(this, R.color.purple),
+                    ContextCompat.getColor(this, R.color.orange),
+                    ContextCompat.getColor(this, R.color.dark_green),
+                    ContextCompat.getColor(this, R.color.dark_red),});
+            dataSet.setValueTextSize(14f);
+            dataSet.setValueTextColor(Color.BLACK);
+            dataSet.setDrawIcons(false);
+
+
+            PieData pieData = new PieData(dataSet);
+
+            // Customize the chart
+            pieChart.setData(pieData);
+            pieChart.setUsePercentValues(true);
+            pieChart.setDrawHoleEnabled(true);
+            pieChart.setHoleRadius(40f);
+            pieChart.setTransparentCircleRadius(50f);
+            pieChart.setCenterText("Pie Chart");
+            pieChart.setCenterTextSize(16f);
+
+            // Set labels and values outside the slices
+            dataSet.setValueLinePart1Length(0.5f);
+            dataSet.setValueLinePart2Length(0.8f);
+            dataSet.setValueLineColor(Color.BLACK);
+            dataSet.setUsingSliceColorAsValueLineColor(true);
+            dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+            dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+            // Set offset for better visibility
+            dataSet.setValueLineVariableLength(true);
+
+            // Disable description text
+            Description description = new Description();
+            description.setText("");
+            pieChart.setDescription(description);
+            // Refresh chart
+            pieChart.setData(pieData);
+            pieChart.invalidate();
 
 
             TableRow row = new TableRow(this);
@@ -227,6 +313,13 @@ public class AssignmentResultActivity extends AppCompatActivity {
             booleanList.add(value.equals("1"));
         }
         return booleanList;
+    }
+
+    private String getCurrentDateTime() {
+        // Format for date and time
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy | hh:mm a", Locale.getDefault());
+        // Get current date and time
+        return sdf.format(new Date());
     }
 
 
