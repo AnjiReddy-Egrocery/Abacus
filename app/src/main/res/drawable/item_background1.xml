@@ -12,4 +12,18 @@
     <corners
         android:radius="20dp"/>
 
+    <item android:bottom="8dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFF00" /> <!-- Yellow shadow -->
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" /> <!-- Background color -->
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+
 </shape>
