@@ -54,6 +54,8 @@ public class HomeActivity extends AppCompatActivity{
     LinearLayout layoutAI;
 
 
+
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,7 +185,7 @@ public class HomeActivity extends AppCompatActivity{
             Fragment selectedFragment = null;
             int itemView = item.getItemId();
 
-            if (itemView == R.id.nav_dashboard) {
+            /*if (itemView == R.id.nav_dashboard) {
                 selectedFragment = new HomeFragment();
             }else if (itemView == R.id.nav_logout) {
                 SharedPrefManager.getInstance(getApplicationContext().getApplicationContext()).isLoggedOut();
@@ -200,7 +202,7 @@ public class HomeActivity extends AppCompatActivity{
                         .beginTransaction()
                         .replace(R.id.flFragment, selectedFragment)
                         .commit();
-            }
+            }*/
 
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
