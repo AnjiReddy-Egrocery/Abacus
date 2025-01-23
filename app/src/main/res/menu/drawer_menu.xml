@@ -10,11 +10,27 @@
             android:title="Dashboard"
             android:icon="@drawable/nav_home" />
 
-    <item
-        android:id="@+id/nav_classroom"
-        android:title="Class Room"
-        android:icon="@drawable/nav_class"
-        android:actionLayout="@layout/nav_inbox_item"/>
+        <item
+            android:id="@+id/nav_classroom"
+            android:title="Class Room"
+            android:icon="@drawable/nav_class"
+            />
+        <item
+            android:id="@+id/nav_playwithnumbers"
+            android:title="Play with Numbers"
+            android:icon="@drawable/nav_class"
+            />
+        <item
+            android:id="@+id/nav_visualization"
+            android:title="Visualization"
+            android:icon="@drawable/nav_class"
+            />
+
+        <item
+            android:id="@+id/nav_exam"
+            android:title="AI Exam"
+            android:icon="@drawable/nav_class"
+            android:actionLayout="@layout/nav_inbox_item"/>
 
 
         <item
@@ -22,55 +38,55 @@
         android:title="Chats"
         android:icon="@drawable/nav_chat"/>
 
-    <item
-        android:id="@+id/nav_schedules"
-        android:title="Schedules"
-        android:icon="@drawable/nav_schedule"/>
+        <item
+            android:id="@+id/nav_schedules"
+            android:title="Schedules"
+            android:icon="@drawable/nav_schedule"/>
 
-    <item
-        android:id="@+id/nav_progress_tracker"
-        android:title="Progress Tracker"
-        android:icon="@drawable/nav_progress"/>
+        <item
+            android:id="@+id/nav_progress_tracker"
+            android:title="Progress Tracker"
+            android:icon="@drawable/nav_progress"/>
 
-    <item
-        android:id="@+id/nav_videos_tutorials"
-        android:title="Videos &amp; Tutorials"
-        android:icon="@drawable/nav_videos"/>
+        <item
+            android:id="@+id/nav_videos_tutorials"
+            android:title="Videos &amp; Tutorials"
+            android:icon="@drawable/nav_videos"/>
 
-    <item
-        android:id="@+id/nav_achievements"
-        android:title="Achievements"
-        android:icon="@drawable/nav_achivements"/>
+        <item
+            android:id="@+id/nav_achievements"
+            android:title="Achievements"
+            android:icon="@drawable/nav_achivements"/>
 
-    <item
-        android:id="@+id/nav_events"
-        android:title="Events &amp; Competitions"
-        android:icon="@drawable/nav_compitation"/>
+        <item
+            android:id="@+id/nav_events"
+            android:title="Events &amp; Competitions"
+            android:icon="@drawable/nav_compitation"/>
 
-    <item
-        android:id="@+id/nav_settings"
-        android:title="App Settings"
-        android:icon="@drawable/nav_settings"/>
+        <item
+            android:id="@+id/nav_settings"
+            android:title="App Settings"
+            android:icon="@drawable/nav_settings"/>
 
-    <item
-        android:id="@+id/nav_about"
-        android:title="About Us"
-        android:icon="@drawable/nav_about"/>
+        <item
+            android:id="@+id/nav_about"
+            android:title="About Us"
+            android:icon="@drawable/nav_about"/>
 
-    <item
-        android:id="@+id/nav_help"
-        android:title="Help &amp; Support"
-        android:icon="@drawable/nav_help"/>
+        <item
+            android:id="@+id/nav_help"
+            android:title="Help &amp; Support"
+            android:icon="@drawable/nav_help"/>
 
-    <item
-        android:id="@+id/nav_profile"
-        android:title="Profile"
-        android:icon="@drawable/nav_profile"/>
+        <item
+            android:id="@+id/nav_profile"
+            android:title="Profile"
+            android:icon="@drawable/nav_profile"/>
 
-    <item
-        android:id="@+id/nav_logout"
-        android:title="Log Out"
-        android:icon="@drawable/nav_logout"/>
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Log Out"
+            android:icon="@drawable/nav_logout"/>
 
     </group>
 </menu>
