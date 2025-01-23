@@ -13,7 +13,7 @@
         android:title="Search"/>
 
     <item
-        android:id="@+id/navigation_cla1"
+        android:id="@+id/ll_center_option"
         android:icon="@drawable/ai_icon"
         android:title=""/>
 

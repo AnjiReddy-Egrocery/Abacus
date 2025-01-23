@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -52,6 +53,8 @@ public class HomeActivity extends AppCompatActivity{
     ActionBarDrawerToggle toggle;
 
     LinearLayout layoutAI;
+    private NavigationView navigationView;
+    private boolean isInboxSubmenuVisible = false;
 
 
 
@@ -73,7 +76,7 @@ public class HomeActivity extends AppCompatActivity{
 
 
         BottomNavigationView bottomNavigationView= findViewById(R.id.bottom_navigation_main);
-        layoutAI = findViewById(R.id.ll_center_option);
+        //layoutAI = findViewById(R.id.ll_center_option);
 
         bottomNavigationView.setItemIconSize(getResources().getDimensionPixelSize(R.dimen.bottom_nav_icon_size));
         bottomNavigationView.setItemTextAppearanceInactive(R.style.BottomNavTextAppearance);
@@ -92,7 +95,7 @@ public class HomeActivity extends AppCompatActivity{
         }
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView = findViewById(R.id.navigation_view);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -123,19 +126,7 @@ public class HomeActivity extends AppCompatActivity{
         // Set up NavigationView listener for the Drawer
         navigationView.setNavigationItemSelectedListener(navDrawerListener);
 
-        layoutAI.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-
-                Fragment aiFragment=new AIGenrationFragment();
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.flFragment, aiFragment) // R.id.flFragment is the container
-                        .addToBackStack(null) // Adds to back stack so you can navigate back
-                        .commit();
-            }
-        });
     }
 
     private void loadHomeFragmentWithStudentId(String studentId) {
@@ -163,7 +154,7 @@ public class HomeActivity extends AppCompatActivity{
                 selectedFragment =new HomeFragment();
             }else if(itemView == R.id.navigation_cla){
                 selectedFragment =new ClassFragment();
-            }else if(itemView == R.id.navigation_cla1){
+            }else if(itemView == R.id.ll_center_option){
                 selectedFragment =new AIGenrationFragment();
             }else if(itemView == R.id.navigation_schedules){
                 selectedFragment =new SchedulesFragment();
@@ -196,6 +187,7 @@ public class HomeActivity extends AppCompatActivity{
             }else if (itemView == R.id.nav_profile) {
                 selectedFragment = new ProfileFragment();
             }
+
 
             if (selectedFragment != null) {
                 getSupportFragmentManager()
