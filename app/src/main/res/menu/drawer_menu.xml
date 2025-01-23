@@ -14,10 +14,11 @@
     <item
         android:id="@+id/nav_classroom"
         android:title="Class Room"
-        android:icon="@drawable/nav_class"/>
+        android:icon="@drawable/nav_class"
+        android:actionLayout="@layout/nav_inbox_item"/>
 
 
-    <item
+        <item
         android:id="@+id/nav_chats"
         android:title="Chats"
         android:icon="@drawable/nav_chat"/>
