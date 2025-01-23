@@ -20,10 +20,10 @@ import java.util.TimerTask;
 
 public class SpalashActivity extends AppCompatActivity {
     private static  int SPLASH_SCREEN=3000;
-    Animation topAnimation,bottomAnimation;
+    //Animation topAnimation,bottomAnimation;
 
-    ImageView imageView;
-    TextView textView;
+    /*ImageView imageView;
+    TextView textView;*/
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -31,7 +31,7 @@ public class SpalashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        topAnimation=AnimationUtils.loadAnimation(SpalashActivity.this,R.anim.animation);
+       /* topAnimation=AnimationUtils.loadAnimation(SpalashActivity.this,R.anim.animation);
         //bottomAnimation=AnimationUtils.loadAnimation(SpalashActivity.this,R.anim.second_animation);
 
         imageView=findViewById(R.id.imageView);
@@ -42,7 +42,7 @@ public class SpalashActivity extends AppCompatActivity {
         //textView.setAnimation(bottomAnimation);
 
         setText("www.abacustrainer.com");
-
+*/
         Thread loading = new Thread() {
             public void run() {
                 try {
@@ -62,7 +62,7 @@ public class SpalashActivity extends AppCompatActivity {
         loading.start();
     }
 
-    private void setText(String s) {
+   /* private void setText(String s) {
 
         final int[] i = new int[1];
         i[0] = 0;
@@ -88,5 +88,5 @@ public class SpalashActivity extends AppCompatActivity {
             }
         };
         timer.schedule(taskEverySplitSecond, 1, 100);
-    }
+    }*/
 }

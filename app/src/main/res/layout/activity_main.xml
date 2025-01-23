@@ -8,7 +8,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:alpha="0.8"
-    android:background="@drawable/background_image"
     android:layout_gravity="center_vertical"
     tools:context=".SpalashActivity">
 
@@ -17,8 +16,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:alpha="1"
+        android:layout_margin="12dp"
         android:gravity="center">
-            <ImageView
+
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/abacus_splash_screen"/>
+
+            <!--<ImageView
                 android:id="@+id/imageView"
                 android:layout_width="250dp"
                 android:layout_height="250dp"
@@ -47,6 +53,6 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0" />-->
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
