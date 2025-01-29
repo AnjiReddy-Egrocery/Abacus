@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -89,6 +90,8 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
     String[] questionsArray= new String[]{""};
     String[] answerArray = new String[]{""};
 
+    private String totalTime = "";
+
     private ArrayList<Long> questionTimes ;
 
     String startedDate;
@@ -112,7 +115,7 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
 
     long seconds;
 
-
+    HorizontalScrollView scrollView;
 
 
 
@@ -137,6 +140,7 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
         butBack = findViewById(R.id.btn_back_to_home);
 
         txtdisplayquestion=findViewById(R.id.displaytextvie);
+        scrollView = findViewById(R.id.horizontalScrollView);
 
         // Create and start the countdown timer
         final long[] totalElapsedTime = {1000};
@@ -156,6 +160,13 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
 
                 // Update the timer text
                 txtTotalTimer.setText(f.format(hour) + ":" + f.format(min) + ":" + f.format(sec));
+
+                String formattedTime = f.format(hour) + ":" + f.format(min) + ":" + f.format(sec);
+
+                Log.d("Reddy","Time"+formattedTime);
+
+                totalTime = formattedTime;
+
 
                 // Increment the total elapsed time
                 totalElapsedTime[0] += interval;
@@ -202,6 +213,11 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
         butSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int currentX = scrollView.getScrollX();
+                int moveX = currentX + 100;  // Move 100 pixels to the left
+                if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position
+
+                scrollView.smoothScrollTo(moveX, 0);
                 if (currentQuestionIndex >= 0 && currentQuestionIndex < answerArray.length) {
                     answer = answerEditText.getText().toString();
                     enteredAnswers.set(currentQuestionIndex, answer);
@@ -237,11 +253,13 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
                     Log.e("SaveAnswer", "Invalid currentQuestionIndex: " + currentQuestionIndex);
                 }
             }
+
         });
 
         butBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 showExitConfirmationDialog();
             }
         });
@@ -258,6 +276,11 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
                 navigateToPreviousQuestion();
                 restoreTimerState(); // Restore timer state for the previous question
                 startTimer();
+                int currentX = scrollView.getScrollX();
+                int moveX = currentX - 100;  // Move 100 pixels to the left
+                if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position
+
+                scrollView.smoothScrollTo(moveX, 0);
             }
 
         });
@@ -600,7 +623,7 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
 
                 stepButton.setOnClickListener(view -> {
                     int clickedStep = (int) view.getTag();
-
+                    scrollToCenter(stepButton);
 
                     onButtonClicked(clickedStep);
 
@@ -950,6 +973,7 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
                        intent.putStringArrayListExtra("questions", new ArrayList<>(Arrays.asList(questionsArray)));
                        intent.putStringArrayListExtra("enteredAnswers", enteredAnswers);
                        intent.putStringArrayListExtra("isQuestionAttempted", stringIsQuestionAttempted);
+                       intent.putExtra("TOTAL_TIME", totalTime);
 
                        ArrayList<ParcelableLong> parcelableTimes = new ArrayList<>();
                        for (Long time : questionTimes) {
@@ -1024,6 +1048,13 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
         });
         AlertDialog alertDialog = dialog.create();
         alertDialog.show();
+    }
+
+    private void scrollToCenter(View view){
+        int scrollViewWidth=scrollView.getWidth();
+        int buttonWidth=scrollView.getWidth();
+        int scrollX =(view.getLeft()+ view.getRight())/2-scrollViewWidth/2;
+        scrollView.smoothScrollTo(scrollX,0);
     }
 
 }

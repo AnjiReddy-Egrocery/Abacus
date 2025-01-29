@@ -104,6 +104,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
     private long currentTimeOnSaveAndNext = 0;
     private long currenttimeonprvious = 0;
     String originalAnswer;
+    HorizontalScrollView scrollView;
 
     private List<Boolean> isQuestionAttempted = new ArrayList<>();
 
@@ -112,6 +113,8 @@ public class TopicPracticeActivity extends AppCompatActivity {
 
     private int attemptedQuestions = 0;
     private int notAttemptedQuestions = 0;
+
+    private String totalTime = "";
 
     String startedDate;
 
@@ -144,6 +147,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
         leftIcon =findViewById(R.id.left_icon_click);
         rightIcon =findViewById(R.id.right_icon_click);
         btnBack=findViewById(R.id.btn_back_level_select);
+        scrollView = findViewById(R.id.horizontalScrollView);
 
 
         Bundle bundle = getIntent().getExtras();
@@ -205,6 +209,13 @@ public class TopicPracticeActivity extends AppCompatActivity {
                 // Update the timer text
                 txtTotalTimer.setText(f.format(hour) + ":" + f.format(min) + ":" + f.format(sec));
 
+                String formattedTime = f.format(hour) + ":" + f.format(min) + ":" + f.format(sec);
+
+                Log.d("Reddy","Time"+formattedTime);
+
+                totalTime = formattedTime;
+
+
                 // Increment the total elapsed time
                 totalElapsedTime[0] += interval;
 
@@ -220,6 +231,12 @@ public class TopicPracticeActivity extends AppCompatActivity {
         butSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                int currentX = scrollView.getScrollX();
+                int moveX = currentX + 100;  // Move 100 pixels to the left
+                if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position
+                scrollView.smoothScrollTo(moveX, 0);
+
                 if (currentQuestionIndex >= 0 && currentQuestionIndex < answerArray.length) {
                     answer = answerEditText.getText().toString();
                     enteredAnswers.set(currentQuestionIndex, answer);
@@ -266,6 +283,11 @@ public class TopicPracticeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 stopTimer();
+
+                int currentX = scrollView.getScrollX();
+                int moveX = currentX - 100;  // Move 100 pixels to the left
+                if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position
+                scrollView.smoothScrollTo(moveX, 0);
 
                 // Reset the timer to the saved time
                 saveTimerState();
@@ -606,7 +628,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
                 stepButton.setOnClickListener(view -> {
                     int clickedStep = (int) view.getTag();
 
-
+                    scrollToCenter(stepButton);
                     onButtonClicked(clickedStep);
 
                 });
@@ -880,6 +902,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
                         intent.putStringArrayListExtra("questions", new ArrayList<>(Arrays.asList(questionsArray)));
                         intent.putStringArrayListExtra("enteredAnswers", enteredAnswers);
                         intent.putStringArrayListExtra("isQuestionAttempted", stringIsQuestionAttempted);
+                        intent.putExtra("TOTAL_TIME", totalTime);
 
                         ArrayList<ParcelableLong> parcelableTimes = new ArrayList<>();
                         for (Long time : questionTimes) {
@@ -955,6 +978,11 @@ public class TopicPracticeActivity extends AppCompatActivity {
             countDownTimer.cancel();
         }
     }
-
+    private void scrollToCenter(View view){
+        int scrollViewWidth=scrollView.getWidth();
+        int buttonWidth=scrollView.getWidth();
+        int scrollX =(view.getLeft()+ view.getRight())/2-scrollViewWidth/2;
+        scrollView.smoothScrollTo(scrollX,0);
+    }
 
 }

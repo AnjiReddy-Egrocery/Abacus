@@ -49,6 +49,7 @@ public class PracticeListActivity extends AppCompatActivity {
     String enteredAnswer ;
     String correctAnswer ;
     long time;
+    String totalTime;
 
 
     @SuppressLint("MissingInflatedId")
@@ -70,7 +71,9 @@ public class PracticeListActivity extends AppCompatActivity {
         showLevelCompleted=findViewById(R.id.combined_text_view);
 //        txtNotAttemtedQuestion = findViewById(R.id.txt_not_questions);
 
+
         Intent intent = getIntent();
+        totalTime =intent.getStringExtra("TOTAL_TIME");
         topicName = intent.getStringExtra("topicName");
         studentName = intent.getStringExtra("firstName");
         startedOn = intent.getStringExtra("startedOn");
@@ -206,8 +209,8 @@ public class PracticeListActivity extends AppCompatActivity {
             pieChart.setDrawHoleEnabled(true);
             pieChart.setHoleRadius(40f);
             pieChart.setTransparentCircleRadius(50f);
-            pieChart.setCenterText("Pie Chart");
-            pieChart.setCenterTextSize(16f);
+            pieChart.setCenterText(totalTime);
+            pieChart.setCenterTextSize(12f);
 
             // Set labels and values outside the slices
             dataSet.setValueLinePart1Length(0.5f);

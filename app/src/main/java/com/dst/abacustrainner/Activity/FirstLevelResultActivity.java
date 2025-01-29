@@ -54,6 +54,7 @@ public class FirstLevelResultActivity extends AppCompatActivity {
     double timeInSeconds;
     String orginalAnswer;
     String question;
+    String totalTime;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -84,6 +85,8 @@ public class FirstLevelResultActivity extends AppCompatActivity {
 
         Intent intents = getIntent();
         int levelValue = intents.getIntExtra("level", 0);
+        Log.d("Reddy","Report"+totalTime);
+        totalTime =intent.getStringExtra("TOTAL_TIME"); // Use putExtra for a single string
 
 
         String combinedText1 =String.format("Level Play with number game level %s.", levelValue);
@@ -205,8 +208,8 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleRadius(40f);
         pieChart.setTransparentCircleRadius(50f);
-        pieChart.setCenterText("Pie Chart");
-        pieChart.setCenterTextSize(16f);
+        pieChart.setCenterText(totalTime);
+        pieChart.setCenterTextSize(12f);
 
         // Set labels and values outside the slices
         dataSet.setValueLinePart1Length(0.5f);

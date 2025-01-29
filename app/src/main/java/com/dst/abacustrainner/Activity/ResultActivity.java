@@ -43,6 +43,8 @@ public class ResultActivity extends AppCompatActivity {
     long time;
     double timeInSeconds;
     String studentName,startedOn;
+    String totalTime;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +89,8 @@ public class ResultActivity extends AppCompatActivity {
         String combinedText =String.format("Great job %s Keep practicing!", studentName);
         showLevelCompleted.setText(combinedText);
 
-
+        Intent intents =getIntent();
+        totalTime =intents.getStringExtra("TOTAL_TIME");
 
 
         List<Long> questionTimes = new ArrayList<>();
@@ -183,8 +186,8 @@ public class ResultActivity extends AppCompatActivity {
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleRadius(40f);
         pieChart.setTransparentCircleRadius(50f);
-        pieChart.setCenterText("Pie Chart");
-        pieChart.setCenterTextSize(16f);
+        pieChart.setCenterText(totalTime);
+        pieChart.setCenterTextSize(12f);
 
         // Set labels and values outside the slices
         dataSet.setValueLinePart1Length(0.5f);

@@ -71,6 +71,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
     private boolean isAppOpened = false;
 
     ImageView imageView;
+    HorizontalScrollView scrollView;
 
     private boolean isTtsInitialized = false;
     private boolean isInitComplete = false;
@@ -107,6 +108,8 @@ public class VisualQuizActivity extends AppCompatActivity  {
     LinearLayout linearRepeat, layoutQuiz;
     private boolean isFirstRepetition = true;
 
+    private String totalTime = "";
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -127,6 +130,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
         leftIcon =findViewById(R.id.left_icon_click1);
         rightIcon =findViewById(R.id.right_icon_click1);
         txtTotalTimer= findViewById(R.id.total_timer_display_id);
+        scrollView = findViewById(R.id.horizontalScrollView);
 
         layoutQuiz = findViewById(R.id.button_visualiztion_quiz);
 
@@ -147,6 +151,13 @@ public class VisualQuizActivity extends AppCompatActivity  {
 
                 // Update the timer text
                 txtTotalTimer.setText(f.format(hour) + ":" + f.format(min) + ":" + f.format(sec));
+
+                String formattedTime = f.format(hour) + ":" + f.format(min) + ":" + f.format(sec);
+
+                Log.d("Reddy","Time"+formattedTime);
+
+                totalTime = formattedTime;
+
 
                 // Increment the total elapsed time
                 totalElapsedTime[0] += interval;
@@ -193,6 +204,11 @@ public class VisualQuizActivity extends AppCompatActivity  {
                 public void onClick(View v) {
                     // Check if there are more questions
                     onNextButtonClick();
+                    int currentX = scrollView.getScrollX();
+                    int moveX = currentX + 100;  // Move 100 pixels to the left
+                    if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position
+
+                    scrollView.smoothScrollTo(moveX, 0);
                 }
             });
 
@@ -200,6 +216,11 @@ public class VisualQuizActivity extends AppCompatActivity  {
                 @Override
                 public void onClick(View view) {
                     onPreviousButtonClick(view);
+                    int currentX = scrollView.getScrollX();
+                    int moveX = currentX - 100;  // Move 100 pixels to the left
+                    if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position
+
+                    scrollView.smoothScrollTo(moveX, 0);
                 }
             });
 
@@ -660,6 +681,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
         intent.putStringArrayListExtra("enteredAnswers", new ArrayList<>(answers));
         intent.putStringArrayListExtra("isQuestionAttempted", stringIsQuestionAttempted);
         intent.putStringArrayListExtra("isQuestionCorrect", stringIsQuestionCorrect);
+        intent.putExtra("TOTAL_TIME", totalTime);
         ArrayList<ParcelableLong> parcelableTimes = new ArrayList<>();
         for (Long time : questionTimes) {
             parcelableTimes.add(new ParcelableLong(time));
@@ -771,6 +793,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
                 stepButton.setTag(stepIndex);
                 stepButton.setOnClickListener(view -> {
                     int clickedStep = (int) view.getTag();
+                    scrollToCenter(stepButton);
                     onButtonClicked(clickedStep);
 
                 });
@@ -783,7 +806,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
                 connector.setBackgroundColor(Color.GRAY); // Connector color
                 // Set layout parameters for the connector
                 GridLayout.LayoutParams connectorParams = new GridLayout.LayoutParams();
-                connectorParams.width = dpToPx(15); // Connector width
+                connectorParams.width = dpToPx(7); // Connector width
                 connectorParams.height = dpToPx(4); // Connector height
                 connectorParams.setMargins(0, dpToPx(35), 0, dpToPx(0)); // Vertical alignment
                 connector.setLayoutParams(connectorParams);
@@ -1129,6 +1152,13 @@ public class VisualQuizActivity extends AppCompatActivity  {
         });
         AlertDialog alertDialog = dialog.create();
         alertDialog.show();
+    }
+
+    private void scrollToCenter(View view){
+        int scrollViewWidth=scrollView.getWidth();
+        int buttonWidth=scrollView.getWidth();
+        int scrollX =(view.getLeft()+ view.getRight())/2-scrollViewWidth/2;
+        scrollView.smoothScrollTo(scrollX,0);
     }
 }
 

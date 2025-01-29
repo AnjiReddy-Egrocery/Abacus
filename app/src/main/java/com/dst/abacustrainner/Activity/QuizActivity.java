@@ -92,6 +92,8 @@ public class QuizActivity extends AppCompatActivity {
     String isCorrected;
     String status;
     private int currentStep = 0;
+    private String totalTime = "";
+    HorizontalScrollView scrollView;
 
     private List<CountDownTimer> questionTimers ;
     @SuppressLint("MissingInflatedId")
@@ -113,6 +115,7 @@ public class QuizActivity extends AppCompatActivity {
         leftIcon =findViewById(R.id.left_icon_click);
         rightIcon =findViewById(R.id.right_icon_click);
         btnBack=findViewById(R.id.btn_back_to_game_creation);
+        scrollView = findViewById(R.id.horizontalScrollView);
         Bundle extras = getIntent().getExtras();
 
         // Create and start the countdown timer
@@ -133,6 +136,12 @@ public class QuizActivity extends AppCompatActivity {
 
                 // Update the timer text
                 txtTotalTimer.setText(f.format(hour) + ":" + f.format(min) + ":" + f.format(sec));
+
+                String formattedTime = f.format(hour) + ":" + f.format(min) + ":" + f.format(sec);
+
+                Log.d("Reddy","Time"+formattedTime);
+
+                totalTime = formattedTime;
 
                 // Increment the total elapsed time
                 totalElapsedTime[0] += interval;
@@ -177,13 +186,25 @@ public class QuizActivity extends AppCompatActivity {
         btnNextQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 onSaveAndNextButtonClick(view);
+                int currentX = scrollView.getScrollX();
+                int moveX = currentX + 100;  // Move 100 pixels to the left
+                if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position
+
+                scrollView.smoothScrollTo(moveX, 0);
             }
         });
         btnPreviousQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 onPreviousButtonClick(view);
+                int currentX = scrollView.getScrollX();
+                int moveX = currentX - 100;  // Move 100 pixels to the left
+                if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position
+
+                scrollView.smoothScrollTo(moveX, 0);
             }
         });
 
@@ -616,71 +637,77 @@ private int dpToPx(int dp) {
     return (int) (dp * getResources().getDisplayMetrics().density);
 }
 
-private void generateButtons() {
-    gridLayout.removeAllViews();
-
-    int totalSteps = questions.size(); // Total steps (buttons)
-    int totalColumns = totalSteps * 2 - 1; // Steps + Connectors
-
-    for (int i = 0; i < totalColumns; i++) {
-        if (i % 2 == 0) {
-            // Create a circular step button
-            Button stepButton = new Button(this);
-            stepButton.setText(String.valueOf((i / 2) + 1)); // Step number
-            stepButton.setGravity(Gravity.CENTER);
-            final int[] stepIndex = {i / 2}; // Determine the step index
-            if (isQuestionAnswered.size() > stepIndex[0] && isQuestionAnswered.get(stepIndex[0])){
-                stepButton.setTextColor(Color.WHITE);
-            }else{
-                stepButton.setTextColor(Color.BLACK);
-            }
-
-            stepButton.setTextSize(14);
-            stepButton.setTypeface(null, Typeface.BOLD);
-
-            // Set background color based on status
-
-            if (isQuestionAnswered.size() > stepIndex[0] && isQuestionAnswered.get(stepIndex[0])) {
-                stepButton.setBackground(getDrawable(R.drawable.circle_green)); // Answered
-            } else if (stepIndex[0] == currentStep) {
-                stepButton.setBackground(getDrawable(R.drawable.circle_orange)); // Current step
-            } else {
-                stepButton.setBackground(getDrawable(R.drawable.circle_gray)); // Unanswered
-            }
-
-            // Set layout parameters for the step button
-            GridLayout.LayoutParams stepParams = new GridLayout.LayoutParams();
-            stepParams.width = dpToPx(40); // Circular size
-            stepParams.height = dpToPx(40);
-            stepParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(0), dpToPx(16));
-            stepButton.setLayoutParams(stepParams);
-
-            // Add click listener for the step button
-            stepButton.setTag(stepIndex[0]);
-
-            stepButton.setOnClickListener(view -> {
-                int clickedStep = (int) view.getTag();
-                onButtonClicked(clickedStep);
-            });
-
-            // Add the step button to the GridLayout
-            gridLayout.addView(stepButton);
-        } else {
-            // Create a connector line
-            View connector = new View(this);
-            connector.setBackgroundColor(Color.GRAY); // Connector color
-            // Set layout parameters for the connector
-            GridLayout.LayoutParams connectorParams = new GridLayout.LayoutParams();
-            connectorParams.width = dpToPx(15); // Connector width
-            connectorParams.height = dpToPx(4); // Connector height
-            connectorParams.setMargins(0, dpToPx(35), 0, dpToPx(0)); // Vertical alignment
-            connector.setLayoutParams(connectorParams);
-
-            // Add the connector to the GridLayout
-            gridLayout.addView(connector);
-        }
-    }
-}
+//private void generateButtons() {
+//    gridLayout.removeAllViews();
+//
+//    int totalSteps = questions.size(); // Total steps (buttons)
+//    int totalColumns = totalSteps * 2 - 1; // Steps + Connectors
+//
+//    for (int i = 0; i < totalColumns; i++) {
+//        if (i % 2 == 0) {
+//            // Create a circular step button
+//            Button stepButton = new Button(this);
+//            stepButton.setText(String.valueOf((i / 2) + 1)); // Step number
+//            stepButton.setGravity(Gravity.CENTER);
+//            final int[] stepIndex = {i / 2}; // Determine the step index
+//            if (isQuestionAnswered.size() > stepIndex[0] && isQuestionAnswered.get(stepIndex[0])){
+//                stepButton.setTextColor(Color.WHITE);
+//            }else{
+//                stepButton.setTextColor(Color.BLACK);
+//            }
+//
+//            stepButton.setTextSize(14);
+//            stepButton.setTypeface(null, Typeface.BOLD);
+//
+//            // Set background color based on status
+//
+//            if (isQuestionAnswered.size() > stepIndex[0] && isQuestionAnswered.get(stepIndex[0])) {
+//                stepButton.setBackground(getDrawable(R.drawable.circle_green)); // Answered
+//            } else if (stepIndex[0] == currentStep) {
+//                stepButton.setBackground(getDrawable(R.drawable.circle_orange)); // Current step
+//            } else {
+//                stepButton.setBackground(getDrawable(R.drawable.circle_gray)); // Unanswered
+//            }
+//
+//            // Set layout parameters for the step button
+//            GridLayout.LayoutParams stepParams = new GridLayout.LayoutParams();
+//            stepParams.width = dpToPx(40); // Circular size
+//            stepParams.height = dpToPx(40);
+//            stepParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(0), dpToPx(16));
+//
+////            if(i==totalColumns-1){
+////                stepParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(20), dpToPx(16));
+////            }else{
+////                stepParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(0), dpToPx(16));
+////            }
+//            stepButton.setLayoutParams(stepParams);
+//
+//            // Add click listener for the step button
+//            stepButton.setTag(stepIndex[0]);
+//
+//            stepButton.setOnClickListener(view -> {
+//                int clickedStep = (int) view.getTag();
+//                onButtonClicked(clickedStep);
+//            });
+//
+//            // Add the step button to the GridLayout
+//            gridLayout.addView(stepButton);
+//        } else {
+//            // Create a connector line
+//            View connector = new View(this);
+//            connector.setBackgroundColor(Color.GRAY); // Connector color
+//            // Set layout parameters for the connector
+//            GridLayout.LayoutParams connectorParams = new GridLayout.LayoutParams();
+//            connectorParams.width = dpToPx(15); // Connector width
+//            connectorParams.height = dpToPx(4); // Connector height
+//            connectorParams.setMargins(0, dpToPx(35), 0, dpToPx(0)); // Vertical alignment
+//            connector.setLayoutParams(connectorParams);
+//
+//            // Add the connector to the GridLayout
+//            gridLayout.addView(connector);
+//        }
+//    }
+//}
 //    private void onButtonClicked(int questionIndex) {
 //        // Handle button click, update currentQuestionIndex, and display the question
 //        saveTimerState();
@@ -692,6 +719,76 @@ private void generateButtons() {
 //        edtAnswer.setText(storedAnswer);
 //        restoreTimerState();
 //    }
+
+    private void generateButtons() {
+        gridLayout.removeAllViews();
+
+        int totalSteps = questions.size(); // Total steps (buttons)
+        int totalColumns = totalSteps * 2 - 1; // Steps + Connectors
+
+        for (int i = 0; i < totalColumns; i++) {
+            if (i % 2 == 0) {
+                // Create a circular step button
+                Button stepButton = new Button(this);
+                stepButton.setText(String.valueOf((i / 2) + 1)); // Step number
+                stepButton.setGravity(Gravity.CENTER);
+                final int[] stepIndex = {i / 2}; // Determine the step index
+                if (isQuestionAnswered.size() > stepIndex[0] && isQuestionAnswered.get(stepIndex[0])){
+                    stepButton.setTextColor(Color.WHITE);
+                }else{
+                    stepButton.setTextColor(Color.BLACK);
+                }
+
+                stepButton.setTextSize(14);
+                stepButton.setTypeface(null, Typeface.BOLD);
+
+                // Set background color based on status
+
+                if (isQuestionAnswered.size() > stepIndex[0] && isQuestionAnswered.get(stepIndex[0])) {
+                    stepButton.setBackground(getDrawable(R.drawable.circle_green)); // Answered
+                } else if (stepIndex[0] == currentStep) {
+                    stepButton.setBackground(getDrawable(R.drawable.circle_orange)); // Current step
+                } else {
+                    stepButton.setBackground(getDrawable(R.drawable.circle_gray)); // Unanswered
+                }
+
+                // Set layout parameters for the step button
+                GridLayout.LayoutParams stepParams = new GridLayout.LayoutParams();
+                stepParams.width = dpToPx(40); // Circular size
+                stepParams.height = dpToPx(40);
+                stepParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(0), dpToPx(16));
+
+                stepButton.setLayoutParams(stepParams);
+
+                // Add click listener for the step button
+                stepButton.setTag(stepIndex[0]);
+
+                stepButton.setOnClickListener(view -> {
+                    int clickedStep = (int) view.getTag();
+
+                    scrollToCenter(stepButton);
+                    onButtonClicked(clickedStep);
+
+                });
+
+                // Add the step button to the GridLayout
+                gridLayout.addView(stepButton);
+            } else {
+                // Create a connector line
+                View connector = new View(this);
+                connector.setBackgroundColor(Color.GRAY); // Connector color
+                // Set layout parameters for the connector
+                GridLayout.LayoutParams connectorParams = new GridLayout.LayoutParams();
+                connectorParams.width = dpToPx(7); // Connector width
+                connectorParams.height = dpToPx(4); // Connector height
+                connectorParams.setMargins(0, dpToPx(35), 0, dpToPx(0)); // Vertical alignment
+                connector.setLayoutParams(connectorParams);
+
+                // Add the connector to the GridLayout
+                gridLayout.addView(connector);
+            }
+        }
+    }
     int temp=0;
     private void onButtonClicked(int tag) {
 
@@ -898,6 +995,7 @@ private void generateButtons() {
                         intent.putStringArrayListExtra("enteredAnswers", new ArrayList<>(answers));
                         intent.putStringArrayListExtra("isQuestionAttempted", stringIsQuestionAttempted);
                         intent.putStringArrayListExtra("isQuestionCorrect", stringIsQuestionCorrect);
+                        intent.putExtra("TOTAL_TIME", totalTime);
                         ArrayList<ParcelableLong> parcelableTimes = new ArrayList<>();
                         for (Long time : questionTimes) {
                             parcelableTimes.add(new ParcelableLong(time));
@@ -948,5 +1046,12 @@ private void generateButtons() {
         });
         AlertDialog alertDialog = dialog.create();
         alertDialog.show();
+    }
+
+    private void scrollToCenter(View view){
+        int scrollViewWidth=scrollView.getWidth();
+        int buttonWidth=scrollView.getWidth();
+        int scrollX =(view.getLeft()+ view.getRight())/2-scrollViewWidth/2;
+        scrollView.smoothScrollTo(scrollX,0);
     }
 }

@@ -97,6 +97,10 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
     private boolean isAnswerDisplayed = false;
     private List<CountDownTimer> questionTimers ;
     private boolean isTimerStateSaved = false;
+
+    private String totalTime = ""; // Class-level variable to hold total time
+    HorizontalScrollView scrollView;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,8 +122,7 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
         btn_prev=findViewById(R.id.go_toPrev);
 
         buttonBackVisualiztion = findViewById(R.id.btn_visualiztaion_first);
-
-
+        scrollView = findViewById(R.id.horizontalScrollView);
 
         final long[] totalElapsedTime = {1000};
         final long interval = 1000; // Update interval in milliseconds
@@ -143,6 +146,12 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
                 // Update the timer text
                 txtTotalTimer.setText(f.format(hour) + ":" + f.format(min) + ":" + f.format(sec));
 
+                String formattedTime = f.format(hour) + ":" + f.format(min) + ":" + f.format(sec);
+
+                Log.d("Reddy","Time"+formattedTime);
+
+                totalTime = formattedTime;
+
                 // Increment the total elapsed time
                 totalElapsedTime[0] += interval;
 
@@ -162,7 +171,13 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
         btnNextQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 onSaveAndNextButtonClick(view);
+                int currentX = scrollView.getScrollX();
+                int moveX = currentX + 100;  // Move 100 pixels to the left
+                if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position
+
+                scrollView.smoothScrollTo(moveX, 0);
             }
 
         });
@@ -176,7 +191,13 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
         btnPreviousQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 onPreviousButtonClick(view);
+                int currentX = scrollView.getScrollX();
+                int moveX = currentX - 100;  // Move 100 pixels to the left
+                if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position
+
+                scrollView.smoothScrollTo(moveX, 0);
             }
         });
 
@@ -811,6 +832,7 @@ private void onPreviousButtonClick(View view) {
         intent.putStringArrayListExtra("enteredAnswers", new ArrayList<>(answers));
         intent.putStringArrayListExtra("isQuestionAttempted", stringIsQuestionAttempted);
         intent.putStringArrayListExtra("isQuestionCorrect", stringIsQuestionCorrect);
+        intent.putExtra("TOTAL_TIME", totalTime);
         for (String question : questions) {
             originalAnswers.add(generateOriginalAnswer(question));
         }
@@ -933,6 +955,7 @@ private void onPreviousButtonClick(View view) {
                 stepButton.setTag(stepIndex);
                 stepButton.setOnClickListener(view -> {
                     int clickedStep = (int) view.getTag();
+                    scrollToCenter(stepButton);
                     onButtonClicked(clickedStep);
 
                 });
@@ -1207,5 +1230,12 @@ private void onPreviousButtonClick(View view) {
         });
         AlertDialog alertDialog = dialog.create();
         alertDialog.show();
+    }
+
+    private void scrollToCenter(View view){
+        int scrollViewWidth=scrollView.getWidth();
+        int buttonWidth=scrollView.getWidth();
+        int scrollX =(view.getLeft()+ view.getRight())/2-scrollViewWidth/2;
+        scrollView.smoothScrollTo(scrollX,0);
     }
 }

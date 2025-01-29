@@ -374,7 +374,7 @@
                                 android:id="@+id/answerEditText"
                                 android:layout_width="100dp"
                                 android:layout_height="50dp"
-
+                                android:layout_marginStart="12dp"
                                 android:background="@drawable/submit_btn_border"
                                 android:gravity="center"
                                 android:inputType="number"
@@ -493,7 +493,7 @@
                             android:id="@+id/btnNext"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="70dp"
+                            android:layout_marginLeft="60dp"
                             android:background="@drawable/save_next_btn"
                             android:orientation="horizontal">
 

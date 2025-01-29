@@ -60,6 +60,8 @@ public class FirstLevelActivity extends AppCompatActivity {
     private long currentTimeOnSaveAndNext = 0;
 
 
+
+
     private List<Boolean> isQuestionAnswered = new ArrayList<>();
     private List<String> answers ;
     private List<Long> questionTimes ;
@@ -73,6 +75,11 @@ public class FirstLevelActivity extends AppCompatActivity {
     private List<CountDownTimer> questionTimers ;
     private int currentStep = 0;
 
+    HorizontalScrollView scrollView;
+
+    private String totalTime = ""; // Class-level variable to hold total time
+
+    List<View> questionList = new ArrayList<>();
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +97,7 @@ public class FirstLevelActivity extends AppCompatActivity {
         leftIcon =findViewById(R.id.left_icon_click);
         rightIcon =findViewById(R.id.right_icon_click);
         btn_back=findViewById(R.id.btn_back_level_select);
+        scrollView = findViewById(R.id.horizontalScrollView);
 
         // Initialize the TextView
 
@@ -106,6 +114,8 @@ public class FirstLevelActivity extends AppCompatActivity {
 
 // Create a handler to manage the count-up process
 
+
+
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -115,6 +125,12 @@ public class FirstLevelActivity extends AppCompatActivity {
 
                 // Update the timer text
                 txtTotalTimer.setText(f.format(hour) + ":" + f.format(min) + ":" + f.format(sec));
+
+                String formattedTime = f.format(hour) + ":" + f.format(min) + ":" + f.format(sec);
+
+                Log.d("Reddy","Time"+formattedTime);
+
+                totalTime = formattedTime;
 
                 // Increment the total elapsed time
                 totalElapsedTime[0] += interval;
@@ -140,12 +156,24 @@ public class FirstLevelActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onSaveAndNextButtonClick(view);
+                int currentX = scrollView.getScrollX();
+                int moveX = currentX + 100;  // Move 100 pixels to the left
+                if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position
+
+                scrollView.smoothScrollTo(moveX, 0);
             }
         });
         btnPreviousQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 onPreviousButtonClick(view);
+                int currentX = scrollView.getScrollX();
+                int moveX = currentX - 100;  // Move 100 pixels to the left
+                if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position
+
+                scrollView.smoothScrollTo(moveX, 0);
+
             }
         });
 
@@ -468,7 +496,7 @@ public class FirstLevelActivity extends AppCompatActivity {
                     View buttonView = gridLayout.getChildAt(buttonIndex);
                     if (buttonView instanceof Button) {
                         Button stepButton = (Button) buttonView;
-                        stepButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
+//                        stepButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
 
                         isQuestionAnswered.set(currentQuestionIndex, true);
                     }
@@ -547,6 +575,7 @@ public class FirstLevelActivity extends AppCompatActivity {
 
     private void ReportMethod() {
                 Toast.makeText(FirstLevelActivity.this,"All Questions are Submited",Toast.LENGTH_LONG).show();
+                Log.d("Reddy","Report"+totalTime);
         for (String question : questions) {
             originalAnswers.add(generateOriginalAnswer(question));
         }
@@ -557,10 +586,12 @@ public class FirstLevelActivity extends AppCompatActivity {
                 intent.putStringArrayListExtra("enteredAnswers", new ArrayList<>(answers));
                 intent.putStringArrayListExtra("isQuestionAttempted", stringIsQuestionAttempted);
                 intent.putStringArrayListExtra("isQuestionCorrect", stringIsQuestionCorrect);
+                intent.putExtra("TOTAL_TIME", totalTime); // Use putExtra for a single string
                 for (String question : questions) {
                     originalAnswers.add(generateOriginalAnswer(question));
                 }
                 intent.putStringArrayListExtra("originalAnswers", originalAnswers);
+//                intent.putStringArrayListExtra("totalTime",txtTotalTimer);
 
 
                 ArrayList<ParcelableLong> parcelableTimes = new ArrayList<>();
@@ -571,6 +602,22 @@ public class FirstLevelActivity extends AppCompatActivity {
                 intent.putExtra("level", getLevelValue());
                 startActivity(intent);
                 finish();
+    }
+
+    private void scrollToQuestion(int questionIndex, boolean isNext) {
+        // Assuming you have a reference to the ScrollView
+        if (questionIndex >= 0 && questionIndex < questionList.size()) {
+            // Scroll by 10dp to the left or right
+            int scrollBy = (int) (10 * getResources().getDisplayMetrics().density); // Convert 10dp to pixels
+
+            if (isNext) {
+                // Move to the right by 10dp
+                scrollView.smoothScrollBy(scrollBy, 0);
+            } else {
+                // Move to the left by 10dp
+                scrollView.smoothScrollBy(-scrollBy, 0);
+            }
+        }
     }
 
     private ArrayList<String> convertBooleanListToStringList(List<Boolean> isQuestionAttempted) {
@@ -691,6 +738,7 @@ public class FirstLevelActivity extends AppCompatActivity {
                 stepParams.width = dpToPx(40); // Circular size
                 stepParams.height = dpToPx(40);
                 stepParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(0), dpToPx(16));
+                
                 stepButton.setLayoutParams(stepParams);
 
                 // Add click listener for the step button
@@ -699,7 +747,7 @@ public class FirstLevelActivity extends AppCompatActivity {
                 stepButton.setOnClickListener(view -> {
                     int clickedStep = (int) view.getTag();
 
-
+                    scrollToCenter(stepButton);
                     onButtonClicked(clickedStep);
 
                 });
@@ -869,5 +917,12 @@ public class FirstLevelActivity extends AppCompatActivity {
         });
         AlertDialog alertDialog = dialog.create();
         alertDialog.show();
+    }
+
+    private void scrollToCenter(View view){
+        int scrollViewWidth=scrollView.getWidth();
+        int buttonWidth=scrollView.getWidth();
+        int scrollX =(view.getLeft()+ view.getRight())/2-scrollViewWidth/2;
+        scrollView.smoothScrollTo(scrollX,0);
     }
 }

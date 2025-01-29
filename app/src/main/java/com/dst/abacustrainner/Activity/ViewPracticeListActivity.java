@@ -48,7 +48,6 @@ public class ViewPracticeListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_practice_list);
-
         txtName=findViewById(R.id.txt_name);
         txtTopicName=findViewById(R.id.txt_topic_name);
         recyclerViewTopic=findViewById(R.id.recycler_view_topic);

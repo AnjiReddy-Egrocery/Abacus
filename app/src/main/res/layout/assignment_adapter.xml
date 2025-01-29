@@ -62,7 +62,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Practice Now"
-                        android:textSize="14dp"
+                        android:textSize="12dp"
                         android:layout_weight="1"
                         android:fontFamily="@font/regular"
                         android:textStyle="bold"
@@ -83,10 +83,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=""
+                            android:gravity="center"
                             android:fontFamily="@font/regular"
                             android:textStyle="bold"
                             android:id="@+id/txt_assign_count"
-                            android:textSize="14dp"
+                            android:textSize="12dp"
                             android:textColor="#000"/>
 
                     </LinearLayout>

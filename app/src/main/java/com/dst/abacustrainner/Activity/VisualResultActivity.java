@@ -47,6 +47,7 @@ public class VisualResultActivity extends AppCompatActivity {
     long ID;
     double timeInSeconds;
     String studentName,startedOn;
+    String totalTime;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -70,6 +71,8 @@ public class VisualResultActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
+        totalTime = intent.getStringExtra("TOTAL_TIME");
+
         studentName =intent.getStringExtra("firstName");
         startedOn = intent.getStringExtra("submitedOn");
         ArrayList<String> questions = intent.getStringArrayListExtra("questions");
@@ -144,6 +147,7 @@ public class VisualResultActivity extends AppCompatActivity {
 
         // Display the date and time in the TextView
         dateTime.setText(currentDateTime);
+
         // ************ Graph part ***************************** //
 
         pieChart = findViewById(R.id.pieChart);
@@ -174,8 +178,8 @@ public class VisualResultActivity extends AppCompatActivity {
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleRadius(40f);
         pieChart.setTransparentCircleRadius(50f);
-        pieChart.setCenterText("Pie Chart");
-        pieChart.setCenterTextSize(16f);
+        pieChart.setCenterText(totalTime);
+        pieChart.setCenterTextSize(12f);
 
         // Set labels and values outside the slices
         dataSet.setValueLinePart1Length(0.5f);
