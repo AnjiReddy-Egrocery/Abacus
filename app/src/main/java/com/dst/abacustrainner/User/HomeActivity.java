@@ -1,6 +1,7 @@
 package com.dst.abacustrainner.User;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -19,6 +20,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
+import com.dst.abacustrainner.Activity.VisualQuizActivity;
+import com.dst.abacustrainner.Activity.VisualiztionActivity;
 import com.dst.abacustrainner.Fragment.AIGenrationFragment;
 import com.dst.abacustrainner.Fragment.ClassFragment;
 
@@ -176,7 +180,7 @@ public class HomeActivity extends AppCompatActivity{
             Fragment selectedFragment = null;
             int itemView = item.getItemId();
 
-            /*if (itemView == R.id.nav_dashboard) {
+            if (itemView == R.id.nav_dashboard) {
                 selectedFragment = new HomeFragment();
             }else if (itemView == R.id.nav_logout) {
                 SharedPrefManager.getInstance(getApplicationContext().getApplicationContext()).isLoggedOut();
@@ -186,6 +190,17 @@ public class HomeActivity extends AppCompatActivity{
                 selectedFragment = new SchedulesFragment();
             }else if (itemView == R.id.nav_profile) {
                 selectedFragment = new ProfileFragment();
+            }else if (itemView == R.id.nav_play_with_numbers) {
+                Intent intent = new Intent(HomeActivity.this, PlayWithNumbersActivity.class);
+                intent.putExtra("studentId",studentId);
+                //intent.putExtra("firstName",firsstname);
+                startActivity(intent);
+            }else if (itemView == R.id.nav_visualization) {
+                Intent intent = new Intent(HomeActivity.this, VisualiztionActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }else if (itemView == R.id.nav_exam) {
+                selectedFragment = new AIGenrationFragment();
             }
 
 
@@ -194,7 +209,7 @@ public class HomeActivity extends AppCompatActivity{
                         .beginTransaction()
                         .replace(R.id.flFragment, selectedFragment)
                         .commit();
-            }*/
+            }
 
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
