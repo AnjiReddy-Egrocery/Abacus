@@ -620,6 +620,9 @@ public class TopicPracticeActivity extends AppCompatActivity {
                 stepParams.width = dpToPx(40); // Circular size
                 stepParams.height = dpToPx(40);
                 stepParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(0), dpToPx(16));
+                if (i == totalColumns - 1) {
+                    stepParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(25), dpToPx(16));
+                }
                 stepButton.setLayoutParams(stepParams);
 
                 // Add click listener for the step button

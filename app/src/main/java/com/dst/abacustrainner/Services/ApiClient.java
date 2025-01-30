@@ -5,6 +5,7 @@ import com.dst.abacustrainner.Model.AssignmentListResponse;
 import com.dst.abacustrainner.Model.AssignmentSubmitDataResponse;
 import com.dst.abacustrainner.Model.BachDetailsResponse;
 import com.dst.abacustrainner.Model.DatedetailsResponse;
+import com.dst.abacustrainner.Model.ForgotPassword;
 import com.dst.abacustrainner.Model.GameResponse;
 import com.dst.abacustrainner.Model.StudentDetails;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
@@ -121,4 +122,8 @@ public interface ApiClient {
                                 @Part("createdOn") RequestBody createdOn,
                                 @Part("operation") RequestBody operation,
                                 @Part("isVisualization") RequestBody isVisualization);
+
+    @Multipart
+    @POST("apicalls/Index/studentForgotPassword")
+    Call<ForgotPassword> forgot(@Part("userName") RequestBody userName);
 }
