@@ -17,10 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 
-import com.dst.abacustrainner.Fragment.HomeFragment;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.User.HomeActivity;
 
@@ -32,7 +30,7 @@ import java.util.Random;
 
 public class PlayWithNumbersActivity extends AppCompatActivity {
 
-    private Spinner spinnerOperation, spinnerOperands, spinnerTotalQuestions,spinnerSelectedLevel;
+    private Spinner spinnerOperation,spinnerOperands, spinnerTotalQuestions,spinnerSelectedLevel;
     private LinearLayout dropdownContainer,btnBack;
     private Button btnStartPlay,butStartNumberGame;
 

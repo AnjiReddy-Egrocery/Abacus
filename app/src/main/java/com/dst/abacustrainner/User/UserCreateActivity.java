@@ -247,9 +247,6 @@ public class UserCreateActivity extends AppCompatActivity {
 
 //        layoutTextSignIn.setVisibility(View.VISIBLE);
 
-
-
-
     }
 
     private void FormRegisterMethod() {
