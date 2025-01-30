@@ -1,5 +1,6 @@
 package com.dst.abacustrainner.User;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -56,11 +57,13 @@ public class UserCreateActivity extends AppCompatActivity {
     String parentEmail,password;
     EditText edtEmail,edtPassword;
     EditText edtFirstName,edtLastName,edtDate,edtMotherTongue,edtRegisterEmail,edtNumber;
+    TextView txtForgotPassword;
     private RadioGroup genderRadioGroup;
     private Calendar calendar;
     String firstName,lastName,mobileNumber,registeremail,date,tongue,selectedGender;
     private SharedPreferences sharedPreferences;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +101,9 @@ public class UserCreateActivity extends AppCompatActivity {
 
         calendar = Calendar.getInstance();
 
+        txtForgotPassword = findViewById(R.id.txt_forgot_password);
+
+
         edtDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,6 +126,14 @@ public class UserCreateActivity extends AppCompatActivity {
             public void onClick(View view) {
                 SignInVisiableMethod();
                 changeTextColors(true);
+            }
+        });
+
+        txtForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserCreateActivity.this, ForgotPasswordActivity.class);
+                startActivity(intent);
             }
         });
 

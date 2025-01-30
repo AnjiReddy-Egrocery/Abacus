@@ -261,6 +261,7 @@
                         android:textColor="#4e148c"
                         android:textSize="20dp"
                         android:gravity="right"
+                        android:id="@+id/txt_forgot_password"
                         android:layout_marginTop="14dp" />
 
 

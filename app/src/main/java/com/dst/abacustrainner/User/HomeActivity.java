@@ -190,7 +190,7 @@ public class HomeActivity extends AppCompatActivity{
                 selectedFragment = new SchedulesFragment();
             }else if (itemView == R.id.nav_profile) {
                 selectedFragment = new ProfileFragment();
-            }else if (itemView == R.id.nav_play_with_numbers) {
+            }else if (itemView == R.id.nav_play_with_numbers ) {
                 Intent intent = new Intent(HomeActivity.this, PlayWithNumbersActivity.class);
                 intent.putExtra("studentId",studentId);
                 //intent.putExtra("firstName",firsstname);
