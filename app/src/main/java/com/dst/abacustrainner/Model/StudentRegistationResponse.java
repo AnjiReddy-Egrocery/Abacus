@@ -56,7 +56,7 @@ public class StudentRegistationResponse {
         private String age;
         private String emailId;
         private String motherTongue;
-        private Object profilePic;
+        private String profilePic;
         private Object fatherName;
         private String fatherMobile;
         private Object fatherQualification;
@@ -109,14 +109,24 @@ public class StudentRegistationResponse {
         private Object courseLevel;
         private Object instructorName;
 
-        public Result(String studentId, String firstName, String lastName, String emailId, String fatherMobile, String parentEmail) {
+        public Result(String studentId, String firstName, String lastName, String emailId, String fatherMobile, String parentEmail,String profilePic) {
             this.studentId=studentId;
             this.firstName=firstName;
             this.lastName=lastName;
             this.emailId=emailId;
             this.fatherMobile=fatherMobile;
             this.parentEmail=parentEmail;
+            this.profilePic = profilePic;
         }
+
+        public String getProfilePic() {
+            return profilePic;
+        }
+
+        public void setProfilePic(String profilePic) {
+            this.profilePic = profilePic;
+        }
+
 
         public String getPassword() {
             return password;
@@ -238,13 +248,8 @@ public class StudentRegistationResponse {
             this.motherTongue = motherTongue;
         }
 
-        public Object getProfilePic() {
-            return profilePic;
-        }
 
-        public void setProfilePic(Object profilePic) {
-            this.profilePic = profilePic;
-        }
+
 
         public Object getFatherName() {
             return fatherName;

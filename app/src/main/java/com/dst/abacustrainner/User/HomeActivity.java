@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -20,6 +21,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
 import com.dst.abacustrainner.Activity.VisualQuizActivity;
 import com.dst.abacustrainner.Activity.VisualiztionActivity;
@@ -44,7 +46,8 @@ import com.google.android.material.navigation.NavigationView;
 
 public class HomeActivity extends AppCompatActivity{
 
-    String studentId;
+    String studentId,firstName,LastName;
+    Object profilePic ;
     String displayName;
     String email;
     String idToken;
@@ -60,6 +63,11 @@ public class HomeActivity extends AppCompatActivity{
     private NavigationView navigationView;
     private boolean isInboxSubmenuVisible = false;
 
+    TextView txtName;
+    String fullName;
+    ImageView imageProfile;
+
+
 
 
 
@@ -70,6 +78,10 @@ public class HomeActivity extends AppCompatActivity{
         setContentView(R.layout.activity_home);
 
         toolbar = findViewById(R.id.toolbar);
+        txtName = findViewById(R.id.txt_name);
+        imageProfile = findViewById(R.id.imgProfile);
+
+
 
 
 
@@ -90,6 +102,30 @@ public class HomeActivity extends AppCompatActivity{
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         StudentRegistationResponse.Result result= SharedPrefManager.getInstance(getApplicationContext()).getUserData();
         studentId = result.getStudentId();
+        firstName = result.getFirstName();
+        LastName = result.getLastName();
+        profilePic = result.getProfilePic();
+
+        Log.e("Reddy","image"+profilePic);
+
+        String imageUrl = "https://www.abacustrainer.com/assets/student_images/"+profilePic;
+
+        Log.e("Reddy","image"+imageUrl);
+
+        String formattedFirstName = capitalizeFirstLetter(firstName);
+        String formattedLastName = capitalizeFirstLetter(LastName);
+
+        fullName= formattedFirstName +formattedLastName;
+
+        txtName.setText(fullName);
+
+        Glide.with(this)
+                .load(R.drawable.headerprofile) // You can use URL also
+                .circleCrop()
+                .into(imageProfile);
+
+        Log.e("Reddy","Name"+fullName);
+
 
         if (studentId != null) {
             // Load the HomeFragment with the retrieved studentId
@@ -107,6 +143,10 @@ public class HomeActivity extends AppCompatActivity{
 
         View headerView = navigationView.getHeaderView(0);
         ImageView closeIcon = headerView.findViewById(R.id.close_icon);
+        TextView txtUserName = headerView.findViewById(R.id.user_name);
+
+        txtUserName.setText(fullName);
+
 
 
         closeIcon.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +171,13 @@ public class HomeActivity extends AppCompatActivity{
         navigationView.setNavigationItemSelectedListener(navDrawerListener);
 
 
+    }
+
+    private String capitalizeFirstLetter(String firstName) {
+        if (firstName == null || firstName.isEmpty()) {
+            return ""; // Return empty string if name is null or empty
+        }
+        return firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
     }
 
     private void loadHomeFragmentWithStudentId(String studentId) {

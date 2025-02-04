@@ -275,8 +275,6 @@ public class UserCreateActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     private void registerMenthod(String firstName, String lastName, String mobileNumber, String registeremail, String date, String tongue) {

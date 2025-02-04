@@ -11,11 +11,7 @@ import com.dst.abacustrainner.User.WelcomeActivity;
 
 
 public class SpalashActivity extends AppCompatActivity {
-    private static  int SPLASH_SCREEN=3000;
-
-
-
-
+    private static final int SPLASH_SCREEN_DELAY = 3200;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +22,7 @@ public class SpalashActivity extends AppCompatActivity {
         Thread loading = new Thread() {
             public void run() {
                 try {
-                    sleep(SPLASH_SCREEN);
+                    sleep(SPLASH_SCREEN_DELAY);
                     Intent main = new Intent(SpalashActivity.this, WelcomeActivity.class);
                     startActivity(main);
                 }

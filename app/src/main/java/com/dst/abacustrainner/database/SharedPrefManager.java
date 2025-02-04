@@ -20,6 +20,8 @@ public class SharedPrefManager {
     private static final String EMAIL_ID="emailId";
     private static final String FATHER_MOBILE="fatherMobile";
     private static final String PARENT_EMAIL="parentEmail";
+
+    private  static final String Profile_PIC="profilePic";
     private SharedPrefManager(Context context) {
         mContext=context;
     }
@@ -40,6 +42,7 @@ public class SharedPrefManager {
         editor.putString(EMAIL_ID,userInfo.getResult().getEmailId());
         editor.putString(FATHER_MOBILE,userInfo.getResult().getFatherMobile());
         editor.putString(PARENT_EMAIL,userInfo.getResult().getParentEmail());
+        editor.putString(Profile_PIC,userInfo.getResult().getProfilePic());
         editor.commit();
 
     }
@@ -52,7 +55,8 @@ public class SharedPrefManager {
                 sharedPreferences.getString(LAST_NAME,null),
                 sharedPreferences.getString(EMAIL_ID,null),
                 sharedPreferences.getString(FATHER_MOBILE,null),
-                sharedPreferences.getString(PARENT_EMAIL,null));
+                sharedPreferences.getString(PARENT_EMAIL,null),
+                sharedPreferences.getString(Profile_PIC,null));
         return userInfo;
     }
 
