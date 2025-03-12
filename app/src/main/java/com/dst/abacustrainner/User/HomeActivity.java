@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
 import com.dst.abacustrainner.Activity.VisualQuizActivity;
 import com.dst.abacustrainner.Activity.VisualiztionActivity;
+import com.dst.abacustrainner.Adapter.BatchDetailsAdapter;
 import com.dst.abacustrainner.Fragment.AIGenrationFragment;
 import com.dst.abacustrainner.Fragment.ClassFragment;
 
@@ -33,8 +34,10 @@ import com.dst.abacustrainner.Fragment.HomeFragment;
 import com.dst.abacustrainner.Fragment.PracticeFragment;
 import com.dst.abacustrainner.Fragment.ProfileFragment;
 import com.dst.abacustrainner.Fragment.SchedulesFragment;
+import com.dst.abacustrainner.Model.BachDetailsResponse;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.database.SharedPrefManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -42,6 +45,18 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class HomeActivity extends AppCompatActivity{
@@ -208,7 +223,10 @@ public class HomeActivity extends AppCompatActivity{
             }else if(itemView == R.id.ll_center_option){
                 selectedFragment =new AIGenrationFragment();
             }else if(itemView == R.id.navigation_schedules){
-                selectedFragment =new SchedulesFragment();
+
+                scheduleMethod(studentId);  // Call method (no fragment return needed)
+                return true;
+
             }else if(itemView == R.id.navigation_profile){
                 selectedFragment =new ProfileFragment();
             }
@@ -219,6 +237,65 @@ public class HomeActivity extends AppCompatActivity{
             return true;
         }
     };
+
+    private void scheduleMethod(String studentId) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient=retrofit.create(ApiClient.class);
+        RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
+        Call<BachDetailsResponse> call=apiClient.batchData(idPart);
+        call.enqueue(new Callback<BachDetailsResponse>() {
+            @Override
+            public void onResponse(Call<BachDetailsResponse> call, Response<BachDetailsResponse> response) {
+
+                if (response.isSuccessful()){
+                    BachDetailsResponse bachDetailsResponse=response.body();
+                    if (bachDetailsResponse.getErrorCode().equals("202")){
+                        Toast.makeText(HomeActivity.this, "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
+                    }else if (bachDetailsResponse.getErrorCode().equals("200")){
+
+                        List<BachDetailsResponse.Result> results=bachDetailsResponse.getResult();
+
+                        if (!results.isEmpty()) {
+                            String batchId = results.get(0).getBatchId();
+                            openSchedulesFragment(studentId, batchId);
+                        }
+                    } else {
+                        Toast.makeText(HomeActivity.this, "Data Error", Toast.LENGTH_LONG).show();
+                    }
+
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BachDetailsResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void openSchedulesFragment(String studentId, String batchId) {
+
+        Bundle bundle = new Bundle();
+        bundle.putString("studentId", studentId);
+        bundle.putString("batchId",batchId);
+
+        SchedulesFragment schedulesFragment = new SchedulesFragment();
+        schedulesFragment.setArguments(bundle);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.flFragment, schedulesFragment)
+                .commit();
+    }
 
 
     private NavigationView.OnNavigationItemSelectedListener navDrawerListener = new NavigationView.OnNavigationItemSelectedListener() {
@@ -234,7 +311,8 @@ public class HomeActivity extends AppCompatActivity{
             }else if (itemView == R.id.nav_events) {
                 selectedFragment = new CompetitionFragment();
             }else if (itemView == R.id.nav_schedules) {
-                selectedFragment = new SchedulesFragment();
+                scheduleMethod(studentId);  // Call method (no fragment return needed)
+                return true;
             }else if (itemView == R.id.nav_profile) {
                 selectedFragment = new ProfileFragment();
             }else if (itemView == R.id.nav_play_with_numbers ) {

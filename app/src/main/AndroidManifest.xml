@@ -16,7 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AbacusTrainer"
         tools:targetApi="31">
-
+        <activity
+            android:name=".Activity.AllSchedulesActivity"
+            android:exported="false" />
         <activity
             android:name=".User.UserCreateActivity"
             android:exported="false" />

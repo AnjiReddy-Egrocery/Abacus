@@ -119,7 +119,7 @@ public class ResultActivity extends AppCompatActivity {
         // Set the statistics in the TextViews
         txtTotalQuestions.setText(String.valueOf(totalQuestions));
         //txtAttemtedQueston.setText(String.valueOf(attemptedQuestions));
-//        txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
+        //txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
         // txtCorrectAnswer.setText(String.valueOf(correctAnswerCount));
         txtworngAnswer.setText(String.valueOf(wrongAnswerCount));
 
