@@ -2,6 +2,8 @@ package com.dst.abacustrainner.Adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.icu.util.Calendar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.OnDateClickListener;
 
+import java.text.SimpleDateFormat;
+
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
@@ -23,12 +29,15 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
     private List<String> days;
     private List<String> scheduledDates; // Store scheduled dates
     private OnDateClickListener listener;
+    private Map<String, String> dateIdMap;
+    private Calendar currentCalendar;
 
-    public CalendarAdapter(Context context, List<String> days, List<String> scheduledDates, OnDateClickListener listener) {
+    public CalendarAdapter(Context context, List<String> days, Map<String, String> dateIdMap, Calendar currentCalendar, OnDateClickListener listener) {
         this.context = context;
         this.days = days;
-        this.scheduledDates = scheduledDates;
         this.listener = listener;
+        this.dateIdMap = dateIdMap;
+        this.currentCalendar = currentCalendar; // ✅ Initialize dateIdMap
     }
 
     @NonNull
@@ -48,14 +57,27 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             holder.tvDate.setBackgroundResource(0); // Reset background
 
             if (dayText.contains("\n")) { // Check if date contains a scheduled class
+
                 holder.tvDate.setTextSize(14); // Reduce text size for better visibility
                 holder.tvDate.setTextColor(Color.BLACK); // Set scheduled classes in black
                 holder.tvDate.setBackgroundResource(R.color.grey); // Apply gray background
 
-                // ✅ **Click Listener for scheduled dates**
+                String selectedDay = dayText.split("\n")[0].trim(); // Extract day number
+                Calendar tempCalendar = (Calendar) currentCalendar.clone();
+                tempCalendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(selectedDay));
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                String formattedDate = dateFormat.format(tempCalendar.getTime());
+
+                // ✅ Get `dateId` using full date format
+                String dateId = dateIdMap.get(formattedDate);
+
+                Log.d("AdapterDateID", "SelectedDate: " + formattedDate + " | DateID: " + dateId);
+
+                // ✅ Click Listener for scheduled dates
                 holder.itemView.setOnClickListener(v -> {
                     if (listener != null) {
-                        listener.onDateClick(dayText); // Send selected date to Fragment
+                        listener.onDateClick(formattedDate, dateId); // Send selected date to Fragment
                     }
                 });
             } else {

@@ -26,8 +26,8 @@ import java.util.List;
 public class TopicListAdapter extends RecyclerView.Adapter<TopicListAdapter.TopicViewHolder> {
     Context mContext;
     private List<TopicListResponse.Result.Topics> topicsList;
-    public TopicListAdapter(TopicListActivity topicListActivity, List<TopicListResponse.Result.Topics> topicsList) {
-        this.mContext=topicListActivity;
+    public TopicListAdapter(Context context, List<TopicListResponse.Result.Topics> topicsList) {
+        this.mContext=context;
         this.topicsList=topicsList;
     }
     @NonNull

@@ -5,467 +5,340 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-   <!-- <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="18dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Today's Class"
-            android:textColor="#000"
-            android:textSize="20dp"
-            android:textStyle="bold"/>
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Addition Basics : "
-                android:textColor="#000"
-                android:textSize="20dp"
-                android:textStyle="normal"/>
-
-            <TextView
-                android:layout_width="210dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="15dp"
-                android:text="10:00 AM To 11:00 AM"
-                android:textColor="#000"
-                android:textSize="20dp"
-                android:textStyle="normal" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/orange_background"
-            android:text="Join Class"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="230dp"
-            android:textColor="#fff"
-            android:layout_gravity="right"
-            android:textSize="25dp"
-            android:gravity="center"
-            android:padding="4dp"
-            android:textStyle="bold"
-
-            />
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="Upcoming Classes"
-            android:textColor="#000"
-            android:textSize="20dp"
-            android:textStyle="bold"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="182dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Subtraction Tricks :"
-                android:textColor="#000"
-                android:textSize="20dp"
-                android:textStyle="normal" />
-
-            <TextView
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="10th April 2024"
-                android:textColor="#000"
-                android:textSize="20dp"
-                android:textStyle="normal" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-            <TextView
+            android:orientation="vertical">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="10:00AM To 11:00AM"
-                android:layout_gravity="end"
-                android:layout_marginLeft="170dp"
-                android:textColor="#000"
-                android:textSize="20dp"
-                android:textStyle="normal" />
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:padding="8dp">
+
+                <!-- Left Arrow -->
+                <ImageView
+                    android:id="@+id/btnPrevMonth"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_media_previous"
+                    android:contentDescription="Previous Month"/>
+
+                <!-- Month & Year -->
+                <TextView
+                    android:id="@+id/tvMonthYear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="February - 2025"
+                    android:textColor="#FF6600"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:paddingHorizontal="20dp"/>
+
+                <!-- Right Arrow -->
+                <ImageView
+                    android:id="@+id/btnNextMonth"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_media_next"
+                    android:contentDescription="Next Month"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:padding="5dp">
+
+                <!-- Sunday (Orange) -->
+                <TextView
+                    android:text="Sun"
+                    style="@style/WeekendHeaderStyle"/>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF"/>
+
+                <!-- Monday to Thursday (Purple) -->
+                <TextView android:text="Mon" style="@style/WeekdayHeaderStyle"/>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF"/>
+
+                <TextView android:text="Tue" style="@style/WeekdayHeaderStyle"/>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF"/>
+                <TextView android:text="Wed" style="@style/WeekdayHeaderStyle"/>
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF"/>
+                <TextView android:text="Thu" style="@style/WeekdayHeaderStyle"/>
+
+                <!-- White Line (Divider) -->
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF"/>
+
+                <!-- Friday (Purple) -->
+                <TextView android:text="Fri" style="@style/WeekdayHeaderStyle"/>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="#FFFFFF"/>
+
+                <!-- Saturday (Orange) -->
+                <TextView android:text="Sat" style="@style/WeekendHeaderStyle"/>
 
 
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/calendarRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginLeft="12dp"
+                android:numColumns="7"
+                android:verticalSpacing="1dp"
+                android:horizontalSpacing="1dp"
+                android:background="#ffffff"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginLeft="12dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Schedule Information"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:textColor="#000"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/viewall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/orange_background"
+                    android:text="View All"
+                    android:textColor="#fff"
+                    android:layout_weight="1"
+                    android:textSize="20dp"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:textStyle="bold"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:weightSum="3"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="20-02-2024"
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    android:textSize="18dp"
+                    android:visibility="visible"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="4:00 pm"
+                    android:textStyle="bold"
+                    android:textColor="#000"
+                    android:textSize="18dp"
+                    android:layout_weight="1"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_radius"
+                    android:text="Join now"
+                    android:textColor="#ff6600"
+                    android:layout_weight="1"
+                    android:textSize="22dp"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:textStyle="bold"
+
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginRight="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Topics"
+                    android:textColor="#4A148C"
+                    android:textStyle="bold"
+                    android:textSize="18dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp">
+
+                    <!-- Fixed Table Header -->
+                    <TableLayout
+                        android:id="@+id/headerTable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:stretchColumns="1"
+                        android:background="#CCCCCC">
+
+                        <TableRow>
+                            <TextView
+                                android:text="No"
+                                android:textStyle="bold"
+                                android:padding="8dp"
+                                android:textSize="16dp"
+                                android:layout_gravity="center"/>
+                            <TextView
+                                android:text="Topics"
+                                android:textStyle="bold"
+                                android:padding="8dp"
+                                android:textSize="16dp"
+                                android:layout_gravity="center"/>
+                            <TextView
+                                android:text="Practice"
+                                android:textStyle="bold"
+                                android:padding="8dp"
+                                android:layout_gravity="center"
+                                android:textSize="16dp"
+                                />
+                        </TableRow>
+                    </TableLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TableLayout
+                            android:id="@+id/tableLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:stretchColumns="1"
+                            android:padding="8dp"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginRight="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Assignment Topics"
+                    android:textColor="#4A148C"
+                    android:textStyle="bold"
+                    android:textSize="18dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp">
+
+                    <!-- Fixed Table Header -->
+                    <TableLayout
+                        android:id="@+id/headerTableassignment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:stretchColumns="1"
+                        android:background="#CCCCCC">
+
+                        <TableRow>
+                            <TextView
+                                android:text="No"
+                                android:textStyle="bold"
+                                android:padding="8dp"
+                                android:textSize="16dp"
+                                android:layout_gravity="center"/>
+                            <TextView
+                                android:text="Topics"
+                                android:textStyle="bold"
+                                android:padding="8dp"
+                                android:textSize="16dp"
+                                android:layout_gravity="center"/>
+                            <TextView
+                                android:text="Practice"
+                                android:textStyle="bold"
+                                android:padding="8dp"
+                                android:layout_gravity="center"
+                                android:textSize="16dp"
+                                />
+                        </TableRow>
+                    </TableLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TableLayout
+                            android:id="@+id/tableLayoutassignment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:stretchColumns="1"
+                            android:padding="8dp"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-
-         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/background_orange">
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Upcoming Events"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        android:textColor="#000"
-        android:textSize="20dp"
-        android:textStyle="bold"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:layout_width="130dp"
-            android:layout_height="wrap_content"
-            android:text="Competition :"
-            android:layout_marginLeft="15dp"
-            android:textColor="#000"
-            android:textSize="20dp"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:text="Abacus Speed Test"
-            android:layout_marginLeft="15dp"
-            android:textColor="#000"
-            android:textSize="20dp"
-            android:textStyle="normal"/>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:text="Date :"
-            android:layout_marginLeft="15dp"
-            android:textColor="#000"
-            android:textSize="20dp"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:text="10th April 2024"
-            android:layout_marginLeft="15dp"
-            android:textColor="#000"
-            android:textSize="20dp"
-            android:textStyle="normal"/>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="Details :"
-            android:layout_marginLeft="15dp"
-            android:textColor="#000"
-            android:textSize="20dp"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="260dp"
-            android:layout_height="wrap_content"
-            android:text="Join us for a competative test to showcase youe skills!"
-            android:layout_marginLeft="15dp"
-            android:textColor="#000"
-            android:textSize="20dp"
-            android:textStyle="normal"/>
-
-
-    </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/orange_background"
-            android:text="Set Reminder"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="170dp"
-            android:textColor="#fff"
-            android:textSize="25dp"
-            android:gravity="center"
-            android:padding="4dp"
-            android:textStyle="bold"
-            android:layout_marginLeft="15dp"
-            android:layout_marginBottom="20dp"
-            />
-
-
-
+    </ScrollView>
 </LinearLayout>
 
-    </LinearLayout>-->
-
-    <!-- Month and year Selection -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:padding="8dp">
-
-        <!-- Left Arrow -->
-        <ImageView
-            android:id="@+id/btnPrevMonth"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/ic_media_previous"
-            android:contentDescription="Previous Month"/>
-
-        <!-- Month & Year -->
-        <TextView
-            android:id="@+id/tvMonthYear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="February - 2025"
-            android:textColor="#FF6600"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:paddingHorizontal="20dp"/>
-
-        <!-- Right Arrow -->
-        <ImageView
-            android:id="@+id/btnNextMonth"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/ic_media_next"
-            android:contentDescription="Next Month"/>
-    </LinearLayout>
-
-    <!-- days List  (SUN - SAT) -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:padding="5dp">
-
-        <!-- Sunday (Orange) -->
-        <TextView
-            android:text="Sun"
-            style="@style/WeekendHeaderStyle"/>
-
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="#FFFFFF"/>
-
-        <!-- Monday to Thursday (Purple) -->
-        <TextView android:text="Mon" style="@style/WeekdayHeaderStyle"/>
-
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="#FFFFFF"/>
-
-        <TextView android:text="Tue" style="@style/WeekdayHeaderStyle"/>
-
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="#FFFFFF"/>
-        <TextView android:text="Wed" style="@style/WeekdayHeaderStyle"/>
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="#FFFFFF"/>
-        <TextView android:text="Thu" style="@style/WeekdayHeaderStyle"/>
-
-        <!-- White Line (Divider) -->
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="#FFFFFF"/>
-
-        <!-- Friday (Purple) -->
-        <TextView android:text="Fri" style="@style/WeekdayHeaderStyle"/>
-
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="#FFFFFF"/>
-
-        <!-- Saturday (Orange) -->
-        <TextView android:text="Sat" style="@style/WeekendHeaderStyle"/>
-
-
-    </LinearLayout>
-
-
-    <!-- Calendar Grid -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/calendarRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:numColumns="7"
-        android:verticalSpacing="1dp"
-        android:horizontalSpacing="1dp"
-        android:background="#ffffff"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="2"
-        android:gravity="center"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Schedule Information"
-            android:layout_weight="1"
-            android:padding="10dp"
-            android:textColor="#000"
-            android:textSize="19dp"
-            android:textStyle="bold"
-            />
-        <TextView
-            android:id="@+id/viewall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/orange_background"
-            android:text="View All"
-            android:textColor="#fff"
-            android:layout_weight="1"
-            android:textSize="22dp"
-            android:gravity="center"
-            android:padding="5dp"
-            android:textStyle="bold"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:weightSum="3"
-        android:gravity="center"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="20-02-2024"
-            android:textColor="#000"
-            android:textStyle="bold"
-            android:layout_weight="1"
-            android:textSize="18dp"
-            android:visibility="visible"
-            android:gravity="center"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="4:00 pm"
-            android:textStyle="bold"
-            android:textColor="#000"
-            android:textSize="18dp"
-            android:layout_weight="1"
-            android:gravity="center"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/border_radius"
-            android:text="Join now"
-            android:textColor="#ff6600"
-            android:layout_weight="1"
-            android:textSize="22dp"
-            android:gravity="center"
-            android:padding="5dp"
-            android:textStyle="bold"
-
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Batch Topics"
-            android:textColor="#4A148C"
-            android:textStyle="bold"
-            android:textSize="18sp"/>
-
-        <!-- Header Row -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#DDDDDD"
-            android:padding="8dp">
-
-            <TextView
-                android:text="No"
-                android:textStyle="bold"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:text="Topics"
-                android:textStyle="bold"
-                android:layout_width="0dp"
-                android:layout_weight="3"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:text="Practice"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <!-- RecyclerView for dynamic data -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"/>
-    </LinearLayout>
-
-
-</LinearLayout>
 
 
 
