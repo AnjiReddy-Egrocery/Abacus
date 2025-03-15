@@ -134,6 +134,8 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), AllSchedulesActivity.class);
+                intent.putExtra("studentId",studentId);
+                intent.putExtra("batchId",batchId);
                 startActivity(intent);
             }
         });

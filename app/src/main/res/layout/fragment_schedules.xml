@@ -193,6 +193,7 @@
                     android:layout_weight="1"
                     android:textSize="22dp"
                     android:gravity="center"
+
                     android:padding="5dp"
                     android:textStyle="bold"
 

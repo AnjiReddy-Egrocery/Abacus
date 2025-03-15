@@ -115,16 +115,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        layoutPlayWithNumbers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent=new Intent(getContext(), PlayWithNumbersActivity.class);
-                intent.putExtra("studentId",id);
-                intent.putExtra("firstName",firsstname);
-                startActivity(intent);
-            }
-        });
 
         layoutvisualization.setOnClickListener(new View.OnClickListener() {
             @Override
