@@ -123,26 +123,27 @@ public class AllSchedulesActivity extends AppCompatActivity {
                         List<DatedetailsResponse.Result> result = details.getResult();
 
 
-                        tableLayout.removeAllViews(); // Remove only the data rows
+                        tableLayout.removeAllViews(); // Clear previous rows
+
+// Create Header Row
                         TableRow headerRow = new TableRow(AllSchedulesActivity.this);
                         headerRow.setBackgroundColor(Color.LTGRAY);
 
                         String[] headers = {"Date", "Time", "Conducted"};
-
                         for (String header : headers) {
                             TextView headerText = new TextView(AllSchedulesActivity.this);
                             headerText.setText(header);
-                            headerText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+                            headerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16); // Bigger Text
+                            headerText.setTypeface(Typeface.DEFAULT_BOLD);
                             headerText.setTextColor(Color.BLACK);
                             headerText.setGravity(Gravity.CENTER);
                             headerText.setPadding(8, 14, 8, 14);
-                            headerText.setBackgroundResource(R.drawable.border);
+                            headerText.setBackgroundResource(R.drawable.border); // **BORDER ADDED**
                             headerRow.addView(headerText);
                         }
+                        tableLayout.addView(headerRow); // Add header to TableLayout
 
-                        tableLayout.addView(headerRow); // Add the header to the TableLayout
-
-                        // Add Data Rows
+// Add Data Rows
                         for (int i = 0; i < result.size(); i++) {
                             DatedetailsResponse.Result item = result.get(i);
                             String startTime = item.getStartTime();
@@ -154,46 +155,46 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
                             for (int j = 0; j < datesList.size(); j++) {
                                 DatedetailsResponse.Result.Date date = datesList.get(j);
-
                                 TableRow row = new TableRow(AllSchedulesActivity.this);
 
+                                // **Date Column**
                                 TextView txtDate = new TextView(AllSchedulesActivity.this);
                                 txtDate.setText(date.getScheduleDate());
-                                txtDate.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                                txtDate.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                                 txtDate.setPadding(8, 14, 8, 14);
                                 txtDate.setGravity(Gravity.CENTER);
-                                txtDate.setBackgroundResource(R.drawable.border);
+                                txtDate.setBackgroundResource(R.drawable.border); // **BORDER ADDED**
 
+                                // **Time Column**
                                 TextView txtTime = new TextView(AllSchedulesActivity.this);
                                 txtTime.setText(timeText);
                                 txtTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-                                txtTime.setPadding(8, 14, 8, 14);
+                                txtTime.setPadding(8, 14, 8, 14); // **Reduce left & right padding**
                                 txtTime.setGravity(Gravity.CENTER);
-                                txtTime.setBackgroundResource(R.drawable.border);
+                                txtTime.setBackgroundResource(R.drawable.border); // **BORDER ADDED**
 
+                                // **Conducted Column (Button Style)**
                                 TextView txtConducted = new TextView(AllSchedulesActivity.this);
-                                txtConducted.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                                txtConducted.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                                 txtConducted.setGravity(Gravity.CENTER);
-                                txtConducted.setBackgroundResource(R.drawable.border); // Border drawable
-                                txtConducted.setPadding(8, 14, 8, 14);
+                                txtConducted.setPadding(30, 10, 30, 10); // **Left/Right gap added**
+                                txtConducted.setTypeface(Typeface.DEFAULT_BOLD);
+                                txtConducted.setTextColor(Color.WHITE);
+                                txtConducted.setBackgroundResource(R.drawable.button_background); // **Rounded button style**
 
-                                SpannableString spannableText = new SpannableString("Upcoming");
+                                // **Set Button Text**
+                                if (j == 0) {
+                                    txtConducted.setText("Join Now");
+                                } else {
+                                    txtConducted.setText("Up Coming");
+                                }
 
-                                // Apply orange background color
-                                spannableText.setSpan(new BackgroundColorSpan(Color.parseColor("#FF8000")), 0, 8, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                                // Optional: Change text color to white for better visibility
-                                spannableText.setSpan(new ForegroundColorSpan(Color.WHITE), 0, 8, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                                txtConducted.setText(spannableText);
-
-
-                                // Add all views to the row
+                                // **Add Views to Row**
                                 row.addView(txtDate);
                                 row.addView(txtTime);
                                 row.addView(txtConducted);
 
-                                // Add row to table layout
+                                // **Add Row to TableLayout**
                                 tableLayout.addView(row);
                             }
                         }

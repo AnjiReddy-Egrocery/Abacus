@@ -6,7 +6,11 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -391,8 +395,25 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                     TopicListResponse.Result result = response.body().getResult();
                     List<TopicListResponse.Result.Topics> topicsList = result.getTopicsList();
 
+
                     tableLayout.removeAllViews(); // Remove only the data rows
-                    // Loop through topics and add rows dynamically
+                    TableRow headerRow = new TableRow(getContext());
+                    headerRow.setBackgroundColor(Color.LTGRAY);
+
+                    String[] headers = {"No", "Topics", "Practice"};
+
+                    for (String header : headers) {
+                        TextView headerText = new TextView(getContext());
+                        headerText.setText(header);
+                        headerText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+                        headerText.setTextColor(Color.BLACK);
+                        headerText.setGravity(Gravity.CENTER);
+                        headerText.setPadding(8, 14, 8, 14);
+                        headerText.setBackgroundResource(R.drawable.border);
+                        headerRow.addView(headerText);
+                    }
+
+                    tableLayout.addView(headerRow); // Add the header to the TableLayout
                     for (int i = 0; i < topicsList.size(); i++) {
                         TopicListResponse.Result.Topics topic = topicsList.get(i);
 
@@ -400,29 +421,35 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
 
                         TextView txtNumber = new TextView(getContext());
                         txtNumber.setText(String.valueOf(i + 1));
-                        txtNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+                        txtNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
                         txtNumber.setPadding(8, 14, 8, 14);
                         txtNumber.setTextColor(Color.BLACK);
-                        txtNumber.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
                         txtNumber.setGravity(Gravity.CENTER);
-
+                        txtNumber.setBackgroundResource(R.drawable.border);
 
                         TextView txtTopic = new TextView(getContext());
                         txtTopic.setText(topic.getTopicName());
-                        txtTopic.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-                        txtTopic.setPadding(8,14,14,8);
-                        txtTopic.setTextColor(Color.BLACK);
-                        txtTopic.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
+                        txtTopic.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                        txtTopic.setPadding(0, 14, 0, 14);
                         txtTopic.setGravity(Gravity.CENTER);
+                        txtTopic.setBackgroundResource(R.drawable.border);
 
-                        TextView txtPracticeNow = new TextView(getContext());
-                        txtPracticeNow.setText("PracticeKnow");
-                        txtPracticeNow.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-                        txtPracticeNow.setPadding(8,14,14,8);
-                        txtPracticeNow.setTextColor(Color.BLACK);
-                        txtPracticeNow.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-                        txtPracticeNow.setGravity(Gravity.CENTER);
-                        txtPracticeNow.setBackgroundResource(R.drawable.button_style);
+
+                        TextView txtPractice = new TextView(getContext());
+                        txtPractice.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                        txtPractice.setGravity(Gravity.CENTER);
+                        txtPractice.setBackgroundResource(R.drawable.border); // Border drawable
+                        txtPractice.setPadding(8, 14, 6, 14);
+
+                        SpannableString spannableText = new SpannableString("PracticeNow/ViewResults");
+
+                        // Apply orange background color
+                        spannableText.setSpan(new BackgroundColorSpan(Color.parseColor("#FF8000")), 0, 8, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                        // Optional: Change text color to white for better visibility
+                        spannableText.setSpan(new ForegroundColorSpan(Color.WHITE), 0, 8, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                        txtPractice.setText(spannableText);
 
 // Practice Button
                        /* Button btnPractice = new Button(getContext());
@@ -435,7 +462,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                         btnPractice.setGravity(Gravity.CENTER);
                         btnPractice.setBackgroundResource(R.drawable.button_style);*/ // Custom button style
 
-                        txtPracticeNow.setOnClickListener(v -> {
+                        txtPractice.setOnClickListener(v -> {
                             Intent intent = new Intent(getContext(), TopicPracticeActivity.class);
                             intent.putExtra("topicId", topic.getTopicId());
                             intent.putExtra("studentId", studentId);
@@ -446,15 +473,9 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
 
                         row.addView(txtNumber);
                         row.addView(txtTopic);
-                        row.addView(txtPracticeNow);
+                        row.addView(txtPractice);
 
-                        View horizontalLine = new View(getContext());
-                        horizontalLine.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 1));
-                        horizontalLine.setBackgroundColor(Color.BLACK);
-                        tableLayout.addView(row);
-                        if (i < topicsList.size() - 1) {
-                            tableLayout.addView(horizontalLine);
-                        }
+                       tableLayout.addView(row);
 
 
                     }

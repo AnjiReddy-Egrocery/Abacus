@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment {
     private Calendar calendar;
     String id="",dateId ="",name="",time="",time1="",date="",firsstname="",startedOn="";
     LinearLayout layoutData,layoutPlayWithNumbers,layoutvisualization;
-    RecyclerView recyclerViewBatches;
+    //RecyclerView recyclerViewBatches;
 
     BatchDetailsAdapter batchDetailsAdapter;
     ProgressBar progressBar;
@@ -88,9 +88,9 @@ public class HomeFragment extends Fragment {
         id=result.getStudentId();
         firsstname=" Hello " +  result.getFirstName() + "";
 
-        recyclerViewBatches = view.findViewById(R.id.recycler_baches);
+       // recyclerViewBatches = view.findViewById(R.id.recycler_baches);
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
-        recyclerViewBatches.setLayoutManager(layoutManager);
+        //recyclerViewBatches.setLayoutManager(layoutManager);
         VerifyMethod(id,currentDate);
         VerifyBatchDetails(id);
 
@@ -111,6 +111,16 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("startTime",time);
                 intent.putExtra("endTime",time1);
                 intent.putExtra("scheduleDate",date);
+                startActivity(intent);
+            }
+        });
+
+        layoutPlayWithNumbers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getContext(), PlayWithNumbersActivity.class);
+                intent.putExtra("studentId",id);
+                intent.putExtra("firstName",firsstname);
                 startActivity(intent);
             }
         });
@@ -160,7 +170,7 @@ public class HomeFragment extends Fragment {
                         List<BachDetailsResponse.Result> results=bachDetailsResponse.getResult();
 
                         batchDetailsAdapter =new BatchDetailsAdapter(getActivity(),results);
-                        recyclerViewBatches.setAdapter(batchDetailsAdapter);
+                       // recyclerViewBatches.setAdapter(batchDetailsAdapter);
 
                     }else {
                         Toast.makeText(getContext(), "Data Error", Toast.LENGTH_LONG).show();
