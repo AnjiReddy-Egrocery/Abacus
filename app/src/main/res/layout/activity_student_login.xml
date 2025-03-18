@@ -8,7 +8,7 @@
     android:background="@drawable/signin_background">
 
 
-    <LinearLayout
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -40,6 +40,8 @@
                 android:gravity="center_vertical"
                 android:textColor="#FFF"
                 android:layout_marginLeft="16dp"/>
+
+
 
         </LinearLayout>
 
@@ -73,8 +75,27 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </LinearLayout>-->
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="1dp">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/gts_logo"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:src="@drawable/logo_image"
+            android:layout_gravity="right"
+            android:layout_marginLeft="200dp"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -106,7 +127,7 @@
                     android:gravity="center_horizontal">
 
                     <!-- Sign In Text -->
-                     <TextView
+                    <TextView
                         android:id="@+id/txt_signin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -196,7 +217,7 @@
                         android:paddingLeft="12dp"
                         android:layout_marginTop="6dp"
                         android:paddingRight="14dp"
-                        android:id="@+id/edt_parent_email"
+                        android:id="@+id/edt_student_email"
                         android:drawableRight="@drawable/baseline_email_24"
                         android:background="@drawable/back_ground"
                         android:textColorHint="#000" />
@@ -217,7 +238,7 @@
                         android:layout_marginTop="16dp">
 
                         <EditText
-                            android:id="@+id/edt_password"
+                            android:id="@+id/edt_student_password"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:background="@drawable/back_ground"
@@ -272,7 +293,7 @@
                         android:textSize="18dp"
                         android:textStyle="bold"
                         android:textColor="#FFF"
-                        android:id="@+id/but_login"
+                        android:id="@+id/but_student_login"
                         android:layout_marginTop="18dp"
                         android:layout_marginBottom="20dp"
                         android:backgroundTint="#FD6801"/>
@@ -633,9 +654,9 @@
 
 
         </LinearLayout>
-</LinearLayout>
+    </LinearLayout>
 
-    <Button
+   <!-- <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
@@ -644,6 +665,6 @@
         android:textColor="#FFF"
         android:textStyle="bold"
         android:textSize="18dp"
-        android:backgroundTint="#FD6801"/>
+        android:backgroundTint="#FD6801"/>-->
 
 </LinearLayout>

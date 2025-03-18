@@ -10,6 +10,7 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -63,6 +65,8 @@ public class UserCreateActivity extends AppCompatActivity {
     String firstName,lastName,mobileNumber,registeremail,date,tongue,selectedGender;
     private SharedPreferences sharedPreferences;
 
+    Button butSchools;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +103,8 @@ public class UserCreateActivity extends AppCompatActivity {
         edtDate=findViewById(R.id.edt_date);
         genderRadioGroup=findViewById(R.id.radio);
 
+        butSchools = findViewById(R.id.but_schools);
+
         calendar = Calendar.getInstance();
 
         txtForgotPassword = findViewById(R.id.txt_forgot_password);
@@ -111,13 +117,20 @@ public class UserCreateActivity extends AppCompatActivity {
             }
         });
 
+        butSchools.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SchoolsMethod();
+            }
+        });
+
         layoutTextSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 SignUpVisiableMethod();
                 changeTextColors(false);
-                //FormRegisterMethod();
+                FormRegisterMethod();
             }
         });
 
@@ -160,6 +173,39 @@ public class UserCreateActivity extends AppCompatActivity {
             }
         });
     }
+    @SuppressLint("MissingInflatedId")
+    private void SchoolsMethod() {
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_custom, null);
+
+        // Reference to EditText
+        EditText editText = dialogView.findViewById(R.id.edt_school_code);
+
+        // Create AlertDialog
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("Enter School Code")
+                .setIcon(R.drawable.gts_logo) // Replace with your logo
+                .setView(dialogView)
+                .setPositiveButton("Submit", null)  // Null for custom click handling
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .create();
+        alertDialog.show();
+
+        // Custom Click Handling for Submit
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String schoolCode = editText.getText().toString().trim();
+            if (schoolCode.isEmpty()) {
+                editText.setError("Please enter school code");
+                editText.requestFocus();
+            } else {
+                Intent intent = new Intent(UserCreateActivity.this, StudentLoginActivity.class);
+                intent.putExtra("school_code", schoolCode);
+                startActivity(intent);
+                alertDialog.dismiss();
+            }
+        });
+    }
+
 
     private void showDatePickerDialog() {
         DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
