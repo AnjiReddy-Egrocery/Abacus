@@ -143,7 +143,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
                         }
                         tableLayout.addView(headerRow); // Add header to TableLayout
 
-// Add Data Rows
+                        // Add Data Rows
                         for (int i = 0; i < result.size(); i++) {
                             DatedetailsResponse.Result item = result.get(i);
                             String startTime = item.getStartTime();
