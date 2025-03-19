@@ -206,14 +206,14 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
                                 // **Topic Details**
                                 TextView txtTopic = new TextView(AllSchedulesActivity.this);
-                                //txtTopic.setText("Topic: " + item.getTopic());
+                                txtTopic.setText("Topic: " + "Raghu");
                                 txtTopic.setTextSize(14);
                                 txtTopic.setTextColor(Color.parseColor("#333333"));
                                 txtTopic.setPadding(4, 4, 4, 4);
 
                                 // **Assignment Details**
                                 TextView txtAssignment = new TextView(AllSchedulesActivity.this);
-                               // txtAssignment.setText("Assignment: " + item.getAssignment());
+                                txtAssignment.setText("Assignment: " + "Raghu");
                                 txtAssignment.setTextSize(14);
                                 txtAssignment.setTextColor(Color.parseColor("#333333"));
                                 txtAssignment.setPadding(4, 4, 4, 4);

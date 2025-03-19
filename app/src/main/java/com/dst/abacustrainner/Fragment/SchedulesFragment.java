@@ -57,6 +57,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import android.text.TextUtils;
+
 
 public class SchedulesFragment extends Fragment  implements OnDateClickListener {
     private RecyclerView calendarRecyclerView;
@@ -307,103 +309,110 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
 
                     tableLayoutAssignments.removeAllViews(); // Clear previous data
 
-                    // Create header row
                     TableRow headerRow = new TableRow(getContext());
-                    headerRow.setBackgroundColor(Color.LTGRAY);
 
-                    String[] headers = {"No", "Assignment Topics", "Action"};
-                    for (String header : headers) {
-                        TextView headerText = new TextView(getContext());
-                        headerText.setText(header);
-                        headerText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-                        headerText.setTextColor(Color.BLACK);
-                        headerText.setGravity(Gravity.CENTER);
-                        headerText.setPadding(16, 20, 16, 20);
-                        headerText.setBackgroundResource(R.drawable.border);
-                        headerRow.addView(headerText);
-                    }
+                    TextView txtHeaderNumber = new TextView(getContext());
+                    txtHeaderNumber.setText("No");
+                    txtHeaderNumber.setTypeface(Typeface.DEFAULT_BOLD);
+                    txtHeaderNumber.setGravity(Gravity.CENTER);
+                    txtHeaderNumber.setPadding(1, 16, 1, 10);
+                    txtHeaderNumber.setBackgroundResource(R.drawable.border);
+                    txtHeaderNumber.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
 
+                    TextView txtHeaderTopic = new TextView(getContext());
+                    txtHeaderTopic.setText("Topics");
+                    txtHeaderTopic.setTypeface(Typeface.DEFAULT_BOLD);
+                    txtHeaderTopic.setGravity(Gravity.CENTER);
+                    txtHeaderTopic.setPadding(16, 16, 16, 16);
+                    txtHeaderTopic.setBackgroundResource(R.drawable.border);
+                    txtHeaderTopic.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+
+                    TextView txtHeaderPractice = new TextView(getContext());
+                    txtHeaderPractice.setText("Conducted");
+                    txtHeaderPractice.setTypeface(Typeface.DEFAULT_BOLD);
+                    txtHeaderPractice.setGravity(Gravity.CENTER);
+                    txtHeaderPractice.setPadding(16, 16, 16, 16);
+                    txtHeaderPractice.setBackgroundResource(R.drawable.border);
+                    txtHeaderPractice.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+
+                    headerRow.addView(txtHeaderNumber);
+                    headerRow.addView(txtHeaderTopic);
+                    headerRow.addView(txtHeaderPractice);
+
+// Add header to table
                     tableLayoutAssignments.addView(headerRow);
 
-                    // Populate the table
+// Loop through Assignments
                     for (int i = 0; i < assignmentTopicsList.size(); i++) {
                         AssignmentListResponse.Result.AssignmentTopics topic = assignmentTopicsList.get(i);
                         TableRow row = new TableRow(getContext());
 
                         // Number Column
-                        LinearLayout txtNumberLayout = new LinearLayout(getContext());
-                        txtNumberLayout.setOrientation(LinearLayout.VERTICAL);
-                        txtNumberLayout.setGravity(Gravity.CENTER);
-                        txtNumberLayout.setPadding(16, 60, 16, 60);
-                        txtNumberLayout.setBackgroundResource(R.drawable.border);
-
                         TextView txtNumber = new TextView(getContext());
                         txtNumber.setText(String.valueOf(i + 1));
-                        txtNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-                        txtNumber.setPadding(16, 10, 16, 10);
-                        txtNumber.setTextColor(Color.BLACK);
                         txtNumber.setGravity(Gravity.CENTER);
+                        txtNumber.setPadding(1, 10, 1, 10);
+                        txtNumber.setBackgroundResource(R.drawable.border);
+                        txtNumber.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
 
-                        View spacetxtnumber = new View(getContext());
-                        spacetxtnumber.setLayoutParams(new LinearLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT, 10));
-
-                        txtNumberLayout.addView(txtNumber);
-                        txtNumberLayout.addView(spacetxtnumber);
-
-                        // Assignment Topic Name Column
-                        LinearLayout topicLayout = new LinearLayout(getContext());
-                        topicLayout.setOrientation(LinearLayout.VERTICAL);
-                        topicLayout.setGravity(Gravity.CENTER);
-                        topicLayout.setPadding(16, 60, 16, 60);
-                        topicLayout.setBackgroundResource(R.drawable.border);
-
+                        // Topic Column
                         TextView txtTopic = new TextView(getContext());
                         txtTopic.setText(topic.getTopicName());
-                        txtTopic.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-                        txtTopic.setPadding(16, 10, 16, 10);
+                        txtTopic.setMaxLines(2);
+                        txtTopic.setEllipsize(TextUtils.TruncateAt.END);
                         txtTopic.setGravity(Gravity.CENTER);
+                        txtTopic.setPadding(16, 10, 16, 10);
+                        txtTopic.setBackgroundResource(R.drawable.border);
+                        txtTopic.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
 
-                        View spacetopic = new View(getContext());
-                        spacetopic.setLayoutParams(new LinearLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT, 10));
-
-                        topicLayout.addView(txtTopic);
-                        topicLayout.addView(spacetopic);
-
-                        // Action Column (Practice Button)
+                        // Action Column
                         LinearLayout actionLayout = new LinearLayout(getContext());
                         actionLayout.setOrientation(LinearLayout.VERTICAL);
                         actionLayout.setGravity(Gravity.CENTER);
-                        actionLayout.setPadding(16, 30, 16, 30);
+                        actionLayout.setPadding(16, 10, 16, 10);
                         actionLayout.setBackgroundResource(R.drawable.border);
+                        actionLayout.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
 
                         // Practice Now Button
                         TextView txtPracticeNow = new TextView(getContext());
                         txtPracticeNow.setText("Practice Now");
-                        txtPracticeNow.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-                        txtPracticeNow.setPadding(16, 10, 16, 10);
                         txtPracticeNow.setGravity(Gravity.CENTER);
+                        txtPracticeNow.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                        txtPracticeNow.setPadding(16, 10, 16, 10);
                         txtPracticeNow.setBackgroundColor(Color.parseColor("#FF6600"));
                         txtPracticeNow.setTextColor(Color.WHITE);
                         txtPracticeNow.setTypeface(null, Typeface.BOLD);
+                        txtPracticeNow.setLayoutParams(new LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                         txtPracticeNow.setOnClickListener(v -> {
                             Intent intent = new Intent(getContext(), ViewAssignmentListActivity.class);
                             intent.putExtra("topicId", topic.getTopicId());
                             intent.putExtra("studentId", studentId);
-                            intent.putExtra("firstName", topic.getTopicName());
-                            intent.putExtra("topicName", topic.getTopicName());
                             startActivity(intent);
                         });
 
-                        actionLayout.addView(txtPracticeNow);
+                        // View Result Button
+                        TextView txtViewResult = new TextView(getContext());
+                        txtViewResult.setText("View Result");
+                        txtViewResult.setGravity(Gravity.CENTER);
+                        txtPracticeNow.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                        txtViewResult.setPadding(16, 10, 16, 10);
+                        txtViewResult.setBackgroundColor(Color.parseColor("#009688"));
+                        txtViewResult.setTextColor(Color.WHITE);
+                        txtViewResult.setTypeface(null, Typeface.BOLD);
+                        txtViewResult.setLayoutParams(new LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-                        // Add views to row
-                        row.addView(txtNumberLayout);
-                        row.addView(topicLayout);
+                        // Add Buttons to Layout
+                        actionLayout.addView(txtPracticeNow);
+                        actionLayout.addView(txtViewResult);
+
+                        // Add Columns to Row
+                        row.addView(txtNumber);
+                        row.addView(txtTopic);
                         row.addView(actionLayout);
 
-                        // Add row to table
+                        // Add Row to Table
                         tableLayoutAssignments.addView(row);
                     }
                 } else {
@@ -478,7 +487,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                         LinearLayout txtNumberLayout = new LinearLayout(getContext());
                         txtNumberLayout.setOrientation(LinearLayout.VERTICAL);
                         txtNumberLayout.setGravity(Gravity.CENTER);
-                        txtNumberLayout.setPadding(16, 60, 16, 60);
+                        txtNumberLayout.setPadding(16, 64, 16, 64);
                         txtNumberLayout.setBackgroundResource(R.drawable.border);
 
                         // Number Column
@@ -500,7 +509,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                         LinearLayout topicLayout = new LinearLayout(getContext());
                         topicLayout.setOrientation(LinearLayout.VERTICAL);
                         topicLayout.setGravity(Gravity.CENTER);
-                        topicLayout.setPadding(16, 60, 16, 60);
+                        topicLayout.setPadding(16, 64, 16, 64);
                         topicLayout.setBackgroundResource(R.drawable.border);
 
                         // Topic Name Column
