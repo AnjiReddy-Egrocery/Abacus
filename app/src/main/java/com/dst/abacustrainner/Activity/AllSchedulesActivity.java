@@ -2,6 +2,7 @@ package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -122,28 +124,8 @@ public class AllSchedulesActivity extends AppCompatActivity {
                     } else if (details.getErrorCode().equals("200")) {
                         List<DatedetailsResponse.Result> result = details.getResult();
 
-
                         tableLayout.removeAllViews(); // Clear previous rows
 
-// Create Header Row
-                        TableRow headerRow = new TableRow(AllSchedulesActivity.this);
-                        headerRow.setBackgroundColor(Color.LTGRAY);
-
-                        String[] headers = {"Date", "Time", "Conducted"};
-                        for (String header : headers) {
-                            TextView headerText = new TextView(AllSchedulesActivity.this);
-                            headerText.setText(header);
-                            headerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16); // Bigger Text
-                            headerText.setTypeface(Typeface.DEFAULT_BOLD);
-                            headerText.setTextColor(Color.BLACK);
-                            headerText.setGravity(Gravity.CENTER);
-                            headerText.setPadding(8, 14, 8, 14);
-                            headerText.setBackgroundResource(R.drawable.border); // **BORDER ADDED**
-                            headerRow.addView(headerText);
-                        }
-                        tableLayout.addView(headerRow); // Add header to TableLayout
-
-                        // Add Data Rows
                         for (int i = 0; i < result.size(); i++) {
                             DatedetailsResponse.Result item = result.get(i);
                             String startTime = item.getStartTime();
@@ -155,47 +137,111 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
                             for (int j = 0; j < datesList.size(); j++) {
                                 DatedetailsResponse.Result.Date date = datesList.get(j);
-                                TableRow row = new TableRow(AllSchedulesActivity.this);
 
-                                // **Date Column**
+                                // **Create Parent Layout (Vertical)**
+                                LinearLayout parentLayout = new LinearLayout(AllSchedulesActivity.this);
+                                parentLayout.setOrientation(LinearLayout.VERTICAL);
+                                parentLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.MATCH_PARENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT
+                                ));
+
+                                // **Schedule Row (Horizontal)**
+                                LinearLayout scheduleRow = new LinearLayout(AllSchedulesActivity.this);
+                                scheduleRow.setOrientation(LinearLayout.HORIZONTAL);
+                                scheduleRow.setBackgroundColor(Color.parseColor("#EEEEEE"));
+                                scheduleRow.setPadding(10, 10, 10, 10);
+                                scheduleRow.setElevation(2);
+                                scheduleRow.setLayoutParams(new LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.MATCH_PARENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT
+                                ));
+
+                                // **Date TextView**
                                 TextView txtDate = new TextView(AllSchedulesActivity.this);
                                 txtDate.setText(date.getScheduleDate());
-                                txtDate.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                                txtDate.setPadding(8, 14, 8, 14);
+                                txtDate.setTextSize(14);
+                                txtDate.setTypeface(Typeface.DEFAULT_BOLD);
                                 txtDate.setGravity(Gravity.CENTER);
-                                txtDate.setBackgroundResource(R.drawable.border); // **BORDER ADDED**
+                                txtDate.setPadding(4, 4, 4, 4);
+                                txtDate.setLayoutParams(new LinearLayout.LayoutParams(
+                                        0, LinearLayout.LayoutParams.WRAP_CONTENT, 1
+                                ));
 
-                                // **Time Column**
+                                // **Time TextView**
                                 TextView txtTime = new TextView(AllSchedulesActivity.this);
                                 txtTime.setText(timeText);
-                                txtTime.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-                                txtTime.setPadding(8, 14, 8, 14); // **Reduce left & right padding**
+                                txtTime.setTextSize(14);
+                                txtTime.setTypeface(Typeface.DEFAULT_BOLD);
                                 txtTime.setGravity(Gravity.CENTER);
-                                txtTime.setBackgroundResource(R.drawable.border); // **BORDER ADDED**
+                                txtTime.setPadding(4, 4, 4, 4);
+                                txtTime.setLayoutParams(new LinearLayout.LayoutParams(
+                                        0, LinearLayout.LayoutParams.WRAP_CONTENT, 1
+                                ));
 
-                                // **Conducted Column (Button Style)**
-                                TextView txtConducted = new TextView(AllSchedulesActivity.this);
-                                txtConducted.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                                txtConducted.setGravity(Gravity.CENTER);
-                                txtConducted.setPadding(30, 10, 30, 10); // **Left/Right gap added**
-                                txtConducted.setTypeface(Typeface.DEFAULT_BOLD);
-                                txtConducted.setTextColor(Color.WHITE);
-                                txtConducted.setBackgroundResource(R.drawable.button_background); // **Rounded button style**
+                                // **Status Button**
+                                Button btnStatus = new Button(AllSchedulesActivity.this);
+                                btnStatus.setText(j == 0 ? "Join Now" : "Up Coming");
+                                btnStatus.setTextSize(12);
+                                btnStatus.setTypeface(Typeface.DEFAULT_BOLD);
+                                btnStatus.setTextColor(Color.WHITE);
+                                btnStatus.setPadding(10, 6, 10, 6);
+                                btnStatus.setBackgroundResource(R.drawable.rounded_button); // **Set Rounded Background**
+                                btnStatus.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF6600"))); // Orange Button
+                                btnStatus.setLayoutParams(new LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT
+                                ));
 
-                                // **Set Button Text**
-                                if (j == 0) {
-                                    txtConducted.setText("Join Now");
-                                } else {
-                                    txtConducted.setText("Up Coming");
-                                }
+                                // **Expandable Details Section (Initially Hidden)**
+                                LinearLayout detailsLayout = new LinearLayout(AllSchedulesActivity.this);
+                                detailsLayout.setOrientation(LinearLayout.VERTICAL);
+                                detailsLayout.setBackgroundColor(Color.parseColor("#DDDDDD"));
+                                detailsLayout.setPadding(10, 10, 10, 10);
+                                detailsLayout.setVisibility(View.GONE);
+                                detailsLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.MATCH_PARENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT
+                                ));
 
-                                // **Add Views to Row**
-                                row.addView(txtDate);
-                                row.addView(txtTime);
-                                row.addView(txtConducted);
+                                // **Topic Details**
+                                TextView txtTopic = new TextView(AllSchedulesActivity.this);
+                                //txtTopic.setText("Topic: " + item.getTopic());
+                                txtTopic.setTextSize(14);
+                                txtTopic.setTextColor(Color.parseColor("#333333"));
+                                txtTopic.setPadding(4, 4, 4, 4);
 
-                                // **Add Row to TableLayout**
-                                tableLayout.addView(row);
+                                // **Assignment Details**
+                                TextView txtAssignment = new TextView(AllSchedulesActivity.this);
+                               // txtAssignment.setText("Assignment: " + item.getAssignment());
+                                txtAssignment.setTextSize(14);
+                                txtAssignment.setTextColor(Color.parseColor("#333333"));
+                                txtAssignment.setPadding(4, 4, 4, 4);
+
+                                // **Add Views to Details Layout**
+                                detailsLayout.addView(txtTopic);
+                                detailsLayout.addView(txtAssignment);
+
+                                // **Add Views to Schedule Row**
+                                scheduleRow.addView(txtDate);
+                                scheduleRow.addView(txtTime);
+                                scheduleRow.addView(btnStatus);
+
+                                // **Add Click Event for Expanding**
+                                scheduleRow.setOnClickListener(v -> {
+                                    if (detailsLayout.getVisibility() == View.GONE) {
+                                        detailsLayout.setVisibility(View.VISIBLE);
+                                    } else {
+                                        detailsLayout.setVisibility(View.GONE);
+                                    }
+                                });
+
+                                // **Add Row and Details to Parent Layout**
+                                parentLayout.addView(scheduleRow);
+                                parentLayout.addView(detailsLayout);
+
+                                // **Add Parent Layout to Main Layout**
+                                tableLayout.addView(parentLayout);
                             }
                         }
                     }
@@ -208,4 +254,5 @@ public class AllSchedulesActivity extends AppCompatActivity {
             }
         });
     }
+
 }

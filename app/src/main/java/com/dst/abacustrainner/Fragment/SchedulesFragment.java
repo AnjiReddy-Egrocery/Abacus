@@ -283,50 +283,111 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        ApiClient apiClient=retrofit.create(ApiClient.class);
+
+        ApiClient apiClient = retrofit.create(ApiClient.class);
         RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
         RequestBody datePart = RequestBody.create(MediaType.parse("text/plain"), dateId);
 
-        Call<AssignmentListResponse> call=apiClient.assignList(idPart,datePart);
+        Call<AssignmentListResponse> call = apiClient.assignList(idPart, datePart);
         call.enqueue(new Callback<AssignmentListResponse>() {
             @Override
             public void onResponse(Call<AssignmentListResponse> call, Response<AssignmentListResponse> response) {
+                AssignmentListResponse assignmentListResponse = response.body();
 
-                AssignmentListResponse assignmentListResponse=response.body();
+                if (assignmentListResponse == null || assignmentListResponse.getErrorCode() == null) {
+                    Toast.makeText(getContext(), "Invalid Response", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if (assignmentListResponse.getErrorCode().equals("202")) {
-
                     Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
-
                 } else if (assignmentListResponse.getErrorCode().equals("200")) {
                     AssignmentListResponse.Result result = assignmentListResponse.getResult();
                     List<AssignmentListResponse.Result.AssignmentTopics> assignmentTopicsList = result.getAssignmentTopicsList();
 
-                    tableLayoutAssignments.removeAllViews(); // Remove only the data rows
-                    // Loop through topics and add rows dynamically
+                    tableLayoutAssignments.removeAllViews(); // Clear previous data
+
+                    // Create header row
+                    TableRow headerRow = new TableRow(getContext());
+                    headerRow.setBackgroundColor(Color.LTGRAY);
+
+                    String[] headers = {"No", "Assignment Topics", "Action"};
+                    for (String header : headers) {
+                        TextView headerText = new TextView(getContext());
+                        headerText.setText(header);
+                        headerText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+                        headerText.setTextColor(Color.BLACK);
+                        headerText.setGravity(Gravity.CENTER);
+                        headerText.setPadding(16, 20, 16, 20);
+                        headerText.setBackgroundResource(R.drawable.border);
+                        headerRow.addView(headerText);
+                    }
+
+                    tableLayoutAssignments.addView(headerRow);
+
+                    // Populate the table
                     for (int i = 0; i < assignmentTopicsList.size(); i++) {
                         AssignmentListResponse.Result.AssignmentTopics topic = assignmentTopicsList.get(i);
-
                         TableRow row = new TableRow(getContext());
-                        row.setPadding(8, 8, 8, 8);
 
-                        // Serial Number
+                        // Number Column
+                        LinearLayout txtNumberLayout = new LinearLayout(getContext());
+                        txtNumberLayout.setOrientation(LinearLayout.VERTICAL);
+                        txtNumberLayout.setGravity(Gravity.CENTER);
+                        txtNumberLayout.setPadding(16, 60, 16, 60);
+                        txtNumberLayout.setBackgroundResource(R.drawable.border);
+
                         TextView txtNumber = new TextView(getContext());
                         txtNumber.setText(String.valueOf(i + 1));
-                        row.addView(txtNumber);
+                        txtNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                        txtNumber.setPadding(16, 10, 16, 10);
+                        txtNumber.setTextColor(Color.BLACK);
+                        txtNumber.setGravity(Gravity.CENTER);
 
-                        // Topic Name
+                        View spacetxtnumber = new View(getContext());
+                        spacetxtnumber.setLayoutParams(new LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT, 10));
+
+                        txtNumberLayout.addView(txtNumber);
+                        txtNumberLayout.addView(spacetxtnumber);
+
+                        // Assignment Topic Name Column
+                        LinearLayout topicLayout = new LinearLayout(getContext());
+                        topicLayout.setOrientation(LinearLayout.VERTICAL);
+                        topicLayout.setGravity(Gravity.CENTER);
+                        topicLayout.setPadding(16, 60, 16, 60);
+                        topicLayout.setBackgroundResource(R.drawable.border);
+
                         TextView txtTopic = new TextView(getContext());
                         txtTopic.setText(topic.getTopicName());
-                        row.addView(txtTopic);
+                        txtTopic.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                        txtTopic.setPadding(16, 10, 16, 10);
+                        txtTopic.setGravity(Gravity.CENTER);
 
-                        // Practice Button
-                        Button btnPractice = new Button(getContext());
-                        btnPractice.setText("Practice Now");
-                        btnPractice.setBackgroundColor(Color.parseColor("#FF9800"));
-                        btnPractice.setTextColor(Color.WHITE);
-                        btnPractice.setPadding(8, 8, 8, 8);
+                        View spacetopic = new View(getContext());
+                        spacetopic.setLayoutParams(new LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT, 10));
 
-                        btnPractice.setOnClickListener(v -> {
+                        topicLayout.addView(txtTopic);
+                        topicLayout.addView(spacetopic);
+
+                        // Action Column (Practice Button)
+                        LinearLayout actionLayout = new LinearLayout(getContext());
+                        actionLayout.setOrientation(LinearLayout.VERTICAL);
+                        actionLayout.setGravity(Gravity.CENTER);
+                        actionLayout.setPadding(16, 30, 16, 30);
+                        actionLayout.setBackgroundResource(R.drawable.border);
+
+                        // Practice Now Button
+                        TextView txtPracticeNow = new TextView(getContext());
+                        txtPracticeNow.setText("Practice Now");
+                        txtPracticeNow.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                        txtPracticeNow.setPadding(16, 10, 16, 10);
+                        txtPracticeNow.setGravity(Gravity.CENTER);
+                        txtPracticeNow.setBackgroundColor(Color.parseColor("#FF6600"));
+                        txtPracticeNow.setTextColor(Color.WHITE);
+                        txtPracticeNow.setTypeface(null, Typeface.BOLD);
+                        txtPracticeNow.setOnClickListener(v -> {
                             Intent intent = new Intent(getContext(), ViewAssignmentListActivity.class);
                             intent.putExtra("topicId", topic.getTopicId());
                             intent.putExtra("studentId", studentId);
@@ -335,26 +396,28 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                             startActivity(intent);
                         });
 
-                        row.addView(btnPractice);
+                        actionLayout.addView(txtPracticeNow);
 
-                        // Add the row to the table (inside ScrollView)
+                        // Add views to row
+                        row.addView(txtNumberLayout);
+                        row.addView(topicLayout);
+                        row.addView(actionLayout);
+
+                        // Add row to table
                         tableLayoutAssignments.addView(row);
                     }
-
                 } else {
                     Toast.makeText(getContext(), "No Data Found", Toast.LENGTH_SHORT).show();
                 }
-
-
-                }
+            }
 
             @Override
             public void onFailure(Call<AssignmentListResponse> call, Throwable t) {
-
+                Toast.makeText(getContext(), "API Error", Toast.LENGTH_SHORT).show();
             }
-
         });
     }
+
 
     private void TopicsMethod(String studentId, String dateId) {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
