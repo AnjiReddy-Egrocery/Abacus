@@ -37,7 +37,7 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
     String name="";
 
     String topicname="";
-    TextView txtName,txtTopicName;
+    TextView txtTopicName;
     ViewAssignmentAdapter viewAssignmentAdapter;
 
     ProgressBar progressBar;
@@ -48,7 +48,7 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_assignment_list);
 
-        txtName=findViewById(R.id.txt_name);
+        //txtName=findViewById(R.id.txt_name);
         txtTopicName=findViewById(R.id.txt_topic_name);
         recyclerViewTopic=findViewById(R.id.recycler_view_topic);
 
@@ -58,7 +58,7 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
         name=bundle.getString("firstName");
         topicname=bundle.getString("topicName");
         progressBar= findViewById(R.id.progress_bar);
-        txtName.setText(name);
+        //txtName.setText(name);
         txtTopicName.setText(topicname);
 
 

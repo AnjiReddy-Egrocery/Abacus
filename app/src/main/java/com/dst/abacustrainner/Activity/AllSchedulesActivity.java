@@ -37,6 +37,8 @@ import com.dst.abacustrainner.Model.TableRowModel;
 import com.dst.abacustrainner.Model.TopicListResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
+import com.dst.abacustrainner.Services.TopicsCallback;
+import com.google.gson.Gson;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,8 +62,9 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
     private LinearLayout btnBack;
 
-    String studentId, batchId;
+    String studentId, batchId ,dateId;
     TableLayout tableLayout;
+    private LinearLayout currentlyOpenLayout = null;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -76,6 +79,8 @@ public class AllSchedulesActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         batchId = bundle.getString("batchId");
         studentId = bundle.getString("studentId");
+        dateId = bundle.getString("DateId");
+        Log.d("Reddy",""+dateId);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,7 +211,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
                                 // **Topic Details**
                                 TextView txtTopic = new TextView(AllSchedulesActivity.this);
-                                txtTopic.setText("Topic: " + "Raghu");
+                                txtTopic.setText("Topic: " + "");
                                 txtTopic.setTextSize(14);
                                 txtTopic.setTextColor(Color.parseColor("#333333"));
                                 txtTopic.setPadding(4, 4, 4, 4);
@@ -228,14 +233,45 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                 scheduleRow.addView(btnStatus);
 
                                 // **Add Click Event for Expanding**
-                                scheduleRow.setOnClickListener(v -> {
-                                    if (detailsLayout.getVisibility() == View.GONE) {
-                                        detailsLayout.setVisibility(View.VISIBLE);
-                                    } else {
-                                        detailsLayout.setVisibility(View.GONE);
+                                btnStatus.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        // Close previously opened detailsLayout (if any)
+                                        if (currentlyOpenLayout != null && currentlyOpenLayout != detailsLayout) {
+                                            currentlyOpenLayout.setVisibility(View.GONE);
+                                        }
+
+                                        // Set default loading text
+                                        txtTopic.setText("Topic: Loading...");
+
+                                        // Call API to fetch topics
+                                        TopicsMethod(studentId, dateId, new TopicsCallback() {
+                                            @Override
+                                            public void onTopicsReceived(List<TopicListResponse.Result.Topics> topicsList) {
+                                                Log.d("API_ERROR", "Topics List Size: " + topicsList.size()); // ✅ Debugging
+
+                                                if (!topicsList.isEmpty()) {
+                                                    StringBuilder topicsString = new StringBuilder();
+                                                    for (TopicListResponse.Result.Topics topic : topicsList) {
+                                                        topicsString.append(topic.getTopicName()).append("\n");
+                                                    }
+                                                    txtTopic.setText("\n" + topicsString.toString().trim());
+                                                } else {
+                                                    txtTopic.setText("No Topics Found ❌");
+                                                }
+                                            }
+                                        });
+
+                                        // Toggle the detailsLayout visibility
+                                        if (detailsLayout.getVisibility() == View.GONE) {
+                                            detailsLayout.setVisibility(View.VISIBLE);
+                                            currentlyOpenLayout = detailsLayout;
+                                        } else {
+                                            detailsLayout.setVisibility(View.GONE);
+                                            currentlyOpenLayout = null;
+                                        }
                                     }
                                 });
-
                                 // **Add Row and Details to Parent Layout**
                                 parentLayout.addView(scheduleRow);
                                 parentLayout.addView(detailsLayout);
@@ -251,6 +287,50 @@ public class AllSchedulesActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<DatedetailsResponse> call, Throwable t) {
                 Toast.makeText(AllSchedulesActivity.this, "Failed to load schedules", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void TopicsMethod(String studentId, String dateId, TopicsCallback noTopicsFound) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+        RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
+        RequestBody datePart = RequestBody.create(MediaType.parse("text/plain"), dateId);
+
+        Call<TopicListResponse> call = apiClient.topicList(idPart, datePart);
+        call.enqueue(new Callback<TopicListResponse>() {
+            @Override
+            public void onResponse(Call<TopicListResponse> call, Response<TopicListResponse> response) {
+                if (response.body() != null) {
+                    Log.d("API_ERROR", "Response: " + new Gson().toJson(response.body())); // ✅ Debugging API response
+
+                    if (response.body().getErrorCode() != null && response.body().getErrorCode().equals("200")) {
+                        List<TopicListResponse.Result.Topics> topicsList = response.body().getResult().getTopicsList();
+
+                        if (topicsList != null && !topicsList.isEmpty()) {
+                            noTopicsFound.onTopicsReceived(topicsList); // ✅ Send data
+                        } else {
+                            Log.d("API_ERROR", "Topics List is Empty");
+                            noTopicsFound.onTopicsReceived(new ArrayList<>()); // Empty list
+                        }
+                    } else {
+                        Log.d("API_ERROR", "Error Code: " + response.body().getErrorCode());
+                        noTopicsFound.onTopicsReceived(new ArrayList<>());
+                    }
+                } else {
+                    Log.d("API_ERROR", "Response is NULL");
+                    noTopicsFound.onTopicsReceived(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TopicListResponse> call, Throwable t) {
+                Log.d("API_FAILURE", "Error: " + t.getMessage());
+                noTopicsFound.onTopicsReceived(new ArrayList<>()); // Handle failure
             }
         });
     }
