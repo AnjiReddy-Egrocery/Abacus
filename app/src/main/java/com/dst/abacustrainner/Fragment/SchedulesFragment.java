@@ -438,7 +438,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                         txtViewResult.setPadding(16, 20, 16, 20);
                         txtViewResult.setGravity(Gravity.CENTER);
                         txtViewResult.setBackgroundResource(R.drawable.button_viewresult); // Correctly applied to txtViewResult
-                        txtViewResult.setTextColor(Color.WHITE);
+                        txtViewResult.setTextColor(Color.parseColor("#000000"));
                         txtViewResult.setTypeface(null, Typeface.BOLD);
                         txtViewResult.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -629,7 +629,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                         txtViewResult.setPadding(16, 20, 16, 20);
                         txtViewResult.setGravity(Gravity.CENTER);
                         txtViewResult.setBackgroundResource(R.drawable.button_viewresult); // Correctly applied to txtViewResult
-                        txtViewResult.setTextColor(Color.WHITE);
+                        txtViewResult.setTextColor(Color.parseColor("#000000"));
                         txtViewResult.setTypeface(null, Typeface.BOLD);
                         txtViewResult.setOnClickListener(v -> {
                             Intent intent = new Intent(getContext(), ViewPracticeListActivity.class);

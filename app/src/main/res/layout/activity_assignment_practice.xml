@@ -374,7 +374,7 @@
                                 android:id="@+id/answerEditText"
                                 android:layout_width="100dp"
                                 android:layout_height="50dp"
-                                android:layout_marginStart="12dp"
+                                android:layout_marginStart="19dp"
                                 android:background="@drawable/submit_btn_border"
                                 android:gravity="center"
                                 android:inputType="number"
@@ -393,9 +393,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="50dp"
-                                android:layout_marginRight="20dp"
-                                android:gravity="center"
                                 android:layout_marginTop="5dp"
+                                android:gravity="center"
                                 android:text="Ans :"
                                 android:textSize="20dp"
                                 android:textStyle="bold" />
