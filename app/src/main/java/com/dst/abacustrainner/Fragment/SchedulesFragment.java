@@ -209,7 +209,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                             }
                         }
 
-                        // ✅ Update calendar with new data
+                        // ✅  Update calendar with new data
                         updateCalendar();
                     }
                 }

@@ -27,7 +27,7 @@
                 android:layout_margin="20dp"
                 >
                 <LinearLayout
-                    android:id="@+id/btn_back_to_home"
+                    android:id="@+id/fragment_container"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:orientation="vertical"

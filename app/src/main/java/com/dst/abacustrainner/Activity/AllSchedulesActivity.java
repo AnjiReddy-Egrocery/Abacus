@@ -82,7 +82,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
         dateId = bundle.getString("DateId");
         Log.d("Reddy",""+dateId);
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
+       /* btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Create an instance of SchedulesFragment
@@ -92,14 +92,15 @@ public class AllSchedulesActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-                // Replace the current fragment with SchedulesFragment
-                fragmentTransaction.replace(R.id.btn_back_to_home, schedulesFragment);
+                // Replace the fragment inside the correct container (Change 'R.id.fragment_container' to your actual container ID)
+                fragmentTransaction.replace(R.id.fragment_container, schedulesFragment);
                 fragmentTransaction.addToBackStack(null); // Allows going back to the previous fragment
 
                 // Commit the transaction
                 fragmentTransaction.commit();
             }
-        });
+        });*/
+
 
         AllScheduleMethod(studentId, batchId);
 
@@ -241,24 +242,80 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                             currentlyOpenLayout.setVisibility(View.GONE);
                                         }
 
-                                        // Set default loading text
+                                        // Set default loading text while fetching topics
                                         txtTopic.setText("Topic: Loading...");
+                                        detailsLayout.removeAllViews(); // Clear previous topic buttons
 
-                                        // Call API to fetch topics
-                                        TopicsMethod(studentId, dateId, new TopicsCallback() {
+                                        // Fetch Topics Dynamically
+                                        TopicsMethod(studentId, date.getDateId(), new TopicsCallback() {
                                             @Override
                                             public void onTopicsReceived(List<TopicListResponse.Result.Topics> topicsList) {
-                                                Log.d("API_ERROR", "Topics List Size: " + topicsList.size()); // ✅ Debugging
+                                                Log.d("API_RESPONSE", "Topics List Size: " + topicsList.size()); // Debugging
 
                                                 if (!topicsList.isEmpty()) {
-                                                    StringBuilder topicsString = new StringBuilder();
                                                     for (TopicListResponse.Result.Topics topic : topicsList) {
-                                                        topicsString.append(topic.getTopicName()).append("\n");
+                                                        // Create Topic TextView
+                                                        TextView topicTextView = new TextView(AllSchedulesActivity.this);
+                                                        topicTextView.setText(" * " + topic.getTopicName());
+                                                        topicTextView.setTextSize(14);
+                                                        topicTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                                                        topicTextView.setTextColor(Color.parseColor("#333333"));
+                                                        topicTextView.setPadding(4, 4, 4, 4);
+
+                                                        // Create "Practice Now" Button
+                                                        Button btnPracticeNow = new Button(AllSchedulesActivity.this);
+                                                        btnPracticeNow.setText("Practice Now");
+                                                        btnPracticeNow.setTextSize(12);
+                                                        btnPracticeNow.setTypeface(Typeface.DEFAULT_BOLD);
+                                                        btnPracticeNow.setTextColor(Color.WHITE);
+                                                        btnPracticeNow.setPadding(10, 6, 10, 6);
+                                                        btnPracticeNow.setBackgroundResource(R.drawable.rounded_button);
+                                                        btnPracticeNow.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#007BFF"))); // Blue Color
+
+                                                        // Handle "Practice Now" Click Event
+                                                        btnPracticeNow.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View view) {
+                                                                Intent intent = new Intent(AllSchedulesActivity.this, AssignmentPracticeActivity.class);
+                                                                intent.putExtra("topicId", topic.getTopicId());
+                                                                intent.putExtra("studentId", studentId);
+                                                                intent.putExtra("topicName", topic.getTopicName());
+                                                                startActivity(intent);
+                                                            }
+                                                        });
+
+                                                        // Create Horizontal Layout for Topic & Button
+                                                        LinearLayout topicLayout = new LinearLayout(AllSchedulesActivity.this);
+                                                        topicLayout.setOrientation(LinearLayout.HORIZONTAL);
+                                                        topicLayout.setGravity(Gravity.CENTER_VERTICAL);
+                                                        topicLayout.setPadding(10, 10, 10, 10);
+
+                                                        // Set Layout Parameters
+                                                        topicTextView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 2));
+                                                        btnPracticeNow.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                                                        // Add Views to Topic Layout
+                                                        topicLayout.addView(topicTextView);
+                                                        topicLayout.addView(btnPracticeNow);
+
+                                                        // Add Topic Layout to detailsLayout
+                                                        detailsLayout.addView(topicLayout);
                                                     }
-                                                    txtTopic.setText("\n" + topicsString.toString().trim());
                                                 } else {
-                                                    txtTopic.setText("No Topics Found ❌");
+                                                    // No Topics Available
+                                                    TextView noTopicTextView = new TextView(AllSchedulesActivity.this);
+                                                    noTopicTextView.setText("No Topics Assigned ❌");
+                                                    noTopicTextView.setTextSize(14);
+                                                    noTopicTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                                                    noTopicTextView.setPadding(4, 4, 4, 4);
+                                                    detailsLayout.addView(noTopicTextView);
                                                 }
+                                            }
+
+
+                                            public void onError(String errorMessage) {
+                                                txtTopic.setText("Failed to load topics ❌");
+                                                Log.e("API_ERROR", errorMessage);
                                             }
                                         });
 
@@ -272,6 +329,8 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
+
+
                                 // **Add Row and Details to Parent Layout**
                                 parentLayout.addView(scheduleRow);
                                 parentLayout.addView(detailsLayout);
