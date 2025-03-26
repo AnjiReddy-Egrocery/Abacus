@@ -464,7 +464,17 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                         tableLayoutAssignments.addView(row);
                     }
                 } else {
-                    Toast.makeText(getContext(), "No Data Found", Toast.LENGTH_SHORT).show();
+                    tableLayout.removeAllViews(); // Clear previous content
+
+                    TextView noTopicTextView = new TextView(getContext());
+                    noTopicTextView.setText("Instructor Not Allocated Assignment Topics, Please Contact Instructor For More Details");
+                    noTopicTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                    noTopicTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                    noTopicTextView.setTextColor(Color.BLACK);
+                    noTopicTextView.setGravity(Gravity.CENTER);
+                    noTopicTextView.setPadding(16, 16, 16, 16);
+
+                    tableLayout.addView(noTopicTextView); // Add message to the table
                 }
             }
 
@@ -506,6 +516,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                 } else if (topicListResponse.getErrorCode().equals("200")) {
                     TopicListResponse.Result result = topicListResponse.getResult();
                     List<TopicListResponse.Result.Topics> topicsList = result.getTopicsList();
+
 
                     tableLayout.removeAllViews(); // Clear previous data
 
@@ -653,7 +664,17 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                     }
 
                 } else {
-                    Toast.makeText(getContext(), "No Data Found", Toast.LENGTH_SHORT).show();
+                    tableLayout.removeAllViews(); // Clear previous content
+
+                    TextView noTopicTextView = new TextView(getContext());
+                    noTopicTextView.setText("Instructor Not Allocated Topics, Please Contact Instructor For More Details");
+                    noTopicTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                    noTopicTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                    noTopicTextView.setTextColor(Color.BLACK);
+                    noTopicTextView.setGravity(Gravity.CENTER);
+                    noTopicTextView.setPadding(16, 16, 16, 16);
+
+                    tableLayout.addView(noTopicTextView); // Add message to the table
                 }
             }
 
