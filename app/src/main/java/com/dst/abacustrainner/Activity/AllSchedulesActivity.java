@@ -476,8 +476,9 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                                         txtPracticeNow.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                                                         txtPracticeNow.setPadding(16, 20, 16, 20);
                                                         txtPracticeNow.setGravity(Gravity.CENTER);
-                                                        txtPracticeNow.setBackgroundResource(R.drawable.rounded_button); // Correct
-                                                        txtPracticeNow.setTextColor(Color.WHITE);
+
+                                                        txtPracticeNow.setBackgroundResource(R.drawable.practicenow_drawable); // Correct
+                                                         txtPracticeNow.setTextColor(Color.WHITE);
                                                         txtPracticeNow.setTypeface(null, Typeface.BOLD);
                                                         txtPracticeNow.setOnClickListener(v -> {
                                                             Intent intent = new Intent(getApplicationContext(), TopicPracticeActivity.class);
@@ -545,7 +546,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
                                                     // No Topics Available
                                                     TextView noTopicTextView = new TextView(AllSchedulesActivity.this);
-                                                    noTopicTextView.setText("Instructor Not Allocated Topics, Please Contact Instructor For More Details");
+                                                    noTopicTextView.setText("Instructor Not Allocated Topics");
                                                     noTopicTextView.setTextSize(14);
                                                     noTopicTextView.setTypeface(Typeface.DEFAULT_BOLD);
                                                     noTopicTextView.setPadding(4, 4, 4, 4);
@@ -695,7 +696,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                                         txtPracticeNow.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                                                         txtPracticeNow.setPadding(16, 20, 16, 20);
                                                         txtPracticeNow.setGravity(Gravity.CENTER);
-                                                        txtPracticeNow.setBackgroundResource(R.drawable.rounded_button); // Correct
+                                                        txtPracticeNow.setBackgroundResource(R.drawable.practicenow_drawable); // Correct
                                                         txtPracticeNow.setTextColor(Color.WHITE);
                                                         txtPracticeNow.setTypeface(null, Typeface.BOLD);
                                                         txtPracticeNow.setOnClickListener(v -> {
@@ -764,7 +765,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
                                                     // No Topics Available
                                                     TextView noTopicTextView = new TextView(AllSchedulesActivity.this);
-                                                    noTopicTextView.setText("Instructor Not Allocated Assignment Topics, Please Contact Instructor For More Details ");
+                                                    noTopicTextView.setText("Instructor Not Allocated Assignment Topics");
                                                     noTopicTextView.setTextSize(14);
                                                     noTopicTextView.setTypeface(Typeface.DEFAULT_BOLD);
                                                     noTopicTextView.setPadding(4, 4, 4, 4);
