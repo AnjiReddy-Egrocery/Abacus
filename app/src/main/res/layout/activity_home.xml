@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Hello, Divya"
-                    android:layout_marginLeft="-100dp"
+                    android:layout_marginLeft="-80dp"
                     android:textColor="#fff"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -65,6 +65,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/abacus_logo"
+                    android:layout_marginRight="8dp"
                     android:contentDescription="Logo" />
 
             </LinearLayout>

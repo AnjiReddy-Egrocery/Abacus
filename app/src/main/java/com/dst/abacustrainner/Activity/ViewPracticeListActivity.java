@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,9 +40,10 @@ public class ViewPracticeListActivity extends AppCompatActivity {
     String name="";
 
     String topicname="";
-    TextView txtName,txtTopicName;
+    TextView txtName,txtTopicName, txtNodata;
     ViewListTopicAdapter viewListTopicAdapter;
     ProgressBar progressBar;
+    LinearLayout layoutBack;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -58,8 +60,10 @@ public class ViewPracticeListActivity extends AppCompatActivity {
         studentid=bundle.getString("studentId");
         name=bundle.getString("firstName");
         topicname=bundle.getString("topicName");
+        txtNodata = findViewById(R.id.txtNoData);
+        layoutBack = findViewById(R.id.layout_back);
 
-        txtName.setText(name);
+       // txtName.setText(name);
         txtTopicName.setText(topicname);
 
         Log.e("Reddy",""+topicid);
@@ -68,6 +72,13 @@ public class ViewPracticeListActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManager=new LinearLayoutManager(ViewPracticeListActivity.this);
         recyclerViewTopic.setLayoutManager(layoutManager);
+
+        layoutBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         VerifyMethod(studentid,topicid);
     }
@@ -92,22 +103,30 @@ public class ViewPracticeListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ViewTopicListResponse> call, Response<ViewTopicListResponse> response) {
                 progressBar.setVisibility(View.GONE);
-                ViewTopicListResponse viewTopicListResponse=response.body();
-                if (viewTopicListResponse.getErrorCode().equals("202")){
+                ViewTopicListResponse viewTopicListResponse = response.body();
 
+                if (viewTopicListResponse.getErrorCode().equals("202")) {
                     Toast.makeText(ViewPracticeListActivity.this, "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
-
-                }else if (viewTopicListResponse.getErrorCode().equals("200")){
-
-                    ViewTopicListResponse.Result result=viewTopicListResponse.getResult();
+                    txtNodata.setVisibility(View.VISIBLE); // Show No Data Found TextView
+                    recyclerViewTopic.setVisibility(View.GONE); // Hide RecyclerView
+                } else if (viewTopicListResponse.getErrorCode().equals("200")) {
+                    ViewTopicListResponse.Result result = viewTopicListResponse.getResult();
                     List<ViewTopicListResponse.Result.Practices> topicsList = result.getPracticesList();
 
-                    viewListTopicAdapter=new ViewListTopicAdapter(ViewPracticeListActivity.this,topicsList);
-                    recyclerViewTopic.setAdapter(viewListTopicAdapter);
+                    if (topicsList.isEmpty()) {
+                        txtNodata.setVisibility(View.VISIBLE); // Show No Data Found TextView
+                        recyclerViewTopic.setVisibility(View.GONE); // Hide RecyclerView
+                    } else {
+                        txtNodata.setVisibility(View.GONE); // Hide No Data Found TextView
+                        recyclerViewTopic.setVisibility(View.VISIBLE); // Show RecyclerView
 
-
-                }else {
+                        viewListTopicAdapter = new ViewListTopicAdapter(ViewPracticeListActivity.this, topicsList);
+                        recyclerViewTopic.setAdapter(viewListTopicAdapter);
+                    }
+                } else {
                     Toast.makeText(ViewPracticeListActivity.this, "Data Error", Toast.LENGTH_LONG).show();
+                    txtNodata.setVisibility(View.VISIBLE); // Show No Data Found TextView
+                    recyclerViewTopic.setVisibility(View.GONE); // Hide RecyclerView
                 }
             }
 

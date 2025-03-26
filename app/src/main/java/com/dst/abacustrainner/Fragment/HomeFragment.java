@@ -50,10 +50,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
-    Button butViewDetrails;
-    TextView txtSchedule,txtName,txtTime,txtTime1,txtData,txtTimeText;
+    /*Button butViewDetrails;*/
+    TextView txtName,txtTime,txtTime1,txtClckSchedule;
 
-    ImageView imgCalender;
+   // ImageView imgCalender;
     String currentDate,textWithBrackets;
     private Calendar calendar;
     String id="",dateId ="",name="",time="",time1="",date="",firsstname="",startedOn="";
@@ -68,14 +68,14 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_home,container,false);
 
-        butViewDetrails=view.findViewById(R.id.but_view);
-        txtSchedule=view.findViewById(R.id.txt_schedule_date);
-        imgCalender=view.findViewById(R.id.image_calender);
+        //butViewDetrails=view.findViewById(R.id.but_view);
+        //txtSchedule=view.findViewById(R.id.txt_schedule_date);
+        //imgCalender=view.findViewById(R.id.image_calender);
         txtName=view.findViewById(R.id.txt_name);
         txtTime=view.findViewById(R.id.txt_time);
         txtTime1=view.findViewById(R.id.txtdate);
-        txtData=view.findViewById(R.id.txt_data);
-        txtTimeText=view.findViewById(R.id.time_txt);
+        //txtData=view.findViewById(R.id.txt_data);
+        //txtTimeText=view.findViewById(R.id.time_txt);
 
         layoutData=view.findViewById(R.id.layout_data);
         progressBar= view.findViewById(R.id.progress);
@@ -95,13 +95,13 @@ public class HomeFragment extends Fragment {
         VerifyBatchDetails(id);
 
 
-       imgCalender.setOnClickListener(new View.OnClickListener() {
+       /*imgCalender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDatePickerDialog();
             }
-        });
-        butViewDetrails.setOnClickListener(new View.OnClickListener() {
+        });*/
+        /*butViewDetrails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), ViewDetailsActivity.class);
@@ -114,7 +114,7 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
+*/
         layoutPlayWithNumbers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,7 +143,7 @@ public class HomeFragment extends Fragment {
 
     private void VerifyBatchDetails(String id) {
 
-        progressBar.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
        /* HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
         OkHttpClient client = new OkHttpClient.Builder()
@@ -160,7 +160,7 @@ public class HomeFragment extends Fragment {
         call.enqueue(new Callback<BachDetailsResponse>() {
             @Override
             public void onResponse(Call<BachDetailsResponse> call, Response<BachDetailsResponse> response) {
-                progressBar.setVisibility(View.GONE);
+//                progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful()){
                     BachDetailsResponse bachDetailsResponse=response.body();
                     if (bachDetailsResponse.getErrorCode().equals("202")){
@@ -205,7 +205,7 @@ public class HomeFragment extends Fragment {
         call.enqueue(new Callback<StudentDetails>() {
             @Override
             public void onResponse(Call<StudentDetails> call, Response<StudentDetails> response) {
-                progressBar.setVisibility(View.GONE);
+//                progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful()){
                     StudentDetails details=response.body();
                     handleApiResult(details);
@@ -222,11 +222,11 @@ public class HomeFragment extends Fragment {
     }
     private void handleApiResult(StudentDetails details) {
         if (details.getErrorCode().equals("202")) {
-            txtName.setText("No Data Found");
-            txtTimeText.setVisibility(View.GONE);
-            txtTime.setVisibility(View.GONE);
-            txtTime1.setVisibility(View.GONE);
-            butViewDetrails.setVisibility(View.GONE);
+//            txtName.setText("No Data Found");
+            //txtTimeText.setVisibility(View.GONE);
+//            txtTime.setVisibility(View.GONE);
+//            txtTime1.setVisibility(View.GONE);
+           // butViewDetrails.setVisibility(View.GONE);
         } else if (details.getErrorCode().equals("200")) {
             List<StudentDetails.Result> list = details.getResult();
             if (!list.isEmpty()) {
@@ -236,10 +236,10 @@ public class HomeFragment extends Fragment {
                 time1 = result.getEndTime();
                 time = result.getStartTime();
                 date=result.getScheduleDate();
-                txtTimeText.setVisibility(View.VISIBLE);
-                txtTime.setVisibility(View.VISIBLE);
+                //txtTimeText.setVisibility(View.VISIBLE);
+               // txtTime.setVisibility(View.VISIBLE);
                 txtTime1.setVisibility(View.VISIBLE);
-                butViewDetrails.setVisibility(View.VISIBLE);
+                //utViewDetrails.setVisibility(View.VISIBLE);
                 txtName.setText(name);
                 txtTime.setText(time);
                 txtTime1.setText(time1);
@@ -267,8 +267,8 @@ public class HomeFragment extends Fragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
         currentDate = dateFormat.format(calendar.getTime());
         textWithBrackets = "(" + currentDate + ")";
-        txtSchedule.setText(textWithBrackets);
-        progressBar.setVisibility(View.VISIBLE);
+        //txtSchedule.setText(textWithBrackets);
+//        progressBar.setVisibility(View.VISIBLE);
         VerifyMethod(id,currentDate);
     }
 }

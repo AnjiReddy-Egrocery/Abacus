@@ -3,6 +3,7 @@ package com.dst.abacustrainner.Activity;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.dst.abacustrainner.Adapter.ViewAssignmentAdapter;
+import com.dst.abacustrainner.Adapter.ViewListTopicAdapter;
 import com.dst.abacustrainner.Model.ViewAssignmentListResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
@@ -37,10 +39,11 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
     String name="";
 
     String topicname="";
-    TextView txtTopicName;
+    TextView txtTopicName, txtNodata;
     ViewAssignmentAdapter viewAssignmentAdapter;
 
     ProgressBar progressBar;
+    LinearLayout layoutBack;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -51,6 +54,9 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
         //txtName=findViewById(R.id.txt_name);
         txtTopicName=findViewById(R.id.txt_topic_name);
         recyclerViewTopic=findViewById(R.id.recycler_view_topic);
+
+        txtNodata = findViewById(R.id.txtNoData);
+        layoutBack = findViewById(R.id.layout_back);
 
         Bundle bundle=getIntent().getExtras();
         topicid=bundle.getString("topicId");
@@ -64,6 +70,13 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManager=new LinearLayoutManager(ViewAssignmentListActivity.this);
         recyclerViewTopic.setLayoutManager(layoutManager);
+
+        layoutBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         VerifyMethod(studentid,topicid);
     }
@@ -92,15 +105,26 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
                 ViewAssignmentListResponse assignmentListResponse=response.body();
                 if (assignmentListResponse.getErrorCode().equals("202")){
                     Toast.makeText(ViewAssignmentListActivity.this, "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
+                    txtNodata.setVisibility(View.VISIBLE); // Show No Data Found TextView
+                    recyclerViewTopic.setVisibility(View.GONE); // Hide RecyclerView
                 }else if (assignmentListResponse.getErrorCode().equals("200")){
                     ViewAssignmentListResponse.Result result=assignmentListResponse.getResult();
                     List<ViewAssignmentListResponse.Result.Practices> practicesList=result.getPracticesList();
 
-                    viewAssignmentAdapter =new ViewAssignmentAdapter(ViewAssignmentListActivity.this,practicesList);
-                    recyclerViewTopic.setAdapter(viewAssignmentAdapter);
+                    if (practicesList.isEmpty()) {
+                        txtNodata.setVisibility(View.VISIBLE); // Show No Data Found TextView
+                        recyclerViewTopic.setVisibility(View.GONE); // Hide RecyclerView
+                    } else {
+                        txtNodata.setVisibility(View.GONE); // Hide No Data Found TextView
+                        recyclerViewTopic.setVisibility(View.VISIBLE); // Show RecyclerView
 
-                }else {
+                        viewAssignmentAdapter = new ViewAssignmentAdapter(ViewAssignmentListActivity.this, practicesList);
+                        recyclerViewTopic.setAdapter(viewAssignmentAdapter);
+                    }
+                } else {
                     Toast.makeText(ViewAssignmentListActivity.this, "Data Error", Toast.LENGTH_LONG).show();
+                    txtNodata.setVisibility(View.VISIBLE); // Show No Data Found TextView
+                    recyclerViewTopic.setVisibility(View.GONE); // Hide RecyclerView
                 }
             }
 

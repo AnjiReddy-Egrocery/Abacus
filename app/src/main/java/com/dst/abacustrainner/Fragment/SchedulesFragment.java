@@ -47,6 +47,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -69,7 +70,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
     private RecyclerView calendarRecyclerView;
     private CalendarAdapter calendarAdapter;
     private List<String> daysList;
-    private TextView tvMonthYear;
+    private TextView tvMonthYear,txtDate,txtTime;
     private ImageView btnPrevMonth, btnNextMonth;
     private Calendar currentCalendar;
     private TextView txtviewall;
@@ -84,6 +85,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
 
     TableLayout tableLayout,tableLayoutAssignments ;
     String dateId;
+    String startTime,endTime,timeText,amPm,startHour,endHour;
 
 
     @SuppressLint("MissingInflatedId")
@@ -97,6 +99,8 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
         btnPrevMonth = view1.findViewById(R.id.btnPrevMonth);
         btnNextMonth = view1.findViewById(R.id.btnNextMonth);
         txtviewall = view1.findViewById(R.id.viewall);
+        txtDate= view1.findViewById(R.id.txt_date);
+        txtTime = view1.findViewById(R.id.txt_time);
 
 
         if (getArguments() != null) {
@@ -178,6 +182,24 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                         Toast.makeText(getContext(), "No Schedule for the given details", Toast.LENGTH_LONG).show();
                     } else if (details.getErrorCode().equals("200")) {
                         List<DatedetailsResponse.Result> daResult = details.getResult();
+                        if (daResult != null && !daResult.isEmpty()) {
+                            // Extract first item from the list (assuming single batch details)
+                            DatedetailsResponse.Result batchDetails = daResult.get(0);
+
+                            startTime = batchDetails.getStartTime(); // Extract Start Time
+                            endTime = batchDetails.getEndTime(); // Extract End Time
+
+                            startHour = startTime.split(":")[0]; // "06"
+                            endHour = endTime.split(":")[0];     // "07"
+
+                            // Getting AM/PM from endTime
+                            amPm = endTime.substring(endTime.length() - 2); // "AM" or "PM"
+
+                            // Formatting the time range
+                            timeText = startHour + " - " + endHour + " " + amPm; // "06 - 07 AM"
+                        } else {
+                            txtTime.setText("No data available"); // Handle empty result
+                        }
 
                         scheduledDatesMap.clear();
                         dateIdMap.clear(); // ✅ Clear dateIdMap before updating
@@ -278,8 +300,25 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
         TopicsMethod(studentId,dateId);
         Assignment(studentId,dateId);
 
+        String formattedDate = formatDate(selectedDate);
+
+        txtDate.setText(formattedDate);
+        txtTime.setText(timeText);
+
             // 🔥 Open a new screen if needed
 
+    }
+
+    private String formatDate(String selectedDate) {
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            Date date = inputFormat.parse(selectedDate);
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return selectedDate; // Return original if parsing fails
+        }
     }
 
     private void Assignment(String studentId, String dateId) {
@@ -315,6 +354,36 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                     List<AssignmentListResponse.Result.AssignmentTopics> assignmentTopicsList = result.getAssignmentTopicsList();
 
                     tableLayoutAssignments.removeAllViews(); // Clear previous data
+
+                    if (assignmentTopicsList == null || assignmentTopicsList.isEmpty()) {
+
+                        TableRow headerRow = new TableRow(getContext());
+                        headerRow.setBackgroundColor(Color.LTGRAY);
+
+                        String[] headers = {"No", "Topics", "Conducted"};
+                        for (String header : headers) {
+                            TextView headerText = new TextView(getContext());
+                            headerText.setText(header);
+                            headerText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+                            headerText.setTextColor(Color.BLACK);
+                            headerText.setGravity(Gravity.CENTER);
+                            headerText.setPadding(16, 20, 16, 20);
+                            headerText.setBackgroundResource(R.drawable.border);
+                            headerRow.addView(headerText);
+                        }
+
+                        tableLayoutAssignments.addView(headerRow);
+                        // Show message if topics list is empty
+                        TextView noTopicTextView = new TextView(getContext());
+                        noTopicTextView.setText("Instructor Not Allocated Assignments");
+                        noTopicTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                        noTopicTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                        noTopicTextView.setTextColor(Color.BLACK);
+                        noTopicTextView.setGravity(Gravity.CENTER);
+                        noTopicTextView.setPadding(16, 16, 16, 16);
+
+                        tableLayoutAssignments.addView(noTopicTextView);
+                    }else{
 
                     TableRow headerRow = new TableRow(getContext());
                     headerRow.setBackgroundColor(Color.LTGRAY);
@@ -463,18 +532,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                         // Add Row to Table
                         tableLayoutAssignments.addView(row);
                     }
-                } else {
-                    tableLayout.removeAllViews(); // Clear previous content
-
-                    TextView noTopicTextView = new TextView(getContext());
-                    noTopicTextView.setText("Instructor Not Allocated Assignment Topics, Please Contact Instructor For More Details");
-                    noTopicTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                    noTopicTextView.setTypeface(Typeface.DEFAULT_BOLD);
-                    noTopicTextView.setTextColor(Color.BLACK);
-                    noTopicTextView.setGravity(Gravity.CENTER);
-                    noTopicTextView.setPadding(16, 16, 16, 16);
-
-                    tableLayout.addView(noTopicTextView); // Add message to the table
+                }
                 }
             }
 
@@ -520,161 +578,179 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
 
                     tableLayout.removeAllViews(); // Clear previous data
 
-                    // Create header row
-                    TableRow headerRow = new TableRow(getContext());
-                    headerRow.setBackgroundColor(Color.LTGRAY);
+                    if (topicsList == null || topicsList.isEmpty()) {
 
-                    String[] headers = {"No", "Topics", "Conducted"};
-                    for (String header : headers) {
-                        TextView headerText = new TextView(getContext());
-                        headerText.setText(header);
-                        headerText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-                        headerText.setTextColor(Color.BLACK);
-                        headerText.setGravity(Gravity.CENTER);
-                        headerText.setPadding(16, 20, 16, 20);
-                        headerText.setBackgroundResource(R.drawable.border);
-                        headerRow.addView(headerText);
-                    }
+                        TableRow headerRow = new TableRow(getContext());
+                        headerRow.setBackgroundColor(Color.LTGRAY);
 
-                    tableLayout.addView(headerRow);
+                        String[] headers = {"No", "Topics", "Conducted"};
+                        for (String header : headers) {
+                            TextView headerText = new TextView(getContext());
+                            headerText.setText(header);
+                            headerText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+                            headerText.setTextColor(Color.BLACK);
+                            headerText.setGravity(Gravity.CENTER);
+                            headerText.setPadding(16, 20, 16, 20);
+                            headerText.setBackgroundResource(R.drawable.border);
+                            headerRow.addView(headerText);
+                        }
 
-                    // Populate the table
-                    for (int i = 0; i < topicsList.size(); i++) {
-                        TopicListResponse.Result.Topics topic = topicsList.get(i);
-                        TableRow row = new TableRow(getContext());
+                        tableLayout.addView(headerRow);
+                        // Show message if topics list is empty
+                        TextView noTopicTextView = new TextView(getContext());
+                        noTopicTextView.setText("Instructor Not Allocated Topics");
+                        noTopicTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                        noTopicTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                        noTopicTextView.setTextColor(Color.BLACK);
+                        noTopicTextView.setGravity(Gravity.CENTER);
+                        noTopicTextView.setPadding(16, 16, 16, 16);
 
-                        LinearLayout txtNumberLayout = new LinearLayout(getContext());
-                        txtNumberLayout.setOrientation(LinearLayout.VERTICAL);
-                        txtNumberLayout.setGravity(Gravity.CENTER);
-                        txtNumberLayout.setPadding(16, 115, 16, 115);
-                        txtNumberLayout.setBackgroundResource(R.drawable.border);
+                        tableLayout.addView(noTopicTextView);
+                    }else{
+                        TableRow headerRow = new TableRow(getContext());
+                        headerRow.setBackgroundColor(Color.LTGRAY);
 
-                        // Number Column
-                        TextView txtNumber = new TextView(getContext());
-                        txtNumber.setText(String.valueOf(i + 1));
-                        txtNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                        txtNumber.setPadding(16, 10, 16, 10);
-                        txtNumber.setTextColor(Color.BLACK);
-                        txtNumber.setGravity(Gravity.CENTER);
+                        String[] headers = {"No", "Topics", "Conducted"};
+                        for (String header : headers) {
+                            TextView headerText = new TextView(getContext());
+                            headerText.setText(header);
+                            headerText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+                            headerText.setTextColor(Color.BLACK);
+                            headerText.setGravity(Gravity.CENTER);
+                            headerText.setPadding(16, 20, 16, 20);
+                            headerText.setBackgroundResource(R.drawable.border);
+                            headerRow.addView(headerText);
+                        }
 
-                        View spacetxtnumber = new View(getContext());
-                        spacetxtnumber.setLayoutParams(new LinearLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT, 0));
+                        tableLayout.addView(headerRow);
 
-                        txtNumberLayout.addView(txtNumber);
-                        txtNumberLayout.addView(spacetxtnumber);
+                        // Populate the table
+                        for (int i = 0; i < topicsList.size(); i++) {
+                            TopicListResponse.Result.Topics topic = topicsList.get(i);
+                            TableRow row = new TableRow(getContext());
 
-                        LinearLayout topicLayout = new LinearLayout(getContext());
-                        topicLayout.setOrientation(LinearLayout.VERTICAL);
-                        topicLayout.setGravity(Gravity.CENTER);
-                        topicLayout.setBackgroundResource(R.drawable.border);
-                        topicLayout.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.1f)); // Ensure it expands properly
+                            LinearLayout txtNumberLayout = new LinearLayout(getContext());
+                            txtNumberLayout.setOrientation(LinearLayout.VERTICAL);
+                            txtNumberLayout.setGravity(Gravity.CENTER);
+                            txtNumberLayout.setPadding(16, 115, 16, 115);
+                            txtNumberLayout.setBackgroundResource(R.drawable.border);
+
+                            // Number Column
+                            TextView txtNumber = new TextView(getContext());
+                            txtNumber.setText(String.valueOf(i + 1));
+                            txtNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                            txtNumber.setPadding(16, 10, 16, 10);
+                            txtNumber.setTextColor(Color.BLACK);
+                            txtNumber.setGravity(Gravity.CENTER);
+
+                            View spacetxtnumber = new View(getContext());
+                            spacetxtnumber.setLayoutParams(new LinearLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT, 0));
+
+                            txtNumberLayout.addView(txtNumber);
+                            txtNumberLayout.addView(spacetxtnumber);
+
+                            LinearLayout topicLayout = new LinearLayout(getContext());
+                            topicLayout.setOrientation(LinearLayout.VERTICAL);
+                            topicLayout.setGravity(Gravity.CENTER);
+                            topicLayout.setBackgroundResource(R.drawable.border);
+                            topicLayout.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.1f)); // Ensure it expands properly
 
 // Topic Column
-                        TextView txtTopic = new TextView(getContext());
-                        txtTopic.setText(topic.getTopicName());
-                        txtTopic.setMaxLines(2);
-                        txtTopic.setEllipsize(TextUtils.TruncateAt.END);
-                        txtTopic.setGravity(Gravity.CENTER); // Align text to start
-                        txtTopic.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                            TextView txtTopic = new TextView(getContext());
+                            txtTopic.setText(topic.getTopicName());
+                            txtTopic.setMaxLines(2);
+                            txtTopic.setEllipsize(TextUtils.TruncateAt.END);
+                            txtTopic.setGravity(Gravity.CENTER); // Align text to start
+                            txtTopic.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
 
-                        txtTopic.setLayoutParams(new LinearLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                            txtTopic.setLayoutParams(new LinearLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-                        txtTopic.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                            @Override
-                            public void onGlobalLayout() {
-                                // Remove the listener after execution to avoid multiple calls
-                                txtTopic.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            txtTopic.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                @Override
+                                public void onGlobalLayout() {
+                                    // Remove the listener after execution to avoid multiple calls
+                                    txtTopic.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-                                if (txtTopic.getLineCount() == 1) {
-                                    topicLayout.setPadding(16, 125, 10, 125); // Apply for single-line text
-                                } else {
-                                    topicLayout.setPadding(16, 108 ,16, 108); // Apply for two-line text
+                                    if (txtTopic.getLineCount() == 1) {
+                                        topicLayout.setPadding(16, 125, 10, 125); // Apply for single-line text
+                                    } else {
+                                        topicLayout.setPadding(16, 108 ,16, 108); // Apply for two-line text
+                                    }
                                 }
-                            }
-                        });
+                            });
 
-                        View spacetopic = new View(getContext());
-                        spacetopic.setLayoutParams(new LinearLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT, 0));
+                            View spacetopic = new View(getContext());
+                            spacetopic.setLayoutParams(new LinearLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT, 0));
 
-                        topicLayout.addView(txtTopic);
-                        topicLayout.addView(spacetopic);
-
+                            topicLayout.addView(txtTopic);
+                            topicLayout.addView(spacetopic);
 
 
 
-                        // Practice Now Button
-                        LinearLayout practiceLayout = new LinearLayout(getContext());
-                        practiceLayout.setOrientation(LinearLayout.VERTICAL);
-                        practiceLayout.setGravity(Gravity.CENTER);
-                        practiceLayout.setPadding(20, 59, 16, 59);
-                        practiceLayout.setBackgroundResource(R.drawable.border);
 
-                        TextView txtPracticeNow = new TextView(getContext());
-                        txtPracticeNow.setText("Practice Now");
-                        txtPracticeNow.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                        txtPracticeNow.setPadding(16, 20, 16, 20);
-                        txtPracticeNow.setGravity(Gravity.CENTER);
-                        txtPracticeNow.setBackgroundResource(R.drawable.rounded_button); // Correct
-                        txtPracticeNow.setTextColor(Color.WHITE);
-                        txtPracticeNow.setTypeface(null, Typeface.BOLD);
-                        txtPracticeNow.setOnClickListener(v -> {
-                            Intent intent = new Intent(getContext(), TopicPracticeActivity.class);
-                            intent.putExtra("topicId", topic.getTopicId());
-                            intent.putExtra("studentId", studentId);
-                            intent.putExtra("topicName", topic.getTopicName());
-                            startActivity(intent);
-                        });
+                            // Practice Now Button
+                            LinearLayout practiceLayout = new LinearLayout(getContext());
+                            practiceLayout.setOrientation(LinearLayout.VERTICAL);
+                            practiceLayout.setGravity(Gravity.CENTER);
+                            practiceLayout.setPadding(20, 59, 16, 59);
+                            practiceLayout.setBackgroundResource(R.drawable.border);
 
-                        // Space between buttons
-                        View space = new View(getContext());
-                        space.setLayoutParams(new LinearLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT, 10));
+                            TextView txtPracticeNow = new TextView(getContext());
+                            txtPracticeNow.setText("Practice Now");
+                            txtPracticeNow.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                            txtPracticeNow.setPadding(16, 20, 16, 20);
+                            txtPracticeNow.setGravity(Gravity.CENTER);
+                            txtPracticeNow.setBackgroundResource(R.drawable.rounded_button); // Correct
+                            txtPracticeNow.setTextColor(Color.WHITE);
+                            txtPracticeNow.setTypeface(null, Typeface.BOLD);
+                            txtPracticeNow.setOnClickListener(v -> {
+                                Intent intent = new Intent(getContext(), TopicPracticeActivity.class);
+                                intent.putExtra("topicId", topic.getTopicId());
+                                intent.putExtra("studentId", studentId);
+                                intent.putExtra("topicName", topic.getTopicName());
+                                startActivity(intent);
+                            });
 
-                        // View Result Button
-                        TextView txtViewResult = new TextView(getContext());
-                        txtViewResult.setText("View Result");
-                        txtViewResult.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                        txtViewResult.setPadding(16, 20, 16, 20);
-                        txtViewResult.setGravity(Gravity.CENTER);
-                        txtViewResult.setBackgroundResource(R.drawable.button_viewresult); // Correctly applied to txtViewResult
-                        txtViewResult.setTextColor(Color.parseColor("#000000"));
-                        txtViewResult.setTypeface(null, Typeface.BOLD);
-                        txtViewResult.setOnClickListener(v -> {
-                            Intent intent = new Intent(getContext(), ViewPracticeListActivity.class);
-                            intent.putExtra("topicId", topic.getTopicId());
-                            intent.putExtra("studentId", studentId);
-                            intent.putExtra("topicName", topic.getTopicName());
-                            startActivity(intent);
-                        });
+                            // Space between buttons
+                            View space = new View(getContext());
+                            space.setLayoutParams(new LinearLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT, 10));
 
-                        // Add buttons to layout
-                        practiceLayout.addView(txtPracticeNow);
-                        practiceLayout.addView(space);
-                        practiceLayout.addView(txtViewResult);
-                        // Add views to row
-                        row.addView(txtNumberLayout);
-                        row.addView(topicLayout);
-                        row.addView(practiceLayout);
+                            // View Result Button
+                            TextView txtViewResult = new TextView(getContext());
+                            txtViewResult.setText("View Result");
+                            txtViewResult.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                            txtViewResult.setPadding(16, 20, 16, 20);
+                            txtViewResult.setGravity(Gravity.CENTER);
+                            txtViewResult.setBackgroundResource(R.drawable.button_viewresult); // Correctly applied to txtViewResult
+                            txtViewResult.setTextColor(Color.parseColor("#000000"));
+                            txtViewResult.setTypeface(null, Typeface.BOLD);
+                            txtViewResult.setOnClickListener(v -> {
+                                Intent intent = new Intent(getContext(), ViewPracticeListActivity.class);
+                                intent.putExtra("topicId", topic.getTopicId());
+                                intent.putExtra("studentId", studentId);
+                                intent.putExtra("topicName", topic.getTopicName());
+                                startActivity(intent);
+                            });
 
-                        // Add row to table
-                        tableLayout.addView(row);
+                            // Add buttons to layout
+                            practiceLayout.addView(txtPracticeNow);
+                            practiceLayout.addView(space);
+                            practiceLayout.addView(txtViewResult);
+                            // Add views to row
+                            row.addView(txtNumberLayout);
+                            row.addView(topicLayout);
+                            row.addView(practiceLayout);
+
+                            // Add row to table
+                            tableLayout.addView(row);
                     }
 
-                } else {
-                    tableLayout.removeAllViews(); // Clear previous content
+                    }
 
-                    TextView noTopicTextView = new TextView(getContext());
-                    noTopicTextView.setText("Instructor Not Allocated Topics, Please Contact Instructor For More Details");
-                    noTopicTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                    noTopicTextView.setTypeface(Typeface.DEFAULT_BOLD);
-                    noTopicTextView.setTextColor(Color.BLACK);
-                    noTopicTextView.setGravity(Gravity.CENTER);
-                    noTopicTextView.setPadding(16, 16, 16, 16);
-
-                    tableLayout.addView(noTopicTextView); // Add message to the table
                 }
             }
 
