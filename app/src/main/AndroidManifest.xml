@@ -170,12 +170,10 @@
             android:launchMode="singleTop" />
         <activity
             android:name=".SpalashActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:theme="@style/Base.Theme.AbacusTrainer">
+            android:exported="false"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -172,8 +172,9 @@
                     android:textColor="#000"
                     android:textStyle="bold"
                     android:layout_weight="1"
-                    android:textSize="18dp"
+                    android:textSize="16dp"
                     android:id="@+id/txt_date"
+                    android:layout_marginLeft="-20dp"
                     android:visibility="visible"
                     android:gravity="center"/>
                 <TextView
@@ -182,7 +183,8 @@
                     android:text="4:00 pm"
                     android:textStyle="bold"
                     android:textColor="#000"
-                    android:textSize="18dp"
+                    android:textSize="14dp"
+                    android:layout_marginLeft="-40dp"
                     android:id="@+id/txt_time"
                     android:layout_weight="1"
                     android:gravity="center"/>
@@ -193,9 +195,8 @@
                     android:text="Join now"
                     android:textColor="#ff6600"
                     android:layout_weight="1"
-                    android:textSize="22dp"
+                    android:textSize="20dp"
                     android:gravity="center"
-
                     android:padding="5dp"
                     android:textStyle="bold"
 

@@ -238,11 +238,11 @@ public class HomeFragment extends Fragment {
                 date=result.getScheduleDate();
                 //txtTimeText.setVisibility(View.VISIBLE);
                // txtTime.setVisibility(View.VISIBLE);
-                txtTime1.setVisibility(View.VISIBLE);
+//                txtTime1.setVisibility(View.VISIBLE);
                 //utViewDetrails.setVisibility(View.VISIBLE);
-                txtName.setText(name);
-                txtTime.setText(time);
-                txtTime1.setText(time1);
+//                txtName.setText(name);
+//                txtTime.setText(time);
+  //              txtTime1.setText(time1);
             }
         }
     }

@@ -7,6 +7,13 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <style name="Theme.Splash" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item> <!-- Use Black or Transparent -->
+    </style>
+
+
+
+
     <style name="Theme.AbacusTrainer" parent="Base.Theme.AbacusTrainer"
         >
         <item name="android:windowBackground">@color/white</item>

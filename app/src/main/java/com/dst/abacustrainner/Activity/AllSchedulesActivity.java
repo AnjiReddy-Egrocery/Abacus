@@ -544,6 +544,49 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                                     // Add title to detailsLayout
                                                     detailsLayout.addView(txtTopicsTitle);
 
+                                                    TableRow headerRow = new TableRow(getApplicationContext());
+
+                                                    TextView headerNo = new TextView(getApplicationContext());
+                                                    headerNo.setText("No");
+                                                    headerNo.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                                                    headerNo.setTypeface(null, Typeface.BOLD);
+                                                    headerNo.setGravity(Gravity.CENTER);
+                                                    headerNo.setPadding(16, 20, 16, 20);
+                                                    headerNo.setBackgroundResource(R.drawable.border);
+
+                                                    TextView headerTopic = new TextView(getApplicationContext());
+                                                    headerTopic.setText("Assignments");
+                                                    headerTopic.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                                                    headerTopic.setTypeface(null, Typeface.BOLD);
+                                                    headerTopic.setGravity(Gravity.CENTER);
+                                                    headerTopic.setPadding(16, 20, 16, 20);
+                                                    headerTopic.setBackgroundResource(R.drawable.border);
+
+                                                    TextView headerActions = new TextView(getApplicationContext());
+                                                    headerActions.setText("Conducted");
+                                                    headerActions.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                                                    headerActions.setTypeface(null, Typeface.BOLD);
+                                                    headerActions.setGravity(Gravity.CENTER);
+                                                    headerActions.setPadding(16, 20, 16, 20);
+                                                    headerActions.setBackgroundResource(R.drawable.border);
+
+                                                    // Set LayoutParams to ensure equal width
+                                                    TableRow.LayoutParams headerParamsNo = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.1f);
+                                                    TableRow.LayoutParams headerParamsTopic = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.6f);
+                                                    TableRow.LayoutParams headerParamsActions = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.3f);
+
+                                                    headerNo.setLayoutParams(headerParamsNo);
+                                                    headerTopic.setLayoutParams(headerParamsTopic);
+                                                    headerActions.setLayoutParams(headerParamsActions);
+
+                                                    // Add headers to the row
+                                                    headerRow.addView(headerNo);
+                                                    headerRow.addView(headerTopic);
+                                                    headerRow.addView(headerActions);
+
+                                                    // Add header row to detailsLayout
+                                                    detailsLayout.addView(headerRow);
+
                                                     // No Topics Available
                                                     TextView noTopicTextView = new TextView(AllSchedulesActivity.this);
                                                     noTopicTextView.setText("Instructor Not Allocated Topics");
@@ -755,13 +798,56 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                                     }
                                                 } else {
                                                     TextView txtassignmentTitle = new TextView(getApplicationContext());
-                                                    txtassignmentTitle.setText("AssignMents");
+                                                    txtassignmentTitle.setText("Assignments");
                                                     txtassignmentTitle.setTextColor(Color.parseColor("#4A148C"));
                                                     txtassignmentTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
                                                     txtassignmentTitle.setTypeface(null, Typeface.BOLD);
 
                                                     // Add title to detailsLayout
                                                     detailsLayout.addView(txtassignmentTitle);
+
+                                                    TableRow headerRow = new TableRow(getApplicationContext());
+
+                                                    TextView headerNo = new TextView(getApplicationContext());
+                                                    headerNo.setText("No");
+                                                    headerNo.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                                                    headerNo.setTypeface(null, Typeface.BOLD);
+                                                    headerNo.setGravity(Gravity.CENTER);
+                                                    headerNo.setPadding(16, 20, 16, 20);
+                                                    headerNo.setBackgroundResource(R.drawable.border);
+
+                                                    TextView headerTopic = new TextView(getApplicationContext());
+                                                    headerTopic.setText("Assignments");
+                                                    headerTopic.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                                                    headerTopic.setTypeface(null, Typeface.BOLD);
+                                                    headerTopic.setGravity(Gravity.CENTER);
+                                                    headerTopic.setPadding(16, 20, 16, 20);
+                                                    headerTopic.setBackgroundResource(R.drawable.border);
+
+                                                    TextView headerActions = new TextView(getApplicationContext());
+                                                    headerActions.setText("Conducted");
+                                                    headerActions.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                                                    headerActions.setTypeface(null, Typeface.BOLD);
+                                                    headerActions.setGravity(Gravity.CENTER);
+                                                    headerActions.setPadding(16, 20, 16, 20);
+                                                    headerActions.setBackgroundResource(R.drawable.border);
+
+                                                    // Set LayoutParams to ensure equal width
+                                                    TableRow.LayoutParams headerParamsNo = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.1f);
+                                                    TableRow.LayoutParams headerParamsTopic = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.6f);
+                                                    TableRow.LayoutParams headerParamsActions = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.3f);
+
+                                                    headerNo.setLayoutParams(headerParamsNo);
+                                                    headerTopic.setLayoutParams(headerParamsTopic);
+                                                    headerActions.setLayoutParams(headerParamsActions);
+
+                                                    // Add headers to the row
+                                                    headerRow.addView(headerNo);
+                                                    headerRow.addView(headerTopic);
+                                                    headerRow.addView(headerActions);
+
+                                                    // Add header row to detailsLayout
+                                                    detailsLayout.addView(headerRow);
 
                                                     // No Topics Available
                                                     TextView noTopicTextView = new TextView(AllSchedulesActivity.this);

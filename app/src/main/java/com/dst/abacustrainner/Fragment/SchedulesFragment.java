@@ -189,14 +189,9 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                             startTime = batchDetails.getStartTime(); // Extract Start Time
                             endTime = batchDetails.getEndTime(); // Extract End Time
 
-                            startHour = startTime.split(":")[0]; // "06"
-                            endHour = endTime.split(":")[0];     // "07"
-
-                            // Getting AM/PM from endTime
-                            amPm = endTime.substring(endTime.length() - 2); // "AM" or "PM"
 
                             // Formatting the time range
-                            timeText = startHour + " - " + endHour + " " + amPm; // "06 - 07 AM"
+                            timeText = startTime + "-" + endTime; // "06 - 07 AM"
                         } else {
                             txtTime.setText("No data available"); // Handle empty result
                         }
