@@ -171,24 +171,39 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
 
         Call<ViewTopicResultResponse> call=apiClient.viewResult(idPart);
         call.enqueue(new Callback<ViewTopicResultResponse>() {
+
             @Override
             public void onResponse(Call<ViewTopicResultResponse> call, Response<ViewTopicResultResponse> response) {
                 if (response.isSuccessful()) {
                     ViewTopicResultResponse result = response.body();
-                    Log.d("Response","Anji"+result);
+                    Log.d("Response", "Anji" + result);
+
                     if (result != null) {
-                        ViewTopicResultResponse.Result viewTopicResult=result.getResult();
-                        firstName=viewTopicResult.getFirstName();
-                        startDate=viewTopicResult.getStartedOn();
-//                        txtName.setText(firstName);
-//                        txtStartDate.setText(startDate);
+                        ViewTopicResultResponse.Result viewTopicResult = result.getResult();
+                        firstName = viewTopicResult.getFirstName();
+                        startDate = viewTopicResult.getStartedOn();
+
+                        // Set Name and Start Date if required
+//            txtName.setText(firstName);
+//            txtStartDate.setText(startDate);
+
                         String questionsListJsonString = viewTopicResult.getQuestionsList();
                         if (questionsListJsonString != null) {
                             try {
                                 JSONArray jsonArray = new JSONArray(questionsListJsonString);
+
+                                // Initialize counters
+                                int totalQuestions = jsonArray.length();
+                                int attempted = 0;
+                                int correct = 0;
+                                int incorrect = 0;
+
                                 LayoutInflater inflater = LayoutInflater.from(ViewResultDetailsActivity.this);
+
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject questionObject = jsonArray.getJSONObject(i);
+
+                                    // Extract fields
                                     String questionHtml = questionObject.getString("question");
                                     String answer = questionObject.getString("answer");
                                     String given = questionObject.getString("given");
@@ -196,76 +211,98 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
                                     String timeTaken = questionObject.getString("time_taken");
                                     int status = questionObject.getInt("status");
 
+                                    // Update counts
+                                    if (status == 1) {
+                                        attempted++;
+                                    }
+                                    if (isCorrect == 1) {
+                                        correct++;
+                                    } else {
+                                        incorrect++;
+                                    }
+
+                                    // Convert HTML to Spanned text for display
                                     Spanned questionText = HtmlCompat.fromHtml(questionHtml, HtmlCompat.FROM_HTML_MODE_LEGACY);
                                     Spanned answerText = HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY);
                                     Spanned givenText = HtmlCompat.fromHtml(given, HtmlCompat.FROM_HTML_MODE_LEGACY);
                                     Spanned timeText = HtmlCompat.fromHtml(timeTaken, HtmlCompat.FROM_HTML_MODE_LEGACY);
 
-                                    txtTotalQuestions.setText(String.valueOf(questionText));
-                                    // Set question and its properties in separate TextViews
+                                    // Create table row
                                     TableRow row = new TableRow(getApplicationContext());
 
-                                    TextView question = new TextView(getApplicationContext());
-                                    question.setText(questionText);
-                                    question.setPadding(14,14,14,14);
-                                    question.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-                                    question.setTextColor(Color.BLACK);
-                                    question.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-                                    question.setGravity(Gravity.CENTER);
+                                    // Create and configure TextViews
+                                    TextView questionView = new TextView(getApplicationContext());
+                                    questionView.setText(questionText);
+                                    questionView.setPadding(14, 14, 14, 14);
+                                    questionView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                                    questionView.setTextColor(Color.BLACK);
+                                    questionView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
+                                    questionView.setGravity(Gravity.CENTER);
 
-                                    TextView answers = new TextView(getApplicationContext());
-                                    answers.setText(answerText);
-                                    answers.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-                                    answers.setPadding(14,14,14,14);
-                                    answers.setTextColor(Color.BLACK);
-                                    answers.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-                                    answers.setGravity(Gravity.CENTER);
+                                    TextView answersView = new TextView(getApplicationContext());
+                                    answersView.setText(answerText);
+                                    answersView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                                    answersView.setPadding(14, 14, 14, 14);
+                                    answersView.setTextColor(Color.BLACK);
+                                    answersView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
+                                    answersView.setGravity(Gravity.CENTER);
 
+                                    TextView givenView = new TextView(getApplicationContext());
+                                    givenView.setText(givenText);
+                                    givenView.setPadding(14, 14, 14, 14);
+                                    givenView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                                    givenView.setTextColor(Color.BLACK);
+                                    givenView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
+                                    givenView.setGravity(Gravity.CENTER);
 
-                                    TextView givenname = new TextView(getApplicationContext());
-                                    givenname.setText(givenText);
-                                    givenname.setPadding(14,14,14,14);
-                                    givenname.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-                                    givenname.setTextColor(Color.BLACK);
-                                    givenname.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-                                    givenname.setGravity(Gravity.CENTER);
+                                    TextView timeView = new TextView(getApplicationContext());
+                                    timeView.setText(timeText);
+                                    timeView.setPadding(14, 14, 14, 14);
+                                    timeView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                                    timeView.setTextColor(Color.BLACK);
+                                    timeView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
+                                    timeView.setGravity(Gravity.CENTER);
 
-                                    TextView time = new TextView(getApplicationContext());
-                                    time.setText(timeText);
-                                    time.setPadding(14,14,14,14);
-                                    time.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-                                    time.setTextColor(Color.BLACK);
-                                    time.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-                                    time.setGravity(Gravity.CENTER);
+                                    // Add views to row
+                                    row.addView(questionView);
+                                    row.addView(answersView);
+                                    row.addView(givenView);
+                                    row.addView(timeView);
 
-
-                                    row.addView(question);
-                                    row.addView(answers);
-                                    row.addView(givenname);
-                                    row.addView(time);
-
+                                    // Add row to table
                                     tabLayout.addView(row);
 
+                                    // Add separator between rows
                                     if (i < jsonArray.length() - 1) {
                                         View separator = inflater.inflate(R.layout.separator_row, tabLayout, false);
                                         tabLayout.addView(separator);
                                     }
-
                                 }
+
+                                // Set total values to respective TextViews
+                                txtTotalQuestions.setText(String.valueOf(totalQuestions));
+                                txtAttemtedQueston.setText(String.valueOf(attempted));
+                                txtCorrectAnswer.setText(String.valueOf(correct));
+                                txtworngAnswer.setText(String.valueOf(incorrect));
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
                     }
                 } else {
-
+                    Log.e("Response", "Request failed");
                 }
             }
 
             @Override
             public void onFailure(Call<ViewTopicResultResponse> call, Throwable t) {
-
+                Log.e("Response", "Request failed: " + t.getMessage());
             }
+
+
+
+
         });
 
 
