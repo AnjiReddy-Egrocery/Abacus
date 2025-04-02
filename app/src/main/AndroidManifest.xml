@@ -170,8 +170,8 @@
             android:launchMode="singleTop" />
         <activity
             android:name=".SpalashActivity"
-            android:exported="false"
-            >
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
