@@ -59,6 +59,10 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
     private PieChart pieChart;
     ScrollView scrollView;
     LinearLayout layoutFirst,layoutSecond;
+    int totalQuestions ;
+    int attempted ;
+    int correct ;
+    int incorrect;
 
 
 
@@ -87,17 +91,15 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
         layoutFirst = findViewById(R.id.layout_first);
         layoutSecond = findViewById(R.id.layout_second);
 
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int scrollY = scrollView.getScrollY();
-                if (scrollY > 100) { // Adjust this value based on your requirement
-                    layoutFirst.setVisibility(View.GONE);
-                    layoutSecond.setVisibility(View.VISIBLE);
-                } else {
-                    layoutFirst.setVisibility(View.VISIBLE);
-                    layoutSecond.setVisibility(View.GONE);
-                }
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            int scrollY = scrollView.getScrollY();
+
+            if (scrollY > 100 && layoutFirst.getVisibility() == View.VISIBLE) {
+                fadeOut(layoutFirst);
+                fadeIn(layoutSecond);
+            } else if (scrollY <= 100 && layoutSecond.getVisibility() == View.VISIBLE) {
+                fadeOut(layoutSecond);
+                fadeIn(layoutFirst);
             }
         });
 
@@ -116,38 +118,76 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
         txtAttemtedQuestons.setText(Attamted);
         txtCorrectAnswers.setText(Correct);
         txtworngAnswers.setText(inCorrect);
+        pieChart = findViewById(R.id.pieChart);
 
+     /*   int notAttempted = totalQuestions - attempted;
+        updatePieChart(attempted, notAttempted, correct, incorrect);*/
 
 
         Log.e("Reddy","Num"+examRnm);
 
-
         ViewMethod(examRnm);
 
-        // ************ Graph part ***************************** //
+        // Get current date and time
+        String currentDateTime = getCurrentDateTime();
 
-        pieChart = findViewById(R.id.pieChart);
+        // Display the date and time in the TextView
+        dateTime.setText(currentDateTime);
 
+    }
+
+    private void fadeIn(View view) {
+        view.setAlpha(0f);
+        view.setVisibility(View.VISIBLE);
+        view.animate().alpha(1f).setDuration(0).start();
+    }
+
+    private void fadeOut(View view) {
+        view.animate().alpha(0f).setDuration(0).withEndAction(() -> view.setVisibility(View.GONE)).start();
+    }
+
+
+    private void updatePieChart(int attempted, int notAttempted, int correct, int incorrect) {
         ArrayList<PieEntry> pieEntries = new ArrayList<>();
-        pieEntries.add(new PieEntry(4, "Attempted"));
-        pieEntries.add(new PieEntry(4, "Not Attempted"));
-        pieEntries.add(new PieEntry(1, "Correct"));
-        pieEntries.add(new PieEntry(0, "Incorrect"));
+        ArrayList<Integer> colors = new ArrayList<>();
 
-        // Sample data for the Pie Chart
-        PieDataSet dataSet = new PieDataSet(pieEntries, "Sample Data");
-        dataSet.setColors(new int[]{
-                ContextCompat.getColor(this, R.color.purple),
-                ContextCompat.getColor(this, R.color.orange),
-                ContextCompat.getColor(this, R.color.dark_green),
-                ContextCompat.getColor(this, R.color.dark_red),});
+        if (attempted == 0) {
+            // Show only "Not Attempted" when no question is attempted
+            pieEntries.add(new PieEntry(notAttempted, "Not Attempted"));
+            colors.add(ContextCompat.getColor(this, R.color.orange));
+        } else {
+            // Show attempted section
+            pieEntries.add(new PieEntry(attempted, "Attempted"));
+            colors.add(ContextCompat.getColor(this, R.color.purple));
+
+            if (correct > 0) {
+                pieEntries.add(new PieEntry(correct, "Correct"));
+                colors.add(ContextCompat.getColor(this, R.color.dark_green));
+            }
+            if (incorrect > 0) {
+                pieEntries.add(new PieEntry(incorrect, "Incorrect"));
+                colors.add(ContextCompat.getColor(this, R.color.dark_red));
+            }
+            if (notAttempted > 0) {
+                pieEntries.add(new PieEntry(notAttempted, "Not Attempted"));
+                colors.add(ContextCompat.getColor(this, R.color.orange));
+            }
+        }
+
+        if (pieEntries.isEmpty()) {
+            pieChart.clear();
+            return;
+        }
+
+
+        // Pie DataSet Configuration
+        PieDataSet dataSet = new PieDataSet(pieEntries, "");
+        dataSet.setColors(colors); // Set dynamic colors based on available data
         dataSet.setValueTextSize(14f);
         dataSet.setValueTextColor(Color.BLACK);
         dataSet.setDrawIcons(false);
 
-
         PieData pieData = new PieData(dataSet);
-
         // Customize the chart
         pieChart.setData(pieData);
         pieChart.setUsePercentValues(true);
@@ -176,15 +216,7 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
         pieChart.setData(pieData);
         pieChart.invalidate();
 
-
-        // Get current date and time
-        String currentDateTime = getCurrentDateTime();
-
-        // Display the date and time in the TextView
-        dateTime.setText(currentDateTime);
-
     }
-
 
 
     private void ViewMethod(String examRnm) {
@@ -226,10 +258,10 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
                                 JSONArray jsonArray = new JSONArray(questionsListJsonString);
 
                                 // Initialize counters
-                                int totalQuestions = jsonArray.length();
-                                int attempted = 0;
-                                int correct = 0;
-                                int incorrect = 0;
+                                totalQuestions = jsonArray.length();
+                                attempted = 0;
+                                correct = 0;
+                                incorrect = 0;
 
                                 LayoutInflater inflater = LayoutInflater.from(ViewResultDetailsActivity.this);
 
@@ -253,6 +285,10 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
                                     } else {
                                         incorrect++;
                                     }
+                                    int notAttempted = totalQuestions - attempted;
+
+                                    // ✅ Now update Pie Chart
+                                    updatePieChart(attempted, notAttempted, correct, incorrect);
 
                                     // Convert HTML to Spanned text for display
                                     Spanned questionText = HtmlCompat.fromHtml(questionHtml, HtmlCompat.FROM_HTML_MODE_LEGACY);

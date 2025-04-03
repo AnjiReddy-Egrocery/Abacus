@@ -81,21 +81,19 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
         scrollView= findViewById(R.id.scroll_view);
         layoutFirst = findViewById(R.id.layout_first);
         layoutSecond = findViewById(R.id.layout_second);
+        pieChart = findViewById(R.id.pieChart);
 
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int scrollY = scrollView.getScrollY();
-                if (scrollY > 100) { // Adjust this value based on your requirement
-                    layoutFirst.setVisibility(View.GONE);
-                    layoutSecond.setVisibility(View.VISIBLE);
-                } else {
-                    layoutFirst.setVisibility(View.VISIBLE);
-                    layoutSecond.setVisibility(View.GONE);
-                }
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            int scrollY = scrollView.getScrollY();
+
+            if (scrollY > 100 && layoutFirst.getVisibility() == View.VISIBLE) {
+                fadeOut(layoutFirst);
+                fadeIn(layoutSecond);
+            } else if (scrollY <= 100 && layoutSecond.getVisibility() == View.VISIBLE) {
+                fadeOut(layoutSecond);
+                fadeIn(layoutFirst);
             }
         });
-
         Bundle bundle=getIntent().getExtras();
         examRnm=bundle.getString("examRnm");
 
@@ -113,55 +111,8 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
 
         ViewMethod(examRnm);
 
-        pieChart = findViewById(R.id.pieChart);
-
-        ArrayList<PieEntry> pieEntries = new ArrayList<>();
-        pieEntries.add(new PieEntry(4, "Attempted"));
-        pieEntries.add(new PieEntry(4, "Not Attempted"));
-        pieEntries.add(new PieEntry(1, "Correct"));
-        pieEntries.add(new PieEntry(0, "Incorrect"));
-
-        // Sample data for the Pie Chart
-        PieDataSet dataSet = new PieDataSet(pieEntries, "Sample Data");
-        dataSet.setColors(new int[]{
-                ContextCompat.getColor(this, R.color.purple),
-                ContextCompat.getColor(this, R.color.orange),
-                ContextCompat.getColor(this, R.color.dark_green),
-                ContextCompat.getColor(this, R.color.dark_red),});
-        dataSet.setValueTextSize(14f);
-        dataSet.setValueTextColor(Color.BLACK);
-        dataSet.setDrawIcons(false);
 
 
-        PieData pieData = new PieData(dataSet);
-
-        // Customize the chart
-        pieChart.setData(pieData);
-        pieChart.setUsePercentValues(true);
-        pieChart.setDrawHoleEnabled(true);
-        pieChart.setHoleRadius(40f);
-        pieChart.setTransparentCircleRadius(50f);
-        pieChart.setCenterText("Pie Chart");
-        pieChart.setCenterTextSize(16f);
-
-        // Set labels and values outside the slices
-        dataSet.setValueLinePart1Length(0.5f);
-        dataSet.setValueLinePart2Length(0.8f);
-        dataSet.setValueLineColor(Color.BLACK);
-        dataSet.setUsingSliceColorAsValueLineColor(true);
-        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-
-        // Set offset for better visibility
-        dataSet.setValueLineVariableLength(true);
-
-        // Disable description text
-        Description description = new Description();
-        description.setText("");
-        pieChart.setDescription(description);
-        // Refresh chart
-        pieChart.setData(pieData);
-        pieChart.invalidate();
 
         String currentDateTime = getCurrentDateTime();
 
@@ -169,6 +120,16 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
         dateTime.setText(currentDateTime);
 
 
+    }
+
+    private void fadeIn(View view) {
+        view.setAlpha(0f);
+        view.setVisibility(View.VISIBLE);
+        view.animate().alpha(1f).setDuration(0).start();
+    }
+
+    private void fadeOut(View view) {
+        view.animate().alpha(0f).setDuration(0).withEndAction(() -> view.setVisibility(View.GONE)).start();
     }
 
     private void ViewMethod(String examRnm) {
@@ -216,6 +177,19 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
                                     int isCorrect = questionObject.getInt("is_currect");
                                     String timeTaken = questionObject.getString("time_taken");
                                     int status = questionObject.getInt("status");
+
+                                    if (status == 1) {
+                                        attempted++;
+                                    }
+                                    if (isCorrect == 1) {
+                                        correct++;
+                                    } else {
+                                        incorrect++;
+                                    }
+                                    int notAttempted = totalQuestions - attempted;
+
+                                    // ✅ Now update Pie Chart
+                                    updatePieChart(attempted, notAttempted, correct, incorrect);
 
                                     Log.d("Question_Debug", "Question Text: " + questionHtml);
 
@@ -304,10 +278,86 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void updatePieChart(int attempted, int notAttempted, int correct, int incorrect) {
+        ArrayList<PieEntry> pieEntries = new ArrayList<>();
+        ArrayList<Integer> colors = new ArrayList<>();
+
+        if (attempted == 0) {
+            // Show only "Not Attempted" when no question is attempted
+            pieEntries.add(new PieEntry(notAttempted, "Not Attempted"));
+            colors.add(ContextCompat.getColor(this, R.color.orange));
+        } else {
+            // Show attempted section
+            pieEntries.add(new PieEntry(attempted, "Attempted"));
+            colors.add(ContextCompat.getColor(this, R.color.purple));
+
+            if (correct > 0) {
+                pieEntries.add(new PieEntry(correct, "Correct"));
+                colors.add(ContextCompat.getColor(this, R.color.dark_green));
+            }
+            if (incorrect > 0) {
+                pieEntries.add(new PieEntry(incorrect, "Incorrect"));
+                colors.add(ContextCompat.getColor(this, R.color.dark_red));
+            }
+            if (notAttempted > 0) {
+                pieEntries.add(new PieEntry(notAttempted, "Not Attempted"));
+                colors.add(ContextCompat.getColor(this, R.color.orange));
+            }
+        }
+
+
+        // If there is no data, clear chart
+        if (pieEntries.isEmpty()) {
+            pieChart.clear();
+            return;
+        }
+
+        // Pie DataSet Configuration
+        PieDataSet dataSet = new PieDataSet(pieEntries, "");
+        dataSet.setColors(colors); // Set dynamic colors based on available data
+        dataSet.setValueTextSize(14f);
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setDrawIcons(false);
+
+        PieData pieData = new PieData(dataSet);
+        // Customize the chart
+        pieChart.setData(pieData);
+        pieChart.setUsePercentValues(true);
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setHoleRadius(40f);
+        pieChart.setTransparentCircleRadius(50f);
+        pieChart.setCenterText("Pie Chart");
+        pieChart.setCenterTextSize(16f);
+
+        // Set labels and values outside the slices
+        dataSet.setValueLinePart1Length(0.5f);
+        dataSet.setValueLinePart2Length(0.8f);
+        dataSet.setValueLineColor(Color.BLACK);
+        dataSet.setUsingSliceColorAsValueLineColor(true);
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+        // Set offset for better visibility
+        dataSet.setValueLineVariableLength(true);
+
+        // Disable description text
+        Description description = new Description();
+        description.setText("");
+        pieChart.setDescription(description);
+        // Refresh chart
+        pieChart.setData(pieData);
+        pieChart.invalidate();
+
+    }
+
     private String getCurrentDateTime() {
         // Format for date and time
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy | hh:mm a", Locale.getDefault());
         // Get current date and time
         return sdf.format(new Date());
     }
+
+
+
 }

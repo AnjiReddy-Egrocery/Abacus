@@ -515,8 +515,8 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
             String questionHtml = questionsArray[currentQuestionIndex];
 
             // Display the question text with indentation and monospaced font
-            txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":\n\n");
-            questionTextView.setText(questionHtml.replace("\n", "   "));
+            txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":");
+            questionTextView.setText( "   " + questionHtml.replace("\n", "\n   "));
 
             // Set left margin for questionTextView
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();

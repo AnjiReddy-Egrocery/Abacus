@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -35,7 +36,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class VisualResultActivity extends AppCompatActivity {
-    TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer,txtstudent,txtstartedon,showLevelTop,showLevelCompleted,dateTime;
+    TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer,txtstudent,txtstartedon,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers;
     private PieChart pieChart;
     TableLayout tableLayout;
     LinearLayout btnSubmit,RetakeTest,NextLevel;
@@ -48,6 +49,8 @@ public class VisualResultActivity extends AppCompatActivity {
     double timeInSeconds;
     String studentName,startedOn;
     String totalTime;
+    ScrollView scrollView;
+    LinearLayout layoutFirst,layoutSecond;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -68,6 +71,27 @@ public class VisualResultActivity extends AppCompatActivity {
         btnSubmit =findViewById(R.id.but_submit_result_first);
 //        RetakeTest =findViewById(R.id.retake);
         dateTime = findViewById(R.id.txtDate);
+        txtTotalQuestion=findViewById(R.id.txt_question);
+        txtAttemtedQuestons=findViewById(R.id.txt_attemted_questions);
+        txtCorrectAnswers=findViewById(R.id.txt_correct_answers);
+        txtworngAnswers=findViewById(R.id.txt_wrong_answers);
+
+        scrollView= findViewById(R.id.scroll_view);
+        layoutFirst = findViewById(R.id.layout_first);
+        layoutSecond = findViewById(R.id.layout_second);
+
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            int scrollY = scrollView.getScrollY();
+
+            if (scrollY > 100 && layoutFirst.getVisibility() == View.VISIBLE) {
+                fadeOut(layoutFirst);
+                fadeIn(layoutSecond);
+            } else if (scrollY <= 100 && layoutSecond.getVisibility() == View.VISIBLE) {
+                fadeOut(layoutSecond);
+                fadeIn(layoutFirst);
+            }
+        });
+
 
 
         Intent intent = getIntent();
@@ -111,7 +135,9 @@ public class VisualResultActivity extends AppCompatActivity {
 
 
         txtAttemtedQueston.setText(String.valueOf(attemptedCount));
+        txtAttemtedQuestons.setText(String.valueOf(attemptedCount));
         txtCorrectAnswer.setText(String.valueOf(correctCount));
+        txtCorrectAnswers.setText(String.valueOf(correctCount));
 
         int totalQuestions = questions.size();
         int attemptedQuestions = getAttemptedQuestionsCount(isQuestionAttempted);
@@ -121,10 +147,12 @@ public class VisualResultActivity extends AppCompatActivity {
         int wrongAnswerCount = attemptedQuestions - correctCount;
         // Set the statistics in the TextViews
         txtTotalQuestions.setText(String.valueOf(totalQuestions));
+        txtTotalQuestion.setText(String.valueOf(totalQuestions));
         //txtAttemtedQueston.setText(String.valueOf(attemptedQuestions));
 //        txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
         // txtCorrectAnswer.setText(String.valueOf(correctAnswerCount));
         txtworngAnswer.setText(String.valueOf(wrongAnswerCount));
+        txtworngAnswers.setText(String.valueOf(wrongAnswerCount));
 
         Log.e("Reddy","firstName"+studentName);
         Log.e("Reddy","StartDate"+startedOn);
@@ -285,6 +313,17 @@ public class VisualResultActivity extends AppCompatActivity {
         }
 
     }
+
+    private void fadeIn(View view) {
+        view.setAlpha(0f);
+        view.setVisibility(View.VISIBLE);
+        view.animate().alpha(1f).setDuration(0).start();
+    }
+
+    private void fadeOut(View view) {
+        view.animate().alpha(0f).setDuration(0).withEndAction(() -> view.setVisibility(View.GONE)).start();
+    }
+
 
     private ArrayList<Boolean> convertStringListToBooleanList(ArrayList<String> stringIsQuestionAttempted) {
         ArrayList<Boolean> booleanList = new ArrayList<>();

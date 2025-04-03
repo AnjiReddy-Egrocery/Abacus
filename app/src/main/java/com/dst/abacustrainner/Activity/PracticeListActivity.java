@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -34,7 +35,7 @@ import java.util.Locale;
 
 public class PracticeListActivity extends AppCompatActivity {
 
-    TextView txtTopicName,txtName,txtStartedOn,txtTotalQuestions,txtCorrectAnswer,txtWrongAnswer,txtAttemtedQuestion,txtNotAttemtedQuestion,showLevelTop,showLevelCompleted,dateTime;
+    TextView txtTopicName,txtName,txtStartedOn,txtTotalQuestions,txtCorrectAnswer,txtWrongAnswer,txtAttemtedQuestion,txtNotAttemtedQuestion,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers;
     private PieChart pieChart;
     LinearLayout btnSubmit,RetakeTest,NextLevel;
     String topicName="";
@@ -50,6 +51,9 @@ public class PracticeListActivity extends AppCompatActivity {
     String correctAnswer ;
     long time;
     String totalTime;
+
+    ScrollView scrollView;
+    LinearLayout layoutFirst,layoutSecond;
 
 
     @SuppressLint("MissingInflatedId")
@@ -67,9 +71,29 @@ public class PracticeListActivity extends AppCompatActivity {
         txtAttemtedQuestion = findViewById(R.id.txt_attemted_question);
         btnSubmit =findViewById(R.id.but_submit_result_first);
         dateTime = findViewById(R.id.txtDate);
+        txtTotalQuestion=findViewById(R.id.txt_question);
+        txtAttemtedQuestons=findViewById(R.id.txt_attemted_questions);
+        txtCorrectAnswers=findViewById(R.id.txt_correct_answers);
+        txtworngAnswers=findViewById(R.id.txt_wrong_answers);
         showLevelTop=findViewById(R.id.display_level);
         showLevelCompleted=findViewById(R.id.combined_text_view);
 //        txtNotAttemtedQuestion = findViewById(R.id.txt_not_questions);
+
+        scrollView= findViewById(R.id.scroll_view);
+        layoutFirst = findViewById(R.id.layout_first);
+        layoutSecond = findViewById(R.id.layout_second);
+
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            int scrollY = scrollView.getScrollY();
+
+            if (scrollY > 100 && layoutFirst.getVisibility() == View.VISIBLE) {
+                fadeOut(layoutFirst);
+                fadeIn(layoutSecond);
+            } else if (scrollY <= 100 && layoutSecond.getVisibility() == View.VISIBLE) {
+                fadeOut(layoutSecond);
+                fadeIn(layoutFirst);
+            }
+        });
 
 
         Intent intent = getIntent();
@@ -122,7 +146,9 @@ public class PracticeListActivity extends AppCompatActivity {
         int wrongAnswerCount = attemptedQuestions - correctCount;
 
         txtTotalQuestions.setText(String.valueOf(totalQuestions));
+        txtTotalQuestion.setText(String.valueOf(totalQuestions));
         txtAttemtedQuestion.setText(String.valueOf(attemptedCount));
+        txtAttemtedQuestons.setText(String.valueOf(attemptedCount));
 //        txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
 
         Log.e("Reddy","TName"+topicName);
@@ -298,7 +324,19 @@ public class PracticeListActivity extends AppCompatActivity {
         }
 
         txtCorrectAnswer.setText(String.valueOf(correctCount));
+        txtCorrectAnswers.setText(String.valueOf(correctCount));
         txtWrongAnswer.setText(String.valueOf(wrongCount));
+        txtworngAnswers.setText(String.valueOf(wrongCount));
+    }
+
+    private void fadeIn(View view) {
+        view.setAlpha(0f);
+        view.setVisibility(View.VISIBLE);
+        view.animate().alpha(1f).setDuration(0).start();
+    }
+
+    private void fadeOut(View view) {
+        view.animate().alpha(0f).setDuration(0).withEndAction(() -> view.setVisibility(View.GONE)).start();
     }
 
 

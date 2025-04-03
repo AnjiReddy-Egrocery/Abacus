@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -44,7 +45,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 public class FirstLevelResultActivity extends AppCompatActivity {
-    TextView txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer,showLevelTop,showLevelCompleted,dateTime;
+    TextView txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers;
     LinearLayout btnSubmit,RetakeTest,NextLevel;
     TableLayout tableLayout;
     private int currentQuestionIndex = 0;
@@ -55,6 +56,8 @@ public class FirstLevelResultActivity extends AppCompatActivity {
     String orginalAnswer;
     String question;
     String totalTime;
+    ScrollView scrollView;
+    LinearLayout layoutFirst,layoutSecond;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -74,6 +77,26 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         showLevelTop=findViewById(R.id.display_level);
         showLevelCompleted=findViewById(R.id.combined_text_view);
         dateTime = findViewById(R.id.txtDate);
+        txtTotalQuestion=findViewById(R.id.txt_question);
+        txtAttemtedQuestons=findViewById(R.id.txt_attemted_questions);
+        txtCorrectAnswers=findViewById(R.id.txt_correct_answers);
+        txtworngAnswers=findViewById(R.id.txt_wrong_answers);
+
+        scrollView= findViewById(R.id.scroll_view);
+        layoutFirst = findViewById(R.id.layout_first);
+        layoutSecond = findViewById(R.id.layout_second);
+
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            int scrollY = scrollView.getScrollY();
+
+            if (scrollY > 100 && layoutFirst.getVisibility() == View.VISIBLE) {
+                fadeOut(layoutFirst);
+                fadeIn(layoutSecond);
+            } else if (scrollY <= 100 && layoutSecond.getVisibility() == View.VISIBLE) {
+                fadeOut(layoutSecond);
+                fadeIn(layoutFirst);
+            }
+        });
 
         Intent intent = getIntent();
         ArrayList<String> questions = intent.getStringArrayListExtra("questions");
@@ -138,12 +161,15 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         int correctCount = getCorrectAnswersCount(isQuestionAttempted, isQuestionCorrect);
         Log.e("ResultActivity", "Correct Count: " + correctCount);
         txtCorrectAnswer.setText(String.valueOf(correctCount));
+        txtCorrectAnswers.setText(String.valueOf(correctCount));
 
 
         txtAttemtedQueston.setText(String.valueOf(attemptedCount));
+        txtAttemtedQuestons.setText(String.valueOf(attemptedCount));
         // txtCorrectAnswer.setText(String.valueOf(correctCount));
 
         txtTotalQuestions.setText(String.valueOf(totalQuestions));
+        txtTotalQuestion.setText(String.valueOf(totalQuestions));
 
         int attemptedQuestions = getAttemptedQuestionsCount(isQuestionAttempted);
         int notAttemptedQuestions = totalQuestions - attemptedQuestions;
@@ -156,6 +182,7 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         //txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
         // txtCorrectAnswer.setText(String.valueOf(correctAnswerCount));
         txtworngAnswer.setText(String.valueOf(wrongAnswerCount));
+        txtworngAnswers.setText(String.valueOf(wrongAnswerCount));
 
         // Get current date and time
         String currentDateTime = getCurrentDateTime();
@@ -409,6 +436,17 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         }
 
     }
+
+    private void fadeIn(View view) {
+        view.setAlpha(0f);
+        view.setVisibility(View.VISIBLE);
+        view.animate().alpha(1f).setDuration(0).start();
+    }
+
+    private void fadeOut(View view) {
+        view.animate().alpha(0f).setDuration(0).withEndAction(() -> view.setVisibility(View.GONE)).start();
+    }
+
 
     private String getCurrentDateTime() {
         // Format for date and time
