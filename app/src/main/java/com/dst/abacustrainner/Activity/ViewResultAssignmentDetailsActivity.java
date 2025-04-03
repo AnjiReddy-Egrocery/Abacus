@@ -9,6 +9,9 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -47,10 +50,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
-    String examRnm="",topicName="",firstName="",startDate="";
+    String examRnm="",topicName="",firstName="",startDate="",AttentQuestions="",Attamted="",Correct="",inCorrect="";
     TableLayout tabLayout;
-    TextView txtName,txtStartDate,txtTopicName,dateTime;
+    TextView txtName,txtStartDate,txtTopicName,dateTime,txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers;
     private PieChart pieChart;
+    ScrollView scrollView;
+    LinearLayout layoutFirst,layoutSecond;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -63,11 +68,48 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
        //txtStartDate=findViewById(R.id.txt_date_start);
         txtTopicName=findViewById(R.id.txt_topic_name);
         dateTime = findViewById(R.id.txtDate);
+        txtTotalQuestions=findViewById(R.id.txt_questions);
+        txtAttemtedQueston=findViewById(R.id.txt_attemted_question);
+        //txtNotAttemtedQuestion=findViewById(R.id.txt_not_questions);
+        txtCorrectAnswer=findViewById(R.id.txt_correct_answer);
+        txtworngAnswer=findViewById(R.id.txt_wrong_answer);
+        txtTotalQuestion=findViewById(R.id.txt_question);
+        txtAttemtedQuestons=findViewById(R.id.txt_attemted_questions);
+        txtCorrectAnswers=findViewById(R.id.txt_correct_answers);
+        txtworngAnswers=findViewById(R.id.txt_wrong_answers);
+
+        scrollView= findViewById(R.id.scroll_view);
+        layoutFirst = findViewById(R.id.layout_first);
+        layoutSecond = findViewById(R.id.layout_second);
+
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = scrollView.getScrollY();
+                if (scrollY > 100) { // Adjust this value based on your requirement
+                    layoutFirst.setVisibility(View.GONE);
+                    layoutSecond.setVisibility(View.VISIBLE);
+                } else {
+                    layoutFirst.setVisibility(View.VISIBLE);
+                    layoutSecond.setVisibility(View.GONE);
+                }
+            }
+        });
 
         Bundle bundle=getIntent().getExtras();
         examRnm=bundle.getString("examRnm");
 
         Log.d("Reddy","Id"+examRnm);
+
+        txtTotalQuestions.setText(AttentQuestions);
+        txtAttemtedQueston.setText(Attamted);
+        txtCorrectAnswer.setText(Correct);
+        txtworngAnswer.setText(inCorrect);
+
+        txtTotalQuestion.setText(AttentQuestions);
+        txtAttemtedQuestons.setText(Attamted);
+        txtCorrectAnswers.setText(Correct);
+        txtworngAnswers.setText(inCorrect);
 
         ViewMethod(examRnm);
 
@@ -161,6 +203,10 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
                         if (questionsListJsonString != null) {
                             try {
                                 JSONArray jsonArray = new JSONArray(questionsListJsonString);
+                                int totalQuestions = jsonArray.length();
+                                int attempted = 0;
+                                int correct = 0;
+                                int incorrect = 0;
                                 LayoutInflater inflater = LayoutInflater.from(ViewResultAssignmentDetailsActivity.this);
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject questionObject = jsonArray.getJSONObject(i);
@@ -170,6 +216,9 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
                                     int isCorrect = questionObject.getInt("is_currect");
                                     String timeTaken = questionObject.getString("time_taken");
                                     int status = questionObject.getInt("status");
+
+                                    Log.d("Question_Debug", "Question Text: " + questionHtml);
+
 
                                     Spanned questionText = HtmlCompat.fromHtml(questionHtml, HtmlCompat.FROM_HTML_MODE_LEGACY);
                                     Spanned answerText = HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY);
@@ -227,6 +276,17 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
                                     }
 
                                 }
+
+                                txtTotalQuestions.setText(String.valueOf(totalQuestions));
+                                txtAttemtedQueston.setText(String.valueOf(attempted));
+                                txtCorrectAnswer.setText(String.valueOf(correct));
+                                txtworngAnswer.setText(String.valueOf(incorrect));
+
+                                txtTotalQuestion.setText(String.valueOf(totalQuestions));
+                                txtAttemtedQuestons.setText(String.valueOf(attempted));
+                                txtCorrectAnswers.setText(String.valueOf(correct));
+                                txtworngAnswers.setText(String.valueOf(incorrect));
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

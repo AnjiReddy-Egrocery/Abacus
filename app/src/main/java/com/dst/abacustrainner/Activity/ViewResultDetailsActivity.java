@@ -9,6 +9,10 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -51,8 +55,10 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
     String examRnm="",topicName="",firstName="",startDate="",AttentQuestions="",Attamted="",Correct="",inCorrect="";
     TableLayout tabLayout;
     TextView txtName,txtStartDate,txtTopicName;
-    TextView txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer,showLevelTop,showLevelCompleted,dateTime;
+    TextView txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers;
     private PieChart pieChart;
+    ScrollView scrollView;
+    LinearLayout layoutFirst,layoutSecond;
 
 
 
@@ -71,7 +77,29 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
         //txtNotAttemtedQuestion=findViewById(R.id.txt_not_questions);
         txtCorrectAnswer=findViewById(R.id.txt_correct_answer);
         txtworngAnswer=findViewById(R.id.txt_wrong_answer);
+        txtTotalQuestion=findViewById(R.id.txt_question);
+        txtAttemtedQuestons=findViewById(R.id.txt_attemted_questions);
+        txtCorrectAnswers=findViewById(R.id.txt_correct_answers);
+        txtworngAnswers=findViewById(R.id.txt_wrong_answers);
         dateTime = findViewById(R.id.txtDate);
+
+        scrollView= findViewById(R.id.scroll_view);
+        layoutFirst = findViewById(R.id.layout_first);
+        layoutSecond = findViewById(R.id.layout_second);
+
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = scrollView.getScrollY();
+                if (scrollY > 100) { // Adjust this value based on your requirement
+                    layoutFirst.setVisibility(View.GONE);
+                    layoutSecond.setVisibility(View.VISIBLE);
+                } else {
+                    layoutFirst.setVisibility(View.VISIBLE);
+                    layoutSecond.setVisibility(View.GONE);
+                }
+            }
+        });
 
         Bundle bundle=getIntent().getExtras();
         examRnm=bundle.getString("examRnm");
@@ -83,6 +111,11 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
         txtAttemtedQueston.setText(Attamted);
         txtCorrectAnswer.setText(Correct);
         txtworngAnswer.setText(inCorrect);
+
+        txtTotalQuestion.setText(AttentQuestions);
+        txtAttemtedQuestons.setText(Attamted);
+        txtCorrectAnswers.setText(Correct);
+        txtworngAnswers.setText(inCorrect);
 
 
 
@@ -234,23 +267,26 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
                                     TextView questionView = new TextView(getApplicationContext());
                                     questionView.setText(questionText);
                                     questionView.setPadding(14, 14, 14, 14);
-                                    questionView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                                    questionView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
                                     questionView.setTextColor(Color.BLACK);
                                     questionView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
                                     questionView.setGravity(Gravity.CENTER);
 
+
+
                                     TextView answersView = new TextView(getApplicationContext());
                                     answersView.setText(answerText);
-                                    answersView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                                    answersView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
                                     answersView.setPadding(14, 14, 14, 14);
                                     answersView.setTextColor(Color.BLACK);
                                     answersView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
                                     answersView.setGravity(Gravity.CENTER);
 
+
                                     TextView givenView = new TextView(getApplicationContext());
                                     givenView.setText(givenText);
                                     givenView.setPadding(14, 14, 14, 14);
-                                    givenView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                                    givenView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
                                     givenView.setTextColor(Color.BLACK);
                                     givenView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
                                     givenView.setGravity(Gravity.CENTER);
@@ -258,7 +294,7 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
                                     TextView timeView = new TextView(getApplicationContext());
                                     timeView.setText(timeText);
                                     timeView.setPadding(14, 14, 14, 14);
-                                    timeView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                                    timeView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
                                     timeView.setTextColor(Color.BLACK);
                                     timeView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
                                     timeView.setGravity(Gravity.CENTER);
@@ -284,6 +320,12 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
                                 txtAttemtedQueston.setText(String.valueOf(attempted));
                                 txtCorrectAnswer.setText(String.valueOf(correct));
                                 txtworngAnswer.setText(String.valueOf(incorrect));
+
+                                txtTotalQuestion.setText(String.valueOf(totalQuestions));
+                                txtAttemtedQuestons.setText(String.valueOf(attempted));
+                                txtCorrectAnswers.setText(String.valueOf(correct));
+                                txtworngAnswers.setText(String.valueOf(incorrect));
+
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
