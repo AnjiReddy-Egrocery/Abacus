@@ -23,21 +23,28 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.dst.abacustrainner.Activity.AllSchedulesActivity;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
 import com.dst.abacustrainner.Activity.ViewDetailsActivity;
 import com.dst.abacustrainner.Activity.VisualiztionActivity;
 import com.dst.abacustrainner.Adapter.BatchDetailsAdapter;
 import com.dst.abacustrainner.Model.BachDetailsResponse;
+import com.dst.abacustrainner.Model.DatedetailsResponse;
 import com.dst.abacustrainner.Model.StudentDetails;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.database.SharedPrefManager;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -51,17 +58,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
     /*Button butViewDetrails;*/
-    TextView txtName,txtTime,txtTime1,txtClckSchedule;
+    TextView txtName,txtTime,txtTime1,txtClckSchedule,txtNextSchedule,txtNextTime,txtCompleted,txtRemaining;
 
    // ImageView imgCalender;
     String currentDate,textWithBrackets;
     private Calendar calendar;
+    private String studentId, batchId;
     String id="",dateId ="",name="",time="",time1="",date="",firsstname="",startedOn="";
     LinearLayout layoutData,layoutPlayWithNumbers,layoutvisualization;
     //RecyclerView recyclerViewBatches;
 
     BatchDetailsAdapter batchDetailsAdapter;
     ProgressBar progressBar;
+    String startTime,endTime,timeText;
+    private Map<String, String> scheduledDatesMap = new HashMap<>();
+    Map<String, String> dateIdMap = new HashMap<>();
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -69,13 +81,17 @@ public class HomeFragment extends Fragment {
         View view=inflater.inflate(R.layout.fragment_home,container,false);
 
         //butViewDetrails=view.findViewById(R.id.but_view);
-        //txtSchedule=view.findViewById(R.id.txt_schedule_date);
+        txtClckSchedule=view.findViewById(R.id.txt_clcik_schedule);
         //imgCalender=view.findViewById(R.id.image_calender);
         txtName=view.findViewById(R.id.txt_name);
         txtTime=view.findViewById(R.id.txt_time);
         txtTime1=view.findViewById(R.id.txtdate);
         //txtData=view.findViewById(R.id.txt_data);
         //txtTimeText=view.findViewById(R.id.time_txt);
+        txtNextSchedule = view.findViewById(R.id.txt_nxtSchedule);
+        txtNextTime = view.findViewById(R.id.txt_nextTime);
+        txtCompleted = view.findViewById(R.id.txt_Completed);
+        txtRemaining = view.findViewById(R.id.txt_upComing);
 
         layoutData=view.findViewById(R.id.layout_data);
         progressBar= view.findViewById(R.id.progress);
@@ -93,6 +109,26 @@ public class HomeFragment extends Fragment {
         //recyclerViewBatches.setLayoutManager(layoutManager);
         VerifyMethod(id,currentDate);
         VerifyBatchDetails(id);
+
+        if (getArguments() != null) {
+            studentId = getArguments().getString("studentId");
+            batchId = getArguments().getString("batchId");
+
+            Log.d("Reddy","StudentId"+studentId);
+            Log.d("Reddy","BatchId"+batchId);
+        }
+
+
+        txtClckSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), AllSchedulesActivity.class);
+                intent.putExtra("studentId",studentId);
+                intent.putExtra("batchId",batchId);
+                intent.putExtra("DateId",dateId);
+                startActivity(intent);
+            }
+        });
 
 
        /*imgCalender.setOnClickListener(new View.OnClickListener() {
@@ -137,8 +173,117 @@ public class HomeFragment extends Fragment {
         });
 
 
-
+        ScheduledateMethod(studentId, batchId);
         return view;
+    }
+
+    private void ScheduledateMethod(String studentId, String batchId) {
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+        RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
+        RequestBody batchIdPart = RequestBody.create(MediaType.parse("text/plain"), batchId);
+
+        Call<DatedetailsResponse> call = apiClient.batchDateData(idPart, batchIdPart);
+        call.enqueue(new Callback<DatedetailsResponse>() {
+            @Override
+            public void onResponse(Call<DatedetailsResponse> call, Response<DatedetailsResponse> response) {
+                if (response.body() != null) {
+                    DatedetailsResponse details = response.body();
+
+                    if (details.getErrorCode().equals("202")) {
+                        Toast.makeText(getContext(), "No Schedule for the given details", Toast.LENGTH_LONG).show();
+                    } else if (details.getErrorCode().equals("200")) {
+                        List<DatedetailsResponse.Result> daResult = details.getResult();
+                        if (daResult != null && !daResult.isEmpty()) {
+                            DatedetailsResponse.Result batchDetails = daResult.get(0);
+
+                            startTime = batchDetails.getStartTime();
+                            endTime = batchDetails.getEndTime();
+                            timeText = startTime + " - " + endTime; // e.g., "4:00 PM - 5:00 PM"
+                        } else {
+                            txtTime.setText("No data available");
+                        }
+
+                        scheduledDatesMap.clear();
+                        dateIdMap.clear();
+
+                        int classNumber = 1;
+                        int completedSchedules = 0;
+                        int totalSchedules = 0;
+                        int remainingSchedules = 0;
+                        for (DatedetailsResponse.Result result : daResult) {
+                            if (result.getDates() != null) {
+                                List<DatedetailsResponse.Result.Date> datesList = result.getDates();
+
+                                SimpleDateFormat inputFormat = new SimpleDateFormat("dd - MMMM - yyyy", Locale.ENGLISH);
+                                SimpleDateFormat displayFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+                                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                Date today = new Date();
+
+                                boolean nextScheduleFound = false;
+
+                                for (DatedetailsResponse.Result.Date dateObj : datesList) {
+                                    String scheduleDateStr = dateObj.getScheduleDate().trim();
+                                    dateId = dateObj.getDateId();
+
+                                    try {
+                                        Date scheduleDate = inputFormat.parse(scheduleDateStr);
+                                        totalSchedules++;
+
+                                        if (scheduleDate.before(today)) {
+                                            completedSchedules++;
+                                        } else {
+                                            remainingSchedules++;
+                                        }
+
+                                        String formattedDate = outputFormat.format(scheduleDate);
+                                        scheduledDatesMap.put(formattedDate, "Class - " + classNumber);
+                                        dateIdMap.put(formattedDate, dateId);
+                                        classNumber++;
+
+                                        if (!nextScheduleFound && scheduleDate.after(today)) {
+                                            String displayDate = displayFormat.format(scheduleDate);
+                                            String fullSchedule = displayDate + ", [" + timeText + "]";
+                                            txtNextSchedule.setText(fullSchedule);
+                                            txtNextTime.setText(timeText);
+                                            nextScheduleFound = true;
+                                        }
+
+                                    } catch (ParseException e) {
+                                        Log.e("ScheduleDebug", "Date Parsing Error: " + scheduleDateStr, e);
+                                    }
+                                }
+
+                                if (!nextScheduleFound) {
+                                    txtNextSchedule.setText("No upcoming schedule found");
+                                    txtNextTime.setText(""); // clear time
+                                }
+                            }
+                        }
+
+                        // ✅ Now show the totals (initialize these TextViews at the top)
+
+                        txtCompleted.setText("Completed: " + completedSchedules);
+                        txtRemaining.setText("Remaining: " + remainingSchedules);
+                            }
+                        }
+                    }
+
+
+
+            @Override
+            public void onFailure(Call<DatedetailsResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to load schedules", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void VerifyBatchDetails(String id) {
@@ -271,4 +416,8 @@ public class HomeFragment extends Fragment {
 //        progressBar.setVisibility(View.VISIBLE);
         VerifyMethod(id,currentDate);
     }
+
+
+
+
 }

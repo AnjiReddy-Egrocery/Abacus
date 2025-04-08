@@ -290,6 +290,7 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
                                     // ✅ Now update Pie Chart
                                     updatePieChart(attempted, notAttempted, correct, incorrect);
 
+
                                     // Convert HTML to Spanned text for display
                                     Spanned questionText = HtmlCompat.fromHtml(questionHtml, HtmlCompat.FROM_HTML_MODE_LEGACY);
                                     Spanned answerText = HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY);

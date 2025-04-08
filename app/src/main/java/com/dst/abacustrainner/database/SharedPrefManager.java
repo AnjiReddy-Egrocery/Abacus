@@ -12,6 +12,7 @@ import com.dst.abacustrainner.User.UserCreateActivity;
 public class SharedPrefManager {
 
     static SharedPrefManager sharedPrefManager;
+    private SharedPreferences sharedPreferences;
     Context mContext;
     private static final String SHARED_PREF_NAME = "userProfile";
     private static final String STUDENT_ID="studentId";
@@ -22,9 +23,12 @@ public class SharedPrefManager {
     private static final String PARENT_EMAIL="parentEmail";
 
     private  static final String Profile_PIC="profilePic";
+    private static final String SHARED_PREFS_NAME = "abacus_pref";
     private SharedPrefManager(Context context) {
         mContext=context;
+        sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE);
     }
+
 
     public static synchronized SharedPrefManager getInstance(Context context){
         if (sharedPrefManager==null){
@@ -75,5 +79,16 @@ public class SharedPrefManager {
         Intent intent = new Intent(mContext, UserCreateActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         mContext.startActivity(intent);
+    }
+
+    public void saveBatchId(String batchId) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("batch_id", batchId);
+        editor.apply();
+    }
+
+    // Get batchId
+    public String getBatchId() {
+        return sharedPreferences.getString("batch_id", null);
     }
 }
