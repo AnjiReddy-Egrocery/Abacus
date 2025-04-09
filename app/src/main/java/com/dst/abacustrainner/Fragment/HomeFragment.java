@@ -34,6 +34,7 @@ import com.dst.abacustrainner.Model.StudentDetails;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
+import com.dst.abacustrainner.User.HomeActivity;
 import com.dst.abacustrainner.database.SharedPrefManager;
 
 import java.text.ParseException;
@@ -112,21 +113,15 @@ public class HomeFragment extends Fragment {
 
         if (getArguments() != null) {
             studentId = getArguments().getString("studentId");
-            batchId = getArguments().getString("batchId");
 
-            Log.d("Reddy","StudentId"+studentId);
-            Log.d("Reddy","BatchId"+batchId);
+
         }
 
 
         txtClckSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), AllSchedulesActivity.class);
-                intent.putExtra("studentId",studentId);
-                intent.putExtra("batchId",batchId);
-                intent.putExtra("DateId",dateId);
-                startActivity(intent);
+                scheduleMethod(studentId);
             }
         });
 
@@ -172,10 +167,66 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
-        ScheduledateMethod(studentId, batchId);
         return view;
     }
+
+    private void scheduleMethod(String studentId) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient=retrofit.create(ApiClient.class);
+        RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
+        Call<BachDetailsResponse> call=apiClient.batchData(idPart);
+        call.enqueue(new Callback<BachDetailsResponse>() {
+            @Override
+            public void onResponse(Call<BachDetailsResponse> call, Response<BachDetailsResponse> response) {
+
+                if (response.isSuccessful()){
+                    BachDetailsResponse bachDetailsResponse=response.body();
+                    if (bachDetailsResponse.getErrorCode().equals("202")){
+                        Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
+                    }else if (bachDetailsResponse.getErrorCode().equals("200")){
+
+                        List<BachDetailsResponse.Result> results=bachDetailsResponse.getResult();
+
+                        if (!results.isEmpty()) {
+
+                            batchId = results.get(0).getBatchId();
+                            Log.d("Reddy", "StudentId" + studentId);
+                            Log.d("Reddy", "BatchId" + batchId);
+                            Log.d("Reddy", "DateId" + dateId);
+
+                            Intent intent = new Intent(getContext(), AllSchedulesActivity.class);
+                            intent.putExtra("studentId",studentId);
+                            intent.putExtra("batchId",batchId);
+                            intent.putExtra("DateId",dateId);
+                            startActivity(intent);
+
+                            //ScheduledateMethod(studentId, batchId);
+
+
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Data Error", Toast.LENGTH_LONG).show();
+                    }
+
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BachDetailsResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     private void ScheduledateMethod(String studentId, String batchId) {
 
@@ -287,10 +338,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void VerifyBatchDetails(String id) {
-
-//        progressBar.setVisibility(View.VISIBLE);
-       /* HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -315,7 +362,13 @@ public class HomeFragment extends Fragment {
                         List<BachDetailsResponse.Result> results=bachDetailsResponse.getResult();
 
                         batchDetailsAdapter =new BatchDetailsAdapter(getActivity(),results);
-                       // recyclerViewBatches.setAdapter(batchDetailsAdapter);
+
+                        if (!results.isEmpty()) {
+                            batchId = results.get(0).getBatchId();
+                            ScheduledateMethod(id, batchId); // ✅ Call schedule loading here
+                        }
+
+                        // recyclerViewBatches.setAdapter(batchDetailsAdapter);
 
                     }else {
                         Toast.makeText(getContext(), "Data Error", Toast.LENGTH_LONG).show();

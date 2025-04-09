@@ -97,15 +97,10 @@ public class HomeActivity extends AppCompatActivity{
         txtName = findViewById(R.id.txt_name);
         imageProfile = findViewById(R.id.imgProfile);
 
-
-
-
-
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-
 
         BottomNavigationView bottomNavigationView= findViewById(R.id.bottom_navigation_main);
         //layoutAI = findViewById(R.id.ll_center_option);
@@ -143,15 +138,8 @@ public class HomeActivity extends AppCompatActivity{
         Log.e("Reddy","Name"+fullName);
 
         if (studentId != null) {
-            batchId = SharedPrefManager.getInstance(getApplicationContext()).getBatchId();
+            loadHomeFragmentWithStudentId(studentId);
 
-            if (batchId != null && !batchId.isEmpty()) {
-                // ✅ If batchId already available, load directly
-                loadHomeFragmentWithStudentId(studentId, batchId);
-            } else {
-                // ❗ If not, call API to get batchId, then load fragment
-                scheduleMethod(studentId);
-            }
         } else {
             Toast.makeText(HomeActivity.this, "Student ID not available. Please log in again.", Toast.LENGTH_LONG).show();
         }
@@ -200,17 +188,10 @@ public class HomeActivity extends AppCompatActivity{
         return firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
     }
 
-    private void loadHomeFragmentWithStudentId(String studentId, String batchId) {
-
-        Log.d("Reddy", "BatchId used in loadHomeFragment: " + batchId);
+    private void loadHomeFragmentWithStudentId(String studentId) {
 
         Bundle bundle = new Bundle();
         bundle.putString("studentId", studentId);
-        bundle.putString("batchId", batchId);
-
-
-        Log.d("HomeFragment", "StudentId: " + studentId + ", BatchId: " + batchId);
-
         HomeFragment homeFragment = new HomeFragment();
         homeFragment.setArguments(bundle);
 
@@ -276,8 +257,7 @@ public class HomeActivity extends AppCompatActivity{
                             batchId = results.get(0).getBatchId();
                             Log.d("Reddy", "StudentId" + studentId);
                             Log.d("Reddy", "BatchId" + batchId);
-                            SharedPrefManager.getInstance(getApplicationContext()).saveBatchId(batchId);
-                            loadHomeFragmentWithStudentId(studentId, batchId); // ✅ Place this here
+
                             openSchedulesFragment(studentId, batchId);
                         }
                     } else {
@@ -295,6 +275,7 @@ public class HomeActivity extends AppCompatActivity{
             }
         });
     }
+
 
     private void openSchedulesFragment(String studentId, String batchId) {
 
