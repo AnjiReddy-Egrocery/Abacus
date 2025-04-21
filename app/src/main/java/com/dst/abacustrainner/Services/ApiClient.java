@@ -10,6 +10,8 @@ import com.dst.abacustrainner.Model.GameResponse;
 import com.dst.abacustrainner.Model.StudentDetails;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.Model.StudentScheduleInfo;
+import com.dst.abacustrainner.Model.StudentTotalDetails;
+import com.dst.abacustrainner.Model.StudentUpdateProfile;
 import com.dst.abacustrainner.Model.SubmitDataResponse;
 import com.dst.abacustrainner.Model.TopicExamResponse;
 import com.dst.abacustrainner.Model.TopicListResponse;
@@ -35,6 +37,19 @@ public interface ApiClient {
                                                           @Part("gender") RequestBody gender,
                                                           @Part("motherTongue") RequestBody motherTongue,
                                                           @Part("dateOfBirth") RequestBody dateOfBirth);
+
+
+    @Multipart
+    @POST("apicalls/Index/updateStudentProfile")
+    Call<StudentUpdateProfile> studentUpdatePost(@Part("studentId") RequestBody studentId,
+                                                    @Part("firstName") RequestBody firstName,
+                                                   @Part("middleName") RequestBody middleName,
+                                                   @Part("lastName") RequestBody lastName,
+                                                   @Part("dateOfBirth") RequestBody dateOfBirth,
+                                                   @Part("gender") RequestBody gender,
+                                                   @Part("motherTongue") RequestBody motherTongue,
+                                                    @Part("fatherName") RequestBody fatherName,
+                                                    @Part("motherName") RequestBody motherName);
 
     @Multipart
     @POST("apicalls/Index/verifyStudentAccount")
@@ -98,6 +113,10 @@ public interface ApiClient {
     @Multipart
     @POST("apicalls/Index/getStudentAllSchedules")
     Call<BachDetailsResponse> batchData(@Part("studentId") RequestBody studentId );
+
+    @Multipart
+    @POST("apicalls/Index/getStudentDetails")
+    Call<StudentTotalDetails> studentData(@Part("studentId") RequestBody studentId );
 
     @Multipart
     @POST("apicalls/Index/getStudentScheduleDates")

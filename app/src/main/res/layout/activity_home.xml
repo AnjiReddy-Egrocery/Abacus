@@ -65,7 +65,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/abacus_logo"
-                    android:layout_marginRight="0dp"
+                    android:layout_marginRight="10dp"
                     android:contentDescription="Logo" />
 
             </LinearLayout>

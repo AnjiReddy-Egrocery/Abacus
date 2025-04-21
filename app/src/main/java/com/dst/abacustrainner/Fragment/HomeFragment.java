@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,17 +60,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
-    /*Button butViewDetrails;*/
     TextView txtName,txtTime,txtTime1,txtClckSchedule,txtNextSchedule,txtNextTime,txtCompleted,txtRemaining;
-
-   // ImageView imgCalender;
+    ImageView imageCalender;
     String currentDate,textWithBrackets;
     private Calendar calendar;
     private String studentId, batchId;
     String id="",dateId ="",name="",time="",time1="",date="",firsstname="",startedOn="";
     LinearLayout layoutData,layoutPlayWithNumbers,layoutvisualization;
-    //RecyclerView recyclerViewBatches;
-
     BatchDetailsAdapter batchDetailsAdapter;
     ProgressBar progressBar;
     String startTime,endTime,timeText;
@@ -81,18 +79,15 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_home,container,false);
 
-        //butViewDetrails=view.findViewById(R.id.but_view);
         txtClckSchedule=view.findViewById(R.id.txt_clcik_schedule);
-        //imgCalender=view.findViewById(R.id.image_calender);
         txtName=view.findViewById(R.id.txt_name);
         txtTime=view.findViewById(R.id.txt_time);
         txtTime1=view.findViewById(R.id.txtdate);
-        //txtData=view.findViewById(R.id.txt_data);
-        //txtTimeText=view.findViewById(R.id.time_txt);
         txtNextSchedule = view.findViewById(R.id.txt_nxtSchedule);
         txtNextTime = view.findViewById(R.id.txt_nextTime);
         txtCompleted = view.findViewById(R.id.txt_Completed);
         txtRemaining = view.findViewById(R.id.txt_upComing);
+        imageCalender = view.findViewById(R.id.image_calender);
 
         layoutData=view.findViewById(R.id.layout_data);
         progressBar= view.findViewById(R.id.progress);
@@ -104,48 +99,27 @@ public class HomeFragment extends Fragment {
         StudentRegistationResponse.Result result= SharedPrefManager.getInstance(getContext().getApplicationContext()).getUserData();
         id=result.getStudentId();
         firsstname=" Hello " +  result.getFirstName() + "";
+        imageCalender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openScheduleFragment();
+            }
+        });
 
-       // recyclerViewBatches = view.findViewById(R.id.recycler_baches);
-        LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
-        //recyclerViewBatches.setLayoutManager(layoutManager);
         VerifyMethod(id,currentDate);
         VerifyBatchDetails(id);
 
         if (getArguments() != null) {
             studentId = getArguments().getString("studentId");
-
-
         }
 
-
+        txtClckSchedule.setText(Html.fromHtml("<u>Click Here</u>"));
         txtClckSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 scheduleMethod(studentId);
             }
         });
-
-
-       /*imgCalender.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDatePickerDialog();
-            }
-        });*/
-        /*butViewDetrails.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), ViewDetailsActivity.class);
-                intent.putExtra("dateId", dateId);
-                intent.putExtra("studentId",id);
-                intent.putExtra("batchName",name);
-                intent.putExtra("startTime",time);
-                intent.putExtra("endTime",time1);
-                intent.putExtra("scheduleDate",date);
-                startActivity(intent);
-            }
-        });
-*/
         layoutPlayWithNumbers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,8 +129,6 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-
         layoutvisualization.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,6 +140,19 @@ public class HomeFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void openScheduleFragment() {
+        SchedulesFragment scheduleFragment = new SchedulesFragment();
+        Bundle args = new Bundle();
+        args.putString("studentId", id);
+        args.putString("batchId",batchId);// pass studentId if needed
+        scheduleFragment.setArguments(args);
+
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.flFragment, scheduleFragment); // Make sure R.id.fragment_container is the correct container in your activity layout
+        transaction.addToBackStack(null);  // So you can navigate back
+        transaction.commit();
     }
 
     private void scheduleMethod(String studentId) {
@@ -206,17 +191,10 @@ public class HomeFragment extends Fragment {
                             intent.putExtra("batchId",batchId);
                             intent.putExtra("DateId",dateId);
                             startActivity(intent);
-
-                            //ScheduledateMethod(studentId, batchId);
-
-
                         }
                     } else {
                         Toast.makeText(getContext(), "Data Error", Toast.LENGTH_LONG).show();
                     }
-
-
-
                 }
             }
 
@@ -384,9 +362,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void VerifyMethod(String id, String txtSchedule) {
-
-       /* HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -420,11 +395,7 @@ public class HomeFragment extends Fragment {
     }
     private void handleApiResult(StudentDetails details) {
         if (details.getErrorCode().equals("202")) {
-//            txtName.setText("No Data Found");
-            //txtTimeText.setVisibility(View.GONE);
-//            txtTime.setVisibility(View.GONE);
-//            txtTime1.setVisibility(View.GONE);
-           // butViewDetrails.setVisibility(View.GONE);
+
         } else if (details.getErrorCode().equals("200")) {
             List<StudentDetails.Result> list = details.getResult();
             if (!list.isEmpty()) {
@@ -434,13 +405,6 @@ public class HomeFragment extends Fragment {
                 time1 = result.getEndTime();
                 time = result.getStartTime();
                 date=result.getScheduleDate();
-                //txtTimeText.setVisibility(View.VISIBLE);
-               // txtTime.setVisibility(View.VISIBLE);
-//                txtTime1.setVisibility(View.VISIBLE);
-                //utViewDetrails.setVisibility(View.VISIBLE);
-//                txtName.setText(name);
-//                txtTime.setText(time);
-  //              txtTime1.setText(time1);
             }
         }
     }
@@ -465,8 +429,6 @@ public class HomeFragment extends Fragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
         currentDate = dateFormat.format(calendar.getTime());
         textWithBrackets = "(" + currentDate + ")";
-        //txtSchedule.setText(textWithBrackets);
-//        progressBar.setVisibility(View.VISIBLE);
         VerifyMethod(id,currentDate);
     }
 

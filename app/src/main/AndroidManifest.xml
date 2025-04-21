@@ -17,6 +17,9 @@
         android:theme="@style/Theme.AbacusTrainer"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.UpdateProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".User.StudentHomeActivity"
             android:exported="false" />
         <activity
@@ -174,6 +177,7 @@
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
