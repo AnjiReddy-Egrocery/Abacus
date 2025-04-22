@@ -66,6 +66,24 @@
         android:layout_marginRight="14dp"
         android:layout_marginTop="75dp">
 
+
+       <!-- <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/headerprofile"
+            android:id="@+id/image_profile_1"/>-->
+
+       <!-- <ImageView
+            android:id="@+id/img_camera"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+           android:layout_gravity="center"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_camera"
+            android:contentDescription="Change Profile Image"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp" />-->
+
         <EditText
             android:layout_width="match_parent"
             android:layout_height="50dp"

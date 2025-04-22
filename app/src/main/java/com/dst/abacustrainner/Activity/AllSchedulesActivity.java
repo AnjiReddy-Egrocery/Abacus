@@ -275,7 +275,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                 txtStatus.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                                 txtStatus.setPadding(16, 20, 16, 20);
                                 txtStatus.setGravity(Gravity.CENTER);
-                                txtStatus.setBackgroundResource(R.drawable.rounded_button); // Correct
+                                txtStatus.setBackgroundResource(R.drawable.ai_icon); // Correct
                                 txtStatus.setTextColor(Color.WHITE);
                                 txtStatus.setTypeface(null, Typeface.BOLD);
 
