@@ -275,7 +275,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                 txtStatus.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                                 txtStatus.setPadding(16, 20, 16, 20);
                                 txtStatus.setGravity(Gravity.CENTER);
-                                txtStatus.setBackgroundResource(R.drawable.ai_icon); // Correct
+                                txtStatus.setBackgroundResource(R.drawable.rounded_button); // Correct
                                 txtStatus.setTextColor(Color.WHITE);
                                 txtStatus.setTypeface(null, Typeface.BOLD);
 
@@ -328,6 +328,18 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                 txtStatus.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+/*
+
+                                        TextView loadingText = new TextView(getApplicationContext());
+                                        loadingText.setText("Data Loading...");
+                                        loadingText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                                        loadingText.setTextColor(Color.GRAY);
+                                        loadingText.setPadding(0, 10, 0, 0);
+
+                                        txtStatusLayout.addView(loadingText);
+*/
+
+
                                         // Close previously opened detailsLayout (if any)
                                         if (currentlyOpenLayout != null && currentlyOpenLayout != detailsLayout) {
                                             currentlyOpenLayout.setVisibility(View.GONE);
@@ -341,6 +353,9 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                         TopicsMethod(studentId, date.getDateId(), new TopicsCallback() {
                                             @Override
                                             public void onTopicsReceived(List<TopicListResponse.Result.Topics> topicsList) {
+
+
+
                                                 Log.d("API_RESPONSE", "Topics List Size: " + topicsList.size()); // Debugging
 
                                                 if (!topicsList.isEmpty()) {

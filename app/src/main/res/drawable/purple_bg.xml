@@ -5,6 +5,6 @@
         android:width="2dp"
         android:color="#FFFFFF"
         android:dashWidth="10dp"
-        android:dashGap="4dp" />
+        android:dashGap="0dp" />
     <corners android:radius="10dp" /> <!-- Rounded corners -->
 </shape>

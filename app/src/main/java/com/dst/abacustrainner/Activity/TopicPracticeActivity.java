@@ -690,12 +690,13 @@ public class TopicPracticeActivity extends AppCompatActivity {
             }
 
             // Display the selected question and restore its answer
-            saveTimerState();
+           // saveTimerState();
             currentQuestionIndex = tag;
             Log.e("Reddy","CurrentQuestion"+currentQuestionIndex);
             displayQuestion(currentQuestionIndex);
             String storedAnswer = enteredAnswers.get(currentQuestionIndex);
             answerEditText.setText(storedAnswer);
+            currentTime = questionTimes.get(currentQuestionIndex);
             restoreTimerState();
             startTimer();
 

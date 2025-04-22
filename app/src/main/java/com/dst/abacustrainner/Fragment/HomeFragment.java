@@ -109,15 +109,21 @@ public class HomeFragment extends Fragment {
         VerifyMethod(id,currentDate);
         VerifyBatchDetails(id);
 
-        if (getArguments() != null) {
+        if (getArguments() != null && getArguments().getString("studentId") != null) {
             studentId = getArguments().getString("studentId");
+        } else {
+            studentId = id; // fallback to SharedPref ID
         }
 
         txtClckSchedule.setText(Html.fromHtml("<u>Click Here</u>"));
         txtClckSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scheduleMethod(studentId);
+                if (studentId != null && !studentId.isEmpty()) {
+                    scheduleMethod(studentId);
+                } else {
+                    Toast.makeText(getContext(), "Student ID is missing", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         layoutPlayWithNumbers.setOnClickListener(new View.OnClickListener() {
