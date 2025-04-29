@@ -328,6 +328,21 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                 txtStatus.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+
+                                        if (txtStatusLayout.getChildCount() > 1) {
+                                            // Assuming index 0 is your TableLayout, index 1 will be dynamic loadingText
+                                            txtStatusLayout.removeViewAt(1);
+                                        }
+
+                                        // Step 1: Create Loading TextView
+                                        TextView loadingText = new TextView(v.getContext());
+                                        loadingText.setText("Data Loading...");
+                                        loadingText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                                        loadingText.setTextColor(Color.GRAY);
+                                        loadingText.setPadding(0, 10, 0, 0);
+
+                                        // Step 2: Add loadingText to Accordion (txtStatusLayout)
+                                        txtStatusLayout.addView(loadingText);
 /*
 
                                         TextView loadingText = new TextView(getApplicationContext());
@@ -354,8 +369,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                             @Override
                                             public void onTopicsReceived(List<TopicListResponse.Result.Topics> topicsList) {
 
-
-
+                                               // txtStatuLayout.removeView(loadingText);
                                                 Log.d("API_RESPONSE", "Topics List Size: " + topicsList.size()); // Debugging
 
                                                 if (!topicsList.isEmpty()) {
@@ -623,6 +637,8 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
                                             @Override
                                             public void onAssignmentReceived(List<AssignmentListResponse.Result.AssignmentTopics> assignmentTopicsList) {
+                                                txtStatusLayout.removeView(loadingText);
+                                                //txtStatusLayout.removeView(loadingText);
                                                 if (!assignmentTopicsList.isEmpty()) {
                                                     TextView txtassignmentTitle = new TextView(getApplicationContext());
                                                     txtassignmentTitle.setText("AssignMents");
@@ -877,6 +893,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
                                             public void onError(String errorMessage) {
                                                 txtTopic.setText("Failed to load topics ");
+                                                txtStatusLayout.removeView(loadingText);
                                                 Log.e("API_ERROR", errorMessage);
                                             }
                                         });
@@ -913,6 +930,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<DatedetailsResponse> call, Throwable t) {
                 Toast.makeText(AllSchedulesActivity.this, "Failed to load schedules", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
