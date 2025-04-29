@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class VisualResultActivity extends AppCompatActivity {
-    TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer,txtstudent,txtstartedon,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers;
+    TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer,txtstudent,txtstartedon,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers,txtTotalTime;
     private PieChart pieChart;
     TableLayout tableLayout;
     LinearLayout btnSubmit,RetakeTest,NextLevel;
@@ -48,7 +48,7 @@ public class VisualResultActivity extends AppCompatActivity {
     long ID;
     double timeInSeconds;
     String studentName,startedOn;
-    String totalTime;
+    String totalTime,displaydata;;
     ScrollView scrollView;
     LinearLayout layoutFirst,layoutSecond;
 
@@ -97,8 +97,12 @@ public class VisualResultActivity extends AppCompatActivity {
         Intent intent = getIntent();
         totalTime = intent.getStringExtra("TOTAL_TIME");
 
+        txtTotalTime = findViewById(R.id.txt_total_time);
+        txtTotalTime.setText(totalTime);
+
         studentName =intent.getStringExtra("firstName");
         startedOn = intent.getStringExtra("submitedOn");
+        displaydata = intent.getStringExtra("Display");
         ArrayList<String> questions = intent.getStringArrayListExtra("questions");
         ArrayList<String> correctedAnswer = intent.getStringArrayListExtra("correctAnswers");
         ArrayList<String> enteredAnswers = intent.getStringArrayListExtra("enteredAnswers");
@@ -112,10 +116,10 @@ public class VisualResultActivity extends AppCompatActivity {
 //        txtstartedon.setText(startedOn);
 
 
-        String combinedText1 =String.format("%s in Number game.",studentName);
+        String combinedText1 =String.format("%s",displaydata);
         showLevelTop.setText(String.valueOf(combinedText1));
 
-        String combinedText =String.format("Great job %s Keep practicing!", studentName);
+        String combinedText =String.format("Great job %s Keep practicing!", displaydata);
         showLevelCompleted.setText(combinedText);
 
 
@@ -263,7 +267,7 @@ public class VisualResultActivity extends AppCompatActivity {
             question1.setPadding(14, 14, 14, 14);
             question1.setTextColor(Color.BLACK);
             question1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-            question1.setGravity(Gravity.RIGHT);
+            question1.setGravity(Gravity.CENTER);
 
             TextView answers = new TextView(getApplicationContext());
             answers.setText(correctAnswer);

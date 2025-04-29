@@ -53,7 +53,7 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
     LinearLayout buttonBackVisualiztion;
     ImageView imageView,btn_prev;
     final Handler handler = new Handler();
-    private TextView textViewQuestion, txtDisplayQuestion, txtTimer, txtTotalTimer;
+    private TextView textViewQuestion, txtDisplayQuestion, txtTimer, txtTotalTimer,txtHeader;
 
     private EditText edtAnswer;
 
@@ -123,6 +123,7 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
 
         buttonBackVisualiztion = findViewById(R.id.btn_visualiztaion_first);
         scrollView = findViewById(R.id.horizontalScrollView);
+        txtHeader = findViewById(R.id.txt_header);
 
         final long[] totalElapsedTime = {1000};
         final long interval = 1000; // Update interval in milliseconds
@@ -132,6 +133,11 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
 
         Intent intents = getIntent();
         int levelValue = intents.getIntExtra("level", 0);
+        if (levelValue != 0) {
+            txtHeader.setText("Level-" + levelValue); // TextView lo Level-1, Level-2 etc. set chesthunna
+        } else {
+            txtHeader.setText("Beat the clock with numbers"); // Default text
+        }
 
 
 // Create a handler to manage the count-up process

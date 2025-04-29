@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -270,7 +271,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                 txtStatusLayout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1)); // Weight 1
 
                                 // **Status Button**
-                                TextView txtStatus = new TextView(getApplicationContext());
+                                TextView txtStatus = new TextView(AllSchedulesActivity.this);
                                 txtStatus.setText(j == 0 ? "Join Now" : "Up Coming");
                                 txtStatus.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                                 txtStatus.setPadding(16, 20, 16, 20);
@@ -305,36 +306,36 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                         LinearLayout.LayoutParams.WRAP_CONTENT
                                 ));
 
-                                // **Topic Details**
+                                // *Topic Details*
                                 TextView txtTopic = new TextView(AllSchedulesActivity.this);
                                 txtTopic.setText("Topic: " + "");
                                 txtTopic.setTextSize(14);
                                 txtTopic.setTextColor(Color.parseColor("#333333"));
                                 txtTopic.setPadding(4, 4, 4, 4);
 
-                                // **Assignment Details**
+                                // *Assignment Details*
                                 TextView txtAssignment = new TextView(AllSchedulesActivity.this);
                                 txtAssignment.setText("Assignment: " + "Raghu");
                                 txtAssignment.setTextSize(14);
                                 txtAssignment.setTextColor(Color.parseColor("#333333"));
                                 txtAssignment.setPadding(4, 4, 4, 4);
 
-                                // **Add Views to Details Layout**
+                                // *Add Views to Details Layout*
                                 detailsLayout.addView(txtTopic);
                                 detailsLayout.addView(txtAssignment);
 
 
-                                // **Add Click Event for Expanding**
+                                // *Add Click Event for Expanding*
                                 txtStatus.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
 
-                                        if (txtStatusLayout.getChildCount() > 1) {
+                                      /*  if (txtStatusLayout.getChildCount() > 1) {
                                             // Assuming index 0 is your TableLayout, index 1 will be dynamic loadingText
                                             txtStatusLayout.removeViewAt(1);
                                         }
-
-                                        // Step 1: Create Loading TextView
+*/
+                                      /*  // Step 1: Create Loading TextView
                                         TextView loadingText = new TextView(v.getContext());
                                         loadingText.setText("Data Loading...");
                                         loadingText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
@@ -342,7 +343,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                         loadingText.setPadding(0, 10, 0, 0);
 
                                         // Step 2: Add loadingText to Accordion (txtStatusLayout)
-                                        txtStatusLayout.addView(loadingText);
+                                        txtStatusLayout.addView(loadingText);*/
 /*
 
                                         TextView loadingText = new TextView(getApplicationContext());
@@ -363,8 +364,8 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                         // Set default loading text while fetching topics
                                         txtTopic.setText("Topic: Loading...");
                                         detailsLayout.removeAllViews(); // Clear previous topic buttons
+                                // **Add Click Event for Expanding**
 
-                                        // Fetch Topics Dynamically
                                         TopicsMethod(studentId, date.getDateId(), new TopicsCallback() {
                                             @Override
                                             public void onTopicsReceived(List<TopicListResponse.Result.Topics> topicsList) {
@@ -628,7 +629,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
 
                                             public void onError(String errorMessage) {
-                                                txtTopic.setText("Failed to load topics");
+                                               txtTopic.setText("Failed to load topics");
                                                 Log.e("API_ERROR", errorMessage);
                                             }
                                         });
@@ -637,7 +638,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
                                             @Override
                                             public void onAssignmentReceived(List<AssignmentListResponse.Result.AssignmentTopics> assignmentTopicsList) {
-                                                txtStatusLayout.removeView(loadingText);
+                                                //txtStatusLayout.removeView(loadingText);
                                                 //txtStatusLayout.removeView(loadingText);
                                                 if (!assignmentTopicsList.isEmpty()) {
                                                     TextView txtassignmentTitle = new TextView(getApplicationContext());
@@ -892,8 +893,8 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
 
                                             public void onError(String errorMessage) {
-                                                txtTopic.setText("Failed to load topics ");
-                                                txtStatusLayout.removeView(loadingText);
+                                                //txtTopic.setText("Failed to load topics ");
+
                                                 Log.e("API_ERROR", errorMessage);
                                             }
                                         });

@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_margin="12dp">
-            <TextView
+          <!--  <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Topic Name:"
@@ -47,7 +47,7 @@
                 android:textColor="#FFF"
                 android:fontFamily="@font/regular"
                 android:textSize="18dp"
-                android:id="@+id/txt_name"/>
+                android:id="@+id/txt_name"/>-->
 
             <TextView
                 android:layout_width="wrap_content"

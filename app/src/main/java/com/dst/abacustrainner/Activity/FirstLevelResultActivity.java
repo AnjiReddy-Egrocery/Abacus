@@ -45,7 +45,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 public class FirstLevelResultActivity extends AppCompatActivity {
-    TextView txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers;
+    TextView txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers,txtTotalTime;
     LinearLayout btnSubmit,RetakeTest,NextLevel;
     TableLayout tableLayout;
     private int currentQuestionIndex = 0;
@@ -81,6 +81,7 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         txtAttemtedQuestons=findViewById(R.id.txt_attemted_questions);
         txtCorrectAnswers=findViewById(R.id.txt_correct_answers);
         txtworngAnswers=findViewById(R.id.txt_wrong_answers);
+        txtTotalTime = findViewById(R.id.txt_total_time);
 
         scrollView= findViewById(R.id.scroll_view);
         layoutFirst = findViewById(R.id.layout_first);
@@ -110,6 +111,8 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         int levelValue = intents.getIntExtra("level", 0);
         Log.d("Reddy","Report"+totalTime);
         totalTime =intent.getStringExtra("TOTAL_TIME"); // Use putExtra for a single string
+
+        txtTotalTime.setText(totalTime);
 
 
         String combinedText1 =String.format("Level Play with number game level %s.", levelValue);
@@ -235,7 +238,7 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleRadius(40f);
         pieChart.setTransparentCircleRadius(50f);
-        pieChart.setCenterText(totalTime);
+        /*pieChart.setCenterText(totalTime);*/
         pieChart.setCenterTextSize(12f);
 
         // Set labels and values outside the slices

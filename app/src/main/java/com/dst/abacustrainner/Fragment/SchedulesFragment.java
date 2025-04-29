@@ -405,13 +405,13 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                         LinearLayout txtNumberLayout = new LinearLayout(getContext());
                         txtNumberLayout.setOrientation(LinearLayout.VERTICAL);
                         txtNumberLayout.setGravity(Gravity.CENTER);
-                        txtNumberLayout.setPadding(16, 115, 16, 115);
+                        txtNumberLayout.setPadding(16, 69, 16, 69);
                         txtNumberLayout.setBackgroundResource(R.drawable.border);
 
                         // Number Column
                         TextView txtNumber = new TextView(getContext());
                         txtNumber.setText(String.valueOf(i + 1));
-                        txtNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                        txtNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
                         txtNumber.setPadding(16, 10, 16, 10);
                         txtNumber.setTextColor(Color.BLACK);
                         txtNumber.setGravity(Gravity.CENTER);
@@ -435,7 +435,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                         txtTopic.setMaxLines(2);
                         txtTopic.setEllipsize(TextUtils.TruncateAt.END);
                         txtTopic.setGravity(Gravity.CENTER); // Align text to start
-                        txtTopic.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                        txtTopic.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
 
                         txtTopic.setLayoutParams(new LinearLayout.LayoutParams(
                                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -447,9 +447,9 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                                 txtTopic.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
                                 if (txtTopic.getLineCount() == 1) {
-                                    topicLayout.setPadding(16, 125, 10, 125); // Apply for single-line text
+                                    topicLayout.setPadding(16, 79, 10, 79); // Apply for single-line text
                                 } else {
-                                    topicLayout.setPadding(16, 108 ,16, 108); // Apply for two-line text
+                                    topicLayout.setPadding(16, 55 ,16, 55); // Apply for two-line text
                                 }
                             }
                         });
@@ -468,7 +468,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                         LinearLayout practiceLayout = new LinearLayout(getContext());
                         practiceLayout.setOrientation(LinearLayout.VERTICAL);
                         practiceLayout.setGravity(Gravity.CENTER);
-                        practiceLayout.setPadding(20, 59, 16, 59);
+                        practiceLayout.setPadding(20, 20, 16, 20);
                         practiceLayout.setBackgroundResource(R.drawable.border);
 
                         TextView txtPracticeNow = new TextView(getContext());
@@ -627,7 +627,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                             LinearLayout txtNumberLayout = new LinearLayout(getContext());
                             txtNumberLayout.setOrientation(LinearLayout.VERTICAL);
                             txtNumberLayout.setGravity(Gravity.CENTER);
-                            txtNumberLayout.setPadding(16, 115, 16, 115);
+                            txtNumberLayout.setPadding(16, 76, 16, 76);
                             txtNumberLayout.setBackgroundResource(R.drawable.border);
 
                             // Number Column
@@ -657,7 +657,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                             txtTopic.setMaxLines(2);
                             txtTopic.setEllipsize(TextUtils.TruncateAt.END);
                             txtTopic.setGravity(Gravity.CENTER); // Align text to start
-                            txtTopic.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                            txtTopic.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
 
                             txtTopic.setLayoutParams(new LinearLayout.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -669,9 +669,9 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                                     txtTopic.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
                                     if (txtTopic.getLineCount() == 1) {
-                                        topicLayout.setPadding(16, 125, 10, 125); // Apply for single-line text
+                                        topicLayout.setPadding(16, 79, 10, 79); // Apply for single-line text
                                     } else {
-                                        topicLayout.setPadding(16, 108 ,16, 108); // Apply for two-line text
+                                        topicLayout.setPadding(16, 55 ,16, 55); // Apply for two-line text
                                     }
                                 }
                             });
@@ -690,7 +690,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                             LinearLayout practiceLayout = new LinearLayout(getContext());
                             practiceLayout.setOrientation(LinearLayout.VERTICAL);
                             practiceLayout.setGravity(Gravity.CENTER);
-                            practiceLayout.setPadding(20, 59, 16, 59);
+                            practiceLayout.setPadding(20, 20, 16, 20);
                             practiceLayout.setBackgroundResource(R.drawable.border);
 
                             TextView txtPracticeNow = new TextView(getContext());

@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
-    TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers;
+    TextView txtTotalQuestions,txtAttemtedQueston,txtNotAttemtedQuestion,txtCorrectAnswer,txtworngAnswer,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers,txtTotalTime;
     TableLayout tableLayout;
     LinearLayout btnSubmit,RetakeTest,NextLevel;
     private int currentQuestionIndex = 0;
@@ -76,6 +76,7 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
         txtAttemtedQuestons=findViewById(R.id.txt_attemted_questions);
         txtCorrectAnswers=findViewById(R.id.txt_correct_answers);
         txtworngAnswers=findViewById(R.id.txt_wrong_answers);
+        txtTotalTime = findViewById(R.id.txt_total_time);
 
         scrollView= findViewById(R.id.scroll_view);
         layoutFirst = findViewById(R.id.layout_first);
@@ -104,6 +105,8 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
         Intent intents = getIntent();
         int levelValue = intents.getIntExtra("level", 0);
         totalTime =intent.getStringExtra("TOTAL_TIME");
+
+        txtTotalTime.setText(totalTime);
 
         String combinedText1 =String.format("Level Visualization game level %s.", levelValue);
         showLevelTop.setText(String.valueOf(combinedText1));

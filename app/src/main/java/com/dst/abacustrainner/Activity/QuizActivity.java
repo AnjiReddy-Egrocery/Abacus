@@ -52,7 +52,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class QuizActivity extends AppCompatActivity {
     private LinearLayout btnNextQuestion, btnPreviousQuestion,butSubmit,btnBack;
-    private TextView textViewQuestion, txtDisplayQuestion, txtTimer,txtTotalTimer;
+    private TextView textViewQuestion, txtDisplayQuestion, txtTimer,txtTotalTimer,txtNumberHeader;
 
     private EditText edtAnswer;
     private int currentQuestionIndex = 0;
@@ -86,7 +86,7 @@ public class QuizActivity extends AppCompatActivity {
 
     String currentDate;
     String selectedOperation;
-    String selectedOperands;
+    int selectedOperands;
     String selectedTotalQuestions;
     String studentId,studentName,startedDate;
     String isCorrected;
@@ -96,6 +96,7 @@ public class QuizActivity extends AppCompatActivity {
     HorizontalScrollView scrollView;
 
     private List<CountDownTimer> questionTimers ;
+    String displayText;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,8 +166,50 @@ public class QuizActivity extends AppCompatActivity {
 
         studentId = intent.getStringExtra("studentId");
         selectedOperation = intent.getStringExtra("selectedOperation");
+        selectedOperands = intent.getIntExtra("selectedOperands",2);
         currentDate = intent.getStringExtra("currentDate");
         studentName = intent.getStringExtra("firstName");
+
+        Log.d("IntentData", "Selected Operands: " + selectedOperands);  // This already shows 3
+
+        String operandsText = "";
+
+        switch (selectedOperands) {
+            case 2:
+                operandsText = "Two";
+                break;
+            case 3:
+                operandsText = "Three";
+                break;
+            case 4:
+                operandsText = "Four";
+                break;
+            case 5:
+                operandsText = "Five";
+                break;
+            case 6:
+                operandsText = "Six";
+                break;
+            case 7:
+                operandsText = "Seven";
+                break;
+            case 8:
+                operandsText = "Eight";
+                break;
+            case 9:
+                operandsText = "Nine";
+                break;
+            case 10:
+                operandsText = "Ten";
+                break;
+            // Add more if needed
+            default:
+                operandsText = selectedOperands + "";
+        }
+
+        displayText = selectedOperation + " with " + operandsText + " rows";
+        txtNumberHeader = findViewById(R.id.txt_num_header);
+        txtNumberHeader.setText(displayText);
 
         quizData = new ArrayList<>();
         answers = new ArrayList<>(Collections.nCopies(questions.size(), ""));
@@ -1005,6 +1048,7 @@ private int dpToPx(int dp) {
                             parcelableTimes.add(new ParcelableLong(time));
                         }
                         intent.putParcelableArrayListExtra("questionTimes", parcelableTimes);
+                        intent.putExtra("Display",displayText);
 
                         startActivity(intent);
                         finish();

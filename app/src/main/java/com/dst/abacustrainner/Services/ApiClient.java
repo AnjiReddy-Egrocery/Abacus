@@ -21,6 +21,7 @@ import com.dst.abacustrainner.Model.ViewTopicListResponse;
 import com.dst.abacustrainner.Model.ViewTopicResultResponse;
 
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Multipart;
@@ -42,20 +43,21 @@ public interface ApiClient {
     @Multipart
     @POST("apicalls/Index/updateStudentProfile")
     Call<StudentUpdateProfile> studentUpdatePost(@Part("studentId") RequestBody studentId,
-                                                    @Part("firstName") RequestBody firstName,
-                                                   @Part("middleName") RequestBody middleName,
-                                                   @Part("lastName") RequestBody lastName,
-                                                   @Part("dateOfBirth") RequestBody dateOfBirth,
-                                                   @Part("gender") RequestBody gender,
-                                                   @Part("motherTongue") RequestBody motherTongue,
-                                                    @Part("fatherName") RequestBody fatherName,
-                                                    @Part("motherName") RequestBody motherName);
+                                                 @Part("firstName") RequestBody firstName,
+                                                 @Part("middleName") RequestBody middleName,
+                                                 @Part("lastName") RequestBody lastName,
+                                                 @Part("dateOfBirth") RequestBody dateOfBirth,
+                                                 @Part("gender") RequestBody gender,
+                                                 @Part("motherTongue") RequestBody motherTongue,
+                                                 @Part("fatherName") RequestBody fatherName,
+                                                 @Part("motherName") RequestBody motherName,
+                                                 @Part MultipartBody.Part profilePic );
 
     @Multipart
     @POST("apicalls/Index/verifyStudentAccount")
     Call<StudentRegistationResponse> VerifyPost(@Part("studentId") RequestBody studentId,
-                                            @Part("otp") RequestBody otp,
-                                            @Part("password") RequestBody password);
+                                                 @Part("otp") RequestBody otp,
+                                                 @Part("password") RequestBody password);
 
     @Multipart
     @POST("apicalls/Index/studentLogin")

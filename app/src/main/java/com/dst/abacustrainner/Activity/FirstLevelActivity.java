@@ -39,7 +39,7 @@ import java.util.List;
 
 public class FirstLevelActivity extends AppCompatActivity {
 
-    private TextView textViewQuestion, txtDisplayQuestion, txtTimer,  txtTotalTimer;
+    private TextView textViewQuestion, txtDisplayQuestion, txtTimer,  txtTotalTimer,txtHeader;
     LinearLayout btnPreviousQuestion,btnNextQuestion,butSubmit,btn_back;
     final Handler handler = new Handler();
 
@@ -98,11 +98,18 @@ public class FirstLevelActivity extends AppCompatActivity {
         rightIcon =findViewById(R.id.right_icon_click);
         btn_back=findViewById(R.id.btn_back_level_select);
         scrollView = findViewById(R.id.horizontalScrollView);
+        txtHeader = findViewById(R.id.txt_header);
 
         // Initialize the TextView
 
         Intent intents = getIntent();
         int levelValue = intents.getIntExtra("level", 0);
+
+        if (levelValue != 0) {
+            txtHeader.setText("Level-" + levelValue); // TextView lo Level-1, Level-2 etc. set chesthunna
+        } else {
+            txtHeader.setText("Beat the clock with numbers"); // Default text
+        }
 
 
         // Create and start the countdown timer
@@ -735,7 +742,7 @@ public class FirstLevelActivity extends AppCompatActivity {
 
                 // Set layout parameters for the step button
                 GridLayout.LayoutParams stepParams = new GridLayout.LayoutParams();
-                 stepParams.width = dpToPx(40); // Circular size
+                stepParams.width = dpToPx(40); // Circular size
                 stepParams.height = dpToPx(40);
                 stepParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(0), dpToPx(16));
 

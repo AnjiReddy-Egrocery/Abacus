@@ -567,8 +567,13 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
 
     private void startQuizActivity(List<String> questions, List<String> correctAnswers, String studentid, String studentName) {
         String selectedOperation = spinnerOperation.getSelectedItem().toString();
-        String selectedOperands = spinnerOperands.getSelectedItem().toString();
+        String selectedOperandsStr = spinnerOperands.getSelectedItem().toString();
         selectedTotalQuestions = spinnerTotalQuestions.getSelectedItem().toString();
+
+
+
+        //int selectedOperands = Integer.parseInt(selectedOperandsStr); // ✅ Safe now
+        int selectedOperands = (selectedOperation.equals("Multiplication")) ? 2 : Integer.parseInt(selectedOperandsStr);
 
         Log.e("Spinner", "Selected Operation: " + selectedOperation);
         Log.e("Spinner", "Selected Operands: " + selectedOperands);
@@ -586,6 +591,15 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
 
         Log.e("Play", "Questions: " + questions);
         Log.e("Play", "correctAnswers: " + correctAnswers);
+
+        Log.d("IntentData", "Questions: " + questions.toString());
+        Log.d("IntentData", "Correct Answers: " + correctAnswers.toString());
+        Log.d("IntentData", "Student ID: " + studentid);
+        Log.d("IntentData", "Student Name: " + studentName);
+        Log.d("IntentData", "Selected Operands: " + selectedOperands);
+        Log.d("IntentData", "Selected Operation: " + selectedOperation);
+        Log.d("IntentData", "Total Questions: " + selectedTotalQuestions);
+        Log.d("IntentData", "Current Date: " + currentDate);
         startActivity(intent);
     }
 

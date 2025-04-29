@@ -20,36 +20,39 @@
             android:orientation="vertical">
             <LinearLayout
                 android:id="@+id/btn_back_level_select"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/round_arrow" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Beat the clock with numbers"
+                    android:textSize="20dp"
+                    android:layout_marginTop="-3dp"
+                    android:layout_marginLeft="16dp"
+                    android:textStyle="bold"
+                    android:id="@+id/txt_header"
+                    android:gravity="center"
+                    android:textColor="#FFF"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Beat the clock with numbers"
-                    android:textSize="25dp"
-                    android:textStyle="bold"
-                    android:gravity="center_horizontal"
-                    android:textColor="#FFF"/>
-                <ImageView
+
+              <!--  <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/star_line"
                     android:layout_marginLeft="30dp"
                     android:layout_marginRight="30dp"
-                    android:layout_marginTop="-20dp"/>
+                    android:layout_marginTop="-20dp"/>-->
             </LinearLayout>
         </LinearLayout>
 
@@ -57,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="-15dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/back_ground_white">
 
 <!--            <LinearLayout-->

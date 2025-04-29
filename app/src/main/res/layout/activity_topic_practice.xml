@@ -20,22 +20,34 @@
             android:orientation="vertical">
             <LinearLayout
                 android:id="@+id/btn_back_level_select"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:gravity="center">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/round_arrow" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:textSize="16dp"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/regular"
+                    android:textColor="#FFF"
+                    android:id="@+id/topic_name"
+                    android:text=""/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
+               <!-- <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Beat the clock with numbers"
@@ -49,7 +61,7 @@
                     android:src="@drawable/star_line"
                     android:layout_marginLeft="30dp"
                     android:layout_marginRight="30dp"
-                    android:layout_marginTop="-20dp"/>
+                    android:layout_marginTop="-20dp"/>-->
             </LinearLayout>
         </LinearLayout>
 
@@ -57,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="-15dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/back_ground_white">
 
             <!--            <LinearLayout-->
@@ -223,17 +235,7 @@
                             android:orientation="horizontal"
                             android:layout_weight="1"
                             android:weightSum="2">
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:padding="5dp"
-                                android:textSize="14dp"
-                                android:layout_weight="1"
-                                android:textStyle="bold"
-                                android:fontFamily="@font/regular"
-                                android:textColor="#000"
-                                android:id="@+id/topic_name"
-                                android:text=""/>
+
                         </LinearLayout>
 <!--                        <LinearLayout-->
 <!--                            android:layout_width="match_parent"-->

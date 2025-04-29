@@ -33,20 +33,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginStart="15dp"
-            >
+            android:layout_marginStart="15dp">
 
             <TextView
-                android:id="@+id/display_level"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="         Welcome to the result analysis"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-
+                android:padding="5dp"
+                android:textSize="14dp"
+                android:id="@+id/txt_topic_name"
+                android:fontFamily="@font/regular"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="#000"
+                android:text="Hi"/>
         </LinearLayout>
 
         <TextView
@@ -262,7 +261,7 @@
                 >
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="60dp"
                     android:orientation="vertical"
                     android:layout_weight="1"
                     android:weightSum="2"
@@ -296,7 +295,7 @@
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="60dp"
                     android:orientation="vertical"
                     android:layout_weight="1"
                     android:weightSum="2"
@@ -328,7 +327,7 @@
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="60dp"
                     android:orientation="vertical"
                     android:layout_weight="1"
                     android:weightSum="2"
@@ -361,7 +360,7 @@
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="60dp"
                     android:orientation="vertical"
                     android:layout_weight="1"
                     android:weightSum="2"
@@ -445,7 +444,7 @@
                     android:layout_height="wrap_content"
                     android:weightSum="2"
                     android:orientation="horizontal">
-                    <TextView
+                   <!-- <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
@@ -455,18 +454,8 @@
                         android:gravity="center"
                         android:textStyle="bold"
                         android:textColor="#000"
-                        android:text="Topic:"/>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:textSize="14dp"
-                        android:id="@+id/txt_topic_name"
-                        android:fontFamily="@font/regular"
-                        android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:textColor="#000"
-                        android:text=""/>
+                        android:text="Topic:"/>-->
+
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

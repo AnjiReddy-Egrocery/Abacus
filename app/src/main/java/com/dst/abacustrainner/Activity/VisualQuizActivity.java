@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class VisualQuizActivity extends AppCompatActivity  {
-    TextView questionTextView,displayquestion,txtTimer,txtTotalTimer;
+    TextView questionTextView,displayquestion,txtTimer,txtTotalTimer,txtNumberHeader;
     LinearLayout nextButton,prvButton, butSubmit;
     private EditText edtAnswer;
     final Handler handler = new Handler();
@@ -88,7 +88,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
     int isVisualization = 1;
     String currentDate;
     String selectedOperation;
-    String selectedOperands;
+    int selectedOperands;
     String selectedTotalQuestions;
     String studentId,studentName,startedDate;
     String isCorrected;
@@ -109,6 +109,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
     private boolean isFirstRepetition = true;
 
     private String totalTime = "";
+    String displayText;
 
 
     @SuppressLint("MissingInflatedId")
@@ -186,6 +187,48 @@ public class VisualQuizActivity extends AppCompatActivity  {
         selectedOperation = intent.getStringExtra("selectedOperation");
         currentDate = intent.getStringExtra("currentDate");
         studentName = intent.getStringExtra("firstName");
+        selectedOperands = intent.getIntExtra("selectedOperands",2);
+
+        Log.d("IntentData", "Selected Operands: " + selectedOperands);  // This already shows 3
+
+        String operandsText = "";
+
+        switch (selectedOperands) {
+            case 2:
+                operandsText = "Two";
+                break;
+            case 3:
+                operandsText = "Three";
+                break;
+            case 4:
+                operandsText = "Four";
+                break;
+            case 5:
+                operandsText = "Five";
+                break;
+            case 6:
+                operandsText = "Six";
+                break;
+            case 7:
+                operandsText = "Seven";
+                break;
+            case 8:
+                operandsText = "Eight";
+                break;
+            case 9:
+                operandsText = "Nine";
+                break;
+            case 10:
+                operandsText = "Ten";
+                break;
+            // Add more if needed
+            default:
+                operandsText = selectedOperands + "";
+        }
+
+        displayText = selectedOperation + " with " + operandsText + " rows";
+        txtNumberHeader = findViewById(R.id.txt_num_header);
+        txtNumberHeader.setText(displayText);
 
         Log.e("Test","Questions"+questions);
 
@@ -687,6 +730,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
             parcelableTimes.add(new ParcelableLong(time));
         }
         intent.putParcelableArrayListExtra("questionTimes", parcelableTimes);
+        intent.putExtra("Display",displayText);
         startActivity(intent);
         finish();
     }

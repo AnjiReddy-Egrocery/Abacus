@@ -19,7 +19,7 @@
             android:id="@+id/layout_back"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:background="@drawable/circle_image">
             <ImageView
                 android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
             android:orientation="vertical"
             android:layout_margin="12dp">
 
-            <TextView
+          <!--  <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="AssignMent Topic Name"
@@ -48,7 +48,7 @@
                 android:textStyle="bold"
                 android:textColor="#fff"
                 android:textSize="16dp"
-                />
+                />-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -35,7 +35,7 @@ import java.util.Locale;
 
 public class PracticeListActivity extends AppCompatActivity {
 
-    TextView txtTopicName,txtName,txtStartedOn,txtTotalQuestions,txtCorrectAnswer,txtWrongAnswer,txtAttemtedQuestion,txtNotAttemtedQuestion,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers;
+    TextView txtTopicName,txtName,txtStartedOn,txtTotalQuestions,txtCorrectAnswer,txtWrongAnswer,txtAttemtedQuestion,txtNotAttemtedQuestion,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers,txtTotalTime;
     private PieChart pieChart;
     LinearLayout btnSubmit,RetakeTest,NextLevel;
     String topicName="";
@@ -95,12 +95,16 @@ public class PracticeListActivity extends AppCompatActivity {
             }
         });
 
+        txtTotalTime = findViewById(R.id.txt_total_time);
+
 
         Intent intent = getIntent();
         totalTime =intent.getStringExtra("TOTAL_TIME");
         topicName = intent.getStringExtra("topicName");
         studentName = intent.getStringExtra("firstName");
         startedOn = intent.getStringExtra("startedOn");
+
+        txtTotalTime.setText(totalTime);
 
 
 
@@ -128,10 +132,10 @@ public class PracticeListActivity extends AppCompatActivity {
 //        txtName.setText(studentName);
 //        txtStartedOn.setText(startedOn);
 
-        String combinedText1 =String.format("Hello %s here is your result.", studentName);
+        String combinedText1 =String.format("%s ", topicName);
         showLevelTop.setText(String.valueOf(combinedText1));
 
-        String combinedText =String.format("Great job %s  . Keep practicing!", studentName);
+        String combinedText =String.format("Great job %s  . Keep practicing!", topicName);
         showLevelCompleted.setText(combinedText);
 
         int correctCount = 0;
