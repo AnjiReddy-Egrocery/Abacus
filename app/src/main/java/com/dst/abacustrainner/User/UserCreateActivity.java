@@ -290,9 +290,6 @@ public class UserCreateActivity extends AppCompatActivity {
 
         layoutSignInForm.setVisibility(View.VISIBLE);
         layoutSignUpForm.setVisibility(View.GONE);
-
-//        layoutTextSignIn.setVisibility(View.VISIBLE);
-
     }
 
     private void FormRegisterMethod() {
@@ -468,10 +465,6 @@ public class UserCreateActivity extends AppCompatActivity {
 
         layoutSignInForm.setVisibility(View.GONE);
         layoutSignUpForm.setVisibility(View.VISIBLE);
-
-//        layoutTextSignIn.setVisibility(View.GONE);
-
-
 
     }
 }

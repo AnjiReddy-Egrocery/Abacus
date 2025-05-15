@@ -330,31 +330,6 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(View v) {
 
-                                      /*  if (txtStatusLayout.getChildCount() > 1) {
-                                            // Assuming index 0 is your TableLayout, index 1 will be dynamic loadingText
-                                            txtStatusLayout.removeViewAt(1);
-                                        }
-*/
-                                      /*  // Step 1: Create Loading TextView
-                                        TextView loadingText = new TextView(v.getContext());
-                                        loadingText.setText("Data Loading...");
-                                        loadingText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                                        loadingText.setTextColor(Color.GRAY);
-                                        loadingText.setPadding(0, 10, 0, 0);
-
-                                        // Step 2: Add loadingText to Accordion (txtStatusLayout)
-                                        txtStatusLayout.addView(loadingText);*/
-/*
-
-                                        TextView loadingText = new TextView(getApplicationContext());
-                                        loadingText.setText("Data Loading...");
-                                        loadingText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                                        loadingText.setTextColor(Color.GRAY);
-                                        loadingText.setPadding(0, 10, 0, 0);
-
-                                        txtStatusLayout.addView(loadingText);
-*/
-
 
                                         // Close previously opened detailsLayout (if any)
                                         if (currentlyOpenLayout != null && currentlyOpenLayout != detailsLayout) {

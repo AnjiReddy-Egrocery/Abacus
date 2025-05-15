@@ -2,7 +2,9 @@ package com.dst.abacustrainner.User;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -21,6 +23,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
 import com.dst.abacustrainner.Activity.UpdateProfileActivity;
 import com.dst.abacustrainner.Activity.VisualiztionActivity;
@@ -43,6 +46,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -59,31 +63,14 @@ public class HomeActivity extends AppCompatActivity{
 
     String studentId,firstName,LastName;
     Object profilePic ;
-    String displayName;
-    String email;
-    String idToken;
-    GoogleSignInOptions gso;
-    GoogleSignInClient gsc;
-
-    NavigationView mNavigationView;
-    DrawerLayout drawerLayout;
     Toolbar toolbar;
-    ActionBarDrawerToggle toggle;
 
-    LinearLayout layoutAI;
     private NavigationView navigationView;
-    private boolean isInboxSubmenuVisible = false;
-
     TextView txtName;
     String fullName;
     String imageUrl;
     ImageView imageProfile;
     String batchId;
-
-
-
-
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,33 +95,11 @@ public class HomeActivity extends AppCompatActivity{
 
         bottomNavigationView.setPadding(0, 0, 0, 0);  // Padding around the view
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-        StudentRegistationResponse.Result result= SharedPrefManager.getInstance(getApplicationContext()).getUserData();
-        studentId = result.getStudentId();
-        firstName = result.getFirstName();
-        LastName = result.getLastName();
-        profilePic = result.getProfilePic();
+        StudentTotalDetails.Result studentdetails = SharedPrefManager.getInstance(getApplicationContext()).getUser();
 
-        Log.e("Reddy","image"+profilePic);
+        studentId = studentdetails.getStudentId();
 
-        imageUrl = "https://www.abacustrainer.com/assets/student_images/"+profilePic;
-
-        Log.e("Reddy","image"+imageUrl);
-
-        String formattedFirstName = capitalizeFirstLetter(firstName);
-        String formattedLastName = capitalizeFirstLetter(LastName);
-
-        fullName= formattedFirstName +formattedLastName;
-
-        txtName.setText(fullName);
-
-        Glide.with(this)
-                .load(imageUrl) // ✅ load the image from the URL
-                .placeholder(R.drawable.headerprofile) // optional placeholder while loading
-                .error(R.drawable.headerprofile) // fallback in case URL fails
-                .circleCrop()
-                .into(imageProfile);
-
-        Log.e("Reddy","Name"+fullName);
+        StudentDetailsMethod(studentId);
 
         if (studentId != null) {
             loadHomeFragmentWithStudentId(studentId);
@@ -155,13 +120,13 @@ public class HomeActivity extends AppCompatActivity{
         TextView txtUserName = headerView.findViewById(R.id.user_name);
         ImageView imageView = headerView.findViewById(R.id.profile_image);
 
-        txtUserName.setText(fullName);
+       /* txtUserName.setText(fullName);
         Glide.with(this)
                 .load(imageUrl) // ✅ load the image from the URL
                 .placeholder(R.drawable.headerprofile) // optional placeholder while loading
                 .error(R.drawable.headerprofile) // fallback in case URL fails
                 .circleCrop()
-                .into(imageView);
+                .into(imageView);*/
 
         closeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,6 +204,9 @@ public class HomeActivity extends AppCompatActivity{
 
     private void scheduleMethod(String studentId) {
         OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(3, TimeUnit.SECONDS)
+                .readTimeout(3, TimeUnit.SECONDS)
+                .writeTimeout(3, TimeUnit.SECONDS)
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
@@ -302,20 +270,12 @@ public class HomeActivity extends AppCompatActivity{
                 .commit();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1001 && resultCode == Activity.RESULT_OK) {
-            if (data != null && data.getBooleanExtra("profile_updated", false)) {
-                // Call method to refresh the profile data here
-                StudentDetailsMethod(studentId);  // this should reload from server
-            }
-        }
-    }
-
-    private void StudentDetailsMethod(String studentId) {
+    public void StudentDetailsMethod(String studentId) {
         OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(3, TimeUnit.SECONDS)
+                .readTimeout(3, TimeUnit.SECONDS)
+                .writeTimeout(3, TimeUnit.SECONDS)
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
@@ -329,49 +289,42 @@ public class HomeActivity extends AppCompatActivity{
         call.enqueue(new Callback<StudentTotalDetails>() {
             @Override
             public void onResponse(Call<StudentTotalDetails> call, Response<StudentTotalDetails> response) {
-                Log.d("DEBUG", "API response received");
-                if (response.isSuccessful()){
-                    StudentTotalDetails studentTotalDetails=response.body();
-                    Log.d("DEBUG", "Error Code: " + studentTotalDetails.getErrorCode());
+                if (response.isSuccessful()) {
+                    StudentTotalDetails studentTotalDetails = response.body();
+                    String firstName = capitalizeFirstLetter(studentTotalDetails.getResult().getFirstName());
+                    String lastName = capitalizeFirstLetter(studentTotalDetails.getResult().getLastName());
+                    String fullName = firstName + " " + lastName;
+                    txtName.setText(fullName);
 
-                    if (studentTotalDetails.getErrorCode().equals("202")){
-                        Toast.makeText(HomeActivity.this, "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
-                    }else if (studentTotalDetails.getErrorCode().equals("200")){
-                        String firstName = "";
-                        String middleName = "";
-                        String lastName = "";
+                    String imageUrl = studentTotalDetails.getImageUrl() + studentTotalDetails.getResult().getProfilePic();
 
-                        StudentTotalDetails.Result results=studentTotalDetails.getResult();
-                        firstName = results.getFirstName();
+                    Glide.with(getApplicationContext())
+                            .load(imageUrl)
+                            .placeholder(R.drawable.headerprofile)
+                            .error(R.drawable.headerprofile)
+                            .skipMemoryCache(true) // ✅ Prevents loading from memory
+                            .diskCacheStrategy(DiskCacheStrategy.NONE) // ✅ Avoid disk cache
+                            .circleCrop()
+                            .into(imageProfile);
 
-                        lastName = results.getLastName();
+                    View headerView = navigationView.getHeaderView(0);
+                    TextView txtUserName = headerView.findViewById(R.id.user_name);
+                    txtUserName.setText(fullName);  // Update name in the Navigation Drawer header
 
+                    ImageView imageView = headerView.findViewById(R.id.profile_image);
+                    Glide.with(getApplicationContext())
+                            .load(imageUrl)
+                            .placeholder(R.drawable.headerprofile)
+                            .error(R.drawable.headerprofile)
+                            .skipMemoryCache(true) // ✅ Prevents loading from memory
+                            .diskCacheStrategy(DiskCacheStrategy.NONE) // ✅ Avoid disk cache
+                            .circleCrop()
+                            .into(imageView);
 
-                        String formattedFirstName = capitalizeFirstLetter(firstName);
-                        String formattedLastName = capitalizeFirstLetter(lastName);
-                        String name = formattedFirstName+formattedLastName;
-                        txtName.setText(name);
-
-                        View headerView = navigationView.getHeaderView(0);
-                        TextView txtUserName = headerView.findViewById(R.id.user_name);
-                        txtUserName.setText(name);  // Set updated name in the Navigation Drawer header
-
-
-
-
-                    } else {
-                        Toast.makeText(HomeActivity.this, "Data Error", Toast.LENGTH_LONG).show();
-                    }
-
-
-
-                }
-                else {
-                    Log.d("DEBUG", "Response not successful: " + response.code());
+                } else {
                     Toast.makeText(HomeActivity.this, "Server Error: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<StudentTotalDetails> call, Throwable t) {
                 Log.e("DEBUG", "API call failed", t);
@@ -382,15 +335,8 @@ public class HomeActivity extends AppCompatActivity{
 
     private void openProfileFragment(String studentId, String fullName, String imageUrl) {
 
-        Bundle bundle = new Bundle();
-        bundle.putString("studentId", studentId);
-        bundle.putString("name",fullName);
-        bundle.putString("imageUrl", imageUrl);
-
 
         ProfileFragment profileFragment = new ProfileFragment();
-        profileFragment.setArguments(bundle);
-
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.flFragment, profileFragment)
@@ -442,4 +388,6 @@ public class HomeActivity extends AppCompatActivity{
             return true;
         }
     };
+
+
 }

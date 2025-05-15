@@ -5,8 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,6 +36,7 @@ import com.dst.abacustrainner.User.HomeActivity;
 import com.dst.abacustrainner.database.SharedPrefManager;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -45,7 +51,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProfileFragment extends Fragment {
 
-    /*LinearLayout layoutPassword, layoutSettings,layoutTermsCondition,layoutLogOut;*/
     private String studentId, fullName, imageUrl;
     TextView txtName;
     ImageView imageProfile;
@@ -63,47 +68,21 @@ public class ProfileFragment extends Fragment {
 
         butEditProfile = view.findViewById(R.id.but_edit_profile);
 
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("ProfileData", Context.MODE_PRIVATE);
-        String imageUriString = sharedPreferences.getString("imageUri", null);
-        String name = sharedPreferences.getString("name", "No Name");
+        StudentTotalDetails.Result studentdetails = SharedPrefManager.getInstance(getContext()).getUser();
 
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            studentId = bundle.getString("studentId");
-            fullName = bundle.getString("name");
-            imageUrl = bundle.getString("imageUrl");
+        String studentid = studentdetails.getStudentId();
 
-            // Use studentId and fullName as needed
-            Log.d("Reddy", "Student" + studentId);
-            Log.d("Reddy", "Name" + fullName);
-            Log.d("Reddy", "Name" + imageUrl);
-        }
-
-       /* if (imageUriString != null) {
-            Uri imageUri = Uri.parse(imageUriString);
-            Glide.with(requireContext())
-                    .load(imageUri)
-                    .placeholder(R.drawable.headerprofile)
-                    .error(R.drawable.headerprofile)
-                    .circleCrop()
-                    .into(imageProfile);
-        }
-*/
-        txtName.setText(fullName);
-
-        Glide.with(requireContext())
-                .load(imageUrl)
-                .placeholder(R.drawable.headerprofile)
-                .error(R.drawable.headerprofile)
-                .circleCrop()
-                .into(imageProfile);
-
+        StudentDetailsMethod(studentid);
         butEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("DEBUG", "Button clicked");
                 Log.d("DEBUG", "StudentId: " + studentId);
-                StudentDetailsMethod(studentId);
+                /*Intent intent = new Intent(getContext(), UpdateProfileActivity.class);
+                startActivity(intent);*/
+                Fragment fragment=new UpDateProfileFragment();
+                getParentFragmentManager().beginTransaction().replace(R.id.flFragment,fragment).commit();
+
             }
         });
 
@@ -111,9 +90,14 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
+
+
     private void StudentDetailsMethod(String studentId) {
 
         OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(3, TimeUnit.SECONDS)
+                .readTimeout(3, TimeUnit.SECONDS)
+                .writeTimeout(3, TimeUnit.SECONDS)
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
@@ -132,58 +116,19 @@ public class ProfileFragment extends Fragment {
                     StudentTotalDetails studentTotalDetails = response.body();
                     Log.d("DEBUG", "Error Code: " + studentTotalDetails.getErrorCode());
 
-                    if (studentTotalDetails.getErrorCode().equals("202")) {
-                        Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
-                    } else if (studentTotalDetails.getErrorCode().equals("200")) {
-                        String firstName = "";
-                        String middleName = "";
-                        String lastName = "";
-                        String daeofBirth = "";
-                        String gender = "";
-                        String motherTongue = "";
-                        String fatherName = "";
-                        String MotherName = "";
-                        String profilePic = ""; // Add this line to hold the profilePic URL
-                        StudentTotalDetails.Result results = studentTotalDetails.getResult();
-                        firstName = results.getFirstName();
-                        middleName = results.getMiddleName();
-                        lastName = results.getLastName();
-                        daeofBirth = results.getDateOfBirth();
-                        gender = results.getGender();
-                        fatherName = results.getFatherName();
-                        MotherName = results.getMotherName();
-                        motherTongue = results.getMotherTongue();
-                        profilePic = results.getProfilePic(); // Assuming this is the field holding the image URL
-                        String fullProfilePicUrl = "https://www.abacustrainer.com/assets/student_images/" + profilePic;
+                    String firstName = capitalizeFirstLetter(studentTotalDetails.getResult().getFirstName());
+                    String lastName = capitalizeFirstLetter(studentTotalDetails.getResult().getLastName());
+                    String fullName = firstName + " " + lastName;
+                    txtName.setText(fullName);
 
-                        Log.d("Reddy","ImageUrl"+profilePic);
+                    String imageUrl = studentTotalDetails.getImageUrl() + studentTotalDetails.getResult().getProfilePic();
 
-
-                        String formattedFirstName = capitalizeFirstLetter(firstName);
-                        String formattedLastName = capitalizeFirstLetter(lastName);
-                        String name = formattedFirstName + formattedLastName;
-                        txtName.setText(name);
-
-
-                        Intent intent = new Intent(getContext(), UpdateProfileActivity.class);
-                        intent.putExtra("studentId", studentId);
-                        intent.putExtra("firstName", firstName);
-                        intent.putExtra("middleName", middleName);
-                        intent.putExtra("lastName", lastName);
-                        intent.putExtra("dateOfBirth", daeofBirth);
-                        intent.putExtra("gender", gender);
-                        intent.putExtra("motherTongue", motherTongue);
-                        intent.putExtra("fatherName", fatherName);
-                        intent.putExtra("motherName", MotherName);
-                        intent.putExtra("profilePic", fullProfilePicUrl); // Add the profilePic data
-
-                        startActivity(intent);
-
-
-                    } else {
-                        Toast.makeText(getContext(), "Data Error", Toast.LENGTH_LONG).show();
-                    }
-
+                    Glide.with(requireActivity())
+                            .load(imageUrl)
+                            .placeholder(R.drawable.headerprofile)
+                            .error(R.drawable.headerprofile)
+                            .circleCrop()
+                            .into(imageProfile);
 
                 } else {
                     Log.d("DEBUG", "Response not successful: " + response.code());
@@ -206,17 +151,7 @@ public class ProfileFragment extends Fragment {
         }
         return firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1001 && resultCode == Activity.RESULT_OK && data != null) {
-
-                StudentDetailsMethod(studentId); // optional: refresh full data from server
-            }
-        }
-    }
+}
 
 
 

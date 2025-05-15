@@ -241,18 +241,6 @@
                             android:src="@drawable/visiablity" />
                     </RelativeLayout>
 
-                    <!--<EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:hint="PassWord"
-                        android:inputType="textAutoComplete"
-                        android:paddingLeft="12dp"
-                        android:layout_marginTop="6dp"
-                        android:id="@+id/edt_password"
-                        android:paddingRight="14dp"
-                        android:background="@drawable/back_ground"
-                        android:textColorHint="#000" />-->
-
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -625,13 +613,7 @@
 
                     </LinearLayout>
                 </ScrollView>
-
-
-
-
             </LinearLayout>
-
-
         </LinearLayout>
 </LinearLayout>
 

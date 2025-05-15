@@ -79,7 +79,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
     TopicListAdapter topicListAdapter;
 
     private String studentId, batchId;
-    List<String> scheduledDates = new ArrayList<>();
+
     private Map<String, String> scheduledDatesMap = new HashMap<>();
     Map<String, String> dateIdMap = new HashMap<>();
 
@@ -460,10 +460,6 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
 
                         topicLayout.addView(txtTopic);
                         topicLayout.addView(spacetopic);
-
-
-
-
                         // Practice Now Button
                         LinearLayout practiceLayout = new LinearLayout(getContext());
                         practiceLayout.setOrientation(LinearLayout.VERTICAL);
@@ -537,8 +533,6 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
             }
         });
     }
-
-
     private void TopicsMethod(String studentId, String dateId) {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

@@ -5,6 +5,15 @@ public class StudentUpdateProfile {
     private String errorCode;
     private Result result;
     private String message;
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public String getStatus() {
         return status;

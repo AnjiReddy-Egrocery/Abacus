@@ -351,9 +351,6 @@ public class HomeFragment extends Fragment {
                             batchId = results.get(0).getBatchId();
                             ScheduledateMethod(id, batchId); // ✅ Call schedule loading here
                         }
-
-                        // recyclerViewBatches.setAdapter(batchDetailsAdapter);
-
                     }else {
                         Toast.makeText(getContext(), "Data Error", Toast.LENGTH_LONG).show();
                     }
@@ -437,8 +434,4 @@ public class HomeFragment extends Fragment {
         textWithBrackets = "(" + currentDate + ")";
         VerifyMethod(id,currentDate);
     }
-
-
-
-
 }

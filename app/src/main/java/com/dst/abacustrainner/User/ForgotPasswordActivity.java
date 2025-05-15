@@ -56,8 +56,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void resetPasswordMethod(String email) {
-         /*HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();

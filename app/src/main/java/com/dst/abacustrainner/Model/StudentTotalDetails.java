@@ -6,9 +6,17 @@ public class StudentTotalDetails {
     private String status;
     private String errorCode;
     private Result result;
-
-
     private String message;
+
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public String getStatus() {
         return status;
@@ -113,6 +121,15 @@ public class StudentTotalDetails {
         private Object subCourseType;
         private Object courseLevel;
         private Object instructorName;
+
+        public Result(String sid, String fname, String laname, String profile) {
+
+            this.studentId = sid;
+            this.firstName = fname;
+            this.lastName = laname;
+            this.profilePic = profile;
+
+        }
 
 
         public String getStudentId() {

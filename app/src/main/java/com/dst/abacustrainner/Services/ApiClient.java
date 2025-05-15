@@ -51,7 +51,7 @@ public interface ApiClient {
                                                  @Part("motherTongue") RequestBody motherTongue,
                                                  @Part("fatherName") RequestBody fatherName,
                                                  @Part("motherName") RequestBody motherName,
-                                                 @Part MultipartBody.Part profilePic );
+                                                 @Part MultipartBody.Part profilePic); // Image name as part);
 
     @Multipart
     @POST("apicalls/Index/verifyStudentAccount")

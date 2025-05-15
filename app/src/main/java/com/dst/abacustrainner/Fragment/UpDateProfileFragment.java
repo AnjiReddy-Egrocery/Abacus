@@ -1,59 +1,48 @@
-package com.dst.abacustrainner.Activity;
+package com.dst.abacustrainner.Fragment;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.OpenableColumns;
-import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.dst.abacustrainner.Fragment.ProfileFragment;
 import com.dst.abacustrainner.Model.StudentTotalDetails;
 import com.dst.abacustrainner.Model.StudentUpdateProfile;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.User.HomeActivity;
+import com.dst.abacustrainner.User.RegisterActivity;
 import com.dst.abacustrainner.database.SharedPrefManager;
-import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -62,7 +51,6 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -70,7 +58,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class UpdateProfileActivity extends FragmentActivity {
+
+public class UpDateProfileFragment extends Fragment {
 
     String studentId, firstName, middlename, lastName, dateofBirth, gender, motherTongue, fatherName, mothername;
 
@@ -86,88 +75,78 @@ public class UpdateProfileActivity extends FragmentActivity {
     private Uri imageUri;
     private File imageFile;
     String studentid;
+    private Calendar calendar;
+    public UpDateProfileFragment() {
+        // Required empty public constructor
+    }
 
 
-    @SuppressLint("MissingInflatedId")
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_update_profile);
 
+    }
 
-        edtfirstName = findViewById(R.id.edt_first_name);
-        edtmiddlename = findViewById(R.id.edt_middle_name);
-        edtLastname = findViewById(R.id.edt_last_name);
-        edtDateofbirth = findViewById(R.id.edt_date_birth);
-        edtgender = findViewById(R.id.edt_gender);
-        edtmotherTongue = findViewById(R.id.edt_mother_tongue);
-        edtFathername = findViewById(R.id.edt_father_name);
-        edtMotherName = findViewById(R.id.edt_Mother_name);
-        butUpdateProfile = findViewById(R.id.but_update_profile);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.activity_update_profile, container, false);
+    }
 
-        imageView = findViewById(R.id.image_profile);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        edtfirstName = view.findViewById(R.id.edt_first_name);
+        edtmiddlename =view. findViewById(R.id.edt_middle_name);
+        edtLastname = view.findViewById(R.id.edt_last_name);
+        edtDateofbirth =view. findViewById(R.id.edt_date_birth);
+        edtgender =view. findViewById(R.id.edt_gender);
+        edtmotherTongue =view. findViewById(R.id.edt_mother_tongue);
+        edtFathername = view.findViewById(R.id.edt_father_name);
+        edtMotherName = view.findViewById(R.id.edt_Mother_name);
+        butUpdateProfile =view. findViewById(R.id.but_update_profile);
 
-        btnBack = findViewById(R.id.btn_back_to_home);
+        imageView =view. findViewById(R.id.image_profile);
 
-      /*  Bundle bundle = getIntent().getExtras();
+        btnBack =view. findViewById(R.id.btn_back_to_home);
 
-        studentId = bundle.getString("studentId");
-        firstName = bundle.getString("firstName");
-        middlename = bundle.getString("middleName");
-        lastName = bundle.getString("lastName");
-        dateofBirth = bundle.getString("dateOfBirth");
-        gender = bundle.getString("gender");
-        motherTongue = bundle.getString("motherTongue");
-        fatherName = bundle.getString("fatherName");
-        mothername = bundle.getString("motherName");
-        profilePic = bundle.getString("profilePic");
-        Glide.get(UpdateProfileActivity.this).clearMemory();
-        if (profilePic != null && !profilePic.isEmpty()) {
-            Glide.with(this)
-                    .load(profilePic)
-                    .placeholder(R.drawable.headerprofile)
-                    .error(R.drawable.headerprofile)
-                    .circleCrop()
-                    .into(imageView);  // Assuming you have an ImageView named imageProfile
-        }*/
-
-
-        StudentTotalDetails.Result studentdetails = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+        StudentTotalDetails.Result studentdetails = SharedPrefManager.getInstance(getContext()).getUser();
 
         studentid = studentdetails.getStudentId();
 
-      //  StudentDetailsMethod(studentid);
-        btnBack.setOnClickListener(new View.OnClickListener() {
+          StudentDetailsMethod(studentid);
+
+        calendar = Calendar.getInstance();
+
+        edtDateofbirth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                showDatePickerDialog();
             }
         });
+
 
 
         butUpdateProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               /* firstName = edtfirstName.getText().toString().trim();
+                firstName = edtfirstName.getText().toString().trim();
                 middlename = edtmiddlename.getText().toString().trim();
                 lastName = edtLastname.getText().toString().trim();
                 dateofBirth = edtDateofbirth.getText().toString().trim();
                 gender = edtgender.getText().toString().trim();
                 motherTongue = edtmotherTongue.getText().toString().trim();
                 fatherName = edtFathername.getText().toString().trim();
-                mothername = edtMotherName.getText().toString().trim();*/
+                mothername = edtMotherName.getText().toString().trim();
 
-             /*   if (imageFile == null || !imageFile.exists()) {
-                    Toast.makeText(UpdateProfileActivity.this, "Please select a profile picture", Toast.LENGTH_SHORT).show();
+                if (imageFile == null || !imageFile.exists()) {
+                    Toast.makeText(getContext(), "Please select a profile picture", Toast.LENGTH_SHORT).show();
                     return;
-                }*/
-               // ProfileUpdateMethod(studentid, firstName, middlename, lastName, dateofBirth, gender, motherTongue, fatherName, mothername, imageFile);
-                Fragment fragment=new ProfileFragment();
+                }
+                ProfileUpdateMethod(studentid, firstName, middlename, lastName, dateofBirth, gender, motherTongue, fatherName, mothername, imageFile);
 
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.flFragment, fragment); // Make sure R.id.fragment_container is the correct container in your activity layout
-                transaction.addToBackStack(null);  // So you can navigate back
-                transaction.commit();
                 /*Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
                 startActivity(intent);*/
             }
@@ -183,11 +162,29 @@ public class UpdateProfileActivity extends FragmentActivity {
         });
     }
 
-
+    private void showDatePickerDialog() {
+        DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, day);
+                java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MM-dd-yyyy", Locale.US);
+                edtDateofbirth.setText(dateFormat.format(calendar.getTime()));
+            }
+        };
+        new DatePickerDialog(
+                getContext(),
+                dateListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        ).show();
+    }
 
     private void showImagePickerDialog() {
         String[] options = {"Camera", "Gallery"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Select Image From");
         builder.setItems(options, (dialog, which) -> {
             if (which == 0) {
@@ -201,10 +198,10 @@ public class UpdateProfileActivity extends FragmentActivity {
 
     private void openCamera() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+        if (cameraIntent.resolveActivity(getContext().getPackageManager()) != null) {
             try {
                 File photoFile = createImageFile();
-                imageUri = FileProvider.getUriForFile(this, getPackageName() + ".provider", photoFile);
+                imageUri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".provider", photoFile);
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             } catch (IOException e) {
@@ -215,7 +212,7 @@ public class UpdateProfileActivity extends FragmentActivity {
 
     private File createImageFile() throws IOException {
         String fileName = "IMG_" + System.currentTimeMillis();
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         return File.createTempFile(fileName, ".jpg", storageDir);
     }
 
@@ -225,46 +222,38 @@ public class UpdateProfileActivity extends FragmentActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             try {
                 Bitmap originalBitmap = null;
 
                 if (requestCode == CAMERA_REQUEST) {
-                    // Capture from camera
                     if (imageUri != null) {
-                        originalBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                        originalBitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), imageUri);
                         Log.d("ImagePicker", "Image captured from camera");
                     }
                 } else if (requestCode == GALLERY_REQUEST && data != null) {
-                    // Picked from gallery
                     imageUri = data.getData();
                     if (imageUri != null) {
-                        originalBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                        originalBitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), imageUri);
                         Log.d("ImagePicker", "Image selected from gallery");
                     }
                 }
 
                 if (originalBitmap != null) {
-                    // Resize to 200x200
                     Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, 200, 200, true);
 
-                    // ✅ Set image to ImageView
-                   // imageView.setImageBitmap(resizedBitmap);
-                    Glide.with(this)
+                    Glide.with(this) // or requireContext()
                             .load(resizedBitmap)
                             .placeholder(R.drawable.headerprofile)
                             .error(R.drawable.headerprofile)
                             .circleCrop()
-                            .into(imageView);  // Assuming you have an ImageView named imageProfile
+                            .into(imageView);  // make sure imageView is initialized
 
+                    imageFile = new File(requireContext().getCacheDir(), "resized_image.jpg");
 
-                    // Save resized bitmap to a file
-                    imageFile = new File(getCacheDir(), "resized_image.jpg");
-
-                    // ztodo ramana
                     try (FileOutputStream fos = new FileOutputStream(imageFile)) {
                         resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                         fos.flush();
@@ -273,16 +262,15 @@ public class UpdateProfileActivity extends FragmentActivity {
 
                 } else {
                     Log.e("ImagePicker", "Bitmap is null");
-                    Toast.makeText(this, "Image load failed!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Image load failed!", Toast.LENGTH_SHORT).show();
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "Image processing failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Image processing failed", Toast.LENGTH_SHORT).show();
             }
         }
     }
-
 
 
 
@@ -292,7 +280,7 @@ public class UpdateProfileActivity extends FragmentActivity {
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
 
         // ✅ 2. Save scaled image to a new file
-        File resizedFile = new File(getCacheDir(), "resized_image.jpg");
+        File resizedFile = new File(getContext().getCacheDir(), "resized_image.jpg");
         try (FileOutputStream out = new FileOutputStream(resizedFile)) {
             scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
         } catch (IOException e) {
@@ -303,12 +291,11 @@ public class UpdateProfileActivity extends FragmentActivity {
         // ✅ 3. Replace original file with resized one
         imageFile = resizedFile;
 
-        // ✅ 4. Log image details to confirm
-        Log.d("ImagePicker", "Resized Width: " + scaledBitmap.getWidth() + " Height: " + scaledBitmap.getHeight());
-        Log.d("ImagePicker", "Resized File Path: " + imageFile.getAbsolutePath());
-        Log.d("ImagePicker", "Resized File Size: " + imageFile.length() / 1024 + " KB");
 
         OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(3, TimeUnit.SECONDS)
+                .readTimeout(3, TimeUnit.SECONDS)
+                .writeTimeout(3, TimeUnit.SECONDS)
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
 
@@ -352,61 +339,19 @@ public class UpdateProfileActivity extends FragmentActivity {
                 if (response.isSuccessful()) {
                     Log.d("ImagePicker", "API call successful");
 
-                    /*Fragment fragment=new ProfileFragment();
-                    *//*Bundle args = new Bundle();
-                    // args.putString("studentId", id);
-                    args.putString("ProfilePic",cleanBase64String);// pass studentId if needed
-                    fragment.setArguments(args);*//*
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    Fragment fragment=new ProfileFragment();
+
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                     transaction.replace(R.id.flFragment, fragment); // Make sure R.id.fragment_container is the correct container in your activity layout
                     transaction.addToBackStack(null);  // So you can navigate back
-                    transaction.commit();*/
+                    transaction.commit();
 
-                    /*StudentUpdateProfile updatedProfile = response.body();
-                    Log.d("ImagePicker", "Full Response Body: " + new Gson().toJson(updatedProfile)); // ✅ Log full response
 
-                    if (updatedProfile != null && updatedProfile.getResult() != null) {
-                        Log.d("ImagePicker", "Profile result not null");
-
-                        String profilePic = updatedProfile.getResult().getProfilePic();
-                        Log.d("ImagePicker", "ProfilePic: " + profilePic); // ✅ Log actual value
-
-                        if (profilePic != null && !profilePic.isEmpty()) {
-                            String cleanBase64String = profilePic.replace("\\/", "/");
-
-                            Fragment fragment=new ProfileFragment();
-                            Bundle args = new Bundle();
-                           // args.putString("studentId", id);
-                            args.putString("ProfilePic",cleanBase64String);// pass studentId if needed
-                            fragment.setArguments(args);
-                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                            transaction.replace(R.id.flFragment, fragment); // Make sure R.id.fragment_container is the correct container in your activity layout
-                            transaction.addToBackStack(null);  // So you can navigate back
-                            transaction.commit();
-
-                            *//*Intent returnIntent = new Intent();
-                            returnIntent.putExtra("profile_updated", true);
-                            returnIntent.putExtra("profile_pic_base64", cleanBase64String);  // optional
-                            setResult(Activity.RESULT_OK, returnIntent);
-                            finish();*//*
-
-                            if (imageUri != null) {
-                                //returnIntent.putExtra("image_uri", imageUri.toString());
-                                Log.d("ProfileUpdate", "Returning image URI: " + imageUri);
-                            }
-
-                           // setResult(Activity.RESULT_OK, returnIntent);
-                            Log.d("ProfileUpdate", "Result set with profile_updated: true");
-                            finish();
-                        } else {
-                            Log.d("ImagePicker", "ProfilePic is null or empty");
-                        }
-                    } else {
-                        Log.d("ImagePicker", "updatedProfile or result is null");
+                    if (getActivity() instanceof HomeActivity) {
+                        ((HomeActivity) getActivity()).StudentDetailsMethod(studentid);
                     }
-                } else {
-                    Log.d("ImagePicker", "API error: " + response.code() + " - " + response.message());
-                }*/
+
+
                 }
             }
 
@@ -418,6 +363,8 @@ public class UpdateProfileActivity extends FragmentActivity {
     }
 
     private void StudentDetailsMethod(String studentId) {
+
+
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(3, TimeUnit.SECONDS)
@@ -451,14 +398,13 @@ public class UpdateProfileActivity extends FragmentActivity {
 
                     String imageUrl = studentTotalDetails.getImageUrl() + studentTotalDetails.getResult().getProfilePic();
 
-                    Glide.with(getApplicationContext())
+                    Glide.with(getContext())
                             .load(imageUrl)
                             .placeholder(R.drawable.headerprofile)
                             .error(R.drawable.headerprofile)
                             .circleCrop()
                             .into(imageView);
-
-
+                    dateofBirth = studentTotalDetails.getResult().getDateOfBirth();
 
                     if (dateofBirth != null && dateofBirth.matches("\\d+")) {
                         // It's a timestamp, convert to readable date
@@ -474,22 +420,20 @@ public class UpdateProfileActivity extends FragmentActivity {
 
 
 
+
+
                 } else {
                     Log.d("DEBUG", "Response not successful: " + response.code());
-                    Toast.makeText(getApplicationContext(), "Server Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Server Error: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<StudentTotalDetails> call, Throwable t) {
                 Log.e("DEBUG", "API call failed", t);
-                Toast.makeText(getApplicationContext(), "API Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "API Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 }
-
-
-
-

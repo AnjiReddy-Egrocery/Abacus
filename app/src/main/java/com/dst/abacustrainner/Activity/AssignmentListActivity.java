@@ -74,8 +74,7 @@ public class AssignmentListActivity extends AppCompatActivity {
 
     private void VerifyMethod(String dateid, String studentid) {
         progressBar.setVisibility(View.VISIBLE);
-       /* HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();

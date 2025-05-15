@@ -11,7 +11,10 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+
+        android:maxSdkVersion="32" />
 
     <application
         android:allowBackup="true"
@@ -191,7 +194,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.dst.abacustrainner.fileprovider"
+            android:authorities="com.dst.abacustrainner.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
