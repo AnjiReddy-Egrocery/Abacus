@@ -71,6 +71,7 @@ public class HomeActivity extends AppCompatActivity{
     String imageUrl;
     ImageView imageProfile;
     String batchId;
+    String Hi;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
