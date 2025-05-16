@@ -1,8 +1,10 @@
 package com.dst.abacustrainner.Fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -31,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dst.abacustrainner.Model.StudentTotalDetails;
 import com.dst.abacustrainner.Model.StudentUpdateProfile;
 import com.dst.abacustrainner.R;
@@ -188,12 +192,34 @@ public class UpDateProfileFragment extends Fragment {
         builder.setTitle("Select Image From");
         builder.setItems(options, (dialog, which) -> {
             if (which == 0) {
-                openCamera();
+                checkCameraPermissionAndOpenCamera();
             } else {
                 openGallery();
             }
         });
         builder.show();
+    }
+
+    private void checkCameraPermissionAndOpenCamera() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Request permission
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+        } else {
+            openCamera(); // Permission already granted
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            } else {
+                Toast.makeText(getContext(), "Camera permission is required", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void openCamera() {
@@ -277,7 +303,7 @@ public class UpDateProfileFragment extends Fragment {
     private void ProfileUpdateMethod(String studentId, String firstName, String middlename, String lastName, String dateofBirth, String gender, String motherTongue, String fatherName, String mothername, File imageFile) {
 
         Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getPath());
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
 
         // ✅ 2. Save scaled image to a new file
         File resizedFile = new File(getContext().getCacheDir(), "resized_image.jpg");
@@ -398,10 +424,12 @@ public class UpDateProfileFragment extends Fragment {
 
                     String imageUrl = studentTotalDetails.getImageUrl() + studentTotalDetails.getResult().getProfilePic();
 
-                    Glide.with(getContext())
+                   Glide.with(getContext())
                             .load(imageUrl)
                             .placeholder(R.drawable.headerprofile)
                             .error(R.drawable.headerprofile)
+                            .skipMemoryCache(true) // ✅ Prevents loading from memory
+                            .diskCacheStrategy(DiskCacheStrategy.NONE) // ✅ Avoid disk cache
                             .circleCrop()
                             .into(imageView);
                     dateofBirth = studentTotalDetails.getResult().getDateOfBirth();

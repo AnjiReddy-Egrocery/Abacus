@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dst.abacustrainner.Activity.UpdateProfileActivity;
 import com.dst.abacustrainner.Model.BachDetailsResponse;
 import com.dst.abacustrainner.Model.StudentTotalDetails;
@@ -112,6 +113,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onResponse(Call<StudentTotalDetails> call, Response<StudentTotalDetails> response) {
                 Log.d("DEBUG", "API response received");
+                if (!isAdded()) return; // Prevent crash if fragment is detached
                 if (response.isSuccessful()) {
                     StudentTotalDetails studentTotalDetails = response.body();
                     Log.d("DEBUG", "Error Code: " + studentTotalDetails.getErrorCode());
@@ -123,10 +125,12 @@ public class ProfileFragment extends Fragment {
 
                     String imageUrl = studentTotalDetails.getImageUrl() + studentTotalDetails.getResult().getProfilePic();
 
-                    Glide.with(requireActivity())
+                    Glide.with(requireContext())
                             .load(imageUrl)
                             .placeholder(R.drawable.headerprofile)
                             .error(R.drawable.headerprofile)
+                            .skipMemoryCache(true) // ✅ Prevents loading from memory
+                            .diskCacheStrategy(DiskCacheStrategy.NONE) // ✅ Avoid disk cache
                             .circleCrop()
                             .into(imageProfile);
 
