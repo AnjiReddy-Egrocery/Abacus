@@ -269,7 +269,7 @@ public class UpDateProfileFragment extends Fragment {
                 }
 
                 if (originalBitmap != null) {
-                    Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, 200, 200, true);
+                    Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, originalBitmap.getWidth(), originalBitmap.getHeight(), true);
 
                     Glide.with(this) // or requireContext()
                             .load(resizedBitmap)
