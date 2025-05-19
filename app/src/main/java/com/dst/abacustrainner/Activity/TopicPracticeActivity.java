@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 
 
+import com.bumptech.glide.Glide;
 import com.dst.abacustrainner.Model.SendData;
 import com.dst.abacustrainner.Model.SubmitDataResponse;
 import com.dst.abacustrainner.Model.TopicExamResponse;
@@ -45,6 +46,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -125,6 +128,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
     private Handler handler = new Handler();
     private static final int MAX_QUESTIONS = 20;
     LinearLayout leftIcon,rightIcon;
+    ImageView questionImageView;
 
 
     @SuppressLint("MissingInflatedId")
@@ -148,6 +152,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
         rightIcon =findViewById(R.id.right_icon_click);
         btnBack=findViewById(R.id.btn_back_level_select);
         scrollView = findViewById(R.id.horizontalScrollView);
+        questionImageView = findViewById(R.id.questionImageView);
 
 
         Bundle bundle = getIntent().getExtras();
@@ -516,22 +521,54 @@ public class TopicPracticeActivity extends AppCompatActivity {
         if (questionsArray != null && questionsArray.length > currentQuestionIndex) {
             String questionHtml = questionsArray[currentQuestionIndex];
 
-            // Display the question text with indentation and monospaced font
-            txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":");
-            questionTextView.setText( "   " + questionHtml.replace("\n", "\n   "));
+            // Log question length and raw content
+            if (questionHtml == null || questionHtml.trim().isEmpty()) {
+                Log.e("QuestionDebug", "Empty or null question at index: " + currentQuestionIndex);
+            } else {
+                Log.d("QuestionDebug", "Raw HTML: " + questionHtml);
+                Log.d("QuestionDebug", "Question Length: " + questionHtml.length());
+            }
 
-            // Set left margin for questionTextView
+            // Extract <img src="...">
+            Pattern pattern = Pattern.compile("<img[^>]+src=\\\\*\"([^\"]+)\\\\*\"");
+            Matcher matcher = pattern.matcher(questionHtml);
+
+            String imageUrl = null;
+            if (matcher.find()) {
+                String relativePath = matcher.group(1).replace("\\", "");
+                imageUrl = "https://yourdomain.com/" + relativePath.replace("../../../", "");
+                Log.d("QuestionDebug", "Image URL: " + imageUrl);
+            }
+
+            // Remove <img> tag from HTML
+            String questionTextOnly = questionHtml.replaceAll("<img[^>]+>", "").replaceAll("\\\\", "");
+            Log.d("QuestionDebug", "Cleaned Text: " + questionTextOnly);
+
+            // Set question number and question text
+            txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":");
+            questionTextView.setText("   " + questionTextOnly.replace("\n", "\n   "));
+
+            // Set margin
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();
             layoutParams.leftMargin = (int) getResources().getDimension(R.dimen.question_margin_left);
             questionTextView.setLayoutParams(layoutParams);
+
+            // Load image
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                questionImageView.setVisibility(View.VISIBLE);
+                Glide.with(this).load(imageUrl).into(questionImageView);
+            } else {
+                questionImageView.setVisibility(View.GONE);
+            }
+
             generateButtons();
         } else {
             if (questionsArray == null) {
-                // Handle the case where questionsArray is null (not fetched yet)
-                // You may want to show an error message or take appropriate action
+                Log.e("QuestionDebug", "questionsArray is null.");
+                Toast.makeText(this, "Questions not loaded.", Toast.LENGTH_SHORT).show();
             } else {
-                // Handle the case where currentQuestionIndex is out of bounds
-                showCompletionDialog(); // or perform other necessary actions
+                Log.e("QuestionDebug", "Index out of bounds: " + currentQuestionIndex);
+                showCompletionDialog();
             }
         }
     }

@@ -340,6 +340,7 @@
                     android:text="dfdsgdhf"
                     android:background="@drawable/question_bg"
                     android:gravity="center"
+                    android:layout_marginRight="3dp"
                     android:textSize="18dp"
                     android:layout_gravity="center"
                     android:textStyle="bold"
@@ -395,8 +396,8 @@
                         android:layout_marginTop="10dp"
                         android:background="@drawable/submit_btn_border"
                         android:inputType="number"
-                        android:paddingLeft="10dp"
-                        android:layout_marginStart="8dp"
+                        android:paddingLeft="30dp"
+                        android:layout_marginStart="13dp"
                         android:textColor="#000"
                         android:textColorHint="#000" />
 

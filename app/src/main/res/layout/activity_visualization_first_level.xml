@@ -338,6 +338,7 @@
                         android:inputType="number"
                         android:textColorHint="#000"
                         android:textColor="#000"
+                        android:layout_marginStart="13dp"
                         android:background="@drawable/submit_btn_border"
                         android:layout_marginTop="10dp"
                        />

@@ -1049,7 +1049,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
                                         String lastNumber = numberParts[numberParts.length - 1];
 
                                         // Replace the last number with " Answer is " in the currentNumber
-                                        currentNumber = currentNumber.replace(lastNumber, "Answer \t\t is");
+                                        currentNumber = currentNumber.replace(lastNumber, "Answer \t is");
 
                                         // Set the modified current number to txtDisplayQuestion
                                         questionTextView.setText(currentNumber.replace(" ", ""));

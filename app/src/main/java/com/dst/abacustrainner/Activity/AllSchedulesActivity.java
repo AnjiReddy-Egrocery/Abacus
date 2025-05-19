@@ -2,11 +2,11 @@ package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -14,8 +14,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -58,6 +58,9 @@ public class AllSchedulesActivity extends AppCompatActivity {
 
     String studentId, batchId ,dateId;
     TableLayout tableLayout;
+    LinearLayout loadingLayout;
+
+    ProgressBar progressBar;
     private LinearLayout currentlyOpenLayout = null;
 
     @SuppressLint("MissingInflatedId")
@@ -66,7 +69,8 @@ public class AllSchedulesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_schedules);
 
-
+        progressBar = findViewById(R.id.progressBar);
+        loadingLayout = findViewById(R.id.loadingLayout);
         btnBack = findViewById(R.id.fragment_container);
         tableLayout = findViewById(R.id.tableLayout);
 
@@ -276,10 +280,9 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                 txtStatus.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                                 txtStatus.setPadding(16, 20, 16, 20);
                                 txtStatus.setGravity(Gravity.CENTER);
-                                txtStatus.setBackgroundResource(R.drawable.rounded_button); // Correct
+                                txtStatus.setBackgroundResource(R.drawable.rounded_button);
                                 txtStatus.setTextColor(Color.WHITE);
                                 txtStatus.setTypeface(null, Typeface.BOLD);
-
 
                                 View spacetxtStatus = new View(getApplicationContext());
                                 spacetxtnumber.setLayoutParams(new LinearLayout.LayoutParams(
@@ -330,7 +333,16 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(View v) {
 
+                                        loadingLayout.setVisibility(View.VISIBLE); // Show loading overlay
 
+                                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                loadingLayout.setVisibility(View.GONE); // Hide loading overlay
+
+                                                //  Toast.makeText(AllSchedulesActivity.this, txtStatus.getText().toString() + " Clicked", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }, 500);
                                         // Close previously opened detailsLayout (if any)
                                         if (currentlyOpenLayout != null && currentlyOpenLayout != detailsLayout) {
                                             currentlyOpenLayout.setVisibility(View.GONE);
@@ -750,7 +762,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                                         txtPracticeNow.setTextColor(Color.WHITE);
                                                         txtPracticeNow.setTypeface(null, Typeface.BOLD);
                                                         txtPracticeNow.setOnClickListener(v -> {
-                                                            Intent intent = new Intent(getApplicationContext(), TopicPracticeActivity.class);
+                                                            Intent intent = new Intent(getApplicationContext(), AssignmentPracticeActivity.class);
                                                             intent.putExtra("topicId", assignmentTopics.getTopicId());
                                                             intent.putExtra("studentId", studentId);
                                                             intent.putExtra("topicName", assignmentTopics.getTopicName());
@@ -772,7 +784,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                                         txtViewResult.setTextColor(Color.parseColor("#000000"));
                                                         txtViewResult.setTypeface(null, Typeface.BOLD);
                                                         txtViewResult.setOnClickListener(v -> {
-                                                            Intent intent = new Intent(getApplicationContext(), ViewPracticeListActivity.class);
+                                                            Intent intent = new Intent(getApplicationContext(), ViewAssignmentListActivity.class);
                                                             intent.putExtra("topicId", assignmentTopics.getTopicId());
                                                             intent.putExtra("studentId", studentId);
                                                             intent.putExtra("topicName", assignmentTopics.getTopicName());
@@ -873,11 +885,6 @@ public class AllSchedulesActivity extends AppCompatActivity {
                                                 Log.e("API_ERROR", errorMessage);
                                             }
                                         });
-
-
-
-
-
 
                                         // Toggle the detailsLayout visibility
                                         if (detailsLayout.getVisibility() == View.GONE) {
