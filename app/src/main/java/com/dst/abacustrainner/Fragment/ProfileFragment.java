@@ -28,6 +28,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.ObjectKey;
 import com.dst.abacustrainner.Activity.UpdateProfileActivity;
 import com.dst.abacustrainner.Model.BachDetailsResponse;
 import com.dst.abacustrainner.Model.StudentTotalDetails;
@@ -118,21 +119,21 @@ public class ProfileFragment extends Fragment {
                     StudentTotalDetails studentTotalDetails = response.body();
                     Log.d("DEBUG", "Error Code: " + studentTotalDetails.getErrorCode());
 
+                    String imageUrl = studentTotalDetails.getImageUrl() + studentTotalDetails.getResult().getProfilePic();
+
+                    Glide.with(requireContext())
+                            .load(imageUrl)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .signature(new ObjectKey(System.currentTimeMillis())) // forces fresh load
+                            .circleCrop()
+                            .into(imageProfile);
+
                     String firstName = capitalizeFirstLetter(studentTotalDetails.getResult().getFirstName());
                     String lastName = capitalizeFirstLetter(studentTotalDetails.getResult().getLastName());
                     String fullName = firstName + " " + lastName;
                     txtName.setText(fullName);
 
-                    String imageUrl = studentTotalDetails.getImageUrl() + studentTotalDetails.getResult().getProfilePic();
 
-                    Glide.with(requireContext())
-                            .load(imageUrl)
-                            .placeholder(R.drawable.headerprofile)
-                            .error(R.drawable.headerprofile)
-                            .skipMemoryCache(true) // ✅ Prevents loading from memory
-                            .diskCacheStrategy(DiskCacheStrategy.NONE) // ✅ Avoid disk cache
-                            .circleCrop()
-                            .into(imageProfile);
 
                 } else {
                     Log.d("DEBUG", "Response not successful: " + response.code());

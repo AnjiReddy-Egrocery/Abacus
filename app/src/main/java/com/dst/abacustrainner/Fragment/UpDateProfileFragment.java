@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.ObjectKey;
 import com.dst.abacustrainner.Model.StudentTotalDetails;
 import com.dst.abacustrainner.Model.StudentUpdateProfile;
 import com.dst.abacustrainner.R;
@@ -271,12 +272,12 @@ public class UpDateProfileFragment extends Fragment {
                 if (originalBitmap != null) {
                     Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, originalBitmap.getWidth(), originalBitmap.getHeight(), true);
 
-                    Glide.with(this) // or requireContext()
+                    Glide.with(requireContext())
                             .load(resizedBitmap)
-                            .placeholder(R.drawable.headerprofile)
-                            .error(R.drawable.headerprofile)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .signature(new ObjectKey(System.currentTimeMillis())) // forces fresh load
                             .circleCrop()
-                            .into(imageView);  // make sure imageView is initialized
+                            .into(imageView);
 
                     imageFile = new File(requireContext().getCacheDir(), "resized_image.jpg");
 
@@ -424,12 +425,10 @@ public class UpDateProfileFragment extends Fragment {
 
                     String imageUrl = studentTotalDetails.getImageUrl() + studentTotalDetails.getResult().getProfilePic();
 
-                   Glide.with(getContext())
+                    Glide.with(requireContext())
                             .load(imageUrl)
-                            .placeholder(R.drawable.headerprofile)
-                            .error(R.drawable.headerprofile)
-                            .skipMemoryCache(true) // ✅ Prevents loading from memory
-                            .diskCacheStrategy(DiskCacheStrategy.NONE) // ✅ Avoid disk cache
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .signature(new ObjectKey(System.currentTimeMillis())) // forces fresh load
                             .circleCrop()
                             .into(imageView);
                     dateofBirth = studentTotalDetails.getResult().getDateOfBirth();

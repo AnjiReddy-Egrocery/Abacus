@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.ObjectKey;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
 import com.dst.abacustrainner.Activity.UpdateProfileActivity;
 import com.dst.abacustrainner.Activity.VisualiztionActivity;
@@ -118,16 +119,7 @@ public class HomeActivity extends AppCompatActivity{
 
         View headerView = navigationView.getHeaderView(0);
         ImageView closeIcon = headerView.findViewById(R.id.close_icon);
-        TextView txtUserName = headerView.findViewById(R.id.user_name);
-        ImageView imageView = headerView.findViewById(R.id.profile_image);
 
-       /* txtUserName.setText(fullName);
-        Glide.with(this)
-                .load(imageUrl) // ✅ load the image from the URL
-                .placeholder(R.drawable.headerprofile) // optional placeholder while loading
-                .error(R.drawable.headerprofile) // fallback in case URL fails
-                .circleCrop()
-                .into(imageView);*/
 
         closeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,10 +293,8 @@ public class HomeActivity extends AppCompatActivity{
 
                     Glide.with(getApplicationContext())
                             .load(imageUrl)
-                            .placeholder(R.drawable.headerprofile)
-                            .error(R.drawable.headerprofile)
-                            .skipMemoryCache(true) // ✅ Prevents loading from memory
-                            .diskCacheStrategy(DiskCacheStrategy.NONE) // ✅ Avoid disk cache
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .signature(new ObjectKey(System.currentTimeMillis())) // forces fresh load
                             .circleCrop()
                             .into(imageProfile);
 
@@ -315,10 +305,8 @@ public class HomeActivity extends AppCompatActivity{
                     ImageView imageView = headerView.findViewById(R.id.profile_image);
                     Glide.with(getApplicationContext())
                             .load(imageUrl)
-                            .placeholder(R.drawable.headerprofile)
-                            .error(R.drawable.headerprofile)
-                            .skipMemoryCache(true) // ✅ Prevents loading from memory
-                            .diskCacheStrategy(DiskCacheStrategy.NONE) // ✅ Avoid disk cache
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .signature(new ObjectKey(System.currentTimeMillis())) // forces fresh load
                             .circleCrop()
                             .into(imageView);
 
