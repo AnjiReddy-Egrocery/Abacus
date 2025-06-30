@@ -511,6 +511,8 @@
                             android:paddingEnd="15dp"
                             android:fontFamily="@font/regular"
                             android:id="@+id/edt_email"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
                             android:inputType="textAutoComplete"
                             android:textColorHint="#000"/>
                         <TextView
@@ -534,6 +536,7 @@
                             android:id="@+id/edt_number"
                             android:inputType="number"
                             android:focusable="false"
+                            android:focusableInTouchMode="false"
                             android:textColorHint="#000"/>
 
                         <Button
