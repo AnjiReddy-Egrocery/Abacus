@@ -1,10 +1,19 @@
 package com.dst.abacustrainner.User;
 
+import android.Manifest;
+import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -12,6 +21,7 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -23,8 +33,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -33,9 +46,16 @@ import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.database.SharedPrefManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import okhttp3.MediaType;
@@ -48,7 +68,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class UserCreateActivity extends AppCompatActivity {
+public class UserCreateActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     LinearLayout layoutheaderSignIn,layoutheaderSignUp;
     TextView txtSignIn,txtSignUp;
@@ -66,6 +86,17 @@ public class UserCreateActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
     Button butSchools;
+    private static final int REQUEST_PHONE_NUMBER_PERMISSION = 101;
+    AlertDialog loadingDialog;
+    private int simRetryCount = 0;
+    private static final int MAX_SIM_RETRY = 5;
+
+    private static final int REQUEST_CODE_EMAIL_PICKER = 2001;
+    private static final String GOOGLE_ACCOUNT_TYPE = "com.google";
+    private GoogleApiClient mGoogleApiClient;
+    private static final int RC_SIGN_IN = 9001;
+    private static final int RC_SIGN_UP_WITH_GOOGLE = 9002;
+    private static final int CREDENTIAL_PICKER_REQUEST = 1001;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -109,11 +140,32 @@ public class UserCreateActivity extends AppCompatActivity {
 
         txtForgotPassword = findViewById(R.id.txt_forgot_password);
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
 
         edtDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDatePickerDialog();
+            }
+        });
+
+        edtNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkAndRequestPermissions();
+            }
+        });
+        edtRegisterEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkPermissionAndShowAccounts();
             }
         });
 
@@ -173,6 +225,177 @@ public class UserCreateActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void checkPermissionAndShowAccounts() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.GET_ACCOUNTS}, 123);
+        } else {
+            showAccountPicker();
+        }
+    }
+
+    private void showAccountPicker() {
+        Intent intent = AccountManager.newChooseAccountIntent(
+                null, null,
+                new String[]{GOOGLE_ACCOUNT_TYPE},
+                false, null, null, null, null
+        );
+        startActivityForResult(intent, REQUEST_CODE_EMAIL_PICKER);
+    }
+
+
+    private void checkAndRequestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Check both permissions
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{
+                                Manifest.permission.READ_PHONE_NUMBERS,
+                                Manifest.permission.READ_PHONE_STATE
+                        }, REQUEST_PHONE_NUMBER_PERMISSION);
+            } else {
+                getSimNumbers();
+            }
+        }
+    }
+
+    private void getSimNumbers() {
+        showLoadingDialog(); // 👈 show loader
+
+        ArrayList<String> simNumbers = new ArrayList<>();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS)
+                != PackageManager.PERMISSION_GRANTED) {
+            hideLoadingDialog();
+            return;
+        }
+
+        SubscriptionManager subscriptionManager = (SubscriptionManager) getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+        List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
+
+        if (subscriptionInfoList == null || subscriptionInfoList.isEmpty()) {
+            if (simRetryCount < MAX_SIM_RETRY) {
+                simRetryCount++;
+                new Handler(Looper.getMainLooper()).postDelayed(this::getSimNumbers, 2000);
+            } else {
+                hideLoadingDialog(); // 👈 hide if failed
+                Toast.makeText(this, "Unable to fetch SIM details.", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
+        simRetryCount = 0;
+        for (SubscriptionInfo info : subscriptionInfoList) {
+            String phoneNumber = info.getNumber();
+            int simSlot = info.getSimSlotIndex();
+            String carrierName = info.getCarrierName().toString();
+
+            if (phoneNumber == null || phoneNumber.isEmpty()) {
+                phoneNumber = "Number not available";
+            }
+
+            simNumbers.add("SIM " + (simSlot + 1) + " (" + carrierName + "): " + phoneNumber);
+        }
+
+        hideLoadingDialog(); // 👈 hide after success
+
+        if (!simNumbers.isEmpty()) {
+            showSimSelectionDialog(simNumbers);
+        }
+    }
+
+    private void showLoadingDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(R.layout.dialog_loading); // we'll create this layout next
+        builder.setCancelable(false);
+        loadingDialog = builder.create();
+        loadingDialog.show();
+    }
+    private void hideLoadingDialog() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
+    }
+
+    private void showSimSelectionDialog(ArrayList<String> simNumbers) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select SIM Number");
+        String[] simArray = simNumbers.toArray(new String[0]);
+
+        builder.setItems(simArray, (dialog, which) -> {
+            String[] parts = simNumbers.get(which).split(": ");
+            String selectedSimNumber = (parts.length > 1) ? parts[1].trim() : simNumbers.get(which);
+            edtNumber.setText(selectedSimNumber);
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            // Enable manual input if user cancels
+            edtNumber.setFocusable(true);
+            edtNumber.setFocusableInTouchMode(true);
+            edtNumber.requestFocus();
+
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.showSoftInput(edtNumber, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_PHONE_NUMBER_PERMISSION) {
+            boolean allGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allGranted = false;
+                    break;
+                }
+            }
+
+            if (allGranted) {
+                getSimNumbers();
+            } else {
+                Toast.makeText(this, "Permission denied.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if (requestCode == 123 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            showAccountPicker();
+        }
+    }
+
+
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CREDENTIAL_PICKER_REQUEST && resultCode == RESULT_OK) {
+            if (data != null) {
+                Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
+                if (credential != null) {
+                    edtNumber.setText(credential.getId());  // Display the retrieved number
+                }
+            }
+        }
+
+        if (requestCode == REQUEST_CODE_EMAIL_PICKER && resultCode == RESULT_OK) {
+            if (data != null) {
+                String selectedEmail = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                if (selectedEmail != null) {
+                    edtRegisterEmail.setText(selectedEmail);
+                }
+            }
+        }
+    }
+
     @SuppressLint("MissingInflatedId")
     private void SchoolsMethod() {
         LayoutInflater inflater = getLayoutInflater();
@@ -467,4 +690,11 @@ public class UserCreateActivity extends AppCompatActivity {
         layoutSignUpForm.setVisibility(View.VISIBLE);
 
     }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        // Connection failed, show error message
+        Toast.makeText(UserCreateActivity.this, "Connection to Google Play services failed. Please try again.", Toast.LENGTH_LONG).show();
+    }
+
 }

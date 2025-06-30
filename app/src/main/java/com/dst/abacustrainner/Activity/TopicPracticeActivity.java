@@ -30,6 +30,7 @@ import androidx.core.text.HtmlCompat;
 
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dst.abacustrainner.Model.SendData;
 import com.dst.abacustrainner.Model.SubmitDataResponse;
 import com.dst.abacustrainner.Model.TopicExamResponse;
@@ -523,7 +524,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
 
             // Log question length and raw content
             if (questionHtml == null || questionHtml.trim().isEmpty()) {
-                Log.e("QuestionDebug", "Empty or null question at index: " + currentQuestionIndex);
+                Log.d("QuestionDebug", "Empty or null question at index: " + currentQuestionIndex);
             } else {
                 Log.d("QuestionDebug", "Raw HTML: " + questionHtml);
                 Log.d("QuestionDebug", "Question Length: " + questionHtml.length());
@@ -536,43 +537,52 @@ public class TopicPracticeActivity extends AppCompatActivity {
             String imageUrl = null;
             if (matcher.find()) {
                 String relativePath = matcher.group(1).replace("\\", "");
-                imageUrl = "https://yourdomain.com/" + relativePath.replace("../../../", "");
+                imageUrl = "https://www.abacustrainer.com/" + relativePath.replace("../../../", "");
                 Log.d("QuestionDebug", "Image URL: " + imageUrl);
             }
 
-            // Remove <img> tag from HTML
+            // Remove <img> tag and backslashes from HTML to get plain text
             String questionTextOnly = questionHtml.replaceAll("<img[^>]+>", "").replaceAll("\\\\", "");
             Log.d("QuestionDebug", "Cleaned Text: " + questionTextOnly);
 
-            // Set question number and question text
+            // Set question number
             txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":");
-            questionTextView.setText("   " + questionTextOnly.replace("\n", "\n   "));
 
-            // Set margin
-            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();
-            layoutParams.leftMargin = (int) getResources().getDimension(R.dimen.question_margin_left);
-            questionTextView.setLayoutParams(layoutParams);
-
-            // Load image
             if (imageUrl != null && !imageUrl.isEmpty()) {
+                // ✅ Show only image
                 questionImageView.setVisibility(View.VISIBLE);
-                Glide.with(this).load(imageUrl).into(questionImageView);
+                questionTextView.setVisibility(View.GONE);
+
+                Glide.with(this)
+                        .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .dontAnimate()
+                        .into(questionImageView);
+
             } else {
+                // ✅ Show only text
                 questionImageView.setVisibility(View.GONE);
+                questionTextView.setVisibility(View.VISIBLE);
+
+                questionTextView.setText("   " + questionTextOnly.replace("\n", "\n   "));
+
+                // Set margin
+                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();
+                layoutParams.leftMargin = (int) getResources().getDimension(R.dimen.question_margin_left);
+                questionTextView.setLayoutParams(layoutParams);
             }
 
             generateButtons();
         } else {
             if (questionsArray == null) {
-                Log.e("QuestionDebug", "questionsArray is null.");
+                Log.d("QuestionDebug", "questionsArray is null.");
                 Toast.makeText(this, "Questions not loaded.", Toast.LENGTH_SHORT).show();
             } else {
-                Log.e("QuestionDebug", "Index out of bounds: " + currentQuestionIndex);
+                Log.d("QuestionDebug", "Index out of bounds: " + currentQuestionIndex);
                 showCompletionDialog();
             }
         }
     }
-
 //    private void generateButtons() {
 //        gridLayout.removeAllViews();
 //

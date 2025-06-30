@@ -533,6 +533,7 @@
                             android:fontFamily="@font/regular"
                             android:id="@+id/edt_number"
                             android:inputType="number"
+                            android:focusable="false"
                             android:textColorHint="#000"/>
 
                         <Button

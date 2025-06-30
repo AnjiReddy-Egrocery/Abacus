@@ -92,8 +92,6 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-
-
     private void StudentDetailsMethod(String studentId) {
 
         OkHttpClient client = new OkHttpClient.Builder()

@@ -11,32 +11,42 @@
             android:icon="@drawable/nav_home" />
 
         <item
+            android:id="@+id/nav_worksheet"
+            android:title="Work Sheet Subscription"
+            android:icon="@drawable/worksheet" />
+        <item
+            android:id="@+id/nav_video"
+            android:title="Video Tutorials"
+            android:icon="@drawable/nav_videos" />
+
+
+        <!--<item
             android:id="@+id/nav_classroom"
             android:title="Class Room"
             android:icon="@drawable/nav_class"
-            />
-        <item
+            />-->
+        <!--<item
             android:id="@+id/nav_play_with_numbers"
             android:title="Play with Numbers"
             android:icon="@drawable/nav_class"
-            />
-        <item
+            />-->
+       <!-- <item
             android:id="@+id/nav_visualization"
             android:title="Visualization"
             android:icon="@drawable/nav_class"
-            />
+            />-->
 
-        <item
+        <!--<item
             android:id="@+id/nav_exam"
             android:title="AI Exam"
             android:icon="@drawable/nav_class"
-            android:actionLayout="@layout/nav_inbox_item"/>
+            android:actionLayout="@layout/nav_inbox_item"/>-->
 
 
-        <item
+       <!-- <item
         android:id="@+id/nav_chats"
         android:title="Chats"
-        android:icon="@drawable/nav_chat"/>
+        android:icon="@drawable/nav_chat"/>-->
 
         <item
             android:id="@+id/nav_schedules"
@@ -48,20 +58,20 @@
             android:title="Progress Tracker"
             android:icon="@drawable/nav_progress"/>
 
-        <item
+       <!-- <item
             android:id="@+id/nav_videos_tutorials"
             android:title="Videos &amp; Tutorials"
-            android:icon="@drawable/nav_videos"/>
+            android:icon="@drawable/nav_videos"/>-->
 
-        <item
+        <!--<item
             android:id="@+id/nav_achievements"
             android:title="Achievements"
-            android:icon="@drawable/nav_achivements"/>
+            android:icon="@drawable/nav_achivements"/>-->
 
-        <item
+       <!-- <item
             android:id="@+id/nav_events"
             android:title="Events &amp; Competitions"
-            android:icon="@drawable/nav_compitation"/>
+            android:icon="@drawable/nav_compitation"/>-->
 
         <item
             android:id="@+id/nav_settings"

@@ -27,7 +27,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.signature.ObjectKey;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
 import com.dst.abacustrainner.Activity.UpdateProfileActivity;
+import com.dst.abacustrainner.Activity.VideoTutorialsActivity;
 import com.dst.abacustrainner.Activity.VisualiztionActivity;
+import com.dst.abacustrainner.Activity.WorksheetSubscriptionActivity;
 import com.dst.abacustrainner.Fragment.AIGenrationFragment;
 import com.dst.abacustrainner.Fragment.ClassFragment;
 
@@ -41,10 +43,9 @@ import com.dst.abacustrainner.Model.StudentTotalDetails;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.database.SharedPrefManager;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -60,7 +61,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class HomeActivity extends AppCompatActivity{
+public class HomeActivity extends AppCompatActivity {
 
     String studentId,firstName,LastName;
     Object profilePic ;
@@ -343,15 +344,24 @@ public class HomeActivity extends AppCompatActivity{
                 selectedFragment = new HomeFragment();
             }else if (itemView == R.id.nav_logout) {
                 SharedPrefManager.getInstance(getApplicationContext().getApplicationContext()).isLoggedOut();
-            }else if (itemView == R.id.nav_events) {
+            }/*else if (itemView == R.id.nav_events) {
                 selectedFragment = new CompetitionFragment();
-            }else if (itemView == R.id.nav_schedules) {
+            }*/else if (itemView == R.id.nav_schedules) {
                 scheduleMethod(studentId);  // Call method (no fragment return needed)
                 return true;
             }else if (itemView == R.id.nav_profile) {
                 openProfileFragment(studentId, fullName, imageUrl);
                  return true;
-            }else if (itemView == R.id.nav_play_with_numbers ) {
+            }else if (itemView == R.id.nav_worksheet){
+
+                Intent intent= new Intent(HomeActivity.this, WorksheetSubscriptionActivity.class);
+                startActivity(intent);
+
+            }else if (itemView == R.id.nav_video){
+                Intent intent= new Intent(HomeActivity.this, VideoTutorialsActivity.class);
+                startActivity(intent);
+            }
+            /*else if (itemView == R.id.nav_play_with_numbers ) {
                 Intent intent = new Intent(HomeActivity.this, PlayWithNumbersActivity.class);
                 intent.putExtra("studentId",studentId);
                 //intent.putExtra("firstName",firsstname);
@@ -362,7 +372,7 @@ public class HomeActivity extends AppCompatActivity{
                 startActivity(intent);
             }else if (itemView == R.id.nav_exam) {
                 selectedFragment = new AIGenrationFragment();
-            }
+            }*/
 
 
             if (selectedFragment != null) {
