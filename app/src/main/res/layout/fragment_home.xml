@@ -24,6 +24,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_margin="14dp"
+                    android:id="@+id/layou_schedule"
                     android:padding="8dp">
                     <TextView
                         android:layout_width="wrap_content"
@@ -46,6 +47,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="8dp"
+                    android:id="@+id/layout_schedule_information"
                     android:layout_marginLeft="14dp"
                     android:layout_marginRight="14dp">
 
@@ -104,7 +106,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="30 NOV 2024"
+                                android:text="dd/mm/yyyy"
                                 android:textColor="#000"
                                 android:gravity="center"
                                 android:padding="5dp"
@@ -122,7 +124,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text=" [4:00 PM - 5:00 PM]"
+                                android:text=" []"
                                 android:textColor="#000"
                                 android:id="@+id/txt_nextTime"
                                 android:gravity="center"
@@ -188,7 +190,7 @@
                                 android:textColor="#000"
                                 android:id="@+id/txt_Completed"
                                 android:layout_marginLeft="8dp"
-                                android:text="Completed:12"
+                                android:text="Completed:0"
                                 android:textSize="18dp" />
                             <TextView
                                 android:layout_width="wrap_content"
@@ -196,7 +198,7 @@
                                 android:textColor="#000"
                                 android:id="@+id/txt_upComing"
                                 android:layout_marginLeft="8dp"
-                                android:text="UpComing:8"
+                                android:text="UpComing:0"
                                 android:textSize="18dp" />
                         </LinearLayout>
                     </LinearLayout>

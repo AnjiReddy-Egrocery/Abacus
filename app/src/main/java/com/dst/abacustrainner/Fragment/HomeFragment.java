@@ -72,6 +72,7 @@ public class HomeFragment extends Fragment {
     String startTime,endTime,timeText;
     private Map<String, String> scheduledDatesMap = new HashMap<>();
     Map<String, String> dateIdMap = new HashMap<>();
+    LinearLayout layoutSchedule, layoutScheduleInfo;
 
 
     @SuppressLint("MissingInflatedId")
@@ -89,6 +90,9 @@ public class HomeFragment extends Fragment {
         txtRemaining = view.findViewById(R.id.txt_upComing);
         imageCalender = view.findViewById(R.id.image_calender);
 
+        layoutSchedule = view.findViewById(R.id.layou_schedule);
+        layoutScheduleInfo = view.findViewById(R.id.layout_schedule_information);
+
         layoutData=view.findViewById(R.id.layout_data);
         progressBar= view.findViewById(R.id.progress);
         //layoutPlayWithNumbers=view.findViewById(R.id.layout_play_numbers);
@@ -98,6 +102,8 @@ public class HomeFragment extends Fragment {
         //get the user id from sharedpref manager
         StudentRegistationResponse.Result result= SharedPrefManager.getInstance(getContext().getApplicationContext()).getUserData();
         id=result.getStudentId();
+
+         Log.e("Reddy","StudentId" + id);
         firsstname=" Hello " +  result.getFirstName() + "";
         imageCalender.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,6 +150,9 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });*/
+
+        layoutSchedule.setVisibility(View.GONE);
+        layoutScheduleInfo.setVisibility(View.GONE);
 
         return view;
     }
@@ -308,6 +317,13 @@ public class HomeFragment extends Fragment {
 
                         txtCompleted.setText("Completed: " + completedSchedules);
                         txtRemaining.setText("Remaining: " + remainingSchedules);
+                        if (completedSchedules == 0 && remainingSchedules == 0) {
+                            layoutSchedule.setVisibility(View.GONE);
+                            layoutScheduleInfo.setVisibility(View.GONE);
+                        } else {
+                            layoutSchedule.setVisibility(View.VISIBLE);
+                            layoutScheduleInfo.setVisibility(View.VISIBLE);
+                        }
                             }
                         }
                     }
@@ -365,6 +381,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void VerifyMethod(String id, String txtSchedule) {
+        Log.e("Reddy","StudentId" + id);
+        Log.e("Reddy","Date" + txtSchedule);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
