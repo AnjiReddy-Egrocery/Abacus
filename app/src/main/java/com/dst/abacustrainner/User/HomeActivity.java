@@ -37,6 +37,8 @@ import com.dst.abacustrainner.Fragment.CompetitionFragment;
 import com.dst.abacustrainner.Fragment.HomeFragment;
 import com.dst.abacustrainner.Fragment.ProfileFragment;
 import com.dst.abacustrainner.Fragment.SchedulesFragment;
+import com.dst.abacustrainner.Fragment.VideoFragment;
+import com.dst.abacustrainner.Fragment.WorkSheetFragment;
 import com.dst.abacustrainner.Model.BachDetailsResponse;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.Model.StudentTotalDetails;
@@ -354,12 +356,17 @@ public class HomeActivity extends AppCompatActivity {
                  return true;
             }else if (itemView == R.id.nav_worksheet){
 
-                Intent intent= new Intent(HomeActivity.this, WorksheetSubscriptionActivity.class);
-                startActivity(intent);
+               /* Intent intent= new Intent(HomeActivity.this, WorksheetSubscriptionActivity.class);
+                startActivity(intent);*/
+
+                WorksheetSubscriptionMethod();
+                return true;
 
             }else if (itemView == R.id.nav_video){
-                Intent intent= new Intent(HomeActivity.this, VideoTutorialsActivity.class);
-                startActivity(intent);
+             /*   Intent intent= new Intent(HomeActivity.this, VideoTutorialsActivity.class);
+                startActivity(intent);*/
+
+                videotutorialsmethod();
             }
             /*else if (itemView == R.id.nav_play_with_numbers ) {
                 Intent intent = new Intent(HomeActivity.this, PlayWithNumbersActivity.class);
@@ -387,6 +394,23 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         }
     };
+
+    private void videotutorialsmethod() {
+
+        VideoFragment videoFragment = new VideoFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.flFragment, videoFragment)
+                .commit();
+    }
+
+    private void WorksheetSubscriptionMethod() {
+        WorkSheetFragment workSheetFragment = new WorkSheetFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.flFragment, workSheetFragment)
+                .commit();
+    }
 
 
 }
