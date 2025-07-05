@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -23,51 +24,43 @@ import java.util.Map;
 
 public class CoursesActivity extends AppCompatActivity {
 
-    ExpandableListView expandableListView;
-    List<String> courses;
-    HashMap<String, List<String>> levelMap;
-    HashMap<String, String> courseDescriptions;
-    private LinearLayout btnBack;
+    Button btnPurchase1, btnPurchase2, btnPurchase3;
+    LinearLayout layoutCourseBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses);
 
-        expandableListView = findViewById(R.id.expandableListView);
-        btnBack = findViewById(R.id.fragment_container);
+        btnPurchase1 = findViewById(R.id.btnPurchase1);
+        btnPurchase2 = findViewById(R.id.btnPurchase2);
+        btnPurchase3 = findViewById(R.id.btnPurchase3);
+        layoutCourseBack = findViewById(R.id.layout_course_back);
 
-        // Courses
-        courses = Arrays.asList("Junior Abacus", "Senior Abacus", "Vedic Maths");
+        btnPurchase1.setOnClickListener(v -> {
+            Intent intent = new Intent(CoursesActivity.this, CourseDetailActivity.class);
+            intent.putExtra("course_name", "Abacus Junior");
+            startActivity(intent);
+        });
 
-        // Levels map
-        levelMap = new HashMap<>();
-        for (String course : courses) {
-            List<String> levels = new ArrayList<>();
-            for (int i = 1; i <= 10; i++) {
-                levels.add("Level " + i);
-            }
-            levelMap.put(course, levels);
-        }
+        btnPurchase2.setOnClickListener(v -> {
+            Intent intent = new Intent(CoursesActivity.this, CourseDetailActivity.class);
+            intent.putExtra("course_name", "Abacus Senior");
+            startActivity(intent);
+        });
 
-        // Course descriptions
-        courseDescriptions = new HashMap<>();
-        courseDescriptions.put("Junior Abacus", "This course introduces basic abacus skills for children aged 5–8.");
-        courseDescriptions.put("Senior Abacus", "Advanced abacus techniques to improve speed and accuracy.");
-        courseDescriptions.put("Vedic Maths", "Learn fast and traditional Indian techniques for calculations.");
+        btnPurchase3.setOnClickListener(v -> {
+            Intent intent = new Intent(CoursesActivity.this, CourseDetailActivity.class);
+            intent.putExtra("course_name", "Vedic Maths");
+            startActivity(intent);
+        });
 
-        // Set adapter
-        CourseExpandableAdapter adapter = new CourseExpandableAdapter(this, courses, levelMap, courseDescriptions);
-        expandableListView.setAdapter(adapter);
-
-        btnBack.setOnClickListener(new View.OnClickListener() {
+        layoutCourseBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Create an instance of SchedulesFragment
                 finish();
             }
         });
     }
-
 }
 

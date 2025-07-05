@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_margin="20dp"
-                android:id="@+id/layout_course_back">
+                android:id="@+id/layout_payment_back">
                 <LinearLayout
                     android:id="@+id/fragment_container"
                     android:layout_width="35dp"
@@ -42,7 +42,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Courses"
+                    android:text="Payment"
                     android:textStyle="bold"
                     android:textSize="20dp"
                     android:gravity="center"
@@ -50,36 +50,46 @@
             </LinearLayout>
 
         </LinearLayout>
-<LinearLayout
-    android:padding="12dp"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#F5F5F5">
-
         <LinearLayout
+            android:background="#FAFAFA"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <!-- Card 1: Abacus Junior -->
-            <include
-                layout="@layout/item_course_type1" />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
-            <!-- Card 2: Abacus Senior -->
-            <include
-                layout="@layout/item_course_type2" />
+                <LinearLayout
+                    android:id="@+id/layoutSelectedLevels"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </ScrollView>
 
-            <!-- Card 3: Vedic Maths -->
-            <include
-                layout="@layout/item_course_type3" />
+            <TextView
+                android:id="@+id/tvTotal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Total Amount: ₹0"
+                android:textSize="18sp"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:padding="8dp"
+                android:gravity="end" />
 
+            <Button
+                android:id="@+id/btnPayNow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pay Now"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#FF6600"
+                android:textColor="#FFF"
+                android:textSize="16sp"/>
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
     </LinearLayout>
 </LinearLayout>
