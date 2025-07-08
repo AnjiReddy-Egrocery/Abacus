@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dst.abacustrainner.Model.Courses;
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.User.HomeActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +59,10 @@ public class CoursesActivity extends AppCompatActivity {
         layoutCourseBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                Intent intent = new Intent(CoursesActivity.this, HomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish(); // optional: closes current activity
             }
         });
     }

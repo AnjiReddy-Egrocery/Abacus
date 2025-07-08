@@ -1,10 +1,11 @@
 package com.dst.abacustrainner.Model;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class CartManager {
     private static CartManager instance;
-    private final HashSet<String> selectedLevels = new HashSet<>();
+    private final LinkedHashSet<String> selectedLevels = new LinkedHashSet<>(); // maintains insertion order
 
     private CartManager() {}
 
@@ -16,7 +17,9 @@ public class CartManager {
     }
 
     public void addLevel(String level) {
-        selectedLevels.add(level);
+        if (!selectedLevels.contains(level)) { // ✅ prevent duplicate, preserve original order
+            selectedLevels.add(level);
+        }
     }
 
     public void removeLevel(String level) {
@@ -31,7 +34,7 @@ public class CartManager {
         return selectedLevels.size();
     }
 
-    public HashSet<String> getSelectedLevels() {
+    public LinkedHashSet<String> getSelectedLevels() {
         return selectedLevels;
     }
 

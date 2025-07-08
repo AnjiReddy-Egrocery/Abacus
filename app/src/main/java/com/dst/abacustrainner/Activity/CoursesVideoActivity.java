@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.User.HomeActivity;
 
 public class CoursesVideoActivity extends AppCompatActivity {
     Button btnPurchaseVideoCourses1, btnPurchaseVideoCourses2, btnPurchaseVideoCourses3;
@@ -50,7 +51,10 @@ public class CoursesVideoActivity extends AppCompatActivity {
         layoutCourseBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                Intent intent = new Intent(CoursesVideoActivity.this, HomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish(); // optional: closes current activity
             }
         });
     }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.User.HomeActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,21 +42,27 @@ public class CartActivity extends AppCompatActivity {
 
         setupCartItems();
 
-        btnContinueShopping.setOnClickListener(v ->
-                finish()
-        );
+        btnContinueShopping.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CartActivity.this, DetailsActivity.class);
+                startActivity(intent);
+
+            }
+        });
 
         btnCheckout.setOnClickListener(v ->
                 startActivity(new Intent(this, PaymentActivity.class))
         );
-        layoutCartBack.setOnClickListener(new View.OnClickListener() {
+        /*layoutCartBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CartActivity.this, CourseDetailActivity.class);
+                Intent intent = new Intent(CartActivity.this, C.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             }
-        });
+        });*/
     }
 
     private void setupCartItems() {
@@ -63,8 +71,11 @@ public class CartActivity extends AppCompatActivity {
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
+        // Convert to list and reverse to show latest items first
         List<String> levels = new ArrayList<>(cart.getSelectedLevels());
-        Collections.reverse(levels); // Show newest first
+       // Collections.reverse(levels);
+
+        Log.d("CartLevels", "Selected Levels: " + levels);
 
         for (String level : levels) {
             View row = inflater.inflate(R.layout.item_level_row, layoutCartItems, false);
@@ -80,11 +91,11 @@ public class CartActivity extends AppCompatActivity {
             cb.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (!isChecked) {
                     cart.removeLevel(level);
-                    setupCartItems();
+                    setupCartItems(); // Refresh UI
                 }
             });
 
-            layoutCartItems.addView(row);
+            layoutCartItems.addView(row); // add after processing
         }
 
         tvTotalAmount.setText("Total: ₹" + total);

@@ -92,7 +92,7 @@ public class CourseDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(CourseDetailActivity.this, CoursesActivity.class);
                 startActivity(intent);
-                finish();
+
             }
         });
 
