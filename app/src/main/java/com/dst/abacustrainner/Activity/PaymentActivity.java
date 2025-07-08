@@ -27,6 +27,7 @@ public class PaymentActivity extends AppCompatActivity {
     private LinearLayout layoutSelectedLevels,layoutBack;
     private TextView tvTotal;
     private Button btnPayNow;
+    private String hi;
     private final CartManager cartManager = CartManager.getInstance();
 
 
