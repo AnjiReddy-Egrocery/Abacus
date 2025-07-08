@@ -16,6 +16,8 @@ import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CartActivity extends AppCompatActivity {
 
@@ -39,7 +41,7 @@ public class CartActivity extends AppCompatActivity {
         setupCartItems();
 
         btnContinueShopping.setOnClickListener(v ->
-                startActivity(new Intent(this, CoursesActivity.class))
+                finish()
         );
 
         btnCheckout.setOnClickListener(v ->
@@ -60,7 +62,11 @@ public class CartActivity extends AppCompatActivity {
         int total = 0;
 
         LayoutInflater inflater = LayoutInflater.from(this);
-        for (String level : new ArrayList<>(cart.getSelectedLevels())) {
+
+        List<String> levels = new ArrayList<>(cart.getSelectedLevels());
+        Collections.reverse(levels); // Show newest first
+
+        for (String level : levels) {
             View row = inflater.inflate(R.layout.item_level_row, layoutCartItems, false);
             CheckBox cb = row.findViewById(R.id.checkboxLevel);
             TextView tv = row.findViewById(R.id.tvLevelText);

@@ -58,22 +58,22 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
             switch (courseName) {
                 case "Abacus Junior":
                     currentLevels = new String[]{
-                            "Level_Video_1 - ₹50", "Level_Video_2 - ₹50", "Level_Video_3 - ₹50",
-                            "Level_Video_4 - ₹50", "Level_Video_5 - ₹50", "Level_Video_6 - ₹50"
+                            "Junior_Level_Video_1 - ₹50", "Junior_Level_Video_2 - ₹50", "Junior_Level_Video_3 - ₹50",
+                            "Junior_Level_Video_4 - ₹50", "Junior_Level_Level_Video_5 - ₹50", "Junior_Level_Level_Video_6 - ₹50"
                     };
                     break;
 
                 case "Abacus Senior":
                     currentLevels = new String[]{
-                            "Level_Video_1 - ₹70", "Level_Video_2 - ₹70", "Level_Video_3 - ₹70",
-                            "Level_Video_4 - ₹70", "Level_Video_5 - ₹70", "Level_Video_6 - ₹70",
-                            "Level_Video_7 - ₹70", "Level_Video_8 - ₹70", "Level_Video_9 - ₹70", "Level_Video_10 - ₹70"
+                            "Senior_Level_Video_1 - ₹70", "Senior_Level_Video_2 - ₹70", "Senior_Level_Video_3 - ₹70",
+                            "Senior_Level_Video_4 - ₹70", "Senior_Level_Video_5 - ₹70", "Senior_Level_Video_6 - ₹70",
+                            "Senior_Level_Video_7 - ₹70", "Senior_Level_Video_8 - ₹70", "Senior_Level_Video_9 - ₹70", "Senior_Level_Video_10 - ₹70"
                     };
                     break;
 
                 case "Vedic Maths":
                     currentLevels = new String[]{
-                            "Level_Video_1 - ₹100", "Level_Video_2 - ₹100", "Level_Video_3 - ₹100", "Level_Video_4 - ₹100"
+                            "Vedic_Level_Video_1 - ₹100", "Vedic_Level_Video_2 - ₹100", "Vedic_Level_Video_3 - ₹100", "Vedic_Level_Video_4 - ₹100"
                     };
                     break;
 

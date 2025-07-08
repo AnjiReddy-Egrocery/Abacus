@@ -51,22 +51,22 @@ public class CourseDetailActivity extends AppCompatActivity {
             switch (courseName) {
                 case "Abacus Junior":
                     currentLevels = new String[]{
-                            "Level 1 - ₹50", "Level 2 - ₹50", "Level 3 - ₹50",
-                            "Level 4 - ₹50", "Level 5 - ₹50", "Level 6 - ₹50"
+                            "Junior_Level_1 - ₹50", "Junior_Level_2 - ₹50", "Junior_Level_3 - ₹50",
+                            "Junior_Level_Level 4 - ₹50", "Junior_Level_Level 5 - ₹50", "Junior_Level_Level 6 - ₹50"
                     };
                     break;
 
                 case "Abacus Senior":
                     currentLevels = new String[]{
-                            "Level 1 - ₹70", "Level 2 - ₹70", "Level 3 - ₹70",
-                            "Level 4 - ₹70", "Level 5 - ₹70", "Level 6 - ₹70",
-                            "Level 7 - ₹70", "Level 8 - ₹70", "Level 9 - ₹70", "Level 10 - ₹70"
+                            "Senior_Level_1 - ₹70", "Senior_Level_2 - ₹70", "Senior_Level_3 - ₹70",
+                            "Senior_Level_4 - ₹70", "Senior_Level_5 - ₹70", "Senior_Level_6 - ₹70",
+                            "Senior_Level_7 - ₹70", "Senior_Level_8 - ₹70", "Senior_Level_9 - ₹70", "Senior_Level_10 - ₹70"
                     };
                     break;
 
                 case "Vedic Maths":
                     currentLevels = new String[]{
-                            "Level 1 - ₹100", "Level 2 - ₹100", "Level 3 - ₹100", "Level 4 - ₹100"
+                            "Vedic_Level_1 - ₹100", "Vedic_Level_2 - ₹100", "Vedic_Level_3 - ₹100", "Vedic_Level_4 - ₹100"
                     };
                     break;
 
