@@ -41,13 +41,12 @@ public class PaymentActivity extends AppCompatActivity {
         btnPayNow = findViewById(R.id.btnPayNow);
         layoutBack = findViewById(R.id.layout_payment_back);
 
-
+        showSelectedLevels();
 
         btnPayNow.setOnClickListener(v -> {
-
-            Intent intent= new Intent(PaymentActivity.this,PaymentOptionsActivity.class);
-            startActivity(intent);
-
+            // Handle payment logic here
+          Intent intent = new Intent(PaymentActivity.this,PaymentOptionsActivity.class);
+          startActivity(intent);
         });
 
         layoutBack.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +59,55 @@ public class PaymentActivity extends AppCompatActivity {
         });
     }
 
+    private void showSelectedLevels() {
+        layoutSelectedLevels.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(this);
 
+        int total = 0;
+        for (String level : new ArrayList<>(cartManager.getSelectedLevels())) {
+            View row = inflater.inflate(R.layout.item_level_row, layoutSelectedLevels, false);
+            TextView tv = row.findViewById(R.id.tvLevelText);
+            CheckBox cb = row.findViewById(R.id.checkboxLevel);
 
+            cb.setVisibility(View.GONE); // hide checkbox
+            tv.setText(level);
+
+            int price = 0;
+            try {
+                price = Integer.parseInt(level.substring(level.indexOf("₹") + 1).trim());
+            } catch (Exception ignored) {}
+            total += price;
+
+            layoutSelectedLevels.addView(row);
+        }
+
+        tvTotal.setText("Total Amount: ₹" + total);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 123) {
+            if (data != null) {
+                String response = data.getStringExtra("response");
+                if (response != null && response.toLowerCase().contains("success")) {
+                    Toast.makeText(this, "Payment Successful", Toast.LENGTH_SHORT).show();
+
+                    cartManager.clear();
+
+                    Intent intent = new Intent(PaymentActivity.this, HomeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("go_to_home", true); // optional if needed to control navigation
+                    startActivity(intent);
+                    finish(); // close current screen
+                } else {
+                    Toast.makeText(this, "Payment Failed or Cancelled", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "No response from UPI app", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 }
