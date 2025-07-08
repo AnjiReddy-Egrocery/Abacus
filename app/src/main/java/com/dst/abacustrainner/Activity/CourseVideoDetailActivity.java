@@ -58,22 +58,22 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
             switch (courseName) {
                 case "Abacus Junior":
                     currentLevels = new String[]{
-                            "Level 1 - ₹50", "Level 2 - ₹50", "Level 3 - ₹50",
-                            "Level 4 - ₹50", "Level 5 - ₹50", "Level 6 - ₹50"
+                            "Level_Video_1 - ₹50", "Level_Video_2 - ₹50", "Level_Video_3 - ₹50",
+                            "Level_Video_4 - ₹50", "Level_Video_5 - ₹50", "Level_Video_6 - ₹50"
                     };
                     break;
 
                 case "Abacus Senior":
                     currentLevels = new String[]{
-                            "Level 1 - ₹70", "Level 2 - ₹70", "Level 3 - ₹70",
-                            "Level 4 - ₹70", "Level 5 - ₹70", "Level 6 - ₹70",
-                            "Level 7 - ₹70", "Level 8 - ₹70", "Level 9 - ₹70", "Level 10 - ₹70"
+                            "Level_Video_1 - ₹70", "Level_Video_2 - ₹70", "Level_Video_3 - ₹70",
+                            "Level_Video_4 - ₹70", "Level_Video_5 - ₹70", "Level_Video_6 - ₹70",
+                            "Level_Video_7 - ₹70", "Level_Video_8 - ₹70", "Level_Video_9 - ₹70", "Level_Video_10 - ₹70"
                     };
                     break;
 
                 case "Vedic Maths":
                     currentLevels = new String[]{
-                            "Level 1 - ₹100", "Level 2 - ₹100", "Level 3 - ₹100", "Level 4 - ₹100"
+                            "Level_Video_1 - ₹100", "Level_Video_2 - ₹100", "Level_Video_3 - ₹100", "Level_Video_4 - ₹100"
                     };
                     break;
 
@@ -111,13 +111,14 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
                 cb.setChecked(isChecked);
 
                 String levelText = ((TextView) row.findViewById(R.id.tvLevelText)).getText().toString();
+                String levelKey = levelText; // unique key for video levels
                 if (isChecked) {
-                    cartManager.addLevel(levelText);
+                    cartManager.addLevel(levelKey);
                 } else {
-                    cartManager.removeLevel(levelText);
+                    cartManager.removeLevel(levelKey);
                 }
 
-                cb.setOnCheckedChangeListener(getLevelCheckboxListener(levelText, cb));
+                cb.setOnCheckedChangeListener(getLevelCheckboxListener(levelKey, cb));
             }
             updateCartCount();
         };
@@ -137,8 +138,10 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
             TextView tv = row.findViewById(R.id.tvLevelText);
 
             tv.setText(level);
-            cb.setChecked(cartManager.isSelected(level));
-            cb.setOnCheckedChangeListener(getLevelCheckboxListener(level, cb));
+            String levelKey = level;
+
+            cb.setChecked(cartManager.isSelected(levelKey));
+            cb.setOnCheckedChangeListener(getLevelCheckboxListener(levelKey, cb));
 
             layoutVideoLevels.addView(row);
         }
@@ -150,12 +153,12 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
         updateCartCount();
     }
 
-    private CompoundButton.OnCheckedChangeListener getLevelCheckboxListener(String levelText, CheckBox cb) {
+    private CompoundButton.OnCheckedChangeListener getLevelCheckboxListener(String levelKey, CheckBox cb) {
         return (buttonView, isChecked) -> {
             if (isChecked) {
-                cartManager.addLevel(levelText);
+                cartManager.addLevel(levelKey);
             } else {
-                cartManager.removeLevel(levelText);
+                cartManager.removeLevel(levelKey);
             }
             updateCartCount();
 
@@ -171,7 +174,8 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
 
     private boolean allLevelsSelected() {
         for (String level : currentLevels) {
-            if (!cartManager.isSelected(level)) return false;
+            String levelKey = level;
+            if (!cartManager.isSelected(levelKey)) return false;
         }
         return true;
     }
