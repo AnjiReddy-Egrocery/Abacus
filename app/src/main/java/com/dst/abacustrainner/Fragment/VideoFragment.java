@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.dst.abacustrainner.Activity.CoursesActivity;
+import com.dst.abacustrainner.Activity.CoursesVideoActivity;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.User.HomeActivity;
 
@@ -30,7 +31,7 @@ public class VideoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Navigate to courses page
-                Intent intent = new Intent(getContext(), CoursesActivity.class);
+                Intent intent = new Intent(getContext(), CoursesVideoActivity.class);
                 startActivity(intent);
                 //finish(); // optional
             }

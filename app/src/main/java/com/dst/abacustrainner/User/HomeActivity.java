@@ -360,7 +360,7 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);*/
 
                 WorksheetSubscriptionMethod();
-                return true;
+                //return true;
 
             }else if (itemView == R.id.nav_video){
              /*   Intent intent= new Intent(HomeActivity.this, VideoTutorialsActivity.class);
