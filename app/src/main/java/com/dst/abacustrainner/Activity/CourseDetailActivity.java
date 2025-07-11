@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.R;
@@ -83,9 +84,14 @@ public class CourseDetailActivity extends AppCompatActivity {
         });
 
         btnCart.setOnClickListener(v -> {
-            Intent intent = new Intent(CourseDetailActivity.this, CartActivity.class);
-            startActivity(intent);
+            if (CartManager.getInstance().getSelectedLevels().isEmpty()) {
+                Toast.makeText(CourseDetailActivity.this, "Cart is empty", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(CourseDetailActivity.this, CartActivity.class);
+                startActivity(intent);
+            }
         });
+
 
         layoutCourseDetailBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +139,12 @@ public class CourseDetailActivity extends AppCompatActivity {
             cb.setChecked(cartManager.isSelected(level));
             cb.setOnCheckedChangeListener(getLevelCheckboxListener(level, cb));
 
+            // Make the full row clickable
+            row.setOnClickListener(v -> {
+                boolean isChecked = !cb.isChecked();
+                cb.setChecked(isChecked); // this will trigger the listener
+            });
+
             layoutLevels.addView(row);
         }
 
@@ -142,6 +154,7 @@ public class CourseDetailActivity extends AppCompatActivity {
 
         updateCartCount();
     }
+
 
     private CompoundButton.OnCheckedChangeListener getLevelCheckboxListener(String levelText, CheckBox cb) {
         return (buttonView, isChecked) -> {

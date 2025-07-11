@@ -18,12 +18,11 @@ import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.User.HomeActivity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CartActivity extends AppCompatActivity {
 
-    private LinearLayout layoutCartItems,layoutCartBack;
+    private LinearLayout layoutCartItems, layoutCartBack;
     private TextView tvTotalAmount;
     private Button btnContinueShopping, btnCheckout;
     private final CartManager cart = CartManager.getInstance();
@@ -42,27 +41,25 @@ public class CartActivity extends AppCompatActivity {
 
         setupCartItems();
 
-        btnContinueShopping.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(CartActivity.this, DetailsActivity.class);
-                startActivity(intent);
-
-            }
+        btnContinueShopping.setOnClickListener(view -> {
+            Intent intent = new Intent(CartActivity.this, DetailsActivity.class);
+            startActivity(intent);
         });
 
-        btnCheckout.setOnClickListener(v ->
-                startActivity(new Intent(this, PaymentActivity.class))
-        );
-        /*layoutCartBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(CartActivity.this, C.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-            }
-        });*/
+        btnCheckout.setOnClickListener(v -> {
+            Intent intent = new Intent(this, PaymentActivity.class);
+            startActivity(intent);
+        });
+
+        // Optional: Back button logic (if needed)
+        /*
+        layoutCartBack.setOnClickListener(view -> {
+            Intent intent = new Intent(CartActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+        */
     }
 
     private void setupCartItems() {
@@ -70,10 +67,7 @@ public class CartActivity extends AppCompatActivity {
         int total = 0;
 
         LayoutInflater inflater = LayoutInflater.from(this);
-
-        // Convert to list and reverse to show latest items first
         List<String> levels = new ArrayList<>(cart.getSelectedLevels());
-       // Collections.reverse(levels);
 
         Log.d("CartLevels", "Selected Levels: " + levels);
 
@@ -82,20 +76,27 @@ public class CartActivity extends AppCompatActivity {
             CheckBox cb = row.findViewById(R.id.checkboxLevel);
             TextView tv = row.findViewById(R.id.tvLevelText);
 
-            cb.setChecked(true);
             tv.setText(level);
 
-            int price = extractPrice(level);
-            total += price;
+            // Remove old listeners to avoid duplication
+            cb.setOnCheckedChangeListener(null);
+            cb.setChecked(true);
 
+            // Handle checkbox uncheck
             cb.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (!isChecked) {
                     cart.removeLevel(level);
-                    setupCartItems(); // Refresh UI
+                    setupCartItems(); // refresh view
                 }
             });
 
-            layoutCartItems.addView(row); // add after processing
+            // Optional: Make row itself clickable
+            row.setOnClickListener(v -> {
+                cb.setChecked(!cb.isChecked()); // triggers above listener
+            });
+
+            layoutCartItems.addView(row);
+            total += extractPrice(level);
         }
 
         tvTotalAmount.setText("Total: ₹" + total);
