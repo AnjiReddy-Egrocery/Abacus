@@ -368,7 +368,7 @@ public class HomeActivity extends AppCompatActivity {
              /*   Intent intent= new Intent(HomeActivity.this, VideoTutorialsActivity.class);
                 startActivity(intent);*/
 
-                videotutorialsmethod();
+               //videotutorialsmethod();
             }
             /*else if (itemView == R.id.nav_play_with_numbers ) {
                 Intent intent = new Intent(HomeActivity.this, PlayWithNumbersActivity.class);

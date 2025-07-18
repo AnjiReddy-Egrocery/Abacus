@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.dst.abacustrainner.Activity.CoursesActivity;
@@ -25,7 +26,7 @@ public class WorkSheetFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.worksheet_fragment,container,false);
 
-        btnYes = view.findViewById(R.id.btn_yes);
+       /* btnYes = view.findViewById(R.id.btn_yes);
         btnNo = view.findViewById(R.id.btn_no);
 
         btnYes.setOnClickListener(new View.OnClickListener() {
@@ -47,7 +48,38 @@ public class WorkSheetFragment extends Fragment {
                 //finish(); // optional
             }
         });
+*/
+        showSubscriptionDialog();
 
         return view;
     }
+
+    private void showSubscriptionDialog() {
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View dialogView = inflater.inflate(R.layout.work_sheet, null); // same layout
+
+        Button btnYes = dialogView.findViewById(R.id.btn_yes);
+        Button btnNo = dialogView.findViewById(R.id.btn_no);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setView(dialogView);
+        builder.setCancelable(false); // Prevent closing by touching outside
+
+        AlertDialog dialog = builder.create();
+
+        btnYes.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), CoursesActivity.class);
+            startActivity(intent);
+            dialog.dismiss();
+        });
+
+        btnNo.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), HomeActivity.class);
+            startActivity(intent);
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
 }

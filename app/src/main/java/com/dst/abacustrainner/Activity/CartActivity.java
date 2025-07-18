@@ -53,7 +53,7 @@ public class CartActivity extends AppCompatActivity {
 
         // Optional: Back button logic (if needed)
         /*
-        layoutCartBack.setOnClickListener(view -> {
+            layoutCartBack.setOnClickListener(view -> {
             Intent intent = new Intent(CartActivity.this, HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
