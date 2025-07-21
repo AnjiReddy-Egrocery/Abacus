@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="16dp"
                 android:gravity="top">
 
                 <ImageView
@@ -88,7 +88,7 @@
                             android:text="Addition"
                             android:layout_marginBottom="6dp"
                             android:background="@drawable/level_box"
-                            android:textSize="14dp"/>
+                            android:textSize="12dp"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -96,12 +96,12 @@
                             android:layout_marginBottom="6dp"
                             android:background="@drawable/level_box"
                             android:layout_marginLeft="6dp"
-                            android:textSize="14dp"/>
+                            android:textSize="12dp"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="multiplication"
-                            android:textSize="14dp"
+                            android:textSize="12dp"
                             android:layout_marginLeft="6dp"
                             android:layout_marginBottom="6dp"
                             android:background="@drawable/level_box"/>
@@ -121,7 +121,7 @@
                             android:text="Division "
                             android:layout_marginBottom="6dp"
                             android:background="@drawable/level_box"
-                            android:textSize="14dp"/>
+                            android:textSize="12dp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -130,12 +130,12 @@
                             android:layout_marginBottom="6dp"
                             android:layout_marginLeft="6dp"
                             android:background="@drawable/level_box"
-                            android:textSize="14dp"/>
+                            android:textSize="12dp"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="cube roots"
-                            android:textSize="16dp"
+                            android:textSize="12dp"
                             android:layout_marginLeft="6dp"
                             android:layout_marginBottom="6dp"
                             android:background="@drawable/level_box"/>
@@ -153,14 +153,14 @@
                             android:layout_height="wrap_content"
                             android:text="Decimals"
                             android:background="@drawable/level_box"
-                            android:textSize="14dp"/>
+                            android:textSize="12dp"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Percentages"
                             android:layout_marginLeft="6dp"
                             android:background="@drawable/level_box"
-                            android:textSize="14dp"/>
+                            android:textSize="12dp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -168,26 +168,24 @@
                             android:text="GCD"
                             android:layout_marginLeft="6dp"
                             android:background="@drawable/level_box"
-                            android:textSize="14dp"/>
+                            android:textSize="12dp"/>
                     </LinearLayout>
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
+                        android:layout_marginBottom="16dp"
                         android:orientation="horizontal">
+
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Selected Levels : "
-                            android:textStyle="bold"
-                            android:textSize="14dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
                             android:text=""
+                            android:id="@+id/tvSelectedCountSenior"
                             android:layout_marginLeft="6dp"
-                            android:textSize="14dp"/>
+                            android:textSize="18dp"
+                            android:textStyle="bold"/>
 
 
                     </LinearLayout>

@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.R;
 
+import java.util.ArrayList;
+
 public class CourseDetailActivity extends AppCompatActivity {
 
     private TextView tvCourseTitle, tvCartCount;
@@ -79,8 +81,7 @@ public class CourseDetailActivity extends AppCompatActivity {
         }
 
         btnpurchasemore.setOnClickListener(v -> {
-            Intent intent = new Intent(CourseDetailActivity.this, CoursesActivity.class);
-            startActivity(intent);
+          finish();
         });
 
         btnCart.setOnClickListener(v -> {

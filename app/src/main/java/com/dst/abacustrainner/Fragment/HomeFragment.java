@@ -1,8 +1,11 @@
 package com.dst.abacustrainner.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -60,7 +63,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
-    TextView txtName,txtTime,txtTime1,txtClckSchedule,txtNextSchedule,txtNextTime,txtCompleted,txtRemaining;
+    TextView txtName,   txtPurchases, txtTime,txtTime1,txtClckSchedule,txtNextSchedule,txtNextTime,txtCompleted,txtRemaining;
     ImageView imageCalender;
     String currentDate,textWithBrackets;
     private Calendar calendar;
@@ -89,6 +92,11 @@ public class HomeFragment extends Fragment {
         txtCompleted = view.findViewById(R.id.txt_Completed);
         txtRemaining = view.findViewById(R.id.txt_upComing);
         imageCalender = view.findViewById(R.id.image_calender);
+
+        txtPurchases = view.findViewById(R.id.txtPurchases);
+
+        loadPurchasedCourses();
+
 
         layoutSchedule = view.findViewById(R.id.layou_schedule);
         layoutScheduleInfo = view.findViewById(R.id.layout_schedule_information);
@@ -156,6 +164,37 @@ public class HomeFragment extends Fragment {
 
         return view;
     }
+
+
+    private void loadPurchasedCourses() {
+        SharedPreferences prefs = getActivity().getSharedPreferences("purchases", MODE_PRIVATE);
+
+        StringBuilder sb = new StringBuilder();
+        if (prefs.contains("AbacusJunior")) {
+            sb.append("Abacus Junior:\n")
+                    .append(prefs.getString("AbacusJunior", ""))
+                    .append("\n\n");
+        }
+
+        if (prefs.contains("VedicMaths")) {
+            sb.append("Vedic Maths:\n")
+                    .append(prefs.getString("VedicMaths", ""))
+                    .append("\n\n");
+        }
+
+        if (prefs.contains("MentalArithmetic")) {
+            sb.append("Mental Arithmetic:\n")
+                    .append(prefs.getString("MentalArithmetic", ""))
+                    .append("\n\n");
+        }
+
+        if (sb.length() == 0) {
+            sb.append("No purchases yet.");
+        }
+
+        txtPurchases.setText(sb.toString());
+    }
+
 
     private void openScheduleFragment() {
         SchedulesFragment scheduleFragment = new SchedulesFragment();

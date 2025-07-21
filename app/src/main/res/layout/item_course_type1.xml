@@ -6,12 +6,13 @@
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
     android:orientation="vertical">
-<androidx.cardview.widget.CardView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:elevation="4dp"
-    android:padding="12dp"
-    android:radius="16dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:padding="12dp"
+        android:radius="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,7 +57,7 @@
 
             <!-- 2-Row Level Boxes -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
@@ -64,7 +65,7 @@
                     android:id="@+id/tvCourseTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+
                     android:layout_marginLeft="5dp"
                     android:text="Abacus Junior (6 Levels)"
                     android:textStyle="bold"
@@ -95,7 +96,7 @@
                         android:text="Addition"
                         android:layout_marginBottom="6dp"
                         android:background="@drawable/level_box"
-                        android:textSize="16dp"/>
+                        android:textSize="12dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -104,7 +105,7 @@
                         android:layout_marginBottom="6dp"
                         android:background="@drawable/level_box"
                         android:layout_marginLeft="6dp"
-                        android:textSize="16dp"/>
+                        android:textSize="12dp"/>
 
 
 
@@ -122,13 +123,13 @@
                         android:layout_marginBottom="6dp"
 
                         android:background="@drawable/level_box"
-                        android:textSize="16dp"/>
+                        android:textSize="12dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Division"
-                        android:textSize="16dp"
+                        android:textSize="12dp"
                         android:layout_marginLeft="6dp"
                         android:background="@drawable/level_box"/>
 
@@ -158,17 +159,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Selected Courses : "
-                        android:textSize="16dp"
-                        android:layout_marginTop="8dp"
-                        android:textStyle="bold"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text=""
-                        android:textSize="16dp"
-                        android:layout_marginEnd="6dp"
+                        android:id="@+id/tvSelectedCountJunior"
+                        android:textSize="18dp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp"
                         android:padding="6dp" />
 
                     <!--<TextView

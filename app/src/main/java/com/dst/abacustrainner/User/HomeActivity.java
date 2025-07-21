@@ -225,7 +225,7 @@ public class HomeActivity extends AppCompatActivity {
                         Toast.makeText(HomeActivity.this, "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
                     }else if (bachDetailsResponse.getErrorCode().equals("200")){
 
-                        List<BachDetailsResponse.Result> results=bachDetailsResponse.getResult();
+                        List<BachDetailsResponse.Result> results= bachDetailsResponse.getResult();
 
                         if (!results.isEmpty()) {
 

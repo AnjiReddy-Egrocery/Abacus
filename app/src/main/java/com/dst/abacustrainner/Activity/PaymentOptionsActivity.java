@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
@@ -27,21 +28,20 @@ public class PaymentOptionsActivity extends AppCompatActivity {
         btnPaytm = findViewById(R.id.btnPaytm);
 
         btnDebitCredit.setOnClickListener(v -> {
-            // Open your card payment gateway screen
             Toast.makeText(this, "Card Payment selected", Toast.LENGTH_SHORT).show();
-            // launchCardPayment();
+            onPaymentSuccess();
         });
 
         btnGPay.setOnClickListener(v -> {
-            launchUpiIntent("com.google.android.apps.nbu.paisa.user"); // GPay
+            launchUpiIntent("com.google.android.apps.nbu.paisa.user");
         });
 
         btnPhonePe.setOnClickListener(v -> {
-            launchUpiIntent("com.phonepe.app"); // PhonePe
+            launchUpiIntent("com.phonepe.app");
         });
 
         btnPaytm.setOnClickListener(v -> {
-            launchUpiIntent("net.one97.paytm"); // Paytm
+            launchUpiIntent("net.one97.paytm");
         });
     }
 
@@ -76,12 +76,32 @@ public class PaymentOptionsActivity extends AppCompatActivity {
 
         if (requestCode == 123 && data != null) {
             String response = data.getStringExtra("response");
+
             if (response != null && response.toLowerCase().contains("success")) {
                 Toast.makeText(this, "Payment Successful", Toast.LENGTH_SHORT).show();
-                // Clear cart and redirect
+                onPaymentSuccess();
             } else {
                 Toast.makeText(this, "Payment Failed or Cancelled", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void onPaymentSuccess() {
+        savePurchasedData();
+        Intent intent = new Intent(PaymentOptionsActivity.this, DashboardActivity.class);
+        intent.putExtra("openHome", true);
+        startActivity(intent);
+        finish();
+    }
+
+    private void savePurchasedData() {
+        SharedPreferences prefs = getSharedPreferences("purchases", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putString("AbacusJunior", "Level 1, Level 2");
+        editor.putString("VedicMaths", "Level 1");
+        editor.putString("MentalArithmetic", "Level A");
+
+        editor.apply();
     }
 }

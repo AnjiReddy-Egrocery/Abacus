@@ -206,7 +206,18 @@
 
 
                 </LinearLayout>
+                <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:padding="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
+                    <TextView
+                        android:id="@+id/txtPurchases"
+                        android:textSize="18sp"
+                        android:text="Purchased courses will appear here..."
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </ScrollView>
 
                 <!--<LinearLayout
                     android:layout_width="match_parent"

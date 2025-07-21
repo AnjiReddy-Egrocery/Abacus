@@ -9,10 +9,12 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleExpandableListAdapter;
+import android.widget.TextView;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.Model.Courses;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.User.HomeActivity;
@@ -27,6 +29,7 @@ public class CoursesActivity extends AppCompatActivity {
 
     Button btnPurchase1, btnPurchase2, btnPurchase3;
     LinearLayout layoutCourseBack;
+    TextView tvJunior, tvSenior, tvVedic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,12 @@ public class CoursesActivity extends AppCompatActivity {
         btnPurchase2 = findViewById(R.id.btnPurchase2);
         btnPurchase3 = findViewById(R.id.btnPurchase3);
         layoutCourseBack = findViewById(R.id.layout_course_back);
+
+        // Reset all 3 course counts first to empty
+        tvJunior = findViewById(R.id.tvSelectedCountJunior);
+        tvSenior = findViewById(R.id.tvSelectedCountSenior);
+        tvVedic = findViewById(R.id.tvSelectedCountVedic);
+
 
         btnPurchase1.setOnClickListener(v -> {
             Intent intent = new Intent(CoursesActivity.this, CourseDetailActivity.class);
@@ -66,5 +75,48 @@ public class CoursesActivity extends AppCompatActivity {
             }
         });
     }
-}
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateSelectedLevelBar();
+    }
+
+    private void updateSelectedLevelBar() {
+        CartManager cart = CartManager.getInstance();
+
+        // Reset all TextViews to 0
+        tvJunior.setText("Selected: 0");
+        tvSenior.setText("Selected: 0");
+        tvVedic.setText("Selected: 0");
+
+        int juniorCount = 0;
+        int seniorCount = 0;
+        int vedicCount = 0;
+
+        // Count levels based on price indicator
+        for (String level : cart.getSelectedLevels()) {
+            if (level.contains("₹50")) {
+                juniorCount++;
+            } else if (level.contains("₹70")) {
+                seniorCount++;
+            } else if (level.contains("₹100")) {
+                vedicCount++;
+            }
+        }
+
+        // Update individual TextViews
+        if (juniorCount > 0) {
+            tvJunior.setText("Selected: " +juniorCount);
+        }
+
+        if (seniorCount > 0) {
+            tvSenior.setText("Selected: " +seniorCount);
+        }
+
+        if (vedicCount > 0) {
+            tvVedic.setText("Selected: " +vedicCount);
+        }
+    }
+}
