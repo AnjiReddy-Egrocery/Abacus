@@ -583,50 +583,7 @@ public class TopicPracticeActivity extends AppCompatActivity {
             }
         }
     }
-//    private void generateButtons() {
-//        gridLayout.removeAllViews();
-//
-//        int marginLeftInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_left);
-//        int marginRightInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_right);
-//        int marginTopInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_top);
-//        int marginBottomInDp = getResources().getDimensionPixelSize(R.dimen.button_margin_bottom);
-//
-//        for (int i = 0; i < questionsArray.length; i++) {
-//            Button button = new Button(this);
-//            button.setText(String.valueOf(i + 1));
-//            button.setTag(i);
-//
-//            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-//            params.width = 0;
-//            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-//            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-//            params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-//            params.leftMargin = marginLeftInDp;
-//            params.rightMargin = marginRightInDp;
-//            params.topMargin = marginTopInDp;
-//            params.bottomMargin = marginBottomInDp;
-//
-//            button.setLayoutParams(params);
-//
-//            // Check if isQuestionAnswered is not null and has a size greater than i
-//            if (isQuestionAnswered != null && isQuestionAnswered.size() > i && isQuestionAnswered.get(i)) {
-//                button.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
-//            } else {
-//                button.setBackgroundColor(getResources().getColor(R.color.unansweredButtonColor));
-//            }
-//
-//            button.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    int clickedButtonTag = (int) view.getTag();
-//                    onButtonClicked(clickedButtonTag);
-//                }
-//            });
-//
-//            gridLayout.addView(button);
-//
-//        }
-//    }
+
 
 
     private void generateButtons() {

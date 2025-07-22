@@ -84,7 +84,7 @@ public class CartActivity extends AppCompatActivity {
             layoutCartItems.addView(tvCourse);
 
             for (String level : levels) {
-                View row = inflater.inflate(R.layout.item_level_row, layoutCartItems, false);
+                View row = inflater.inflate(R.layout.item_level_cart, layoutCartItems, false);
                 CheckBox cb = row.findViewById(R.id.checkboxLevel);
                 TextView tv = row.findViewById(R.id.tvLevelText);
 

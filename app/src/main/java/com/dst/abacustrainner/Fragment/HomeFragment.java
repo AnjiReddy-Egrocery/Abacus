@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dst.abacustrainner.Activity.AllSchedulesActivity;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
+import com.dst.abacustrainner.Activity.PurchasedActivity;
 import com.dst.abacustrainner.Activity.ViewDetailsActivity;
 import com.dst.abacustrainner.Activity.VisualiztionActivity;
 import com.dst.abacustrainner.Adapter.BatchDetailsAdapter;
@@ -75,7 +77,7 @@ public class HomeFragment extends Fragment {
     String startTime,endTime,timeText;
     private Map<String, String> scheduledDatesMap = new HashMap<>();
     Map<String, String> dateIdMap = new HashMap<>();
-    LinearLayout layoutSchedule, layoutScheduleInfo;
+    LinearLayout layoutSchedule, layoutScheduleInfo,layoutPurchasedSection;
 
 
     @SuppressLint("MissingInflatedId")
@@ -93,13 +95,13 @@ public class HomeFragment extends Fragment {
         txtRemaining = view.findViewById(R.id.txt_upComing);
         imageCalender = view.findViewById(R.id.image_calender);
 
-        txtPurchases = view.findViewById(R.id.txtPurchases);
 
-        loadPurchasedCourses();
+
 
 
         layoutSchedule = view.findViewById(R.id.layou_schedule);
         layoutScheduleInfo = view.findViewById(R.id.layout_schedule_information);
+        layoutPurchasedSection = view.findViewById(R.id.layout_purchased_section);
 
         layoutData=view.findViewById(R.id.layout_data);
         progressBar= view.findViewById(R.id.progress);
@@ -159,6 +161,35 @@ public class HomeFragment extends Fragment {
             }
         });*/
 
+        SharedPreferences prefs = requireContext().getSharedPreferences("purchases", Context.MODE_PRIVATE);
+
+        // Check one-time success toast
+        boolean isPaymentSuccess = prefs.getBoolean("payment_success", false);
+
+        // Permanent flag for visibility
+        boolean hasPurchased = prefs.getBoolean("has_purchased", false);
+
+        if (isPaymentSuccess) {
+            Toast.makeText(requireContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
+
+            // clear one-time toast flag
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("payment_success", false);
+            editor.apply();
+        }
+
+        // Show layout if purchased anytime in the past
+        if (hasPurchased) {
+            layoutPurchasedSection.setVisibility(View.VISIBLE);
+        } else {
+            layoutPurchasedSection.setVisibility(View.GONE);
+        }
+
+        layoutPurchasedSection.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), PurchasedActivity.class);
+            startActivity(intent);
+        });
+
         layoutSchedule.setVisibility(View.GONE);
         layoutScheduleInfo.setVisibility(View.GONE);
 
@@ -166,34 +197,6 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void loadPurchasedCourses() {
-        SharedPreferences prefs = getActivity().getSharedPreferences("purchases", MODE_PRIVATE);
-
-        StringBuilder sb = new StringBuilder();
-        if (prefs.contains("AbacusJunior")) {
-            sb.append("Abacus Junior:\n")
-                    .append(prefs.getString("AbacusJunior", ""))
-                    .append("\n\n");
-        }
-
-        if (prefs.contains("VedicMaths")) {
-            sb.append("Vedic Maths:\n")
-                    .append(prefs.getString("VedicMaths", ""))
-                    .append("\n\n");
-        }
-
-        if (prefs.contains("MentalArithmetic")) {
-            sb.append("Mental Arithmetic:\n")
-                    .append(prefs.getString("MentalArithmetic", ""))
-                    .append("\n\n");
-        }
-
-        if (sb.length() == 0) {
-            sb.append("No purchases yet.");
-        }
-
-        txtPurchases.setText(sb.toString());
-    }
 
 
     private void openScheduleFragment() {

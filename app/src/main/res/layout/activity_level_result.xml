@@ -42,7 +42,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Payment Method"
+                    android:text="Topic Result"
                     android:textStyle="bold"
                     android:textSize="20dp"
                     android:gravity="center"
@@ -51,45 +51,13 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_margin="16dp">
-            <TextView
-                android:text="Choose Payment Method"
-                android:textSize="20sp"
-                android:layout_marginBottom="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
-            <Button
-                android:id="@+id/btnDebitCredit"
-                android:text="Pay with Debit/Credit Card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
-            <Button
-                android:id="@+id/btnGPay"
-                android:text="Pay with Google Pay"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" />
+        <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewResults"
+        android:layout_width="match_parent"
+            android:layout_margin="10dp"
+        android:layout_height="match_parent"/>
 
-            <Button
-                android:id="@+id/btnPhonePe"
-                android:text="Pay with PhonePe"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" />
-
-            <Button
-                android:id="@+id/btnPaytm"
-                android:text="Pay with Paytm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" />
-        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
-

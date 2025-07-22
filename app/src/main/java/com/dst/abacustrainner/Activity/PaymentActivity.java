@@ -65,21 +65,34 @@ public class PaymentActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
 
         int total = 0;
-        for (String level : new ArrayList<>(cartManager.getAllSelectedLevels())) {
-            View row = inflater.inflate(R.layout.item_level_row, layoutSelectedLevels, false);
-            TextView tv = row.findViewById(R.id.tvLevelText);
-            CheckBox cb = row.findViewById(R.id.checkboxLevel);
 
-            cb.setVisibility(View.GONE); // hide checkbox
-            tv.setText(level);
+        // Loop through each course
+        for (String course : cartManager.getSelectedLevelsByCourse().keySet()) {
+            // Add course title as a TextView
+            TextView courseTitle = new TextView(this);
+            courseTitle.setText(course);
+            courseTitle.setTextSize(18);
+            courseTitle.setPadding(16, 16, 16, 8);
+            courseTitle.setTextColor(getResources().getColor(R.color.black));
+            layoutSelectedLevels.addView(courseTitle);
 
-            int price = 0;
-            try {
-                price = Integer.parseInt(level.substring(level.indexOf("₹") + 1).trim());
-            } catch (Exception ignored) {}
-            total += price;
+            // Loop through levels for this course
+            for (String level : cartManager.getSelectedLevelsByCourse().get(course)) {
+                View row = inflater.inflate(R.layout.item_level_payment, layoutSelectedLevels, false);
+                TextView tv = row.findViewById(R.id.tvLevelText);
+                CheckBox cb = row.findViewById(R.id.checkboxLevel);
 
-            layoutSelectedLevels.addView(row);
+                cb.setVisibility(View.GONE); // hide checkbox
+                tv.setText(level);
+
+                int price = 0;
+                try {
+                    price = Integer.parseInt(level.substring(level.indexOf("₹") + 1).trim());
+                } catch (Exception ignored) {}
+                total += price;
+
+                layoutSelectedLevels.addView(row);
+            }
         }
 
         tvTotal.setText("Total Amount: ₹" + total);

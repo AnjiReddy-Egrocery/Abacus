@@ -102,4 +102,19 @@ public class CartManager {
             courseLevelMap = new LinkedHashMap<>();
         }
     }
+
+    public String getSelectedCourse() {
+        if (courseLevelMap.size() == 1) {
+            return courseLevelMap.keySet().iterator().next(); // only if one course
+        }
+        return null; // or handle multiple
+    }
+
+    public ArrayList<String> getSelectedLevels() {
+        ArrayList<String> all = new ArrayList<>();
+        for (List<String> levels : courseLevelMap.values()) {
+            all.addAll(levels);
+        }
+        return all;
+    }
 }

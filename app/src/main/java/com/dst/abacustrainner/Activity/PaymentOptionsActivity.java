@@ -8,14 +8,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.User.HomeActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class PaymentOptionsActivity extends AppCompatActivity {
 
     Button btnDebitCredit, btnGPay, btnPhonePe, btnPaytm;
+
+    LinearLayout layoutBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +36,15 @@ public class PaymentOptionsActivity extends AppCompatActivity {
         btnGPay = findViewById(R.id.btnGPay);
         btnPhonePe = findViewById(R.id.btnPhonePe);
         btnPaytm = findViewById(R.id.btnPaytm);
+        layoutBack = findViewById(R.id.fragment_container);
+
+
+        layoutBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         btnDebitCredit.setOnClickListener(v -> {
             Toast.makeText(this, "Card Payment selected", Toast.LENGTH_SHORT).show();
@@ -33,15 +52,21 @@ public class PaymentOptionsActivity extends AppCompatActivity {
         });
 
         btnGPay.setOnClickListener(v -> {
-            launchUpiIntent("com.google.android.apps.nbu.paisa.user");
+            //launchUpiIntent("com.google.android.apps.nbu.paisa.user");
+            Toast.makeText(this, "GPay Payment selected", Toast.LENGTH_SHORT).show();
+            onPaymentSuccess();
         });
 
         btnPhonePe.setOnClickListener(v -> {
-            launchUpiIntent("com.phonepe.app");
+            //launchUpiIntent("com.phonepe.app");
+            Toast.makeText(this, "PhonePe Payment selected", Toast.LENGTH_SHORT).show();
+            onPaymentSuccess();
         });
 
         btnPaytm.setOnClickListener(v -> {
-            launchUpiIntent("net.one97.paytm");
+            //launchUpiIntent("net.one97.paytm");
+            Toast.makeText(this, "Paytm Payment selected", Toast.LENGTH_SHORT).show();
+            onPaymentSuccess();
         });
     }
 
@@ -87,8 +112,18 @@ public class PaymentOptionsActivity extends AppCompatActivity {
     }
 
     private void onPaymentSuccess() {
-        savePurchasedData();
-        Intent intent = new Intent(PaymentOptionsActivity.this, DashboardActivity.class);
+        SharedPreferences prefs = getSharedPreferences("purchases", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        // Mark payment as successful (one-time flag)
+        editor.putBoolean("payment_success", true);
+
+        // Mark user has purchased something permanently
+        editor.putBoolean("has_purchased", true);
+
+        editor.apply();
+        // Navigate to Dashboard with intent
+        Intent intent = new Intent(PaymentOptionsActivity.this, HomeActivity.class);
         intent.putExtra("openHome", true);
         startActivity(intent);
         finish();
@@ -98,9 +133,22 @@ public class PaymentOptionsActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("purchases", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
-        editor.putString("AbacusJunior", "Level 1, Level 2");
-        editor.putString("VedicMaths", "Level 1");
-        editor.putString("MentalArithmetic", "Level A");
+        CartManager cartManager = CartManager.getInstance(this);
+        Map<String, List<String>> selectedMap = cartManager.getSelectedLevelsByCourse();
+
+        for (Map.Entry<String, List<String>> entry : selectedMap.entrySet()) {
+            String course = entry.getKey();
+            List<String> levels = entry.getValue();
+
+            if (!levels.isEmpty()) {
+                StringBuilder levelList = new StringBuilder();
+                for (String level : levels) {
+                    if (levelList.length() > 0) levelList.append(", ");
+                    levelList.append(level);
+                }
+                editor.putString(course, levelList.toString());
+            }
+        }
 
         editor.apply();
     }
