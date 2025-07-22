@@ -19,13 +19,14 @@ import com.dst.abacustrainner.User.HomeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CartActivity extends AppCompatActivity {
 
     private LinearLayout layoutCartItems, layoutCartBack;
     private TextView tvTotalAmount;
     private Button btnContinueShopping, btnCheckout;
-    private final CartManager cart = CartManager.getInstance();
+    private final CartManager cart = CartManager.getInstance(this);
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -67,38 +68,42 @@ public class CartActivity extends AppCompatActivity {
         int total = 0;
 
         LayoutInflater inflater = LayoutInflater.from(this);
-        List<String> levels = new ArrayList<>(cart.getSelectedLevels());
+        Map<String, List<String>> courseLevelMap = cart.getSelectedLevelsByCourse();
 
-        Log.d("CartLevels", "Selected Levels: " + levels);
+        Log.d("CartLevels", "Selected Levels: " + courseLevelMap);
 
-        for (String level : levels) {
-            View row = inflater.inflate(R.layout.item_level_row, layoutCartItems, false);
-            CheckBox cb = row.findViewById(R.id.checkboxLevel);
-            TextView tv = row.findViewById(R.id.tvLevelText);
+        for (Map.Entry<String, List<String>> entry : courseLevelMap.entrySet()) {
+            String courseName = entry.getKey();
+            List<String> levels = entry.getValue();
 
-            tv.setText(level);
+            // Show course name
+            TextView tvCourse = new TextView(this);
+            tvCourse.setText(courseName);
+            tvCourse.setTextSize(18);
+            tvCourse.setPadding(0, 16, 0, 8);
+            layoutCartItems.addView(tvCourse);
 
-            // Remove old listeners to avoid duplication
-            cb.setOnCheckedChangeListener(null);
-            cb.setChecked(true);
+            for (String level : levels) {
+                View row = inflater.inflate(R.layout.item_level_row, layoutCartItems, false);
+                CheckBox cb = row.findViewById(R.id.checkboxLevel);
+                TextView tv = row.findViewById(R.id.tvLevelText);
 
-            // Handle checkbox uncheck
-            cb.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (!isChecked) {
-                    cart.removeLevel(level);
-                    setupCartItems(); // refresh view
-                }
-            });
+                tv.setText(level);
+                cb.setOnCheckedChangeListener(null);
+                cb.setChecked(true);
 
-            // Optional: Make row itself clickable
-            row.setOnClickListener(v -> {
-                cb.setChecked(!cb.isChecked()); // triggers above listener
-            });
+                cb.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (!isChecked) {
+                        cart.removeLevel(courseName, level);
+                        setupCartItems(); // refresh view
+                    }
+                });
 
-            layoutCartItems.addView(row);
-            total += extractPrice(level);
+                row.setOnClickListener(v -> cb.setChecked(!cb.isChecked()));
+                layoutCartItems.addView(row);
+                total += extractPrice(level);
+            }
         }
-
         tvTotalAmount.setText("Total: ₹" + total);
     }
 

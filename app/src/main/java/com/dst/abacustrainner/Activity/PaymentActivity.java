@@ -28,7 +28,7 @@ public class PaymentActivity extends AppCompatActivity {
     private TextView tvTotal;
     private Button btnPayNow;
     private String hi;
-    private final CartManager cartManager = CartManager.getInstance();
+    private final CartManager cartManager = CartManager.getInstance(this);
 
 
     @SuppressLint("MissingInflatedId")
@@ -65,7 +65,7 @@ public class PaymentActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
 
         int total = 0;
-        for (String level : new ArrayList<>(cartManager.getSelectedLevels())) {
+        for (String level : new ArrayList<>(cartManager.getAllSelectedLevels())) {
             View row = inflater.inflate(R.layout.item_level_row, layoutSelectedLevels, false);
             TextView tv = row.findViewById(R.id.tvLevelText);
             CheckBox cb = row.findViewById(R.id.checkboxLevel);

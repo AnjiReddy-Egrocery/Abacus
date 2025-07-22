@@ -70,16 +70,183 @@
                      <!-- Card 1: Abacus Junior -->
                      <include
                         layout="@layout/item_course_type1" />
+                <LinearLayout
+                    android:id="@+id/layoutAccordionJunior"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="gone"
+                    android:background="#FFFFFF"
+                    android:elevation="4dp"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Abacus Junior Levels"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Level 1: Addition\nLevel 2: Substraction\nLevel 3: Multiplication\nLevel 4: Multiplication\nLevel 5: Multiplication\nLevel 6: Multiplication"
+                        android:padding="8dp"
+                        android:textSize="16dp"
+                        android:layout_marginBottom="8dp"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:id="@+id/tvSelectedCountJunior"
+                            android:textSize="18dp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="8dp"
+                            android:padding="6dp" />
+
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnSubscribejunior"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Subscribe Now"
+                        android:backgroundTint="#FF6600"
+                        android:textColor="@android:color/white"/>
+                </LinearLayout>
 
                     <!-- Card 2: Abacus Senior -->
                     <include
                           layout="@layout/item_course_type2" />
 
-                    <!-- Card 3: Vedic Maths -->
+                <LinearLayout
+                    android:id="@+id/layoutAccordionSenior"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="gone"
+                    android:background="#FFFFFF"
+                    android:elevation="4dp"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Abacus Junior Levels"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Level 1: Addition\nLevel 2: Substraction\nLevel 3: Multiplication\nLevel 4: Multiplication\nLevel 5: Multiplication\nLevel 6: Multiplication"
+                        android:padding="8dp"
+                        android:textSize="16dp"
+                        android:layout_marginBottom="8dp"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:id="@+id/tvSelectedCountSenior"
+                            android:textSize="18dp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="8dp"
+                            android:padding="6dp" />
+
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnSubscribeSenior"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Subscribe Now"
+                        android:backgroundTint="#FF6600"
+                        android:textColor="@android:color/white"/>
+                </LinearLayout>
+
+
+                <!-- Card 3: Vedic Maths -->
                     <include
                          layout="@layout/item_course_type3" />
 
+                <LinearLayout
+                    android:id="@+id/layoutAccordionVedic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="gone"
+                    android:background="#FFFFFF"
+                    android:elevation="4dp"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Abacus Junior Levels"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Level 1: Addition\nLevel 2: Substraction\nLevel 3: Multiplication\nLevel 4: Multiplication\nLevel 5: Multiplication\nLevel 6: Multiplication"
+                        android:padding="8dp"
+                        android:textSize="16dp"
+                        android:layout_marginBottom="8dp"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:id="@+id/tvSelectedCountVedic"
+                            android:textSize="18dp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="8dp"
+                            android:padding="6dp" />
+
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnSubscribeVedic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Subscribe Now"
+                        android:backgroundTint="#FF6600"
+                        android:textColor="@android:color/white"/>
                 </LinearLayout>
+
+
+
+            </LinearLayout>
             </ScrollView>
         </LinearLayout>
     </LinearLayout>

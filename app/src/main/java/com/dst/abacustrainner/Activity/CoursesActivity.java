@@ -27,9 +27,10 @@ import java.util.Map;
 
 public class CoursesActivity extends AppCompatActivity {
 
-    Button btnPurchase1, btnPurchase2, btnPurchase3;
+    Button btnPurchase1, btnPurchase2, btnPurchase3,btnSubscribejunior,btnSubscribeSenior,btnSubscribeVedic;
     LinearLayout layoutCourseBack;
     TextView tvJunior, tvSenior, tvVedic;
+    LinearLayout layoutAccordionJunior,layoutAccordionSenior,layoutAccordionVedic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,26 +41,61 @@ public class CoursesActivity extends AppCompatActivity {
         btnPurchase2 = findViewById(R.id.btnPurchase2);
         btnPurchase3 = findViewById(R.id.btnPurchase3);
         layoutCourseBack = findViewById(R.id.layout_course_back);
+        layoutAccordionJunior = findViewById(R.id.layoutAccordionJunior);
+        layoutAccordionSenior = findViewById(R.id.layoutAccordionSenior);
+        layoutAccordionVedic = findViewById(R.id.layoutAccordionVedic);
+        btnSubscribejunior = findViewById(R.id.btnSubscribejunior);
+        btnSubscribeSenior = findViewById(R.id.btnSubscribeSenior);
+        btnSubscribeVedic = findViewById(R.id.btnSubscribeVedic);
+
 
         // Reset all 3 course counts first to empty
         tvJunior = findViewById(R.id.tvSelectedCountJunior);
         tvSenior = findViewById(R.id.tvSelectedCountSenior);
         tvVedic = findViewById(R.id.tvSelectedCountVedic);
 
-
         btnPurchase1.setOnClickListener(v -> {
+            if (layoutAccordionJunior.getVisibility() == View.GONE) {
+                layoutAccordionJunior.setVisibility(View.VISIBLE);
+                layoutAccordionSenior.setVisibility(View.GONE);
+                layoutAccordionVedic.setVisibility(View.GONE);
+            } else {
+                layoutAccordionJunior.setVisibility(View.GONE);
+            }
+        });
+        btnPurchase2.setOnClickListener(v -> {
+            if (layoutAccordionSenior.getVisibility() == View.GONE) {
+                layoutAccordionSenior.setVisibility(View.VISIBLE);
+                layoutAccordionJunior.setVisibility(View.GONE);
+            } else {
+                layoutAccordionSenior.setVisibility(View.GONE);
+            }
+        });
+
+        btnPurchase3.setOnClickListener(v -> {
+            if (layoutAccordionVedic.getVisibility() == View.GONE) {
+                layoutAccordionVedic.setVisibility(View.VISIBLE);
+                layoutAccordionJunior.setVisibility(View.GONE);
+                layoutAccordionSenior.setVisibility(View.GONE);
+            } else {
+                layoutAccordionVedic.setVisibility(View.GONE);
+            }
+        });
+
+
+        btnSubscribejunior.setOnClickListener(v -> {
             Intent intent = new Intent(CoursesActivity.this, CourseDetailActivity.class);
             intent.putExtra("course_name", "Abacus Junior");
             startActivity(intent);
         });
 
-        btnPurchase2.setOnClickListener(v -> {
+        btnSubscribeSenior.setOnClickListener(v -> {
             Intent intent = new Intent(CoursesActivity.this, CourseDetailActivity.class);
             intent.putExtra("course_name", "Abacus Senior");
             startActivity(intent);
         });
 
-        btnPurchase3.setOnClickListener(v -> {
+        btnSubscribeVedic.setOnClickListener(v -> {
             Intent intent = new Intent(CoursesActivity.this, CourseDetailActivity.class);
             intent.putExtra("course_name", "Vedic Maths");
             startActivity(intent);
@@ -84,7 +120,7 @@ public class CoursesActivity extends AppCompatActivity {
     }
 
     private void updateSelectedLevelBar() {
-        CartManager cart = CartManager.getInstance();
+        CartManager cart = CartManager.getInstance(this);
 
         // Reset all TextViews to 0
         tvJunior.setText("Selected: 0");
@@ -96,7 +132,7 @@ public class CoursesActivity extends AppCompatActivity {
         int vedicCount = 0;
 
         // Count levels based on price indicator
-        for (String level : cart.getSelectedLevels()) {
+        for (String level : cart.getAllSelectedLevels()) {
             if (level.contains("₹50")) {
                 juniorCount++;
             } else if (level.contains("₹70")) {

@@ -2,6 +2,7 @@ package com.dst.abacustrainner.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CourseDetailActivity extends AppCompatActivity {
 
@@ -30,9 +33,10 @@ public class CourseDetailActivity extends AppCompatActivity {
     private String courseName;
     private String[] currentLevels;
 
-    private final CartManager cartManager = CartManager.getInstance();
+    private final CartManager cartManager = CartManager.getInstance(this);
 
     private CompoundButton.OnCheckedChangeListener selectAllListener;
+    private final Map<String, String> levelDescriptions = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +80,7 @@ public class CourseDetailActivity extends AppCompatActivity {
                 default:
                     currentLevels = new String[]{};
             }
-
+            setupLevelDescriptions();
             showCourseLevels();
         }
 
@@ -85,7 +89,7 @@ public class CourseDetailActivity extends AppCompatActivity {
         });
 
         btnCart.setOnClickListener(v -> {
-            if (CartManager.getInstance().getSelectedLevels().isEmpty()) {
+            if (CartManager.getInstance(this).getAllSelectedLevels().isEmpty()) {
                 Toast.makeText(CourseDetailActivity.this, "Cart is empty", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(CourseDetailActivity.this, CartActivity.class);
@@ -112,9 +116,9 @@ public class CourseDetailActivity extends AppCompatActivity {
 
                 String levelText = ((TextView) row.findViewById(R.id.tvLevelText)).getText().toString();
                 if (isChecked) {
-                    cartManager.addLevel(levelText);
+                    cartManager.addLevel(courseName, levelText);
                 } else {
-                    cartManager.removeLevel(levelText);
+                    cartManager.removeLevel(courseName,levelText);
                 }
 
                 cb.setOnCheckedChangeListener(getLevelCheckboxListener(levelText, cb));
@@ -125,6 +129,43 @@ public class CourseDetailActivity extends AppCompatActivity {
         cbSelectAll.setOnCheckedChangeListener(selectAllListener);
     }
 
+    private void setupLevelDescriptions() {
+        switch (courseName) {
+            case "Abacus Junior":
+                levelDescriptions.put("Junior_Level_1 - ₹50", "Introduction to basic counting and bead movement.");
+                levelDescriptions.put("Junior_Level_2 - ₹50", "Addition and subtraction using the abacus.");
+                levelDescriptions.put("Junior_Level_3 - ₹50", "Intermediate level exercises.");
+                levelDescriptions.put("Junior_Level_Level 4 - ₹50", "Complex mental math patterns.");
+                levelDescriptions.put("Junior_Level_Level 5 - ₹50", "Speed and accuracy enhancement.");
+                levelDescriptions.put("Junior_Level_Level 6 - ₹50", "Mastery of junior level concepts.");
+                break;
+
+            case "Abacus Senior":
+                levelDescriptions.put("Senior_Level_1 - ₹70", "Introduction to advanced abacus techniques.");
+                levelDescriptions.put("Senior_Level_2 - ₹70", "Working with multiple-digit numbers.");
+                levelDescriptions.put("Senior_Level_3 - ₹70", "Speed training and advanced patterns.");
+                levelDescriptions.put("Senior_Level_4 - ₹70", "Introduction to advanced abacus techniques.");
+                levelDescriptions.put("Senior_Level_5 - ₹70", "Working with multiple-digit numbers.");
+                levelDescriptions.put("Senior_Level_6 - ₹70", "Speed training and advanced patterns.");
+                levelDescriptions.put("Senior_Level_7 - ₹70", "Introduction to advanced abacus techniques.");
+                levelDescriptions.put("Senior_Level_8 - ₹70", "Working with multiple-digit numbers.");
+                levelDescriptions.put("Senior_Level_9 - ₹70", "Speed training and advanced patterns.");
+                levelDescriptions.put("Senior_Level_10 - ₹70", "Speed training and advanced patterns.");
+                break;
+
+            case "Vedic Maths":
+                levelDescriptions.put("Vedic_Level_1 - ₹100", "Introduction to Vedic formulas.");
+                levelDescriptions.put("Vedic_Level_2 - ₹100", "Speed multiplication techniques.");
+                levelDescriptions.put("Vedic_Level_3 - ₹100", "Division tricks and patterns.");
+                levelDescriptions.put("Vedic_Level_4 - ₹100", "Advanced Vedic applications.");
+                break;
+
+            default:
+                // No descriptions
+        }
+    }
+
+    @SuppressLint("MissingInflatedId")
     private void showCourseLevels() {
         tvCourseTitle.setText(courseName);
         layoutLevels.removeAllViews();
@@ -135,10 +176,26 @@ public class CourseDetailActivity extends AppCompatActivity {
             View row = inflater.inflate(R.layout.item_level_row, layoutLevels, false);
             CheckBox cb = row.findViewById(R.id.checkboxLevel);
             TextView tv = row.findViewById(R.id.tvLevelText);
+            ImageView ivArrow = row.findViewById(R.id.ivArrow);
+            TextView tvDescription = row.findViewById(R.id.tvDescription);
 
             tv.setText(level);
             cb.setChecked(cartManager.isSelected(level));
             cb.setOnCheckedChangeListener(getLevelCheckboxListener(level, cb));
+
+            // Dummy description - you can load based on level name
+            tvDescription.setText(levelDescriptions.getOrDefault(level, "No description available."));
+
+            // Arrow click listener to toggle description
+            ivArrow.setOnClickListener(v -> {
+                if (tvDescription.getVisibility() == View.GONE) {
+                    tvDescription.setVisibility(View.VISIBLE);
+                    ivArrow.setImageResource(R.drawable.baseline_keyboard_arrow_up_24);
+                } else {
+                    tvDescription.setVisibility(View.GONE);
+                    ivArrow.setImageResource(R.drawable.baseline_keyboard_arrow_down_24);
+                }
+            });
 
             // Make the full row clickable
             row.setOnClickListener(v -> {
@@ -160,9 +217,9 @@ public class CourseDetailActivity extends AppCompatActivity {
     private CompoundButton.OnCheckedChangeListener getLevelCheckboxListener(String levelText, CheckBox cb) {
         return (buttonView, isChecked) -> {
             if (isChecked) {
-                cartManager.addLevel(levelText);
+                cartManager.addLevel(courseName,levelText);
             } else {
-                cartManager.removeLevel(levelText);
+                cartManager.removeLevel(courseName,levelText);
             }
             updateCartCount();
 

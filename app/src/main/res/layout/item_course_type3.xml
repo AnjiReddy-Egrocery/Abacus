@@ -17,24 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="10dp">
-
-                <Button
-                    android:id="@+id/btnPurchase3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Purchase Now"
-                    android:textSize="16dp"
-                    android:layout_gravity="right"
-                    android:backgroundTint="#FF5722"
-                    android:textColor="#FFFFFF"/>
-            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,11 +30,10 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="6dp"
                     android:padding="5dp"
-
                     android:src="@drawable/abacus_logo" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="6dp"
                     android:orientation="vertical">
@@ -78,66 +59,17 @@
                         android:layout_marginTop="6dp"
                         android:layout_marginBottom="8dp" />
 
-                    <!-- Row 1 -->
-                    <LinearLayout
+                    <Button
+                        android:id="@+id/btnPurchase3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="4dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Percentages"
-                            android:background="@drawable/level_box"
-                            android:textSize="12dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Square roots"
-                            android:layout_marginLeft="6dp"
-                            android:background="@drawable/level_box"
-                            android:textSize="12dp"/>
+                        android:text="More Info"
+                        android:textSize="16dp"
+                        android:layout_gravity="left"
+                        android:backgroundTint="#FF5722"
+                        android:textColor="#FFFFFF"/>
 
-                    </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="6dp"
-                        android:layout_marginBottom="6dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="LCM"
-                            android:background="@drawable/level_box"
-                            android:padding="6dp"
-                            android:textSize="12dp"
-                            android:layout_marginEnd="6dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="HCF"
-                            android:background="@drawable/level_box"
-                            android:padding="6dp"
-                            android:textSize="12dp"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="6dp"
-                        android:layout_marginBottom="6dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=""
-                            android:id="@+id/tvSelectedCountVedic"
-                            android:padding="6dp"
-                            android:textSize="18dp"
-                            android:textStyle="bold"/>
-                    </LinearLayout>
 
                 </LinearLayout>
 

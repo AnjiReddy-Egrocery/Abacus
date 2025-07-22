@@ -32,7 +32,7 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
     private String courseName;
     private String[] currentLevels;
 
-    private final CartManager cartManager = CartManager.getInstance();
+    private final CartManager cartManager = CartManager.getInstance(this);
 
     private CompoundButton.OnCheckedChangeListener selectAllListener;
 
@@ -115,9 +115,9 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
                 String levelText = ((TextView) row.findViewById(R.id.tvLevelText)).getText().toString();
                 String levelKey = levelText; // unique key for video levels
                 if (isChecked) {
-                    cartManager.addLevel(levelKey);
+                 //   cartManager.addLevel(levelKey);
                 } else {
-                    cartManager.removeLevel(levelKey);
+                 //   cartManager.removeLevel(levelKey);
                 }
 
                 cb.setOnCheckedChangeListener(getLevelCheckboxListener(levelKey, cb));
@@ -158,9 +158,9 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
     private CompoundButton.OnCheckedChangeListener getLevelCheckboxListener(String levelKey, CheckBox cb) {
         return (buttonView, isChecked) -> {
             if (isChecked) {
-                cartManager.addLevel(levelKey);
+              //  cartManager.addLevel(levelKey);
             } else {
-                cartManager.removeLevel(levelKey);
+             //  cartManager.removeLevel(levelKey);
             }
             updateCartCount();
 
