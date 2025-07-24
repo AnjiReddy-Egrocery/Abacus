@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +38,9 @@ public class CourseDetailActivity extends AppCompatActivity {
 
     private CompoundButton.OnCheckedChangeListener selectAllListener;
     private final Map<String, String> levelDescriptions = new HashMap<>();
+    RelativeLayout layoutCart;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +54,7 @@ public class CourseDetailActivity extends AppCompatActivity {
         tvCartCount = findViewById(R.id.tvCartCount);
         ivCart = findViewById(R.id.ivCart);
         layoutCourseDetailBack = findViewById(R.id.layout_coursedetail_back);
+        layoutCart = findViewById(R.id.layout_cart);
 
         courseName = getIntent().getStringExtra("course_name");
 
@@ -83,6 +87,18 @@ public class CourseDetailActivity extends AppCompatActivity {
             setupLevelDescriptions();
             showCourseLevels();
         }
+
+        layoutCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (CartManager.getInstance(CourseDetailActivity.this).getAllSelectedLevels().isEmpty()) {
+                    Toast.makeText(CourseDetailActivity.this, "Cart is empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(CourseDetailActivity.this, CartActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
 
         btnpurchasemore.setOnClickListener(v -> {
           finish();

@@ -53,6 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
+                    android:id="@+id/layout_cart"
                     android:layout_marginLeft="120dp">
 
                     <ImageView
