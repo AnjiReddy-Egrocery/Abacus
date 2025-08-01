@@ -11,8 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.dst.abacustrainner.Activity.CoursesActivity;
+import com.dst.abacustrainner.Activity.DashboardActivity;
 import com.dst.abacustrainner.Activity.WorksheetSubscriptionActivity;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.User.HomeActivity;
@@ -74,8 +77,13 @@ public class WorkSheetFragment extends Fragment {
         });
 
         btnNo.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), HomeActivity.class);
-            startActivity(intent);
+            HomeFragment homeFragment = new HomeFragment();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.flFragment, homeFragment); // Replace with correct container ID
+            fragmentTransaction.addToBackStack(null); // Optional: adds to back stack
+            fragmentTransaction.commit();
+
             dialog.dismiss();
         });
 

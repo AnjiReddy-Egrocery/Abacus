@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".Activity.AllSchedulesActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/signin_background"
+            android:orientation="vertical"
+            tools:ignore="MissingConstraints">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="12dp"
+                android:id="@+id/layout_coursedetail_back">
+                <LinearLayout
+                    android:id="@+id/fragment_container"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/circle_image">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:src="@drawable/baseline_arrow_back_ios_new_24"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="VideoCourse Details"
+                    android:textStyle="bold"
+                    android:textSize="20dp"
+                    android:gravity="center"
+                    android:textColor="#FFF"
+                    android:layout_marginLeft="50dp"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:id="@+id/layout_cart"
+                    android:layout_marginLeft="60dp">
+
+                    <ImageView
+                        android:id="@+id/ivCart"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_cart"
+                        android:layout_marginRight="20dp"
+
+                        android:contentDescription="Cart" />
+
+                    <TextView
+                        android:id="@+id/tvCartCount"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_alignTop="@id/ivCart"
+                        android:layout_alignEnd="@id/ivCart"
+                        android:background="@drawable/circle_red"
+                        android:text="0"
+                        android:textSize="10sp"
+                        android:textColor="#FFF"
+                        android:gravity="center"
+                        />
+                </RelativeLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:padding="12dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ScrollView
+                android:background="#F5F5F5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="1dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tvCourseTitle1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Abacus Junior"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="#333"
+                        android:padding="8dp" />
+
+                    <!-- Select All Checkbox -->
+                    <CheckBox
+                        android:id="@+id/cbSelectAll1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Select All Levels"
+                        android:textSize="16sp"
+                        android:textColor="#000"
+                        android:padding="8dp" />
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#CCCCCC"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Levels Container -->
+                    <LinearLayout
+                        android:id="@+id/layoutLevels1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <!-- Purchase More Button -->
+                        <Button
+                            android:id="@+id/btnPurchaseMore1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Purchase More"
+                            android:textSize="18sp"
+                            android:layout_gravity="left"
+                            android:backgroundTint="#FF5722"
+                            android:textColor="#FFFFFF"
+                            android:minHeight="30dp" />
+
+                        <Button
+                            android:id="@+id/cart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Go to Cart"
+                            android:textSize="18sp"
+                            android:layout_marginLeft="10dp"
+                            android:backgroundTint="#FF5722"
+                            android:textColor="#FFFFFF"
+                            android:minHeight="30dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

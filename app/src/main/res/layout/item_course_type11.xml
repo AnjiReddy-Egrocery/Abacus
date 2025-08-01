@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:padding="12dp"
+        android:radius="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Top Row: Title and Purchase Button -->
+
+
+
+
+            <!-- Horizontal Section: Image + Levels -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="top">
+
+                <!-- Course Image -->
+                <ImageView
+                    android:id="@+id/imgCourse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/abacus_logo"
+                    android:layout_marginEnd="6dp"
+                    android:padding="5dp"/>
+
+                <!-- 2-Row Level Boxes -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvCourseTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginLeft="5dp"
+                        android:text="Abacus Junior (6 Levels)"
+                        android:textStyle="bold"
+                        android:textSize="18dp"
+                        android:textColor="#000000" />
+
+                    <!-- Age Group -->
+                    <TextView
+                        android:id="@+id/tvAgeGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" Age group : (5–8 years)"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:textColor="#666666"
+                        android:layout_marginBottom="8dp" />
+
+                    <Button
+                        android:id="@+id/btnPurchase11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="More Info"
+                        android:textSize="16dp"
+                        android:backgroundTint="#FF5722"
+                        android:textColor="#FFFFFF"
+                        android:layout_gravity="left" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
