@@ -93,10 +93,11 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
         ivCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CartManager.getInstance(VideoCourseDetailActivity.this).getAllSelectedLevels().isEmpty()) {
+                if (CartManager.getInstance(getApplicationContext()).getAllSelectedLevels("video").isEmpty()) {
                     Toast.makeText(VideoCourseDetailActivity.this, "Cart is empty", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(VideoCourseDetailActivity.this, CartActivity.class);
+                    intent.putExtra("cartType", "video");
                     startActivity(intent);
                 }
             }
@@ -107,10 +108,11 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
         });
 
         btnCart.setOnClickListener(v -> {
-            if (CartManager.getInstance(this).getAllSelectedLevels().isEmpty()) {
+            if (CartManager.getInstance(getApplicationContext()).getAllSelectedLevels("video").isEmpty()) {
                 Toast.makeText(VideoCourseDetailActivity.this, "Cart is empty", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(VideoCourseDetailActivity.this, CartActivity.class);
+                intent.putExtra("cartType", "video");
                 startActivity(intent);
             }
         });
@@ -136,9 +138,9 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
 
                 String levelText = ((TextView) row.findViewById(R.id.tvLevelText)).getText().toString();
                 if (isChecked) {
-                    cartManager.addLevel(courseName, levelText);
+                    CartManager.getInstance(getApplicationContext()).addLevel("video", courseName, levelText);
                 } else {
-                    cartManager.removeLevel(courseName,levelText);
+                    CartManager.getInstance(getApplicationContext()).removeLevel("video", courseName, levelText);
                 }
 
                 cb.setOnCheckedChangeListener(getLevelCheckboxListener(levelText, cb));
@@ -200,7 +202,7 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
             TextView tvDescription = row.findViewById(R.id.tvDescription);
 
             tv.setText(level);
-            cb.setChecked(cartManager.isSelected(level));
+            cb.setChecked(CartManager.getInstance(getApplicationContext()).isSelected("video", level));
             cb.setOnCheckedChangeListener(getLevelCheckboxListener(level, cb));
 
             // Dummy description - you can load based on level name
@@ -237,9 +239,9 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
     private CompoundButton.OnCheckedChangeListener getLevelCheckboxListener(String levelText, CheckBox cb) {
         return (buttonView, isChecked) -> {
             if (isChecked) {
-                cartManager.addLevel(courseName,levelText);
+                CartManager.getInstance(getApplicationContext()).addLevel("video", courseName, levelText);
             } else {
-                cartManager.removeLevel(courseName,levelText);
+                CartManager.getInstance(getApplicationContext()).removeLevel("video", courseName, levelText);
             }
             updateCartCount();
 
@@ -250,13 +252,19 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
     }
 
     private void updateCartCount() {
-        tvCartCount.setText(String.valueOf(cartManager.getCount()));
+        tvCartCount.setText(String.valueOf(cartManager.getTotalCartCount()));
     }
 
     private boolean allLevelsSelected() {
         for (String level : currentLevels) {
-            if (!cartManager.isSelected(level)) return false;
+            if (!CartManager.getInstance(getApplicationContext()).isSelected("video", level)); return false;
         }
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateCartCount();
     }
 }

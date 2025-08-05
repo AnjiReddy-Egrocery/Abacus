@@ -31,6 +31,9 @@ public class CoursesActivity extends AppCompatActivity {
     LinearLayout layoutCourseBack;
     TextView tvJunior, tvSenior, tvVedic;
     LinearLayout layoutAccordionJunior,layoutAccordionSenior,layoutAccordionVedic;
+    String studentId;
+    String batchId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,8 @@ public class CoursesActivity extends AppCompatActivity {
         btnSubscribeSenior = findViewById(R.id.btnSubscribeSenior);
         btnSubscribeVedic = findViewById(R.id.btnSubscribeVedic);
 
+        studentId  = getIntent().getStringExtra("studentId");
+        batchId = getIntent().getStringExtra("batchId");
 
         // Reset all 3 course counts first to empty
         tvJunior = findViewById(R.id.tvSelectedCountJunior);
@@ -106,8 +111,10 @@ public class CoursesActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(CoursesActivity.this, HomeActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("studentId", studentId);
+                intent.putExtra("batchId", batchId);
                 startActivity(intent);
-                finish(); // optional: closes current activity
+                finish();
             }
         });
     }
@@ -120,7 +127,7 @@ public class CoursesActivity extends AppCompatActivity {
     }
 
     private void updateSelectedLevelBar() {
-        CartManager cart = CartManager.getInstance(this);
+        CartManager cart = CartManager.getInstance(getApplicationContext());
 
         // Reset all TextViews to 0
         tvJunior.setText("Selected: 0");
@@ -132,7 +139,7 @@ public class CoursesActivity extends AppCompatActivity {
         int vedicCount = 0;
 
         // Count levels based on price indicator
-        for (String level : cart.getAllSelectedLevels()) {
+        for (String level : cart.getAllSelectedLevels("live")) {
             if (level.contains("₹50")) {
                 juniorCount++;
             } else if (level.contains("₹70")) {

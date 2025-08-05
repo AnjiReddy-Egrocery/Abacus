@@ -184,13 +184,14 @@
                                 android:layout_marginLeft="8dp"
                                 android:textStyle="bold"
                                 android:textSize="20dp" />
+
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="#000"
                                 android:id="@+id/txt_Completed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="27dp"
                                 android:layout_marginLeft="8dp"
                                 android:text="Completed:0"
+                                android:textColor="#000"
                                 android:textSize="18dp" />
                             <TextView
                                 android:layout_width="wrap_content"
@@ -264,6 +265,77 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="Work Sheet SubScription"
+                                android:textColor="#000"
+                                android:textSize="20dp"
+                                android:gravity="center"
+                                android:textStyle="bold"/>
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    android:id="@+id/layout_video_tutorials"
+                    android:visibility="gone"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginRight="14dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/top_card_view">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_margin="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="Video Purchased List"
+                                android:textSize="20dp"
+                                android:textStyle="bold"
+                                android:textColor="#000"
+                                android:paddingStart="16dp"
+                                android:gravity="center"/>
+
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bottom_card_view"
+                        android:orientation="vertical">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:orientation="horizontal"
+                            android:layout_marginRight="12dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Video Tutorials"
                                 android:textColor="#000"
                                 android:textSize="20dp"
                                 android:gravity="center"

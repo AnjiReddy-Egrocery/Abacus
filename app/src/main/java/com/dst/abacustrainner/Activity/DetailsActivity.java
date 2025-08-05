@@ -77,6 +77,15 @@ public class DetailsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        /*String navigateTo = getIntent().getStringExtra("navigate_to");
+        if (navigateTo != null) {
+            if (navigateTo.equals("video")) {
+                butVideoTutorials.performClick();  // Auto click video
+            } else if (navigateTo.equals("live")) {
+                butWorkSheetSubscrioption.performClick();  // Auto click live
+            }
+        }
+*/
 
         StudentTotalDetails.Result studentdetails = SharedPrefManager.getInstance(getApplicationContext()).getUser();
         studentId = studentdetails.getStudentId();

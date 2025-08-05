@@ -142,7 +142,7 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
             tv.setText(level);
             String levelKey = level;
 
-            cb.setChecked(cartManager.isSelected(levelKey));
+            cb.setChecked(CartManager.getInstance(getApplicationContext()).isSelected("video",levelKey));
             cb.setOnCheckedChangeListener(getLevelCheckboxListener(levelKey, cb));
 
             layoutVideoLevels.addView(row);
@@ -171,13 +171,13 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
     }
 
     private void updateCartCount() {
-        tvCartCount.setText(String.valueOf(cartManager.getCount()));
+        tvCartCount.setText(String.valueOf(cartManager.getCount("video")));
     }
 
     private boolean allLevelsSelected() {
         for (String level : currentLevels) {
             String levelKey = level;
-            if (!cartManager.isSelected(levelKey)) return false;
+            if (!CartManager.getInstance(getApplicationContext()).isSelected("video",levelKey)) return false;
         }
         return true;
     }

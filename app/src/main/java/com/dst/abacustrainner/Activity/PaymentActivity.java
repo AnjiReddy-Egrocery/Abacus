@@ -21,14 +21,17 @@ import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.User.HomeActivity;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class PaymentActivity extends AppCompatActivity {
 
     private LinearLayout layoutSelectedLevels,layoutBack;
     private TextView tvTotal;
     private Button btnPayNow;
-    private String hi;
     private final CartManager cartManager = CartManager.getInstance(this);
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -45,18 +48,28 @@ public class PaymentActivity extends AppCompatActivity {
         showSelectedLevels();
 
         btnPayNow.setOnClickListener(v -> {
-            // Handle payment logic here
-          Intent intent = new Intent(PaymentActivity.this,PaymentOptionsActivity.class);
-          startActivity(intent);
+            ArrayList<String> cartTypes = new ArrayList<>();
+            if (!cartManager.getSelectedLevelsByCourse("video").isEmpty()) {
+                cartTypes.add("video");
+            }
+            if (!cartManager.getSelectedLevelsByCourse("live").isEmpty()) {
+                cartTypes.add("live");
+            }
+
+            if (cartTypes.isEmpty()) {
+                Toast.makeText(this, "No items in cart!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Intent intent = new Intent(PaymentActivity.this, PaymentOptionsActivity.class);
+            intent.putStringArrayListExtra("cartTypes", cartTypes);
+            startActivity(intent);
         });
 
-        layoutBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(PaymentActivity.this, CartActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        layoutBack.setOnClickListener(view -> {
+            Intent intent = new Intent(PaymentActivity.this, CartActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -66,36 +79,70 @@ public class PaymentActivity extends AppCompatActivity {
 
         int total = 0;
 
-        // Loop through each course
-        for (String course : cartManager.getSelectedLevelsByCourse().keySet()) {
-            // Add course title as a TextView
-            TextView courseTitle = new TextView(this);
-            courseTitle.setText(course);
-            courseTitle.setTextSize(18);
-            courseTitle.setPadding(16, 16, 16, 8);
-            courseTitle.setTextColor(getResources().getColor(R.color.black));
-            layoutSelectedLevels.addView(courseTitle);
+        // Loop through all types (video, live, worksheet)
+        Set<String> allTypes = cartManager.getAllTypes();
 
-            // Loop through levels for this course
-            for (String level : cartManager.getSelectedLevelsByCourse().get(course)) {
-                View row = inflater.inflate(R.layout.item_level_payment, layoutSelectedLevels, false);
-                TextView tv = row.findViewById(R.id.tvLevelText);
-                CheckBox cb = row.findViewById(R.id.checkboxLevel);
+        for (String cartType : allTypes) {
+            Map<String, List<String>> courseLevelMap = cartManager.getSelectedLevelsByCourse(cartType);
 
-                cb.setVisibility(View.GONE); // hide checkbox
-                tv.setText(level);
+            if (courseLevelMap.isEmpty()) continue;
 
-                int price = 0;
-                try {
-                    price = Integer.parseInt(level.substring(level.indexOf("₹") + 1).trim());
-                } catch (Exception ignored) {}
-                total += price;
+            // Section Heading (Video Tutorials, Live Classes, Worksheets)
+            TextView typeHeading = new TextView(this);
+            typeHeading.setText(getTypeHeading(cartType));
+            typeHeading.setTextSize(20);
+            typeHeading.setPadding(0, 24, 0, 16);
+            layoutSelectedLevels.addView(typeHeading);
 
-                layoutSelectedLevels.addView(row);
+            for (Map.Entry<String, List<String>> entry : courseLevelMap.entrySet()) {
+                String courseName = entry.getKey();
+                List<String> levels = entry.getValue();
+
+                // Course Name
+                TextView courseTitle = new TextView(this);
+                courseTitle.setText(courseName);
+                courseTitle.setTextSize(18);
+                courseTitle.setPadding(16, 16, 16, 8);
+                layoutSelectedLevels.addView(courseTitle);
+
+                for (String level : levels) {
+                    View row = inflater.inflate(R.layout.item_level_payment, layoutSelectedLevels, false);
+                    TextView tv = row.findViewById(R.id.tvLevelText);
+                    CheckBox cb = row.findViewById(R.id.checkboxLevel);
+
+                    cb.setVisibility(View.GONE); // Hide checkbox in Payment page
+                    tv.setText(level);
+
+                    int price = extractPrice(level);
+                    total += price;
+
+                    layoutSelectedLevels.addView(row);
+                }
             }
         }
 
         tvTotal.setText("Total Amount: ₹" + total);
+    }
+
+    private int extractPrice(String levelText) {
+        try {
+            String num = levelText.substring(levelText.indexOf("₹") + 1).trim();
+            return Integer.parseInt(num);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private String getTypeHeading(String type) {
+        switch (type) {
+            case "video":
+                return "Video Tutorials";
+            case "live":
+                return "Worksheets";
+
+            default:
+                return "Other Items";
+        }
     }
 
     @Override
@@ -108,20 +155,18 @@ public class PaymentActivity extends AppCompatActivity {
                 if (response != null && response.toLowerCase().contains("success")) {
                     Toast.makeText(this, "Payment Successful", Toast.LENGTH_SHORT).show();
 
-                    cartManager.clear();
+                    cartManager.clearAll(); // Clear entire cart after payment
 
                     Intent intent = new Intent(PaymentActivity.this, HomeActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra("go_to_home", true); // optional if needed to control navigation
                     startActivity(intent);
-                    finish(); // close current screen
+                    finish();
                 } else {
                     Toast.makeText(this, "Payment Failed or Cancelled", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(this, "No response from UPI app", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No response from payment app", Toast.LENGTH_SHORT).show();
             }
         }
     }
-
 }

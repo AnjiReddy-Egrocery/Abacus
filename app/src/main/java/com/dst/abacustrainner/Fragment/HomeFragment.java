@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dst.abacustrainner.Activity.AllSchedulesActivity;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
 import com.dst.abacustrainner.Activity.PurchasedActivity;
+import com.dst.abacustrainner.Activity.PurchasedVideoTutorialsActivity;
 import com.dst.abacustrainner.Activity.ViewDetailsActivity;
 import com.dst.abacustrainner.Activity.VisualiztionActivity;
 import com.dst.abacustrainner.Adapter.BatchDetailsAdapter;
@@ -77,7 +78,7 @@ public class HomeFragment extends Fragment {
     String startTime,endTime,timeText;
     private Map<String, String> scheduledDatesMap = new HashMap<>();
     Map<String, String> dateIdMap = new HashMap<>();
-    LinearLayout layoutSchedule, layoutScheduleInfo,layoutPurchasedSection;
+    LinearLayout layoutSchedule, layoutScheduleInfo,layoutPurchasedSection,layoutVideoTutorials ;
 
 
     @SuppressLint("MissingInflatedId")
@@ -102,6 +103,7 @@ public class HomeFragment extends Fragment {
         layoutSchedule = view.findViewById(R.id.layou_schedule);
         layoutScheduleInfo = view.findViewById(R.id.layout_schedule_information);
         layoutPurchasedSection = view.findViewById(R.id.layout_purchased_section);
+        layoutVideoTutorials = view.findViewById(R.id.layout_video_tutorials);
 
         layoutData=view.findViewById(R.id.layout_data);
         progressBar= view.findViewById(R.id.progress);
@@ -121,6 +123,16 @@ public class HomeFragment extends Fragment {
                 openScheduleFragment();
             }
         });
+        Bundle args = getArguments();
+        if (args != null) {
+            String studentId = args.getString("studentId");
+            String batchId = args.getString("batchId");
+
+            if (studentId != null && batchId != null) {
+                ScheduledateMethod(studentId, batchId);
+            }
+        }
+
 
         VerifyMethod(id,currentDate);
         VerifyBatchDetails(id);
@@ -163,31 +175,31 @@ public class HomeFragment extends Fragment {
 
         SharedPreferences prefs = requireContext().getSharedPreferences("purchases", Context.MODE_PRIVATE);
 
-        // Check one-time success toast
-        boolean isPaymentSuccess = prefs.getBoolean("payment_success", false);
+        boolean videoPurchased = prefs.getBoolean("video_purchased", false);
+        boolean livePurchased = prefs.getBoolean("live_purchased", false);
 
-        // Permanent flag for visibility
-        boolean hasPurchased = prefs.getBoolean("has_purchased", false);
-
-        if (isPaymentSuccess) {
-            Toast.makeText(requireContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
-
-            // clear one-time toast flag
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("payment_success", false);
-            editor.apply();
+        if (videoPurchased) {
+            layoutVideoTutorials.setVisibility(View.VISIBLE);
         }
 
-        // Show layout if purchased anytime in the past
-        if (hasPurchased) {
+        if (livePurchased) {
             layoutPurchasedSection.setVisibility(View.VISIBLE);
-        } else {
-            layoutPurchasedSection.setVisibility(View.GONE);
         }
+
 
         layoutPurchasedSection.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), PurchasedActivity.class);
+            intent.putExtra("cartType", "live");
             startActivity(intent);
+        });
+
+        layoutVideoTutorials.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(requireContext(), PurchasedVideoTutorialsActivity.class);
+                intent.putExtra("cartType", "video");
+                startActivity(intent);
+            }
         });
 
         layoutSchedule.setVisibility(View.GONE);
@@ -195,10 +207,6 @@ public class HomeFragment extends Fragment {
 
         return view;
     }
-
-
-
-
     private void openScheduleFragment() {
         SchedulesFragment scheduleFragment = new SchedulesFragment();
         Bundle args = new Bundle();
@@ -494,4 +502,6 @@ public class HomeFragment extends Fragment {
         textWithBrackets = "(" + currentDate + ")";
         VerifyMethod(id,currentDate);
     }
+
+
 }

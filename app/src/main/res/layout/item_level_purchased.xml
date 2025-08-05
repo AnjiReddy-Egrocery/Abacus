@@ -18,19 +18,18 @@
         android:gravity="center_vertical">
 
 
-        <!--<CheckBox
-            android:id="@+id/checkboxLevel"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:button="@drawable/custom_checkbox"
-            android:clickable="false"
-            android:focusable="false" />-->
-
+        <ImageView
+            android:id="@+id/imgCourse"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/abacus_logo"
+            android:layout_marginEnd="6dp"/>
         <TextView
             android:id="@+id/tvLevelText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
+            android:textSize="18dp"
             android:paddingStart="8dp"
             android:text="Level Name" />
 

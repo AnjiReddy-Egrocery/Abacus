@@ -1,20 +1,14 @@
 package com.dst.abacustrainner.User;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -25,22 +19,15 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.signature.ObjectKey;
-import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
-import com.dst.abacustrainner.Activity.UpdateProfileActivity;
-import com.dst.abacustrainner.Activity.VideoTutorialsActivity;
-import com.dst.abacustrainner.Activity.VisualiztionActivity;
-import com.dst.abacustrainner.Activity.WorksheetSubscriptionActivity;
 import com.dst.abacustrainner.Fragment.AIGenrationFragment;
 import com.dst.abacustrainner.Fragment.ClassFragment;
 
-import com.dst.abacustrainner.Fragment.CompetitionFragment;
 import com.dst.abacustrainner.Fragment.HomeFragment;
 import com.dst.abacustrainner.Fragment.ProfileFragment;
 import com.dst.abacustrainner.Fragment.SchedulesFragment;
 import com.dst.abacustrainner.Fragment.VideoFragment;
 import com.dst.abacustrainner.Fragment.WorkSheetFragment;
 import com.dst.abacustrainner.Model.BachDetailsResponse;
-import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.Model.StudentTotalDetails;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
@@ -101,8 +88,8 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationView.setPadding(0, 0, 0, 0);  // Padding around the view
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         StudentTotalDetails.Result studentdetails = SharedPrefManager.getInstance(getApplicationContext()).getUser();
-
         studentId = studentdetails.getStudentId();
+
 
         StudentDetailsMethod(studentId);
 
@@ -112,6 +99,22 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             Toast.makeText(HomeActivity.this, "Student ID not available. Please log in again.", Toast.LENGTH_LONG).show();
         }
+
+
+
+        // Pass navigateTo to HomeFragment as argument
+        String navigateTo = getIntent().getStringExtra("navigate_to");  // "video" or "live"
+
+        HomeFragment homeFragment = new HomeFragment();
+
+        // Pass argument via Bundle
+        Bundle bundle = new Bundle();
+        bundle.putString("navigate_to", navigateTo);
+        homeFragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.flFragment, homeFragment)
+                .commit();
 
 
 
@@ -149,6 +152,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
+
 
     private String capitalizeFirstLetter(String firstName) {
         if (firstName == null || firstName.isEmpty()) {

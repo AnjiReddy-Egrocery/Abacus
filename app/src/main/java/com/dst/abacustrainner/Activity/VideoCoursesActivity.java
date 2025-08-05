@@ -3,6 +3,7 @@ package com.dst.abacustrainner.Activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -17,6 +18,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.User.HomeActivity;
+
+import java.util.List;
+import java.util.Map;
 
 public class VideoCoursesActivity extends AppCompatActivity {
     Button btnPurchase11, btnPurchase21, btnPurchase31,btnSubscribejunior1,btnSubscribeSenior1,btnSubscribeVedic1;
@@ -115,37 +119,40 @@ public class VideoCoursesActivity extends AppCompatActivity {
     private void updateSelectedLevelBar() {
         CartManager cart = CartManager.getInstance(this);
 
-        // Reset all TextViews to 0
+        // Reset all TextViews
         tvJunior1.setText("Selected: 0");
         tvSenior1.setText("Selected: 0");
         tvVedic1.setText("Selected: 0");
+
+        Map<String, List<String>> selectedLevelsByCourse = cart.getSelectedLevelsByCourse("video");
 
         int juniorCount = 0;
         int seniorCount = 0;
         int vedicCount = 0;
 
-        // Count levels based on price indicator
-        for (String level : cart.getAllSelectedLevels()) {
-            if (level.contains("₹50")) {
-                juniorCount++;
-            } else if (level.contains("₹70")) {
-                seniorCount++;
-            } else if (level.contains("₹100")) {
-                vedicCount++;
+        for (Map.Entry<String, List<String>> entry : selectedLevelsByCourse.entrySet()) {
+            String courseName = entry.getKey();
+            int levelCount = entry.getValue().size();
+
+            if (courseName.equals("Abacus Junior")) {
+                juniorCount = levelCount;
+            } else if (courseName.equals("Abacus Senior")) {
+                seniorCount = levelCount;
+            } else if (courseName.equals("Vedic Maths")) {
+                vedicCount = levelCount;
             }
         }
 
-        // Update individual TextViews
         if (juniorCount > 0) {
-            tvJunior1.setText("Selected: " +juniorCount);
+            tvJunior1.setText("Selected: " + juniorCount);
         }
 
         if (seniorCount > 0) {
-            tvSenior1.setText("Selected: " +seniorCount);
+            tvSenior1.setText("Selected: " + seniorCount);
         }
 
         if (vedicCount > 0) {
-            tvVedic1.setText("Selected: " +vedicCount);
+            tvVedic1.setText("Selected: " + vedicCount);
         }
     }
 }

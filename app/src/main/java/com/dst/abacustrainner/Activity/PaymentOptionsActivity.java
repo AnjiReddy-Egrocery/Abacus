@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -27,6 +28,10 @@ public class PaymentOptionsActivity extends AppCompatActivity {
 
     LinearLayout layoutBack;
 
+    private String cartType;
+    private ArrayList<String> cartTypes;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +42,8 @@ public class PaymentOptionsActivity extends AppCompatActivity {
         btnPhonePe = findViewById(R.id.btnPhonePe);
         btnPaytm = findViewById(R.id.btnPaytm);
         layoutBack = findViewById(R.id.fragment_container);
+
+        cartTypes = getIntent().getStringArrayListExtra("cartTypes");
 
 
         layoutBack.setOnClickListener(new View.OnClickListener() {
@@ -115,16 +122,22 @@ public class PaymentOptionsActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("purchases", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
-        // Mark payment as successful (one-time flag)
-        editor.putBoolean("payment_success", true);
+        if (cartTypes != null) {
+            for (String type : cartTypes) {
+                editor.putBoolean(type + "_purchased", true);  // video_purchased / live_purchased
+            }
+        }
 
-        // Mark user has purchased something permanently
         editor.putBoolean("has_purchased", true);
-
         editor.apply();
-        // Navigate to Dashboard with intent
+
+        // Debug Log
+        boolean videoPurchased = prefs.getBoolean("video_purchased", false);
+        boolean livePurchased = prefs.getBoolean("live_purchased", false);
+        Log.d("DEBUG_PREFS", "Video: " + videoPurchased + " Live: " + livePurchased);
+
+        // Navigate back to HomeActivity
         Intent intent = new Intent(PaymentOptionsActivity.this, HomeActivity.class);
-        intent.putExtra("openHome", true);
         startActivity(intent);
         finish();
     }
@@ -134,7 +147,7 @@ public class PaymentOptionsActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = prefs.edit();
 
         CartManager cartManager = CartManager.getInstance(this);
-        Map<String, List<String>> selectedMap = cartManager.getSelectedLevelsByCourse();
+        Map<String, List<String>> selectedMap = cartManager.getSelectedLevelsByCourse(cartType);
 
         for (Map.Entry<String, List<String>> entry : selectedMap.entrySet()) {
             String course = entry.getKey();

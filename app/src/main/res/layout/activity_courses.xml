@@ -25,9 +25,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_margin="20dp"
-                android:id="@+id/layout_course_back">
+                >
                 <LinearLayout
-                    android:id="@+id/fragment_container"
+                    android:id="@+id/layout_course_back"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:orientation="vertical"

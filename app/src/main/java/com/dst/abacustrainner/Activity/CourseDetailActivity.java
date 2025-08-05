@@ -91,7 +91,7 @@ public class CourseDetailActivity extends AppCompatActivity {
         layoutCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CartManager.getInstance(CourseDetailActivity.this).getAllSelectedLevels().isEmpty()) {
+                if (CartManager.getInstance(getApplicationContext()).getAllSelectedLevels("live").isEmpty()) {
                     Toast.makeText(CourseDetailActivity.this, "Cart is empty", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(CourseDetailActivity.this, CartActivity.class);
@@ -105,10 +105,11 @@ public class CourseDetailActivity extends AppCompatActivity {
         });
 
         btnCart.setOnClickListener(v -> {
-            if (CartManager.getInstance(this).getAllSelectedLevels().isEmpty()) {
+            if (CartManager.getInstance(getApplicationContext()).getAllSelectedLevels("live").isEmpty()) {
                 Toast.makeText(CourseDetailActivity.this, "Cart is empty", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(CourseDetailActivity.this, CartActivity.class);
+                intent.putExtra("cartType", "live");
                 startActivity(intent);
             }
         });
@@ -118,6 +119,7 @@ public class CourseDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(CourseDetailActivity.this, CoursesActivity.class);
+                intent.putExtra("cartType", "live");
                 startActivity(intent);
 
             }
@@ -132,9 +134,9 @@ public class CourseDetailActivity extends AppCompatActivity {
 
                 String levelText = ((TextView) row.findViewById(R.id.tvLevelText)).getText().toString();
                 if (isChecked) {
-                    cartManager.addLevel(courseName, levelText);
+                    CartManager.getInstance(getApplicationContext()).addLevel("live", courseName, levelText);
                 } else {
-                    cartManager.removeLevel(courseName,levelText);
+                    CartManager.getInstance(getApplicationContext()).removeLevel("live", courseName, levelText);
                 }
 
                 cb.setOnCheckedChangeListener(getLevelCheckboxListener(levelText, cb));
@@ -196,7 +198,7 @@ public class CourseDetailActivity extends AppCompatActivity {
             TextView tvDescription = row.findViewById(R.id.tvDescription);
 
             tv.setText(level);
-            cb.setChecked(cartManager.isSelected(level));
+            cb.setChecked(CartManager.getInstance(getApplicationContext()).isSelected("live", level));
             cb.setOnCheckedChangeListener(getLevelCheckboxListener(level, cb));
 
             // Dummy description - you can load based on level name
@@ -233,9 +235,9 @@ public class CourseDetailActivity extends AppCompatActivity {
     private CompoundButton.OnCheckedChangeListener getLevelCheckboxListener(String levelText, CheckBox cb) {
         return (buttonView, isChecked) -> {
             if (isChecked) {
-                cartManager.addLevel(courseName,levelText);
+                CartManager.getInstance(getApplicationContext()).addLevel("live", courseName, levelText);
             } else {
-                cartManager.removeLevel(courseName,levelText);
+                CartManager.getInstance(getApplicationContext()).removeLevel("live", courseName, levelText);
             }
             updateCartCount();
 
@@ -246,13 +248,19 @@ public class CourseDetailActivity extends AppCompatActivity {
     }
 
     private void updateCartCount() {
-        tvCartCount.setText(String.valueOf(cartManager.getCount()));
+        tvCartCount.setText(String.valueOf(cartManager.getTotalCartCount()));
     }
 
     private boolean allLevelsSelected() {
         for (String level : currentLevels) {
-            if (!cartManager.isSelected(level)) return false;
+            if (!CartManager.getInstance(getApplicationContext()).isSelected("live", level)) return false;
         }
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateCartCount();
     }
 }

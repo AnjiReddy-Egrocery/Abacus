@@ -28,6 +28,7 @@ public class CartActivity extends AppCompatActivity {
     private Button btnContinueShopping, btnCheckout;
     private final CartManager cart = CartManager.getInstance(this);
 
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,24 +44,18 @@ public class CartActivity extends AppCompatActivity {
         setupCartItems();
 
         btnContinueShopping.setOnClickListener(view -> {
-            Intent intent = new Intent(CartActivity.this, CoursesActivity.class);
+            Intent intent = new Intent(CartActivity.this, DetailsActivity.class);
             startActivity(intent);
         });
 
         btnCheckout.setOnClickListener(v -> {
+            ArrayList<String> selectedCartTypes = new ArrayList<>(cart.getAllTypes());
             Intent intent = new Intent(this, PaymentActivity.class);
+            intent.putStringArrayListExtra("cartTypes", selectedCartTypes);
             startActivity(intent);
         });
 
-        // Optional: Back button logic (if needed)
-        /*
-            layoutCartBack.setOnClickListener(view -> {
-            Intent intent = new Intent(CartActivity.this, HomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
-        });
-        */
+
     }
 
     private void setupCartItems() {
@@ -68,42 +63,54 @@ public class CartActivity extends AppCompatActivity {
         int total = 0;
 
         LayoutInflater inflater = LayoutInflater.from(this);
-        Map<String, List<String>> courseLevelMap = cart.getSelectedLevelsByCourse();
 
-        Log.d("CartLevels", "Selected Levels: " + courseLevelMap);
+        // Loop through all types (video, live, worksheet)
+        for (String cartType : cart.getAllTypes()) {
+            Map<String, List<String>> courseLevelMap = cart.getSelectedLevelsByCourse(cartType);
 
-        for (Map.Entry<String, List<String>> entry : courseLevelMap.entrySet()) {
-            String courseName = entry.getKey();
-            List<String> levels = entry.getValue();
+            if (courseLevelMap.isEmpty()) continue;
 
-            // Show course name
-            TextView tvCourse = new TextView(this);
-            tvCourse.setText(courseName);
-            tvCourse.setTextSize(18);
-            tvCourse.setPadding(0, 16, 0, 8);
-            layoutCartItems.addView(tvCourse);
+            // Type Heading (Video Tutorials / Worksheets)
+            TextView tvTypeHeading = new TextView(this);
+            tvTypeHeading.setText(getTypeHeading(cartType));
+            tvTypeHeading.setTextSize(20);
+            tvTypeHeading.setPadding(0, 24, 0, 16);
+            layoutCartItems.addView(tvTypeHeading);
 
-            for (String level : levels) {
-                View row = inflater.inflate(R.layout.item_level_cart, layoutCartItems, false);
-                CheckBox cb = row.findViewById(R.id.checkboxLevel);
-                TextView tv = row.findViewById(R.id.tvLevelText);
+            for (Map.Entry<String, List<String>> entry : courseLevelMap.entrySet()) {
+                String courseName = entry.getKey();
+                List<String> levels = entry.getValue();
 
-                tv.setText(level);
-                cb.setOnCheckedChangeListener(null);
-                cb.setChecked(true);
+                // Show Course Name
+                TextView tvCourse = new TextView(this);
+                tvCourse.setText(courseName);
+                tvCourse.setTextSize(18);
+                tvCourse.setPadding(0, 16, 0, 8);
+                layoutCartItems.addView(tvCourse);
 
-                cb.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if (!isChecked) {
-                        cart.removeLevel(courseName, level);
-                        setupCartItems(); // refresh view
-                    }
-                });
+                for (String level : levels) {
+                    View row = inflater.inflate(R.layout.item_level_cart, layoutCartItems, false);
+                    CheckBox cb = row.findViewById(R.id.checkboxLevel);
+                    TextView tv = row.findViewById(R.id.tvLevelText);
 
-                row.setOnClickListener(v -> cb.setChecked(!cb.isChecked()));
-                layoutCartItems.addView(row);
-                total += extractPrice(level);
+                    tv.setText(level);
+                    cb.setOnCheckedChangeListener(null);
+                    cb.setChecked(true);
+
+                    cb.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        if (!isChecked) {
+                            cart.removeLevel(cartType, courseName, level);
+                            setupCartItems(); // refresh view
+                        }
+                    });
+
+                    row.setOnClickListener(v -> cb.setChecked(!cb.isChecked()));
+                    layoutCartItems.addView(row);
+                    total += extractPrice(level);
+                }
             }
         }
+
         tvTotalAmount.setText("Total: ₹" + total);
     }
 
@@ -113,6 +120,18 @@ public class CartActivity extends AppCompatActivity {
             return Integer.parseInt(num);
         } catch (Exception e) {
             return 0;
+        }
+    }
+
+    private String getTypeHeading(String type) {
+        switch (type) {
+            case "video":
+                return "Video Tutorials";
+            case "live":
+                return "Worksheets";
+
+            default:
+                return "Other Items";
         }
     }
 }

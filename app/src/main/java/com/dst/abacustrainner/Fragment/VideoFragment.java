@@ -34,32 +34,41 @@ public class VideoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.video_fragment,container,false);
 
-        /*btnYes = view.findViewById(R.id.btn_yes);
-        btnNo = view.findViewById(R.id.btn_no);
+        if (isFirstTime()) {
+            showSubscriptionDialog();  // Show dialog only first time
+            setFirstTimeFalse();       // Set flag false after showing
+        } else {
+            // Directly open CoursesActivity
+            Intent intent = new Intent(getContext(), VideoCoursesActivity.class);
+            startActivity(intent);
+        }
 
-        btnYes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to courses page
-                Intent intent = new Intent(getContext(), CoursesVideoActivity.class);
-                startActivity(intent);
-                //finish(); // optional
-            }
-        });
-
-        btnNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Go back to dashboard
-                Intent intent = new Intent(getContext(), HomeActivity.class);
-                startActivity(intent);
-                //finish(); // optional
-            }
-        });*/
-
-        showSubscriptionDialog();
+        //showSubscriptionDialog();
 
         return view;
+    }
+
+    private void navigateToHomeFragment() {
+        HomeFragment homeFragment = new HomeFragment();
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.flFragment, homeFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+
+
+    private boolean isFirstTime() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("worksheet_prefs", getContext().MODE_PRIVATE);
+        return prefs.getBoolean("isFirstTimeDialogShown", true);
+    }
+
+    private void setFirstTimeFalse() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("worksheet_prefs", getContext().MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("isFirstTimeDialogShown", false);
+        editor.apply();
     }
     @SuppressLint("MissingInflatedId")
     private void showSubscriptionDialog() {
@@ -84,12 +93,7 @@ public class VideoFragment extends Fragment {
 
         btnNo.setOnClickListener(v -> {
             // Example selected levels list
-            HomeFragment homeFragment = new HomeFragment();
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.flFragment, homeFragment); // Replace with correct container ID
-            fragmentTransaction.addToBackStack(null); // Optional: adds to back stack
-            fragmentTransaction.commit();
+            navigateToHomeFragment();
             dialog.dismiss();
         });
         ;
