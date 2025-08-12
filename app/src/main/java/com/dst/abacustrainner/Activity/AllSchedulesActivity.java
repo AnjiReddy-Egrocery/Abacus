@@ -61,6 +61,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
     LinearLayout loadingLayout;
 
     ProgressBar progressBar;
+    String Hi;
     private LinearLayout currentlyOpenLayout = null;
 
     @SuppressLint("MissingInflatedId")
