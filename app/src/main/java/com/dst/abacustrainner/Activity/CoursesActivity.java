@@ -1,7 +1,9 @@
 package com.dst.abacustrainner.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dst.abacustrainner.Fragment.HomeFragment;
 import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.Model.Courses;
 import com.dst.abacustrainner.R;
@@ -51,8 +54,10 @@ public class CoursesActivity extends AppCompatActivity {
         btnSubscribeSenior = findViewById(R.id.btnSubscribeSenior);
         btnSubscribeVedic = findViewById(R.id.btnSubscribeVedic);
 
-        studentId  = getIntent().getStringExtra("studentId");
-        batchId = getIntent().getStringExtra("batchId");
+        studentId = getIntent().getStringExtra("studentId");
+        batchId   = getIntent().getStringExtra("batchId");
+
+        Log.d("Reddy", "Received studentId=" + studentId + " batchId=" + batchId);
 
         // Reset all 3 course counts first to empty
         tvJunior = findViewById(R.id.tvSelectedCountJunior);
@@ -109,8 +114,11 @@ public class CoursesActivity extends AppCompatActivity {
         layoutCourseBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Log.d("Reddy", "Back clicked, going to HomeActivity");
+                Log.d("Reddy", "Passing studentId=" + studentId + " batchId=" + batchId);
+
                 Intent intent = new Intent(CoursesActivity.this, HomeActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("studentId", studentId);
                 intent.putExtra("batchId", batchId);
                 startActivity(intent);
@@ -161,5 +169,14 @@ public class CoursesActivity extends AppCompatActivity {
         if (vedicCount > 0) {
             tvVedic.setText("Selected: " +vedicCount);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra("studentId", studentId);
+        intent.putExtra("batchId", batchId);
+        startActivity(intent);
+        finish();
     }
 }

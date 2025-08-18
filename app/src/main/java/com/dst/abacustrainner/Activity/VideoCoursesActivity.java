@@ -3,6 +3,7 @@ package com.dst.abacustrainner.Activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +28,8 @@ public class VideoCoursesActivity extends AppCompatActivity {
     LinearLayout layoutCourseBack;
     TextView tvJunior1, tvSenior1, tvVedic1;
     LinearLayout layoutAccordionJunior1,layoutAccordionSenior1,layoutAccordionVedic1;
-
+    String studentId;
+    String batchId;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,10 @@ public class VideoCoursesActivity extends AppCompatActivity {
         btnSubscribeSenior1= findViewById(R.id.btnSubscribeSenior1);
         btnSubscribeVedic1 = findViewById(R.id.btnSubscribeVedic1);
 
+        studentId = getIntent().getStringExtra("studentId");
+        batchId   = getIntent().getStringExtra("batchId");
+
+        Log.d("Reddy", "Received studentId=" + studentId + " batchId=" + batchId);
 
         // Reset all 3 course counts first to empty
         tvJunior1 = findViewById(R.id.tvSelectedCountJunior1);
@@ -102,7 +108,10 @@ public class VideoCoursesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(VideoCoursesActivity.this, HomeActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                intent.putExtra("studentId", studentId);
+                intent.putExtra("batchId", batchId);
+
                 startActivity(intent);
                 finish(); // optional: closes current activity
             }
@@ -154,5 +163,14 @@ public class VideoCoursesActivity extends AppCompatActivity {
         if (vedicCount > 0) {
             tvVedic1.setText("Selected: " + vedicCount);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra("studentId", studentId);
+        intent.putExtra("batchId", batchId);
+        startActivity(intent);
+        finish();
     }
 }

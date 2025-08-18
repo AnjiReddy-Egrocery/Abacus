@@ -95,11 +95,6 @@ public class HomeFragment extends Fragment {
         txtCompleted = view.findViewById(R.id.txt_Completed);
         txtRemaining = view.findViewById(R.id.txt_upComing);
         imageCalender = view.findViewById(R.id.image_calender);
-
-
-
-
-
         layoutSchedule = view.findViewById(R.id.layou_schedule);
         layoutScheduleInfo = view.findViewById(R.id.layout_schedule_information);
         layoutPurchasedSection = view.findViewById(R.id.layout_purchased_section);

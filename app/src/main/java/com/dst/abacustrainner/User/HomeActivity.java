@@ -1,6 +1,7 @@
 package com.dst.abacustrainner.User;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -99,9 +100,6 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             Toast.makeText(HomeActivity.this, "Student ID not available. Please log in again.", Toast.LENGTH_LONG).show();
         }
-
-
-
         // Pass navigateTo to HomeFragment as argument
         String navigateTo = getIntent().getStringExtra("navigate_to");  // "video" or "live"
 
@@ -115,6 +113,23 @@ public class HomeActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.flFragment, homeFragment)
                 .commit();
+
+
+        String studentId = getIntent().getStringExtra("studentId");
+        String batchId = getIntent().getStringExtra("batchId");
+        Log.d("HomeActivity", "Received studentId=" + studentId + " batchId=" + batchId);
+
+        HomeFragment homeFragment1 = new HomeFragment();
+        Bundle bundle1 = new Bundle();
+        bundle1.putString("studentId", studentId);
+        bundle1.putString("batchId", batchId);
+        homeFragment.setArguments(bundle1);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.flFragment, homeFragment1)
+                .commit();
+
 
 
 
@@ -162,7 +177,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void loadHomeFragmentWithStudentId(String studentId) {
-
+        Log.d("CoursesActivity", "Loading HomeFragment with studentId = " + studentId);
         Bundle bundle = new Bundle();
         bundle.putString("studentId", studentId);
         bundle.putString("batchId",batchId);
@@ -174,6 +189,8 @@ public class HomeActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.flFragment, homeFragment)
                 .commit();
+
+        Log.d("Reddy", "HomeFragment replaced successfully with studentId=" + studentId + " batchId=" + batchId);
     }
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -404,6 +421,12 @@ public class HomeActivity extends AppCompatActivity {
     private void videotutorialsmethod() {
 
         VideoFragment videoFragment = new VideoFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("studentId", studentId);
+        bundle.putString("batchId", batchId);
+        Log.d("Reddy", "Passing to WorkSheetFragment → studentId=" + studentId + " batchId=" + batchId);
+        // Attach bundle to fragment
+        videoFragment.setArguments(bundle);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.flFragment, videoFragment)
@@ -412,6 +435,14 @@ public class HomeActivity extends AppCompatActivity {
 
     private void WorksheetSubscriptionMethod() {
         WorkSheetFragment workSheetFragment = new WorkSheetFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("studentId", studentId);
+        bundle.putString("batchId", batchId);
+        Log.d("Reddy", "Passing to WorkSheetFragment → studentId=" + studentId + " batchId=" + batchId);
+        // Attach bundle to fragment
+        workSheetFragment.setArguments(bundle);
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.flFragment, workSheetFragment)

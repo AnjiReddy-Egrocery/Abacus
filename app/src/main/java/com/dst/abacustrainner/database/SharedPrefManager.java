@@ -41,6 +41,7 @@ public class SharedPrefManager {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=sharedPreferences.edit();
         editor.putString(STUDENT_ID,userInfo.getResult().getStudentId());
+
         editor.putString(FIRST_NAME,userInfo.getResult().getFirstName());
         editor.putString(LAST_NAME,userInfo.getResult().getLastName());
         editor.putString(EMAIL_ID,userInfo.getResult().getEmailId());

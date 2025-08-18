@@ -3,6 +3,7 @@ package com.dst.abacustrainner.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,14 @@ public class WorkSheetFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.worksheet_fragment,container,false);
+        if (getArguments() != null) {
+           studentId = getArguments().getString("studentId");
+           batchId   = getArguments().getString("batchId");
+
+            Log.d("Reddy", "Received studentId=" + studentId + " batchId=" + batchId);
+        } else {
+            Log.d("Reddy", "Arguments bundle is null!");
+        }
 
         if (isFirstTime()) {
             showSubscriptionDialog();  // Show dialog only first time
@@ -38,8 +47,11 @@ public class WorkSheetFragment extends Fragment {
         } else {
             // Directly open CoursesActivity
             Intent intent = new Intent(getContext(), CoursesActivity.class);
+            intent.putExtra("studentId", studentId);
+            intent.putExtra("batchId", batchId);
             startActivity(intent);
         }
+
 
         return view;
     }
@@ -82,6 +94,8 @@ public class WorkSheetFragment extends Fragment {
 
         btnYes.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), CoursesActivity.class);
+            intent.putExtra("studentId", studentId);
+            intent.putExtra("batchId", batchId);
             startActivity(intent);
             dialog.dismiss();
         });
