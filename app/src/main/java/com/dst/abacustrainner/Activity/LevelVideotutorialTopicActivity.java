@@ -14,7 +14,9 @@ import com.dst.abacustrainner.Adapter.VideoTopicsAdapter;
 import com.dst.abacustrainner.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LevelVideotutorialTopicActivity extends AppCompatActivity {
 
@@ -23,6 +25,8 @@ public class LevelVideotutorialTopicActivity extends AppCompatActivity {
     private List<String> topicsList = new ArrayList<>();
     private String levelName;
     LinearLayout layoutBack;
+
+    Map<String, String> topicUrls = new HashMap<>();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -44,9 +48,9 @@ public class LevelVideotutorialTopicActivity extends AppCompatActivity {
         // Load static topics based on level
         loadTopicsForLevel(levelName);
 
-        adapter = new VideoTopicsAdapter(topicsList, levelName, this);
+        /*adapter = new  VideoTopicsAdapter(topicsList, topicUrls,levelName, this);
         recyclerTopics.setLayoutManager(new LinearLayoutManager(this));
-        recyclerTopics.setAdapter(adapter);
+        recyclerTopics.setAdapter(adapter);*/
     }
 
     private void loadTopicsForLevel(String level) {
@@ -62,12 +66,29 @@ public class LevelVideotutorialTopicActivity extends AppCompatActivity {
             topicsList.add("Subtraction");
             topicsList.add("Multiplication");
             topicsList.add("Division");
-            topicsList.add("qube");
+            topicsList.add("Qube");
             topicsList.add("SquareRoot");
             topicsList.add("Numaric Root");
             topicsList.add("Genaric Root");
+        }
+
+        // 👇 put your sampleUrl mapping here (for ALL topics)
+        String sampleUrl = "https://media.geeksforgeeks.org/wp-content/uploads/20201217163353/Screenrecorder-2020-12-17-16-32-03-350.mp4";
+
+        topicUrls.put("Addition", sampleUrl);
+        topicUrls.put("Subtraction", sampleUrl);
+        topicUrls.put("Multiplication", sampleUrl);
+        topicUrls.put("Division", sampleUrl);
+        topicUrls.put("Qube", sampleUrl);
+        topicUrls.put("SquareRoot", sampleUrl);
+        topicUrls.put("Numaric Root", sampleUrl);
+        topicUrls.put("Genaric Root", sampleUrl);
+
+        // 👇 initialize adapter
+        adapter = new VideoTopicsAdapter(topicsList, topicUrls, levelName, this);
+        recyclerTopics.setLayoutManager(new LinearLayoutManager(this));
+        recyclerTopics.setAdapter(adapter);
 
         }
     }
 
-}

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dst.abacustrainner.Activity.LevelExamPracticeActivity;
 import com.dst.abacustrainner.Activity.LevelExamvisualizationPracticeActivity;
 import com.dst.abacustrainner.Activity.LevelResultActivity;
+import com.dst.abacustrainner.Activity.LevelVideotutorialTopicActivity;
 import com.dst.abacustrainner.Activity.LevelVisualiztionResultActivity;
 import com.dst.abacustrainner.Activity.VideoPlayerActivity;
 import com.dst.abacustrainner.R;
@@ -32,14 +34,14 @@ public class VideoTopicsAdapter extends RecyclerView.Adapter<VideoTopicsAdapter.
     private Context context;
     private int expandedPosition = -1;
 
-    public VideoTopicsAdapter(List<String> topics, String levelName, Context context) {
-        this.topics = topics;
+
+
+    public VideoTopicsAdapter(List<String> topicsList, Map<String, String> topicUrls, String levelName, LevelVideotutorialTopicActivity context) {
+        this.topics = topicsList;
         this.levelName = levelName;
         this.context = context;
 
-        topicUrls = new HashMap<>();
-        topicUrls.put("Addition", "https://media.geeksforgeeks.org/wp-content/uploads/20201217163353/Screenrecorder-2020-12-17-16-32-03-350.mp4");
-
+        this.topicUrls = topicUrls;
     }
 
     @NonNull
@@ -56,11 +58,15 @@ public class VideoTopicsAdapter extends RecyclerView.Adapter<VideoTopicsAdapter.
 
         holder.layoutVideo.setOnClickListener(v -> {
             String videoUrl = topicUrls.get(topic);
-            Intent intent = new Intent(context, VideoPlayerActivity.class);
-            intent.putExtra("VIDEO_URL", videoUrl);
-            context.startActivity(intent);
-        });
 
+            if (videoUrl != null && !videoUrl.isEmpty()) {
+                Intent intent = new Intent(context, VideoPlayerActivity.class);
+                intent.putExtra("VIDEO_URL", videoUrl);
+                context.startActivity(intent);
+            } else {
+                Toast.makeText(context, "Video not available for " + topic, Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 

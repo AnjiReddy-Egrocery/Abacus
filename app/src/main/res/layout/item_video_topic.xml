@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp"
     android:background="@drawable/bg_level_item"
     android:gravity="center_vertical"
     android:clickable="true"
@@ -30,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="12dp"
+                android:layout_margin="6dp"
                 android:id="@+id/layout_video"
                 android:gravity="center_vertical">
 

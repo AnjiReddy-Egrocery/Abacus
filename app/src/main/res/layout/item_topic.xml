@@ -4,7 +4,6 @@ android:id="@+id/layoutLevelRow"
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:orientation="vertical"
-android:padding="12dp"
 android:background="@drawable/bg_level_item"
 android:gravity="center_vertical"
 android:clickable="true"
@@ -15,7 +14,7 @@ android:layout_margin="4dp">
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="4dp"
         card_view:cardCornerRadius="12dp"
         card_view:cardElevation="6dp"
         android:foreground="?android:attr/selectableItemBackground"
@@ -30,7 +29,7 @@ android:layout_margin="4dp">
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="12dp"
+                android:layout_margin="6dp"
                 android:gravity="center_vertical">
 
 
