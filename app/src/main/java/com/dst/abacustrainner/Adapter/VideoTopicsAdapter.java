@@ -17,13 +17,17 @@ import com.dst.abacustrainner.Activity.LevelExamPracticeActivity;
 import com.dst.abacustrainner.Activity.LevelExamvisualizationPracticeActivity;
 import com.dst.abacustrainner.Activity.LevelResultActivity;
 import com.dst.abacustrainner.Activity.LevelVisualiztionResultActivity;
+import com.dst.abacustrainner.Activity.VideoPlayerActivity;
 import com.dst.abacustrainner.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class VideoTopicsAdapter extends RecyclerView.Adapter<VideoTopicsAdapter.TopicViewHolder> {
 
     private List<String> topics;
+    private Map<String, String> topicUrls;
     private String levelName;
     private Context context;
     private int expandedPosition = -1;
@@ -32,6 +36,10 @@ public class VideoTopicsAdapter extends RecyclerView.Adapter<VideoTopicsAdapter.
         this.topics = topics;
         this.levelName = levelName;
         this.context = context;
+
+        topicUrls = new HashMap<>();
+        topicUrls.put("Addition", "https://media.geeksforgeeks.org/wp-content/uploads/20201217163353/Screenrecorder-2020-12-17-16-32-03-350.mp4");
+
     }
 
     @NonNull
@@ -45,6 +53,13 @@ public class VideoTopicsAdapter extends RecyclerView.Adapter<VideoTopicsAdapter.
     public void onBindViewHolder(@NonNull VideoTopicsAdapter.TopicViewHolder holder, int position) {
         String topic = topics.get(position);
         holder.tvTopicName.setText(topic);
+
+        holder.layoutVideo.setOnClickListener(v -> {
+            String videoUrl = topicUrls.get(topic);
+            Intent intent = new Intent(context, VideoPlayerActivity.class);
+            intent.putExtra("VIDEO_URL", videoUrl);
+            context.startActivity(intent);
+        });
 
 
     }

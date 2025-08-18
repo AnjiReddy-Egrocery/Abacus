@@ -31,7 +31,35 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.AbacusTrainer"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".Activity.VisualizationVideoResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.LevelVideoExamvisualizationPracticeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.LevelVideoResultVisualizationDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.LevelVideoVisualiztionResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ExamVideoPracticeResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.LevelVideoExamPracticeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.LevelVideoResultDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.LevelVideoResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.VideoPlayerActivity"
+            android:exported="false" />
         <activity
             android:name=".Activity.LevelVideotutorialTopicActivity"
             android:exported="false" />
