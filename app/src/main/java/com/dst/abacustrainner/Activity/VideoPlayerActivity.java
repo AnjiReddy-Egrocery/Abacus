@@ -34,6 +34,8 @@ public class VideoPlayerActivity extends AppCompatActivity {
     ImageView ivArrow;
     LinearLayout layoutPractice;
 
+    private String Hi;
+
     Button btnViewVideoResult, btnPracticeVideoNow,butPracticeVideoVisualization,butVisualizationVideoResult;
 
     @SuppressLint("MissingInflatedId")
