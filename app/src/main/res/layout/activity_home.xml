@@ -41,7 +41,7 @@
                     android:contentDescription="Profile Image"/>
                 <!-- Greeting Text -->
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text=""
@@ -51,11 +51,11 @@
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/txt_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Hello, Divya"
-                    android:layout_marginLeft="-80dp"
+                    android:layout_marginLeft="-70dp"
                     android:textColor="#fff"
                     android:textSize="18sp"
                     android:textStyle="bold" />

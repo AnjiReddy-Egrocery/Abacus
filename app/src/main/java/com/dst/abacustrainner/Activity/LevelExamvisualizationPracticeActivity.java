@@ -99,6 +99,8 @@ public class LevelExamvisualizationPracticeActivity extends AppCompatActivity {
     private String totalTime = ""; // Class-level variable to hold total time
     HorizontalScrollView scrollView;
 
+    private boolean isNextQuestion = false;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -674,18 +676,24 @@ public class LevelExamvisualizationPracticeActivity extends AppCompatActivity {
         return 0; // Default value if savedLevelData is null
     }
     private void restoreTimerState() {
-        currentTime = questionTimes.get(currentQuestionIndex);
-        // Update UI with the restored timer
-        if (currentTime == 0) {
-            // If the timer is zero, make txtTimer invisible
-            txtTimer.setVisibility(View.INVISIBLE);
+        if (isNextQuestion) {
+            // 🔥 Fresh start for next question
             currentTime = 0;
-            txtTimer.setText("Countdown: 0 sec");
-        } else {
-            // If the timer is not zero, make txtTimer visible
             txtTimer.setVisibility(View.VISIBLE);
-            txtTimer.setText("Countdown: " + currentTime / 1000 + " sec");
-            startTimer(); // Start the timer for the next question
+            txtTimer.setText("Countdown: 0 sec");
+            startTimer();
+            isNextQuestion = false; // reset flag
+        } else {
+            // 🔄 Review mode (restore old saved time)
+            currentTime = questionTimes.get(currentQuestionIndex);
+            if (currentTime == 0) {
+                txtTimer.setVisibility(View.INVISIBLE);
+                txtTimer.setText("Countdown: 0 sec");
+            } else {
+                txtTimer.setVisibility(View.VISIBLE);
+                txtTimer.setText("Countdown: " + currentTime / 1000 + " sec");
+                startTimer();
+            }
         }
     }
 
@@ -768,9 +776,9 @@ public class LevelExamvisualizationPracticeActivity extends AppCompatActivity {
             showCurrentQuestion();
             edtAnswer.getText().clear();
             currentTime = questionTimes.get(currentQuestionIndex);
-
+            isNextQuestion = true;
             restoreTimerState();
-            startTimer();
+            //startTimer();
         } else {
             Toast.makeText(LevelExamvisualizationPracticeActivity.this, "Level is Completed", Toast.LENGTH_SHORT).show();
             showCompletionPopup();
@@ -997,19 +1005,12 @@ public class LevelExamvisualizationPracticeActivity extends AppCompatActivity {
             disableComponents();
             String storedAnswer = answers.get(currentQuestionIndex);
             edtAnswer.setText(storedAnswer);
-            restoreTimerState();
 
-            if (currentTime == 0 && !isAnswerDisplayed) {
-                // If the timer was zero, start it for the next question
-                txtTimer.setVisibility(View.INVISIBLE);
-                currentTime = 0;
-                txtTimer.setText("Countdown: 0 sec");
-            } else {
-                // If the timer is not zero, update txtTimer visibility accordingly
-                txtTimer.setVisibility(View.VISIBLE);
-                txtTimer.setText("Countdown: " + currentTime / 1000 + " sec");
-                startTimer();
-            }
+            currentTime = 0;
+            txtTimer.setVisibility(View.VISIBLE);
+            txtTimer.setText("Countdown: 0 sec");
+            startTimer();
+
             String ans = edtAnswer.getText().toString();
             boolean isEmptyAnswer = ans.isEmpty();
 
@@ -1075,7 +1076,7 @@ public class LevelExamvisualizationPracticeActivity extends AppCompatActivity {
             }
             // Restore the timer state and start the timer for the selected question
 
-            startTimer();
+            //startTimer();
 
             // Invalidate GridLayout to ensure changes are visible
             gridLayout.invalidate();

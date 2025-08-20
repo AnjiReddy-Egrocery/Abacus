@@ -32,7 +32,7 @@
                 <ImageView
                     android:id="@+id/imgCourse"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="6dp"
                     android:padding="5dp"
                     android:src="@drawable/abacus_logo" />
@@ -47,7 +47,7 @@
                         android:layout_height="wrap_content"
                         android:text="Abacus Senior (10 Levels)"
                         android:textStyle="bold"
-                        android:textSize="18dp"
+                        android:textSize="16dp"
                         android:textColor="#000000" />
                     <TextView
                         android:id="@+id/tvAgeGroup"

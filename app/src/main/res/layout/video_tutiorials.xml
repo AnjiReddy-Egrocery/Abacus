@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp"
+            android:padding="10dp"
             android:gravity="center_horizontal">
 
             <TextView
@@ -30,11 +30,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Unlock full access to our interactive worksheets designed for all learning levels.\n\nPractice with targeted exercises to strengthen key concepts and skills.\n\nGet assessment sets to test your understanding and track your progress.\n\nSubscribe now to experience a complete and guided learning journey!"
-                android:textSize="17sp"
+                android:textSize="16dp"
                 android:textColor="#333333"
                 android:textStyle="bold"
-                android:lineSpacingExtra="6dp"
-                android:textAlignment="center"
+                android:lineSpacingExtra="2dp"
                 android:layout_marginBottom="24dp" />
 
             <TextView

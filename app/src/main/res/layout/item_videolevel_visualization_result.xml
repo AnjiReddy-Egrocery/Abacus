@@ -9,7 +9,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_margin="12dp"
+        android:layout_margin="10dp"
         android:layout_height="wrap_content">
 
         <TextView
@@ -23,18 +23,17 @@
         <TextView
             android:id="@+id/tvTime"
             android:text="Time"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"/>
+            android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/btnViewResult"
             android:text="View Result"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:layout_height="50dp"/>
+            android:layout_marginBottom="6dp"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

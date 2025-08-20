@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text=""
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="10dp"
                     android:textColor="#fff"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Hello, Divya"
-                    android:layout_marginLeft="-80dp"
+                    android:layout_marginLeft="-70dp"
                     android:textColor="#fff"
                     android:textSize="18sp"
                     android:textStyle="bold" />

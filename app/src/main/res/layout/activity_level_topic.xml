@@ -24,7 +24,7 @@
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:orientation="horizontal"
-             android:layout_margin="20dp"
+             android:layout_margin="10dp"
              android:id="@+id/layout_payment_back">
             <LinearLayout
                 android:id="@+id/fragment_container"

@@ -135,8 +135,37 @@ public class VideoPlayerActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (player == null) {
+            player = new ExoPlayer.Builder(this).build();
+            playerView.setPlayer(player);
+
+            MediaItem mediaItem = MediaItem.fromUri(Uri.parse(videoUrl));
+            player.setMediaItem(mediaItem);
+
+            SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+            playbackPosition = prefs.getLong(KEY_POSITION, 0);
+
+            player.seekTo(playbackPosition);
+            player.setPlayWhenReady(playWhenReady);
+            player.prepare();
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
+        if (player != null) {
+            player.release();
+            player = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         if (player != null) {
             player.release();
             player = null;
