@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class PurchasedActivity extends AppCompatActivity {
 
-    private LinearLayout layoutPurchasedLevels,layoutBack;
+    private LinearLayout layoutPurchasedLevels, layoutBack;
     private CartManager cartManager;
     private String cartType;
 
@@ -47,45 +47,47 @@ public class PurchasedActivity extends AppCompatActivity {
 
         displayPurchasedLevels();
     }
+
     @SuppressLint("MissingInflatedId")
     private void displayPurchasedLevels() {
 
-            LayoutInflater inflater = LayoutInflater.from(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
 
-            Map<String, List<String>> data = cartManager.getSelectedLevelsByCourse(cartType);
+        Map<String, List<String>> data = cartManager.getSelectedLevelsByCourse(cartType);
 
-            if (data.isEmpty()) {
-                Toast.makeText(this, "No purchased levels found", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        if (data.isEmpty()) {
+            Toast.makeText(this, "No purchased levels found", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            for (Map.Entry<String, List<String>> entry : data.entrySet()) {
-                String courseName = entry.getKey();
-                List<String> levels = entry.getValue();
+        for (Map.Entry<String, List<String>> entry : data.entrySet()) {
+            String courseName = entry.getKey();
+            List<String> levels = entry.getValue();
 
-                // Course Title
-                TextView courseTitle = new TextView(this);
-                courseTitle.setText("Course: " + courseName);
-                courseTitle.setTextSize(18f);
-                courseTitle.setPadding(8, 16, 8, 8);
+            // Course Title
+            TextView courseTitle = new TextView(this);
+            courseTitle.setText("Course: " + courseName);
+            courseTitle.setTextSize(18f);
+            courseTitle.setPadding(8, 16, 8, 8);
 
-                layoutPurchasedLevels.addView(courseTitle);
+            layoutPurchasedLevels.addView(courseTitle);
 
-                for (String level : levels) {
-                    View row = inflater.inflate(R.layout.item_level_purchased, layoutPurchasedLevels, false);
-                    TextView tv = row.findViewById(R.id.tvLevelText);
+            for (String level : levels) {
+                View row = inflater.inflate(R.layout.item_level_purchased, layoutPurchasedLevels, false);
+                TextView tv = row.findViewById(R.id.tvLevelText);
 
-                    tv.setText(level);
+                tv.setText(level);
 
-                    row.setOnClickListener(v -> {
-                        Intent intent = new Intent(PurchasedActivity.this, LevelTopicActivity.class);
-                        intent.putExtra("level_name", level);
-                        startActivity(intent);
-                    });
+                row.setOnClickListener(v -> {
+                    Intent intent = new Intent(PurchasedActivity.this, LevelTopicActivity.class);
+                    intent.putExtra("level_name", level);
+                    startActivity(intent);
+                });
 
-                    layoutPurchasedLevels.addView(row);
-                }
+                layoutPurchasedLevels.addView(row);
             }
         }
+    }
+
 
 }

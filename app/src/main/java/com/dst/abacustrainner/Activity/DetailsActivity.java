@@ -66,7 +66,7 @@ public class DetailsActivity extends AppCompatActivity {
         butVideoTutorials.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DetailsActivity.this, CoursesVideoActivity.class);
+                Intent intent = new Intent(DetailsActivity.this, VideoCoursesActivity.class);
                 startActivity(intent);
             }
         });

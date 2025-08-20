@@ -65,7 +65,7 @@ public class LevelTopicActivity extends AppCompatActivity {
             topicsList.add("Subtraction");
             topicsList.add("Multiplication");
             topicsList.add("Division");
-            topicsList.add("qube");
+            topicsList.add("cube");
             topicsList.add("SquareRoot");
             topicsList.add("Numaric Root");
             topicsList.add("Genaric Root");

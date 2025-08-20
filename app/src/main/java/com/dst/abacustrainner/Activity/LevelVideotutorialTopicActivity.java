@@ -66,7 +66,7 @@ public class LevelVideotutorialTopicActivity extends AppCompatActivity {
             topicsList.add("Subtraction");
             topicsList.add("Multiplication");
             topicsList.add("Division");
-            topicsList.add("Qube");
+            topicsList.add("cube");
             topicsList.add("SquareRoot");
             topicsList.add("Numaric Root");
             topicsList.add("Genaric Root");
@@ -79,7 +79,7 @@ public class LevelVideotutorialTopicActivity extends AppCompatActivity {
         topicUrls.put("Subtraction", sampleUrl);
         topicUrls.put("Multiplication", sampleUrl);
         topicUrls.put("Division", sampleUrl);
-        topicUrls.put("Qube", sampleUrl);
+        topicUrls.put("Cube", sampleUrl);
         topicUrls.put("SquareRoot", sampleUrl);
         topicUrls.put("Numaric Root", sampleUrl);
         topicUrls.put("Genaric Root", sampleUrl);
