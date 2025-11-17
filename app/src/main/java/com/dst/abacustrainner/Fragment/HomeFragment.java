@@ -103,7 +103,7 @@ public class HomeFragment extends Fragment {
         layoutData=view.findViewById(R.id.layout_data);
         progressBar= view.findViewById(R.id.progress);
         //layoutPlayWithNumbers=view.findViewById(R.id.layout_play_numbers);
-        //layoutvisualization=view.findViewById(R.id.layout_visualization);
+        layoutvisualization=view.findViewById(R.id.layout_visualization);
         calendar = Calendar.getInstance();
         updateDateText();
         //get the user id from sharedpref manager
@@ -157,7 +157,7 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("firstName",firsstname);
                 startActivity(intent);
             }
-        });
+        });*/
         layoutvisualization.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,7 +166,7 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("firstName",firsstname);
                 startActivity(intent);
             }
-        });*/
+        });
 
         SharedPreferences prefs = requireContext().getSharedPreferences("purchases", Context.MODE_PRIVATE);
 
