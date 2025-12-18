@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
 
         layoutData=view.findViewById(R.id.layout_data);
         progressBar= view.findViewById(R.id.progress);
-        //layoutPlayWithNumbers=view.findViewById(R.id.layout_play_numbers);
+        layoutPlayWithNumbers=view.findViewById(R.id.layout_play_number);
         layoutvisualization=view.findViewById(R.id.layout_visualization);
         calendar = Calendar.getInstance();
         updateDateText();
@@ -149,7 +149,7 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
-        /*layoutPlayWithNumbers.setOnClickListener(new View.OnClickListener() {
+        layoutPlayWithNumbers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(getContext(), PlayWithNumbersActivity.class);
@@ -157,7 +157,7 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("firstName",firsstname);
                 startActivity(intent);
             }
-        });*/
+        });
         layoutvisualization.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -401,7 +401,10 @@ public class HomeFragment extends Fragment {
                 if (response.isSuccessful()){
                     BachDetailsResponse bachDetailsResponse=response.body();
                     if (bachDetailsResponse.getErrorCode().equals("202")){
-                        Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
+                        Context ctx= getContext();
+                        if (ctx != null) {
+                            Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
+                        }
                     }else if (bachDetailsResponse.getErrorCode().equals("200")){
 
                         List<BachDetailsResponse.Result> results=bachDetailsResponse.getResult();
