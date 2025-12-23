@@ -405,6 +405,7 @@ public class HomeFragment extends Fragment {
                         if (ctx != null) {
                             Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
                         }
+
                     }else if (bachDetailsResponse.getErrorCode().equals("200")){
 
                         List<BachDetailsResponse.Result> results=bachDetailsResponse.getResult();

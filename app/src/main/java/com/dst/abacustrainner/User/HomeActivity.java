@@ -20,6 +20,10 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.signature.ObjectKey;
+import com.dst.abacustrainner.Activity.AboutUsActivity;
+import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
+import com.dst.abacustrainner.Activity.TermsConditionsActivity;
+import com.dst.abacustrainner.Activity.VisualiztionActivity;
 import com.dst.abacustrainner.Fragment.AIGenrationFragment;
 import com.dst.abacustrainner.Fragment.ClassFragment;
 
@@ -391,7 +395,7 @@ public class HomeActivity extends AppCompatActivity {
 
                videotutorialsmethod();
             }
-            /*else if (itemView == R.id.nav_play_with_numbers ) {
+            else if (itemView == R.id.nav_play ) {
                 Intent intent = new Intent(HomeActivity.this, PlayWithNumbersActivity.class);
                 intent.putExtra("studentId",studentId);
                 //intent.putExtra("firstName",firsstname);
@@ -400,7 +404,15 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomeActivity.this, VisualiztionActivity.class);
                 intent.putExtra("studentId",studentId);
                 startActivity(intent);
-            }else if (itemView == R.id.nav_exam) {
+            }else if (itemView == R.id.nav_about_us) {
+                Intent intent = new Intent(HomeActivity.this, AboutUsActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }else if (itemView == R.id.nav_terms_conditions) {
+                Intent intent = new Intent(HomeActivity.this, TermsConditionsActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }/*else if (itemView == R.id.nav_exam) {
                 selectedFragment = new AIGenrationFragment();
             }*/
 

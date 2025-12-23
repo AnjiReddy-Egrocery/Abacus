@@ -99,7 +99,7 @@ public class AllSchedulesActivity extends AppCompatActivity {
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/")
+                .baseUrl("Q/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();

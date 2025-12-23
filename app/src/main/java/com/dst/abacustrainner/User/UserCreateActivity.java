@@ -134,7 +134,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         edtDate=findViewById(R.id.edt_date);
         genderRadioGroup=findViewById(R.id.radio);
 
-        butSchools = findViewById(R.id.but_schools);
+        //butSchools = findViewById(R.id.but_schools);
 
         calendar = Calendar.getInstance();
 
@@ -169,12 +169,12 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
             }
         });
 
-        butSchools.setOnClickListener(new View.OnClickListener() {
+       /* butSchools.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SchoolsMethod();
             }
-        });
+        });*/
 
         layoutTextSignIn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -8,10 +8,10 @@ android {
 
     defaultConfig {
         applicationId "com.dst.abacustrainner"
-        minSdk 25
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        minSdk 21
+        targetSdk 35
+        versionCode 3
+        versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
