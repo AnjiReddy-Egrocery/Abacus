@@ -30,6 +30,7 @@ public class VerifyActivity extends AppCompatActivity {
     Button butVerify;
     String id,otp,email;
     EditText edtOtp,edtPassword,edtReEnterPwd;
+    String Hi;
 
     @SuppressLint("MissingInflatedId")
     @Override
