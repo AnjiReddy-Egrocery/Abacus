@@ -154,7 +154,7 @@
                         android:orientation="horizontal">
 
                         <!-- Purchase More Button -->
-                        <Button
+                        <!--<Button
                             android:id="@+id/btnPurchaseMore"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -163,13 +163,13 @@
                             android:layout_gravity="left"
                             android:backgroundTint="#FF5722"
                             android:textColor="#FFFFFF"
-                            android:minHeight="30dp" />
+                            android:minHeight="30dp" />-->
 
                         <Button
                             android:id="@+id/cart"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Go to Cart"
+                            android:text="Add to Cart"
                             android:textSize="18sp"
                             android:layout_marginLeft="10dp"
                             android:backgroundTint="#FF5722"

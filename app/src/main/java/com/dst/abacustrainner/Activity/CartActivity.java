@@ -44,7 +44,7 @@ public class CartActivity extends AppCompatActivity {
         setupCartItems();
 
         btnContinueShopping.setOnClickListener(view -> {
-            Intent intent = new Intent(CartActivity.this, DetailsActivity.class);
+            Intent intent = new Intent(CartActivity.this, CoursesActivity.class);
             startActivity(intent);
         });
 

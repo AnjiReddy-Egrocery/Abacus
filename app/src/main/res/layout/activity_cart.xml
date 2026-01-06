@@ -91,7 +91,7 @@
                     android:id="@+id/btnContinueShopping"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Continue to Shop"
+                    android:text="Continue to Puchase"
                     android:backgroundTint="#4d148c"
                     android:textColor="#FFF"/>
 

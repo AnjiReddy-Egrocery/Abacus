@@ -1,182 +1,162 @@
 package com.dst.abacustrainner.Activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ExpandableListView;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.dst.abacustrainner.Fragment.HomeFragment;
 import com.dst.abacustrainner.Model.CartManager;
-import com.dst.abacustrainner.Model.Courses;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.User.HomeActivity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class CoursesActivity extends AppCompatActivity {
 
-    Button btnPurchase1, btnPurchase2, btnPurchase3,btnSubscribejunior,btnSubscribeSenior,btnSubscribeVedic;
+    Button btnPurchase1, btnPurchase2, btnPurchase3;
+    Button btnSubscribejunior, btnSubscribeSenior, btnSubscribeVedic;
     LinearLayout layoutCourseBack;
+   // LinearLayout layoutAccordionJunior, layoutAccordionSenior, layoutAccordionVedic;
     TextView tvJunior, tvSenior, tvVedic;
-    LinearLayout layoutAccordionJunior,layoutAccordionSenior,layoutAccordionVedic;
-    String studentId;
-    String batchId;
 
+
+    String selectedDuration = "";
+
+    String studentId, batchId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses);
 
+        // Buttons
         btnPurchase1 = findViewById(R.id.btnPurchase1);
         btnPurchase2 = findViewById(R.id.btnPurchase2);
         btnPurchase3 = findViewById(R.id.btnPurchase3);
+
+        // Layouts
         layoutCourseBack = findViewById(R.id.layout_course_back);
-        layoutAccordionJunior = findViewById(R.id.layoutAccordionJunior);
-        layoutAccordionSenior = findViewById(R.id.layoutAccordionSenior);
-        layoutAccordionVedic = findViewById(R.id.layoutAccordionVedic);
-        btnSubscribejunior = findViewById(R.id.btnSubscribejunior);
-        btnSubscribeSenior = findViewById(R.id.btnSubscribeSenior);
-        btnSubscribeVedic = findViewById(R.id.btnSubscribeVedic);
 
+
+        // TextViews
+
+
+        // Intent data
         studentId = getIntent().getStringExtra("studentId");
-        batchId   = getIntent().getStringExtra("batchId");
+        batchId = getIntent().getStringExtra("batchId");
 
-        Log.d("Reddy", "Received studentId=" + studentId + " batchId=" + batchId);
-
-        // Reset all 3 course counts first to empty
-        tvJunior = findViewById(R.id.tvSelectedCountJunior);
-        tvSenior = findViewById(R.id.tvSelectedCountSenior);
-        tvVedic = findViewById(R.id.tvSelectedCountVedic);
-
-        btnPurchase1.setOnClickListener(v -> {
-            if (layoutAccordionJunior.getVisibility() == View.GONE) {
-                layoutAccordionJunior.setVisibility(View.VISIBLE);
-                layoutAccordionSenior.setVisibility(View.GONE);
-                layoutAccordionVedic.setVisibility(View.GONE);
-            } else {
-                layoutAccordionJunior.setVisibility(View.GONE);
-            }
-        });
-        btnPurchase2.setOnClickListener(v -> {
-            if (layoutAccordionSenior.getVisibility() == View.GONE) {
-                layoutAccordionSenior.setVisibility(View.VISIBLE);
-                layoutAccordionJunior.setVisibility(View.GONE);
-            } else {
-                layoutAccordionSenior.setVisibility(View.GONE);
-            }
-        });
-
-        btnPurchase3.setOnClickListener(v -> {
-            if (layoutAccordionVedic.getVisibility() == View.GONE) {
-                layoutAccordionVedic.setVisibility(View.VISIBLE);
-                layoutAccordionJunior.setVisibility(View.GONE);
-                layoutAccordionSenior.setVisibility(View.GONE);
-            } else {
-                layoutAccordionVedic.setVisibility(View.GONE);
-            }
-        });
+        Log.d("Reddy", "studentId=" + studentId + " batchId=" + batchId);
 
 
-        btnSubscribejunior.setOnClickListener(v -> {
-            Intent intent = new Intent(CoursesActivity.this, CourseDetailActivity.class);
-            intent.putExtra("course_name", "Abacus Junior");
-            startActivity(intent);
-        });
+        //setupAccordion();
+        //setupSubscribeButtons();
+        setupBack();
 
-        btnSubscribeSenior.setOnClickListener(v -> {
-            Intent intent = new Intent(CoursesActivity.this, CourseDetailActivity.class);
-            intent.putExtra("course_name", "Abacus Senior");
-            startActivity(intent);
-        });
-
-        btnSubscribeVedic.setOnClickListener(v -> {
-            Intent intent = new Intent(CoursesActivity.this, CourseDetailActivity.class);
-            intent.putExtra("course_name", "Vedic Maths");
-            startActivity(intent);
-        });
-
-        layoutCourseBack.setOnClickListener(new View.OnClickListener() {
+        btnPurchase1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-
-                Log.d("Reddy", "Back clicked, going to HomeActivity");
-                Log.d("Reddy", "Passing studentId=" + studentId + " batchId=" + batchId);
-
-                Intent intent = new Intent(CoursesActivity.this, HomeActivity.class);
-                intent.putExtra("studentId", studentId);
-                intent.putExtra("batchId", batchId);
+            public void onClick(View v) {
+                Intent intent = new Intent(CoursesActivity.this,CourseDetailActivity.class);
+                intent.putExtra("course_name", "Abacus Junior"); // MUST
                 startActivity(intent);
-                finish();
+            }
+        });
+
+
+        btnPurchase2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CoursesActivity.this,CourseDetailActivity.class);
+                intent.putExtra("course_name", "Abacus Senior");
+                startActivity(intent);
+            }
+        });
+
+        btnPurchase3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CoursesActivity.this,CourseDetailActivity.class);
+                intent.putExtra("course_name", "Vedic Maths");
+                startActivity(intent);
             }
         });
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateSelectedLevelBar();
+    // ================= ACCORDION =================
+   /* private void setupAccordion() {
+        btnPurchase1.setOnClickListener(v -> toggle(layoutAccordionJunior));
+        btnPurchase2.setOnClickListener(v -> toggle(layoutAccordionSenior));
+        btnPurchase3.setOnClickListener(v -> toggle(layoutAccordionVedic));
+    }
+*/
+/*    private void toggle(LinearLayout target) {
+        layoutAccordionJunior.setVisibility(View.GONE);
+        layoutAccordionSenior.setVisibility(View.GONE);
+        layoutAccordionVedic.setVisibility(View.GONE);
+
+        target.setVisibility(View.VISIBLE);
+    }*/
+
+    // ================= SUBSCRIBE =================
+    private void setupSubscribeButtons() {
+
+        btnSubscribejunior.setOnClickListener(v -> openDetails("Abacus Junior"));
+        btnSubscribeSenior.setOnClickListener(v -> openDetails("Abacus Senior"));
+        btnSubscribeVedic.setOnClickListener(v -> openDetails("Vedic Maths"));
     }
 
-    private void updateSelectedLevelBar() {
-        CartManager cart = CartManager.getInstance(getApplicationContext());
+    private void openDetails(String course) {
 
-        // Reset all TextViews to 0
-        tvJunior.setText("Selected: 0");
-        tvSenior.setText("Selected: 0");
-        tvVedic.setText("Selected: 0");
 
-        int juniorCount = 0;
-        int seniorCount = 0;
-        int vedicCount = 0;
+        Intent intent = new Intent(this, CourseDetailActivity.class);
+        intent.putExtra("course_name", course);
 
-        // Count levels based on price indicator
-        for (String level : cart.getAllSelectedLevels("live")) {
-            if (level.contains("₹50")) {
-                juniorCount++;
-            } else if (level.contains("₹70")) {
-                seniorCount++;
-            } else if (level.contains("₹100")) {
-                vedicCount++;
-            }
-        }
+        startActivity(intent);
+    }
 
-        // Update individual TextViews
-        if (juniorCount > 0) {
-            tvJunior.setText("Selected: " +juniorCount);
-        }
-
-        if (seniorCount > 0) {
-            tvSenior.setText("Selected: " +seniorCount);
-        }
-
-        if (vedicCount > 0) {
-            tvVedic.setText("Selected: " +vedicCount);
-        }
+    // ================= BACK =================
+    private void setupBack() {
+        layoutCourseBack.setOnClickListener(v -> goHome());
     }
 
     @Override
     public void onBackPressed() {
+        goHome();
+    }
+
+    private void goHome() {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.putExtra("studentId", studentId);
         intent.putExtra("batchId", batchId);
         startActivity(intent);
         finish();
     }
+
+    // ================= CART COUNTS =================
+ /*   @Override
+    protected void onResume() {
+        super.onResume();
+        updateSelectedLevelBar();
+    }*/
+
+    /*private void updateSelectedLevelBar() {
+        CartManager cart = CartManager.getInstance(getApplicationContext());
+
+        int junior = 0, senior = 0, vedic = 0;
+
+        for (String level : cart.getAllSelectedLevels("live")) {
+            if (level.contains("₹50")) junior++;
+            else if (level.contains("₹70")) senior++;
+            else if (level.contains("₹100")) vedic++;
+        }
+
+        tvJunior.setText("Selected: " + junior);
+        tvSenior.setText("Selected: " + senior);
+        tvVedic.setText("Selected: " + vedic);
+    }*/
 }

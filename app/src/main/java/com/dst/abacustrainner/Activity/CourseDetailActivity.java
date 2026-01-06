@@ -28,13 +28,13 @@ public class CourseDetailActivity extends AppCompatActivity {
     private TextView tvCourseTitle, tvCartCount;
     private CheckBox cbSelectAll;
     private LinearLayout layoutLevels,layoutCourseDetailBack;
-    private Button btnpurchasemore, btnCart;
+    private Button  btnCart;
     private ImageView ivCart;
 
     private String courseName;
     private String[] currentLevels;
 
-    private final CartManager cartManager = CartManager.getInstance(this);
+    private CartManager cartManager;
 
     private CompoundButton.OnCheckedChangeListener selectAllListener;
     private final Map<String, String> levelDescriptions = new HashMap<>();
@@ -49,12 +49,14 @@ public class CourseDetailActivity extends AppCompatActivity {
         tvCourseTitle = findViewById(R.id.tvCourseTitle);
         cbSelectAll = findViewById(R.id.cbSelectAll);
         layoutLevels = findViewById(R.id.layoutLevels);
-        btnpurchasemore = findViewById(R.id.btnPurchaseMore);
+
         btnCart = findViewById(R.id.cart);
         tvCartCount = findViewById(R.id.tvCartCount);
         ivCart = findViewById(R.id.ivCart);
         layoutCourseDetailBack = findViewById(R.id.layout_coursedetail_back);
         layoutCart = findViewById(R.id.layout_cart);
+
+        cartManager = CartManager.getInstance(this);
 
         courseName = getIntent().getStringExtra("course_name");
 
@@ -100,9 +102,7 @@ public class CourseDetailActivity extends AppCompatActivity {
             }
         });
 
-        btnpurchasemore.setOnClickListener(v -> {
-          finish();
-        });
+
 
         btnCart.setOnClickListener(v -> {
             if (CartManager.getInstance(getApplicationContext()).getAllSelectedLevels("live").isEmpty()) {
