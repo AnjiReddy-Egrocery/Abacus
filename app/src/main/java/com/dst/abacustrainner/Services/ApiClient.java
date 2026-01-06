@@ -33,12 +33,10 @@ public interface ApiClient {
     @POST("apicalls/Index/studentRegistration")
     Call<StudentRegistationResponse> studentRegisterPost( @Part("firstName") RequestBody firstName,
                                                           @Part("lastName") RequestBody lastName,
-                                                          @Part("emailId") RequestBody emailId,
-                                                          @Part("mobileNumber") RequestBody mobileNumber,
                                                           @Part("gender") RequestBody gender,
-                                                          @Part("motherTongue") RequestBody motherTongue,
-                                                          @Part("dateOfBirth") RequestBody dateOfBirth);
-
+                                                          @Part("dateOfBirth") RequestBody dateOfBirth,                                                           @Part("motherTongue") RequestBody motherTongue,
+                                                          @Part("emailId") RequestBody emailId,
+                                                          @Part("mobileNumber") RequestBody mobileNumber);
 
     @Multipart
     @POST("apicalls/Index/updateStudentProfile")

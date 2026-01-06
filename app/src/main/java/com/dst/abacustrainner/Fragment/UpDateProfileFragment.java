@@ -436,8 +436,14 @@ public class UpDateProfileFragment extends Fragment {
                     if (dateofBirth != null && dateofBirth.matches("\\d+")) {
                         // It's a timestamp, convert to readable date
                         long timestamp = Long.parseLong(dateofBirth) * 1000L; // convert to milliseconds
-                        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
-                        String formattedDate = sdf.format(new Date(timestamp));
+                        SimpleDateFormat sdf = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                            sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
+                        }
+                        String formattedDate = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                            formattedDate = sdf.format(new Date(timestamp));
+                        }
                         edtDateofbirth.setText(formattedDate);
                     } else {
                         // Already in readable format like "06-27-1989"

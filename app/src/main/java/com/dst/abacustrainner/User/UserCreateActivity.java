@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -97,6 +98,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
     private static final int RC_SIGN_IN = 9001;
     private static final int RC_SIGN_UP_WITH_GOOGLE = 9002;
     private static final int CREDENTIAL_PICKER_REQUEST = 1001;
+    private String apiDob = "";
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -156,18 +158,18 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
             }
         });
 
-        edtNumber.setOnClickListener(new View.OnClickListener() {
+     /*   edtNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 checkAndRequestPermissions();
             }
-        });
-        edtRegisterEmail.setOnClickListener(new View.OnClickListener() {
+        });*/
+        /*edtRegisterEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkPermissionAndShowAccounts();
             }
-        });
+        });*/
 
        /* butSchools.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,7 +228,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         });
     }
 
-    private void checkPermissionAndShowAccounts() {
+/*    private void checkPermissionAndShowAccounts() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -243,10 +245,10 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                 false, null, null, null, null
         );
         startActivityForResult(intent, REQUEST_CODE_EMAIL_PICKER);
-    }
+    }*/
 
 
-    private void checkAndRequestPermissions() {
+ /*   private void checkAndRequestPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Check both permissions
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED ||
@@ -261,9 +263,9 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                 getSimNumbers();
             }
         }
-    }
+    }*/
 
-    private void getSimNumbers() {
+/*    private void getSimNumbers() {
         showLoadingDialog(); // 👈 show loader
 
         ArrayList<String> simNumbers = new ArrayList<>();
@@ -306,7 +308,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         if (!simNumbers.isEmpty()) {
             showSimSelectionDialog(simNumbers);
         }
-    }
+    }*/
 
     private void showLoadingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -345,7 +347,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         builder.show();
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -368,7 +370,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         if (requestCode == 123 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             showAccountPicker();
         }
-    }
+    }*/
 
 
 
@@ -437,8 +439,15 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, day);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
-                edtDate.setText(dateFormat.format(calendar.getTime()));
+                // UI format (user friendly)
+                SimpleDateFormat uiFormat =
+                        new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                edtDate.setText(uiFormat.format(calendar.getTime()));
+
+                // API format (backend required)
+                SimpleDateFormat apiFormat =
+                        new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                apiDob = apiFormat.format(calendar.getTime());
             }
         };
         new DatePickerDialog(
@@ -535,7 +544,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                         && isValidEmail(registeremail)
                         && isValidMobileNumber(mobileNumber)) {
 
-                    registerMenthod(firstName, lastName, mobileNumber, registeremail, date, tongue);
+                    registerMenthod(firstName, lastName, mobileNumber, registeremail, apiDob, tongue);
                 } else {
                     Toast.makeText(UserCreateActivity.this, "Validation failed. Please check your input.", Toast.LENGTH_SHORT).show();
                 }
@@ -545,27 +554,31 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
 
     private void registerMenthod(String firstName, String lastName, String mobileNumber, String registeremail, String date, String tongue) {
         String selectedGender = getSelectedGender();
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        /*HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .addInterceptor(loggingInterceptor)
                 .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
         ApiClient apiClient=retrofit.create(ApiClient.class);
         RequestBody firstNamePart = RequestBody.create(MediaType.parse("text/plain"), firstName);
         RequestBody lastnamePart = RequestBody.create(MediaType.parse("text/plain"), lastName);
-        RequestBody mobilenumberPart = RequestBody.create(MediaType.parse("text/plain"), mobileNumber);
-        RequestBody emailPart = RequestBody.create(MediaType.parse("text/plain"), registeremail);
         RequestBody genderPart = RequestBody.create(MediaType.parse("text/plain"), selectedGender);
-        RequestBody mothertonguePart = RequestBody.create(MediaType.parse("text/plain"), tongue);
         RequestBody dateofbirthPart = RequestBody.create(MediaType.parse("text/plain"), date);
+        RequestBody mothertonguePart = RequestBody.create(MediaType.parse("text/plain"), tongue);
+        RequestBody emailPart = RequestBody.create(MediaType.parse("text/plain"), registeremail);
+        RequestBody mobilenumberPart = RequestBody.create(MediaType.parse("text/plain"), mobileNumber);
 
-        Call<StudentRegistationResponse> call=apiClient.studentRegisterPost(firstNamePart,lastnamePart,emailPart,mobilenumberPart,genderPart,mothertonguePart,dateofbirthPart);
+        Call<StudentRegistationResponse> call=apiClient.studentRegisterPost(firstNamePart,lastnamePart,genderPart,dateofbirthPart,mothertonguePart, emailPart,mobilenumberPart);
         call.enqueue(new Callback<StudentRegistationResponse>() {
             @Override
             public void onResponse(Call<StudentRegistationResponse> call, Response<StudentRegistationResponse> response) {

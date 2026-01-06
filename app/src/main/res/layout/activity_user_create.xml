@@ -511,8 +511,6 @@
                             android:paddingEnd="15dp"
                             android:fontFamily="@font/regular"
                             android:id="@+id/edt_email"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
                             android:inputType="textAutoComplete"
                             android:textColorHint="#000"/>
                         <TextView
@@ -535,8 +533,6 @@
                             android:fontFamily="@font/regular"
                             android:id="@+id/edt_number"
                             android:inputType="number"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
                             android:textColorHint="#000"/>
 
                         <Button
@@ -583,7 +579,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center"
-                            android:layout_marginBottom="20dp"
+                            android:layout_marginBottom="200dp"
                             android:id="@+id/layout_already_sign"
                             android:layout_marginTop="12dp"
                             android:weightSum="3">
