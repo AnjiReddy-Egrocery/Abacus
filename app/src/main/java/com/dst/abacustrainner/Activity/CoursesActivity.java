@@ -11,40 +11,44 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.dst.abacustrainner.Adapter.CoursesAdapter;
 import com.dst.abacustrainner.Model.CartManager;
+import com.dst.abacustrainner.Model.CoursesListResponse;
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.User.HomeActivity;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CoursesActivity extends AppCompatActivity {
 
-    Button btnPurchase1, btnPurchase2, btnPurchase3;
-    Button btnSubscribejunior, btnSubscribeSenior, btnSubscribeVedic;
+
     LinearLayout layoutCourseBack;
-   // LinearLayout layoutAccordionJunior, layoutAccordionSenior, layoutAccordionVedic;
-    TextView tvJunior, tvSenior, tvVedic;
-
-
-    String selectedDuration = "";
-
     String studentId, batchId;
+    RecyclerView recyclerView;
+    CoursesAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses);
 
-        // Buttons
-        btnPurchase1 = findViewById(R.id.btnPurchase1);
-        btnPurchase2 = findViewById(R.id.btnPurchase2);
-        btnPurchase3 = findViewById(R.id.btnPurchase3);
+
+
 
         // Layouts
         layoutCourseBack = findViewById(R.id.layout_course_back);
-
-
-        // TextViews
-
+        recyclerView = findViewById(R.id.recycler_courses_list);
 
         // Intent data
         studentId = getIntent().getStringExtra("studentId");
@@ -52,74 +56,49 @@ public class CoursesActivity extends AppCompatActivity {
 
         Log.d("Reddy", "studentId=" + studentId + " batchId=" + batchId);
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter = new CoursesAdapter(this);
+        recyclerView.setAdapter(adapter);
+
 
         //setupAccordion();
         //setupSubscribeButtons();
         setupBack();
 
-        btnPurchase1.setOnClickListener(new View.OnClickListener() {
+        loadCourses();
+
+
+
+    }
+
+    private void loadCourses() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+        Call<CoursesListResponse> call = apiClient.getCoursesList();
+        call.enqueue(new Callback<CoursesListResponse>() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CoursesActivity.this,CourseDetailActivity.class);
-                intent.putExtra("course_name", "Abacus Junior"); // MUST
-                startActivity(intent);
+            public void onResponse(Call<CoursesListResponse> call, Response<CoursesListResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    adapter.setData(response.body().getResult());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CoursesListResponse> call, Throwable t) {
+
             }
         });
 
-
-        btnPurchase2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CoursesActivity.this,CourseDetailActivity.class);
-                intent.putExtra("course_name", "Abacus Senior");
-                startActivity(intent);
-            }
-        });
-
-        btnPurchase3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CoursesActivity.this,CourseDetailActivity.class);
-                intent.putExtra("course_name", "Vedic Maths");
-                startActivity(intent);
-            }
-        });
     }
 
-
-    // ================= ACCORDION =================
-   /* private void setupAccordion() {
-        btnPurchase1.setOnClickListener(v -> toggle(layoutAccordionJunior));
-        btnPurchase2.setOnClickListener(v -> toggle(layoutAccordionSenior));
-        btnPurchase3.setOnClickListener(v -> toggle(layoutAccordionVedic));
-    }
-*/
-/*    private void toggle(LinearLayout target) {
-        layoutAccordionJunior.setVisibility(View.GONE);
-        layoutAccordionSenior.setVisibility(View.GONE);
-        layoutAccordionVedic.setVisibility(View.GONE);
-
-        target.setVisibility(View.VISIBLE);
-    }*/
-
-    // ================= SUBSCRIBE =================
-    private void setupSubscribeButtons() {
-
-        btnSubscribejunior.setOnClickListener(v -> openDetails("Abacus Junior"));
-        btnSubscribeSenior.setOnClickListener(v -> openDetails("Abacus Senior"));
-        btnSubscribeVedic.setOnClickListener(v -> openDetails("Vedic Maths"));
-    }
-
-    private void openDetails(String course) {
-
-
-        Intent intent = new Intent(this, CourseDetailActivity.class);
-        intent.putExtra("course_name", course);
-
-        startActivity(intent);
-    }
-
-    // ================= BACK =================
     private void setupBack() {
         layoutCourseBack.setOnClickListener(v -> goHome());
     }
@@ -137,26 +116,5 @@ public class CoursesActivity extends AppCompatActivity {
         finish();
     }
 
-    // ================= CART COUNTS =================
- /*   @Override
-    protected void onResume() {
-        super.onResume();
-        updateSelectedLevelBar();
-    }*/
 
-    /*private void updateSelectedLevelBar() {
-        CartManager cart = CartManager.getInstance(getApplicationContext());
-
-        int junior = 0, senior = 0, vedic = 0;
-
-        for (String level : cart.getAllSelectedLevels("live")) {
-            if (level.contains("₹50")) junior++;
-            else if (level.contains("₹70")) senior++;
-            else if (level.contains("₹100")) vedic++;
-        }
-
-        tvJunior.setText("Selected: " + junior);
-        tvSenior.setText("Selected: " + senior);
-        tvVedic.setText("Selected: " + vedic);
-    }*/
 }

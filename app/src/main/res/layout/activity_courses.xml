@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:gravity="center"
     tools:context=".Activity.AllSchedulesActivity">
 
@@ -57,36 +58,12 @@
                 android:layout_height="match_parent">
 
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#F5F5F5">
-
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:padding="12dp"
+                android:id="@+id/recycler_courses_list"/>
 
-                     <!-- Card 1: Abacus Junior -->
-                     <include
-
-                        layout="@layout/item_course_type1" />
-
-
-                    <!-- Card 2: Abacus Senior -->
-                    <include
-                          layout="@layout/item_course_type2" />
-
-
-
-                <!-- Card 3: Vedic Maths -->
-                    <include
-                         layout="@layout/item_course_type3" />
-
-                </LinearLayout>
-            </ScrollView>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

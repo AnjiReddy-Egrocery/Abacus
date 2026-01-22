@@ -12,7 +12,7 @@ import com.dst.abacustrainner.User.WelcomeActivity;
 
 public class SpalashActivity extends AppCompatActivity {
     private static final int SPLASH_SCREEN_DELAY = 3200;
-    String Hi;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

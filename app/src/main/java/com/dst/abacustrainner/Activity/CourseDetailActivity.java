@@ -1,10 +1,14 @@
 package com.dst.abacustrainner.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,29 +20,48 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dst.abacustrainner.Adapter.DurationAdapter;
+import com.dst.abacustrainner.Adapter.LevelsAdapter;
 import com.dst.abacustrainner.Model.CartManager;
+import com.dst.abacustrainner.Model.CourseLevel;
+import com.dst.abacustrainner.Model.CourseLevelResponse;
+import com.dst.abacustrainner.Model.DurationListResponse;
+import com.dst.abacustrainner.Model.LevelPriceResponse;
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.Services.ApiClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CourseDetailActivity extends AppCompatActivity {
 
-    private TextView tvCourseTitle, tvCartCount;
-    private CheckBox cbSelectAll;
-    private LinearLayout layoutLevels,layoutCourseDetailBack;
-    private Button  btnCart;
+
     private ImageView ivCart;
 
-    private String courseName;
-    private String[] currentLevels;
 
-    private CartManager cartManager;
-
-    private CompoundButton.OnCheckedChangeListener selectAllListener;
-    private final Map<String, String> levelDescriptions = new HashMap<>();
     RelativeLayout layoutCart;
+
+    String courseId;
+
+    RecyclerView recyclerViewDurationList, recyclerViewLevelList;
+    DurationAdapter durationAdapter;
+    LevelsAdapter levelsAdapter;
+    List<CourseLevel> levelList = new ArrayList<>();
+    private String selectedDurationId = null;
+    TextView txtAmount, txtLevel;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -46,49 +69,50 @@ public class CourseDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_detail);
 
-        tvCourseTitle = findViewById(R.id.tvCourseTitle);
-        cbSelectAll = findViewById(R.id.cbSelectAll);
-        layoutLevels = findViewById(R.id.layoutLevels);
 
-        btnCart = findViewById(R.id.cart);
-        tvCartCount = findViewById(R.id.tvCartCount);
+
         ivCart = findViewById(R.id.ivCart);
-        layoutCourseDetailBack = findViewById(R.id.layout_coursedetail_back);
+
         layoutCart = findViewById(R.id.layout_cart);
 
-        cartManager = CartManager.getInstance(this);
 
-        courseName = getIntent().getStringExtra("course_name");
 
-        if (courseName != null) {
-            switch (courseName) {
-                case "Abacus Junior":
-                    currentLevels = new String[]{
-                            "Junior_Level_1 - ₹50", "Junior_Level_2 - ₹50", "Junior_Level_3 - ₹50",
-                            "Junior_Level_Level 4 - ₹50", "Junior_Level_Level 5 - ₹50", "Junior_Level_Level 6 - ₹50"
-                    };
-                    break;
+        courseId = getIntent().getStringExtra("CoursesTypeId");
 
-                case "Abacus Senior":
-                    currentLevels = new String[]{
-                            "Senior_Level_1 - ₹70", "Senior_Level_2 - ₹70", "Senior_Level_3 - ₹70",
-                            "Senior_Level_4 - ₹70", "Senior_Level_5 - ₹70", "Senior_Level_6 - ₹70",
-                            "Senior_Level_7 - ₹70", "Senior_Level_8 - ₹70", "Senior_Level_9 - ₹70", "Senior_Level_10 - ₹70"
-                    };
-                    break;
+        Log.e("Reddy", courseId);
 
-                case "Vedic Maths":
-                    currentLevels = new String[]{
-                            "Vedic_Level_1 - ₹100", "Vedic_Level_2 - ₹100", "Vedic_Level_3 - ₹100", "Vedic_Level_4 - ₹100"
-                    };
-                    break;
+        recyclerViewDurationList = findViewById(R.id.recycler_course_duration);
+        recyclerViewDurationList.setLayoutManager(new GridLayoutManager(this,3));
 
-                default:
-                    currentLevels = new String[]{};
+        durationAdapter = new DurationAdapter(this, durationId -> {
+            selectedDurationId = durationId;
+            fetchPricesForLevels(durationId);
+        });
+        recyclerViewDurationList.setAdapter(durationAdapter);
+
+
+        recyclerViewLevelList = findViewById(R.id.recycler_course_levels);
+        recyclerViewLevelList.setLayoutManager(new LinearLayoutManager(this));
+        txtAmount = findViewById(R.id.txt_amount);
+        txtLevel = findViewById(R.id.txt_level);
+
+        levelsAdapter = new LevelsAdapter(this, new LevelsAdapter.OnLevelSelectListener() {
+            @Override
+            public boolean isDurationSelected() {
+                return selectedDurationId != null;
             }
-            setupLevelDescriptions();
-            showCourseLevels();
-        }
+
+            @Override
+            public void onLevelSelected(CourseLevel level) {
+                // 👉 Cart add logic ikada
+                /*CartManager.getInstance(getApplicationContext())
+                        .addLevel(level, selectedDurationId);*/
+                updateSummary();
+            }
+        });
+        recyclerViewLevelList.setAdapter(levelsAdapter);
+
+
 
         layoutCart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,164 +127,151 @@ public class CourseDetailActivity extends AppCompatActivity {
         });
 
 
+        loadDurations();
+        loadLevels(courseId);
 
-        btnCart.setOnClickListener(v -> {
-            if (CartManager.getInstance(getApplicationContext()).getAllSelectedLevels("live").isEmpty()) {
-                Toast.makeText(CourseDetailActivity.this, "Cart is empty", Toast.LENGTH_SHORT).show();
-            } else {
-                Intent intent = new Intent(CourseDetailActivity.this, CartActivity.class);
-                intent.putExtra("cartType", "live");
-                startActivity(intent);
+    }
+
+    private void updateSummary() {
+        int totalAmount = 0;
+        int selectedCount = 0;
+
+        for (CourseLevel level : levelList) {
+            if (level.isSelected() && level.getPrice() != null) {
+                selectedCount++;
+                totalAmount += Integer.parseInt(level.getPrice());
             }
-        });
+        }
+
+        txtAmount.setText("₹" + totalAmount + "/-");
+        txtLevel.setText(selectedCount + " levels selected");
+    }
+
+    private void fetchPricesForLevels(String  durationId) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor()
+                        .setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+
+        for (CourseLevel level : levelList) {
+
+            RequestBody levelIdBody =
+                    RequestBody.create(MediaType.parse("text/plain"),
+                            level.getCourseLevelId());
+
+            RequestBody durationIdBody =
+                    RequestBody.create(MediaType.parse("text/plain"),
+                            durationId);
+
+            apiClient.getLevelPrice(levelIdBody, durationIdBody)
+                    .enqueue(new Callback<LevelPriceResponse>() {
+                        @Override
+                        public void onResponse(Call<LevelPriceResponse> call,
+                                               Response<LevelPriceResponse> response) {
+
+                            if (response.isSuccessful()
+                                    && response.body() != null
+                                    && response.body().getResult() != null) {
+
+                                String price =
+                                        response.body().getResult().getPrice();
+
+                                level.setPrice(price);
+                                levelsAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<LevelPriceResponse> call, Throwable t) {
+                            Log.e("PRICE_ERROR", t.getMessage());
+                        }
+                    });
+        }
+    }
 
 
-        layoutCourseDetailBack.setOnClickListener(new View.OnClickListener() {
+
+    private void loadLevels(String courseId) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+        RequestBody levelPart = RequestBody.create(MediaType.parse("text/plain"), courseId);
+
+        Call<CourseLevelResponse> call = apiClient.updateLevelList(levelPart);
+        call.enqueue(new Callback<CourseLevelResponse>() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(CourseDetailActivity.this, CoursesActivity.class);
-                intent.putExtra("cartType", "live");
-                startActivity(intent);
+            public void onResponse(Call<CourseLevelResponse> call, Response<CourseLevelResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    CourseLevelResponse courseLevelResponse = response.body();
+
+                    if (courseLevelResponse.getResult() != null) {
+
+                        List<CourseLevel> levels =
+                                courseLevelResponse.getResult().getCourseLevels();
+                        levelList = levels;
+
+                        // 🔥 RecyclerView ki data set
+                        levelsAdapter.setLevels(levels);
+                    }
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<CourseLevelResponse> call, Throwable t) {
 
             }
         });
 
-        selectAllListener = (buttonView, isChecked) -> {
-            for (int i = 0; i < layoutLevels.getChildCount(); i++) {
-                View row = layoutLevels.getChildAt(i);
-                CheckBox cb = row.findViewById(R.id.checkboxLevel);
-                cb.setOnCheckedChangeListener(null);
-                cb.setChecked(isChecked);
+    }
 
-                String levelText = ((TextView) row.findViewById(R.id.tvLevelText)).getText().toString();
-                if (isChecked) {
-                    CartManager.getInstance(getApplicationContext()).addLevel("live", courseName, levelText);
-                } else {
-                    CartManager.getInstance(getApplicationContext()).removeLevel("live", courseName, levelText);
+    private void loadDurations() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+
+        Call<DurationListResponse> call= apiClient.getDurationList();
+        call.enqueue(new Callback<DurationListResponse>() {
+            @Override
+            public void onResponse(Call<DurationListResponse> call, Response<DurationListResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    durationAdapter.setData(response.body().getResult());
                 }
 
-                cb.setOnCheckedChangeListener(getLevelCheckboxListener(levelText, cb));
             }
-            updateCartCount();
-        };
 
-        cbSelectAll.setOnCheckedChangeListener(selectAllListener);
-    }
+            @Override
+            public void onFailure(Call<DurationListResponse> call, Throwable t) {
 
-    private void setupLevelDescriptions() {
-        switch (courseName) {
-            case "Abacus Junior":
-                levelDescriptions.put("Junior_Level_1 - ₹50", "Introduction to basic counting and bead movement.");
-                levelDescriptions.put("Junior_Level_2 - ₹50", "Addition and subtraction using the abacus.");
-                levelDescriptions.put("Junior_Level_3 - ₹50", "Intermediate level exercises.");
-                levelDescriptions.put("Junior_Level_Level 4 - ₹50", "Complex mental math patterns.");
-                levelDescriptions.put("Junior_Level_Level 5 - ₹50", "Speed and accuracy enhancement.");
-                levelDescriptions.put("Junior_Level_Level 6 - ₹50", "Mastery of junior level concepts.");
-                break;
-
-            case "Abacus Senior":
-                levelDescriptions.put("Senior_Level_1 - ₹70", "Introduction to advanced abacus techniques.");
-                levelDescriptions.put("Senior_Level_2 - ₹70", "Working with multiple-digit numbers.");
-                levelDescriptions.put("Senior_Level_3 - ₹70", "Speed training and advanced patterns.");
-                levelDescriptions.put("Senior_Level_4 - ₹70", "Introduction to advanced abacus techniques.");
-                levelDescriptions.put("Senior_Level_5 - ₹70", "Working with multiple-digit numbers.");
-                levelDescriptions.put("Senior_Level_6 - ₹70", "Speed training and advanced patterns.");
-                levelDescriptions.put("Senior_Level_7 - ₹70", "Introduction to advanced abacus techniques.");
-                levelDescriptions.put("Senior_Level_8 - ₹70", "Working with multiple-digit numbers.");
-                levelDescriptions.put("Senior_Level_9 - ₹70", "Speed training and advanced patterns.");
-                levelDescriptions.put("Senior_Level_10 - ₹70", "Speed training and advanced patterns.");
-                break;
-
-            case "Vedic Maths":
-                levelDescriptions.put("Vedic_Level_1 - ₹100", "Introduction to Vedic formulas.");
-                levelDescriptions.put("Vedic_Level_2 - ₹100", "Speed multiplication techniques.");
-                levelDescriptions.put("Vedic_Level_3 - ₹100", "Division tricks and patterns.");
-                levelDescriptions.put("Vedic_Level_4 - ₹100", "Advanced Vedic applications.");
-                break;
-
-            default:
-                // No descriptions
-        }
-    }
-
-    @SuppressLint("MissingInflatedId")
-    private void showCourseLevels() {
-        tvCourseTitle.setText(courseName);
-        layoutLevels.removeAllViews();
-
-        LayoutInflater inflater = LayoutInflater.from(this);
-
-        for (String level : currentLevels) {
-            View row = inflater.inflate(R.layout.item_level_row, layoutLevels, false);
-            CheckBox cb = row.findViewById(R.id.checkboxLevel);
-            TextView tv = row.findViewById(R.id.tvLevelText);
-            ImageView ivArrow = row.findViewById(R.id.ivArrow);
-            TextView tvDescription = row.findViewById(R.id.tvDescription);
-
-            tv.setText(level);
-            cb.setChecked(CartManager.getInstance(getApplicationContext()).isSelected("live", level));
-            cb.setOnCheckedChangeListener(getLevelCheckboxListener(level, cb));
-
-            // Dummy description - you can load based on level name
-            tvDescription.setText(levelDescriptions.getOrDefault(level, "No description available."));
-
-            // Arrow click listener to toggle description
-            ivArrow.setOnClickListener(v -> {
-                if (tvDescription.getVisibility() == View.GONE) {
-                    tvDescription.setVisibility(View.VISIBLE);
-                    ivArrow.setImageResource(R.drawable.baseline_keyboard_arrow_up_24);
-                } else {
-                    tvDescription.setVisibility(View.GONE);
-                    ivArrow.setImageResource(R.drawable.baseline_keyboard_arrow_down_24);
-                }
-            });
-
-            // Make the full row clickable
-            row.setOnClickListener(v -> {
-                boolean isChecked = !cb.isChecked();
-                cb.setChecked(isChecked); // this will trigger the listener
-            });
-
-            layoutLevels.addView(row);
-        }
-
-        cbSelectAll.setOnCheckedChangeListener(null);
-        cbSelectAll.setChecked(allLevelsSelected());
-        cbSelectAll.setOnCheckedChangeListener(selectAllListener);
-
-        updateCartCount();
-    }
-
-
-    private CompoundButton.OnCheckedChangeListener getLevelCheckboxListener(String levelText, CheckBox cb) {
-        return (buttonView, isChecked) -> {
-            if (isChecked) {
-                CartManager.getInstance(getApplicationContext()).addLevel("live", courseName, levelText);
-            } else {
-                CartManager.getInstance(getApplicationContext()).removeLevel("live", courseName, levelText);
             }
-            updateCartCount();
-
-            cbSelectAll.setOnCheckedChangeListener(null);
-            cbSelectAll.setChecked(allLevelsSelected());
-            cbSelectAll.setOnCheckedChangeListener(selectAllListener);
-        };
+        });
     }
 
-    private void updateCartCount() {
-        tvCartCount.setText(String.valueOf(cartManager.getTotalCartCount()));
-    }
-
-    private boolean allLevelsSelected() {
-        for (String level : currentLevels) {
-            if (!CartManager.getInstance(getApplicationContext()).isSelected("live", level)) return false;
-        }
-        return true;
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        updateCartCount();
+
     }
 }

@@ -213,7 +213,7 @@
                     android:orientation="vertical"
                     android:padding="8dp"
                     android:id="@+id/layout_purchased_section"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:layout_marginTop="12dp"
                     android:layout_marginLeft="14dp"
                     android:layout_marginRight="14dp">
@@ -231,11 +231,11 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="Purchased List"
-                                android:textSize="20dp"
+                                android:text="Purchased Worksheet Subscription List"
+                                android:textSize="18dp"
                                 android:textStyle="bold"
                                 android:textColor="#000"
-                                android:paddingStart="16dp"
+                                android:paddingStart="14dp"
                                 android:gravity="center"/>
 
 
@@ -246,29 +246,38 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:background="@drawable/bottom_card_view"
                         android:orientation="vertical">
 
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="100dp"
+                            android:layout_height="match_parent"
                             android:orientation="horizontal"
                             android:layout_marginRight="12dp"
                             android:layout_marginLeft="16dp"
                             android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
+                            android:layout_marginBottom="12dp"
                             android:gravity="center_vertical">
 
+                           <androidx.recyclerview.widget.RecyclerView
+                               android:layout_width="match_parent"
+                               android:layout_height="match_parent"
+                               android:visibility="visible"
+                               android:id="@+id/recycler_order_list"/>
+
                             <TextView
+                                android:id="@+id/tvEmptyMessage"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Work Sheet SubScription"
-                                android:textColor="#000"
-                                android:textSize="20dp"
-                                android:gravity="center"
-                                android:textStyle="bold"/>
+                                android:layout_marginLeft="5dp"
+                                android:gravity="center_vertical"
+                                android:text="Abacus Junior (6 Levels)"
+                                android:textStyle="bold"
+                                android:visibility="gone"
+                                android:textSize="16dp"
+                                android:textColor="#000000" />
 
 
                         </LinearLayout>

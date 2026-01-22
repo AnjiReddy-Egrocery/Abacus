@@ -176,11 +176,11 @@ public class RegisterActivity extends AppCompatActivity {
 
                       }else if (registrationResponse.getErrorCode() .equals("200")){
 
-                          String studentId="";
+                          String studentId="2251";
                           String otp="";
                           String parentEmailId="";
                           StudentRegistationResponse.Result list =registrationResponse.getResult();
-                          studentId=list.getStudentId();
+                         // studentId=list.getStudentId();
                           otp=list.getOtp();
                           parentEmailId=list.getParentEmail();
                           Intent intent = new Intent(RegisterActivity.this, VerifyActivity.class);

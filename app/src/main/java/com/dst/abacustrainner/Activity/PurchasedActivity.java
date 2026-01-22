@@ -1,27 +1,47 @@
 package com.dst.abacustrainner.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dst.abacustrainner.Adapter.CourseLevelAdapter;
+import com.dst.abacustrainner.Adapter.OrderListAdapter;
 import com.dst.abacustrainner.Model.CartManager;
+import com.dst.abacustrainner.Model.CourseListResponse;
+import com.dst.abacustrainner.Model.OrderListResponse;
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.Services.ApiClient;
 
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class PurchasedActivity extends AppCompatActivity {
 
-    private LinearLayout layoutPurchasedLevels, layoutBack;
+    private LinearLayout  layoutBack;
     private CartManager cartManager;
-    private String cartType;
+    private String studentId;
+    RecyclerView recyclerCourses;
+    CourseLevelAdapter courseLevelAdapter;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -30,63 +50,95 @@ public class PurchasedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_purchased);
 
 
-        layoutPurchasedLevels = findViewById(R.id.layoutPurchasedLevels);
-        layoutBack = findViewById(R.id.fragment_container);
 
-        cartType = getIntent().getStringExtra("cartType");
-        if (cartType == null) {
-            cartType = "live";  // Default fallback
-        }
+        layoutBack = findViewById(R.id.fragment_container);
+        recyclerCourses = findViewById(R.id.recycler_course);
+
+        studentId = getIntent().getStringExtra("StudentId");
+        Log.e("Reddy",studentId);
+
         layoutBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        cartManager = CartManager.getInstance(getApplicationContext());
 
-        displayPurchasedLevels();
+        recyclerCourses.setLayoutManager(new LinearLayoutManager(this));
+        courseLevelAdapter = new CourseLevelAdapter(this);
+        recyclerCourses.setAdapter(courseLevelAdapter);
+
+
+        loadCourses(studentId);
+
+
+
     }
 
-    @SuppressLint("MissingInflatedId")
-    private void displayPurchasedLevels() {
+    private void loadCourses(String studentId) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+        RequestBody CourseLevelPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
 
-        LayoutInflater inflater = LayoutInflater.from(this);
+        Call<CourseListResponse> call = apiClient.getCourseList(CourseLevelPart);
+        call.enqueue(new Callback<CourseListResponse>() {
+            @Override
+            public void onResponse(Call<CourseListResponse> call, Response<CourseListResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
 
-        Map<String, List<String>> data = cartManager.getSelectedLevelsByCourse(cartType);
+                    CourseListResponse res = response.body();
 
-        if (data.isEmpty()) {
-            Toast.makeText(this, "No purchased levels found", Toast.LENGTH_SHORT).show();
-            return;
-        }
+                    // ✅ SUCCESS CASE
+                    if ("200".equals(res.getErrorCode())) {
 
-        for (Map.Entry<String, List<String>> entry : data.entrySet()) {
-            String courseName = entry.getKey();
-            List<String> levels = entry.getValue();
+                        if (res.getResult() != null &&
+                                res.getResult().getCourseType() != null &&
+                                !res.getResult().getCourseType().isEmpty()) {
 
-            // Course Title
-            TextView courseTitle = new TextView(this);
-            courseTitle.setText("Course: " + courseName);
-            courseTitle.setTextSize(18f);
-            courseTitle.setPadding(8, 16, 8, 8);
+/*
+                            List<CourseListResponse.CourseLevels> levels =
+                                    res.getResult().getCourseLevels();
+*/
 
-            layoutPurchasedLevels.addView(courseTitle);
+                            List<CourseListResponse.CourseLevels> levels = res.getResult().getCourseLevels();
 
-            for (String level : levels) {
-                View row = inflater.inflate(R.layout.item_level_purchased, layoutPurchasedLevels, false);
-                TextView tv = row.findViewById(R.id.tvLevelText);
+                            courseLevelAdapter.setLevels(levels,studentId);
 
-                tv.setText(level);
+                        } else {
+                            //showEmptyMessage(res.getEmptyAssignmentTopicsessage());
+                        }
 
-                row.setOnClickListener(v -> {
-                    Intent intent = new Intent(PurchasedActivity.this, LevelTopicActivity.class);
-                    intent.putExtra("level_name", level);
-                    startActivity(intent);
-                });
+                    }
+                    // ⚠️ NO ACTIVE SUBSCRIPTION
+                    else if ("202".equals(res.getErrorCode())) {
 
-                layoutPurchasedLevels.addView(row);
+                       /* showEmptyMessage(
+                                "You do not have any active worksheet subscriptions. " +
+                                        "Please contact the administrator for more information."
+                        );*/
+                    }
+                    // ❌ OTHER ERROR
+                    else {
+                       // showEmptyMessage(res.getMessage());
+                    }
+                }
             }
-        }
+
+            @Override
+            public void onFailure(Call<CourseListResponse> call, Throwable t) {
+                //showEmptyMessage("Server error. Please try again.");
+
+            }
+        });
+
+
     }
 
 

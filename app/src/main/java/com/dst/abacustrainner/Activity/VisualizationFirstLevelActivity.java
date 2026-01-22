@@ -265,10 +265,10 @@ public class VisualizationFirstLevelActivity extends AppCompatActivity {
                     int dpToPx = (int) TypedValue.applyDimension(
                             TypedValue.COMPLEX_UNIT_DIP,
                             40,
+
+                            // Smoothly scroll to the new position
                             view.getContext().getResources().getDisplayMetrics()
                     );
-
-                    // Smoothly scroll to the new position
                     horizontalScrollView.smoothScrollTo(currentScrollX + dpToPx, horizontalScrollView.getScrollY());
                 }
             }

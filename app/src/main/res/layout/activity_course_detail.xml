@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
+    android:fitsSystemWindows="true"
     tools:context=".Activity.AllSchedulesActivity">
 
     <LinearLayout
@@ -95,92 +96,130 @@
 
 
         </LinearLayout>
-        <LinearLayout
-            android:padding="12dp"
-            android:orientation="vertical"
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ScrollView
-                android:background="#F5F5F5"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="1dp">
-
+                android:orientation="vertical">
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:orientation="vertical">
                     <TextView
-                        android:id="@+id/tvCourseTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Abacus Junior"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:textColor="#333"
-                        android:padding="8dp" />
-
-                    <!-- Select All Checkbox -->
-                    <CheckBox
-                        android:id="@+id/cbSelectAll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Select All Levels"
-                        android:textSize="16sp"
+                        android:text="Select Duration :"
                         android:textColor="#000"
-                        android:padding="8dp" />
+                        android:textSize="18dp"
+                        android:textStyle="bold"/>
 
-                    <!-- Divider -->
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#CCCCCC"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp" />
-
-                    <!-- Levels Container -->
-                    <LinearLayout
-                        android:id="@+id/layoutLevels"
+                    <androidx.recyclerview.widget.RecyclerView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" />
-
-                    <LinearLayout
+                        android:layout_marginTop="12dp"
+                        android:id="@+id/recycler_course_duration"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:orientation="vertical">
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:text="Select Levels :"
+                        android:textColor="#000"
+                        android:textSize="18dp"
+                        android:textStyle="bold"/>
 
-                        <!-- Purchase More Button -->
-                        <!--<Button
-                            android:id="@+id/btnPurchaseMore"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Purchase More"
-                            android:textSize="18sp"
-                            android:layout_gravity="left"
-                            android:backgroundTint="#FF5722"
-                            android:textColor="#FFFFFF"
-                            android:minHeight="30dp" />-->
-
-                        <Button
-                            android:id="@+id/cart"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Add to Cart"
-                            android:textSize="18sp"
-                            android:layout_marginLeft="10dp"
-                            android:backgroundTint="#FF5722"
-                            android:textColor="#FFFFFF"
-                            android:minHeight="30dp" />
-                    </LinearLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:id="@+id/recycler_course_levels"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="#5E35B1"
+                    android:layout_margin="12dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Total for Selected Levels"
+                        android:textColor="#fff"
+                        android:layout_marginTop="12dp"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/txt_amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="₹0/-"
+                        android:textColor="#fff"
+                        android:textSize="16dp"
+                        android:layout_marginTop="12dp"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/txt_level"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="0 levels selected"
+                        android:textColor="#fff"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center"/>
 
                 </LinearLayout>
-            </ScrollView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_margin="12dp"
+                    android:layout_marginBottom="12dp">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Add To Cart"
+                        android:textStyle="bold"
+                        android:textSize="18dp"
+                        android:layout_weight="1"
+                        android:textColor="#fff"
+                        android:layout_marginRight="12dp"
+                        android:backgroundTint="#ff6b35"/>
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="View Cart"
+                        android:textStyle="bold"
+                        android:textSize="18dp"
+                        android:layout_marginLeft="12dp"
+                        android:textColor="#fff"
+                        android:layout_weight="1"
+                        android:backgroundTint="#3f51b5"/>
 
 
-        </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+
     </LinearLayout>
 </LinearLayout>

@@ -6,32 +6,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dst.abacustrainner.Activity.LevelExamPracticeActivity;
-import com.dst.abacustrainner.Activity.LevelExamvisualizationPracticeActivity;
-import com.dst.abacustrainner.Activity.LevelResultActivity;
-import com.dst.abacustrainner.Activity.LevelVisualiztionResultActivity;
+import com.dst.abacustrainner.Activity.CourseTopicExamActivity;
+import com.dst.abacustrainner.Activity.CourseTopicVisualizationActivity;
+import com.dst.abacustrainner.Model.CourseLevelTopicResponse;
 import com.dst.abacustrainner.R;
+import com.google.android.exoplayer2.source.mediaparser.InputReaderAdapterV30;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.TopicViewHolder> {
 
-    private List<String> topics;
-    private String levelName;
-    private Context context;
-    private int expandedPosition = -1;
+    private List<CourseLevelTopicResponse.courseLevelTopics> topics = new ArrayList<>();
 
-    public TopicsAdapter(List<String> topics, String levelName, Context context) {
-        this.topics = topics;
-        this.levelName = levelName;
+    private Context context;
+    private String studentId;
+
+    private String courseLevelId;
+
+
+    public TopicsAdapter(Context context) {
         this.context = context;
     }
 
@@ -44,53 +43,42 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.TopicViewH
 
     @Override
     public void onBindViewHolder(@NonNull TopicViewHolder holder, int position) {
-        String topic = topics.get(position);
-        holder.tvTopicName.setText(topic);
+     CourseLevelTopicResponse.courseLevelTopics courseLevelTopics = topics.get(position);
 
-        boolean isExpanded = position == expandedPosition;
-        holder.layoutPractice.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-        holder.imgArrow.setImageResource(isExpanded ?
-                R.drawable.baseline_keyboard_arrow_up_24 :
-                R.drawable.baseline_keyboard_arrow_down_24);
+     String topicId = courseLevelTopics.getTopicId();
 
-        holder.imgArrow.setOnClickListener(v -> {
-            if (isExpanded) {
-                // Collapse the currently expanded item
-                expandedPosition = -1;
-            } else {
-                // Expand clicked item and collapse previous
-                expandedPosition = position;
-            }
-            notifyDataSetChanged(); // Refresh whole list (or use payloads for optimization)
-        });
-        holder.btnViewResult.setOnClickListener(v -> {
-            Intent intent = new Intent(context, LevelResultActivity.class);
-            //intent.putExtra("topicName", topicList.get(position).getName());
-            context.startActivity(intent);
-        });
+     String topicName = courseLevelTopics.getTopic();
 
-        holder.btnPracticeNow.setOnClickListener(v -> {
-            Intent intent = new Intent(context, LevelExamPracticeActivity.class);
-            //intent.putExtra("topicName", topicList.get(position).getName());
-            context.startActivity(intent);
-        });
+       holder.tvTopicName.setText(topicName);
 
-        holder.butVisualizationResult.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, LevelVisualiztionResultActivity.class);
-                //intent.putExtra("topicName", topicList.get(position).getName());
-                context.startActivity(intent);
-            }
-        });
-        holder.butPracticeVisualization.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, LevelExamvisualizationPracticeActivity.class);
-                //intent.putExtra("topicName", topicList.get(position).getName());
-                context.startActivity(intent);
-            }
-        });
+       holder.butPractice.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Intent intent = new Intent(context, CourseTopicExamActivity.class);
+               intent.putExtra("StudentId",studentId);
+               intent.putExtra("TopicId",topicId);
+               intent.putExtra("TopicName",topicName);
+               context.startActivity(intent);
+           }
+       });
+
+       holder.butViewResult.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+
+           }
+       });
+
+       holder.butVisualization.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Intent intent = new Intent(context, CourseTopicVisualizationActivity.class);
+               intent.putExtra("StudentId",studentId);
+               intent.putExtra("TopicId",topicId);
+               intent.putExtra("TopicName",topicName);
+               context.startActivity(intent);
+           }
+       });
     }
 
     @Override
@@ -98,21 +86,28 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.TopicViewH
         return topics.size();
     }
 
+    public void setLevels(List<CourseLevelTopicResponse.courseLevelTopics> levels, String studentId, String courseLevelId) {
+
+
+        this.topics.clear();
+        this.topics.addAll(levels);
+        this.studentId = studentId;
+        this.courseLevelId = courseLevelId;
+        notifyDataSetChanged();
+    }
+
     static class TopicViewHolder extends RecyclerView.ViewHolder {
         TextView tvTopicName;
-        ImageView imgArrow;
-        Button btnViewResult, btnPracticeNow,butPracticeVisualization,butVisualizationResult;
-        LinearLayout layoutPractice;
+        Button butPractice,butViewResult,butVisualization;
+
 
         TopicViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTopicName = itemView.findViewById(R.id.tvTopicName);
-            imgArrow = itemView.findViewById(R.id.ivArrow);
-            layoutPractice = itemView.findViewById(R.id.layout_practice);
-            btnViewResult = itemView.findViewById(R.id.btnViewResul);
-            btnPracticeNow = itemView.findViewById(R.id.btnPracticeNo);
-            butPracticeVisualization = itemView.findViewById(R.id.btnPractice);
-            butVisualizationResult = itemView.findViewById(R.id.btnViewResulvisualization);
+            butPractice = itemView.findViewById(R.id.but_practice);
+            butViewResult = itemView.findViewById(R.id.but_view_practice);
+            butVisualization = itemView.findViewById(R.id.but_visualization);
+
         }
     }
 }

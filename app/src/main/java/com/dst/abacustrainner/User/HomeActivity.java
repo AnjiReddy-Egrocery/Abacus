@@ -57,7 +57,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeActivity extends AppCompatActivity {
 
-    String studentId,firstName,LastName;
+    String firstName,LastName;
     Object profilePic ;
     Toolbar toolbar;
 
@@ -68,6 +68,7 @@ public class HomeActivity extends AppCompatActivity {
     ImageView imageProfile;
     String batchId;
     String Hi;
+    String studentId;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,7 @@ public class HomeActivity extends AppCompatActivity {
         StudentDetailsMethod(studentId);
 
         if (studentId != null) {
+            studentId = "2251"; // safety fallback
             loadHomeFragmentWithStudentId(studentId);
 
         } else {
@@ -119,7 +121,7 @@ public class HomeActivity extends AppCompatActivity {
                 .commit();
 
 
-        String studentId = getIntent().getStringExtra("studentId");
+       // studentId = getIntent().getStringExtra("studentId");
         String batchId = getIntent().getStringExtra("batchId");
         Log.d("HomeActivity", "Received studentId=" + studentId + " batchId=" + batchId);
 

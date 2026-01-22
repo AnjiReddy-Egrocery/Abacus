@@ -4,9 +4,17 @@ import com.dst.abacustrainner.Model.AssignmentExamResponse;
 import com.dst.abacustrainner.Model.AssignmentListResponse;
 import com.dst.abacustrainner.Model.AssignmentSubmitDataResponse;
 import com.dst.abacustrainner.Model.BachDetailsResponse;
+import com.dst.abacustrainner.Model.CourseLevelResponse;
+import com.dst.abacustrainner.Model.CourseLevelTopicResponse;
+import com.dst.abacustrainner.Model.CourseListResponse;
+import com.dst.abacustrainner.Model.CourseTopicExamResponse;
+import com.dst.abacustrainner.Model.CoursesListResponse;
 import com.dst.abacustrainner.Model.DatedetailsResponse;
+import com.dst.abacustrainner.Model.DurationListResponse;
 import com.dst.abacustrainner.Model.ForgotPassword;
 import com.dst.abacustrainner.Model.GameResponse;
+import com.dst.abacustrainner.Model.LevelPriceResponse;
+import com.dst.abacustrainner.Model.OrderListResponse;
 import com.dst.abacustrainner.Model.StudentDetails;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.Model.StudentScheduleInfo;
@@ -19,6 +27,7 @@ import com.dst.abacustrainner.Model.ViewAssignmentListResponse;
 import com.dst.abacustrainner.Model.ViewAssignmentResultResponse;
 import com.dst.abacustrainner.Model.ViewTopicListResponse;
 import com.dst.abacustrainner.Model.ViewTopicResultResponse;
+import com.dst.abacustrainner.Model.WorkSheetSubmitDataResponse;
 
 
 import okhttp3.MultipartBody;
@@ -145,4 +154,51 @@ public interface ApiClient {
     @Multipart
     @POST("apicalls/Index/studentForgotPassword")
     Call<ForgotPassword> forgot(@Part("userName") RequestBody userName);
+
+
+
+    @POST("apicalls/Index/getCourseTypesList")
+    Call<CoursesListResponse> getCoursesList();
+
+    @POST("apicalls/Index/getDurationsList")
+    Call<DurationListResponse> getDurationList();
+
+    @Multipart
+    @POST("apicalls/Index/getCourseTypeInfo")
+    Call<CourseLevelResponse> updateLevelList(@Part("courseTypeId") RequestBody courseTypeId);
+
+    @Multipart
+    @POST("apicalls/Index/getWorksheetCourseLevelPrice")
+    Call<LevelPriceResponse> getLevelPrice(
+            @Part("courseLevelId") RequestBody courseLevelId,
+            @Part("durationId") RequestBody durationId
+    );
+
+    @Multipart
+    @POST("apicalls/Index/getStudentWorksheetOrdersList")
+    Call<OrderListResponse> getOrderList(
+            @Part("studentId") RequestBody studentId
+    );
+    @Multipart
+    @POST("apicalls/Index/getStudentWorksheetCoursesList")
+    Call<CourseListResponse> getCourseList(
+            @Part("studentId") RequestBody studentId
+    );
+
+    @Multipart
+    @POST("apicalls/Index/getStudentWorksheetCourseLevelInfo")
+    Call<CourseLevelTopicResponse> getCourseLevelTopic(
+            @Part("studentId") RequestBody studentId,
+            @Part("courseLevelId") RequestBody courseLevelId
+    );
+
+    @Multipart
+    @POST("apicalls/Index/startWorksheetTopicExam")
+    Call<CourseTopicExamResponse> topicExamList(@Part("studentId") RequestBody studentId,
+                                           @Part("topicId") RequestBody topicId );
+
+    @Multipart
+    @POST("apicalls/Index/submitWorksheetTopicExam")
+    Call<WorkSheetSubmitDataResponse> worksheetDataResponse(@Part("examRnm") RequestBody examRnm,
+                                                 @Part("questionsList") RequestBody questionsList);
 }
