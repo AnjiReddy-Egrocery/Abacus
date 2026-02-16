@@ -1,17 +1,24 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true"
-    android:padding="16dp">
+    tools:context=".Activity.ViewResultDetailsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_margin="14dp">
+
+        <!--        <ImageView-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="150dp"-->
+        <!--            android:src="@drawable/big_logo_total"-->
+        <!--            android:adjustViewBounds="true"-->
+        <!--            android:scaleType="fitCenter"/>-->
 
         <TextView
             android:layout_width="match_parent"
@@ -26,19 +33,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginStart="15dp"
-            >
+            android:layout_marginStart="15dp">
 
             <TextView
-                android:id="@+id/display_level"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
+                android:padding="5dp"
+                android:textSize="14dp"
+                android:id="@+id/txt_topic_name"
+                android:fontFamily="@font/regular"
                 android:gravity="center"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-
+                android:textStyle="bold"
+                android:textColor="#000"
+                android:text="Hi"/>
         </LinearLayout>
 
         <TextView
@@ -49,6 +56,7 @@
             android:textSize="18dp"
             android:textStyle="bold"
             />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -78,39 +86,13 @@
 
             </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="-10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Time : "
-                android:textStyle="bold"
-                android:textSize="18dp"
-                android:textColor="#000"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textStyle="bold"
-                android:id="@+id/txt_total_time"
-                android:textSize="18dp"
-                android:textColor="#000"/>
-
-        </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:visibility="visible"
-            android:id="@+id/layout_first">
+            android:id="@+id/layout_first"
+            android:layout_marginTop="-12dp"
+            android:visibility="visible" >
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -149,7 +131,7 @@
                         android:gravity="center"
                         android:textStyle="bold"
                         android:layout_marginBottom="10dp"
-                        android:text=""/>
+                        android:text="0"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -182,7 +164,7 @@
                         android:gravity="center"
                         android:textStyle="bold"
                         android:layout_marginBottom="10dp"
-                        android:text=""/>
+                        android:text="0"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -224,7 +206,7 @@
                         android:gravity="center"
                         android:textStyle="bold"
                         android:layout_marginBottom="10dp"
-                        android:text=""/>
+                        android:text="0"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -258,7 +240,7 @@
                         android:gravity="center"
                         android:textStyle="bold"
                         android:layout_marginBottom="10dp"
-                        android:text=""/>
+                        android:text="0"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -268,7 +250,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="-12dp"
             android:id="@+id/layout_second"
             android:visibility="gone">
             <LinearLayout
@@ -416,16 +398,17 @@
         </LinearLayout>
 
         <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
             android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layerType="software">
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -434,186 +417,155 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_marginStart="5dp"
+                        >
 
-                        <LinearLayout
+                        <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            >
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Performance OverView"
-                                android:textSize="18dp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <com.github.mikephil.charting.charts.PieChart
-                            android:id="@+id/pieChart"
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:layout_margin="16dp"
-                            android:padding="10dp"
-                            tools:ignore="MissingClass" />
-
-
+                            android:text="Performance OverView"
+                            android:textSize="18dp"
+                            android:textStyle="bold" />
                     </LinearLayout>
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginTop="20dp"
+                        tools:ignore="MissingClass" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:weightSum="2"
+                    android:orientation="horizontal">
+                    <!-- <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:padding="5dp"
+                         android:textSize="14dp"
+                         android:fontFamily="@font/regular"
+                         android:layout_weight="1"
+                         android:gravity="center"
+                         android:textStyle="bold"
+                         android:textColor="#000"
+                         android:text="Topic:"/>-->
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/item_background_images"
+                    android:orientation="horizontal">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:background="@drawable/item_background_images"
+                        android:background="@drawable/cell_shape"
                         android:orientation="horizontal">
 
-                        <LinearLayout
+                        <TableLayout
+                            android:id="@+id/tablelayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/cell_shape"
-                            android:orientation="horizontal">
-                            <TableLayout
-                                android:id="@+id/tablelayout"
+                            android:layout_marginTop="-6dp"
+
+                            android:stretchColumns="1">
+
+                            <TableRow
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="-6dp"
-                                android:stretchColumns="1">
+                                android:background="#D0CECE"
+                                android:weightSum="4">
 
-                                <TableRow
-                                    android:layout_width="match_parent"
+                                <TextView
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:background="#D0CECE"
-                                    android:weightSum="4">
+                                    android:layout_gravity="center"
+                                    android:layout_margin="12dp"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/regular"
+                                    android:text="Question"
+                                    android:textColor="#000"
+                                    android:textSize="14dp"
+                                    android:textStyle="bold" />
 
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="@font/regular"
-                                        android:gravity="center"
-                                        android:layout_margin="12dp"
-                                        android:textSize="14dp"
-                                        android:layout_weight="1"
-                                        android:textColor="#000"
-                                        android:text="Question"
-                                        android:textStyle="bold" />
-
-                                    <View
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0.01"
-                                        android:background="#000" />
-
-
-
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:gravity="center"
-                                        android:layout_margin="12dp"
-                                        android:textColor="#000"
-                                        android:textSize="14dp"
-                                        android:fontFamily="@font/regular"
-                                        android:text="Answer"
-                                        android:textStyle="bold" />
-
-                                    <View
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0.01"
-                                        android:background="#000" />
-
-
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:gravity="center"
-                                        android:layout_margin="12dp"
-                                        android:textSize="16dp"
-                                        android:fontFamily="@font/regular"
-                                        android:text="Given"
-                                        android:textColor="#000"
-                                        android:textStyle="bold" />
-                                    <View
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0.01"
-                                        android:background="#000" />
-
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:gravity="center"
-                                        android:layout_margin="12dp"
-                                        android:textSize="14dp"
-                                        android:fontFamily="@font/regular"
-                                        android:textColor="#000"
-                                        android:text="Time Spent"
-                                        android:textStyle="bold" />
-                                </TableRow>
                                 <View
-                                    android:layout_width="match_parent"
-                                    android:layout_height="1dp"
-                                    android:background="@android:color/darker_gray" />
-                            </TableLayout>
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.01"
+                                    android:background="#000" />
 
-                        </LinearLayout>
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="12dp"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/regular"
+                                    android:text="Answer"
+                                    android:textColor="#000"
+                                    android:textSize="14dp"
+                                    android:textStyle="bold" />
+
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.01"
+                                    android:background="#000" />
+
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="12dp"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/regular"
+                                    android:text="Given"
+                                    android:textColor="#000"
+                                    android:textSize="14dp"
+                                    android:textStyle="bold" />
+
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.01"
+                                    android:background="#000" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="12dp"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/regular"
+                                    android:text="Time Spent (s)"
+                                    android:textColor="#000"
+                                    android:textSize="14dp"
+                                    android:textStyle="bold" />
+                            </TableRow>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@android:color/darker_gray" />
+                        </TableLayout>
+
                     </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
-
-
         </ScrollView>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="-50dp"
-            android:background="@color/white"
-            >
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
 
-                >
-                <TextView
-                    android:id="@+id/combined_text_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#4E148C"
-                    android:textStyle="bold"
-                    android:textSize="16dp"
-                    android:gravity="center"
-                    android:padding="8dp" />
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-10dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="and you will improve even more"
-                    android:textColor="#4E148C"
-                    android:textStyle="bold"
-                    android:textSize="18dp"
-                    android:gravity="center"
-
-                    />
-
-            </LinearLayout>
-
-
-
-        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
-
+</androidx.constraintlayout.widget.ConstraintLayout>

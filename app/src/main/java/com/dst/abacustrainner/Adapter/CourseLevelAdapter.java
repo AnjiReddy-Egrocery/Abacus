@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dst.abacustrainner.Activity.CartActivity;
 import com.dst.abacustrainner.Activity.LevelTopicActivity;
 import com.dst.abacustrainner.Activity.PurchasedActivity;
 import com.dst.abacustrainner.Model.CourseListResponse;
@@ -28,6 +29,8 @@ public class CourseLevelAdapter extends RecyclerView.Adapter<CourseLevelAdapter.
     public CourseLevelAdapter(PurchasedActivity purchasedActivity) {
         this.context = purchasedActivity;
     }
+
+
 
     @NonNull
     @Override

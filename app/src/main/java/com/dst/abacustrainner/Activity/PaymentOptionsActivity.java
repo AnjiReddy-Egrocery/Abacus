@@ -147,9 +147,9 @@ public class PaymentOptionsActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = prefs.edit();
 
         CartManager cartManager = CartManager.getInstance(this);
-        Map<String, List<String>> selectedMap = cartManager.getSelectedLevelsByCourse(cartType);
+       // Map<String, List<String>> selectedMap = cartManager.getSelectedLevelsByCourse(cartType);
 
-        for (Map.Entry<String, List<String>> entry : selectedMap.entrySet()) {
+       /* for (Map.Entry<String, List<String>> entry : selectedMap.entrySet()) {
             String course = entry.getKey();
             List<String> levels = entry.getValue();
 
@@ -161,7 +161,7 @@ public class PaymentOptionsActivity extends AppCompatActivity {
                 }
                 editor.putString(course, levelList.toString());
             }
-        }
+        }*/
 
         editor.apply();
     }

@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment {
     String startTime,endTime,timeText;
     private Map<String, String> scheduledDatesMap = new HashMap<>();
     Map<String, String> dateIdMap = new HashMap<>();
-    LinearLayout layoutSchedule, layoutScheduleInfo,layoutVideoTutorials ;
+    LinearLayout layoutSchedule, layoutScheduleInfo;
 
     String EmployeeId = String.valueOf(2251);
 
@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
         layoutSchedule = view.findViewById(R.id.layou_schedule);
         layoutScheduleInfo = view.findViewById(R.id.layout_schedule_information);
 
-        layoutVideoTutorials = view.findViewById(R.id.layout_video_tutorials);
+       // layoutVideoTutorials = view.findViewById(R.id.layout_video_tutorials);
         txtEmpty = view.findViewById(R.id.tvEmptyMessage);
 
         layoutData=view.findViewById(R.id.layout_data);
@@ -184,7 +184,7 @@ public class HomeFragment extends Fragment {
 
         SharedPreferences prefs = requireContext().getSharedPreferences("purchases", Context.MODE_PRIVATE);
 
-        boolean videoPurchased = prefs.getBoolean("video_purchased", false);
+        /*boolean videoPurchased = prefs.getBoolean("video_purchased", false);
         boolean livePurchased = prefs.getBoolean("live_purchased", false);
 
         if (videoPurchased) {
@@ -197,7 +197,7 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("cartType", "video");
                 startActivity(intent);
             }
-        });
+        });*/
 
         layoutSchedule.setVisibility(View.GONE);
         layoutScheduleInfo.setVisibility(View.GONE);

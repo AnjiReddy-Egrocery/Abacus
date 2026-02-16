@@ -52,6 +52,7 @@ public class LevelsAdapter extends RecyclerView.Adapter<LevelsAdapter.ViewHolder
         }
 
         holder.checkBox.setOnCheckedChangeListener(null);
+        holder.checkBox.setChecked(level.isSelected());
 
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
@@ -97,6 +98,17 @@ public class LevelsAdapter extends RecyclerView.Adapter<LevelsAdapter.ViewHolder
         this.levelList.clear();
         this.levelList.addAll(levels);
         notifyDataSetChanged();
+    }
+
+    public CourseLevel getSelectedLevel() {
+        if (levelList == null) return null;
+
+        for (CourseLevel level : levelList) {
+            if (level.isSelected()) {
+                return level;
+            }
+        }
+        return null;
     }
 
     public interface OnLevelSelectListener {

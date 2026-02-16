@@ -17,7 +17,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-;
+
 
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.User.HomeActivity;

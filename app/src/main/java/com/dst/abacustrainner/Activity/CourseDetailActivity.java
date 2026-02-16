@@ -23,7 +23,9 @@ import android.widget.Toast;
 import com.dst.abacustrainner.Adapter.DurationAdapter;
 import com.dst.abacustrainner.Adapter.LevelsAdapter;
 import com.dst.abacustrainner.Model.CartManager;
+import com.dst.abacustrainner.Model.CartResponse;
 import com.dst.abacustrainner.Model.CourseLevel;
+import com.dst.abacustrainner.Model.CourseLevelCart;
 import com.dst.abacustrainner.Model.CourseLevelResponse;
 import com.dst.abacustrainner.Model.DurationListResponse;
 import com.dst.abacustrainner.Model.LevelPriceResponse;
@@ -48,19 +50,29 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CourseDetailActivity extends AppCompatActivity {
 
 
-    private ImageView ivCart;
+    ImageView ivCart;
+    TextView tvCartCount;
+    int cartCount = 0;
+
+    Button butAddCart, butViewCart;
 
 
     RelativeLayout layoutCart;
 
     String courseId;
-
+    LinearLayout layoutCourseBack;
     RecyclerView recyclerViewDurationList, recyclerViewLevelList;
     DurationAdapter durationAdapter;
     LevelsAdapter levelsAdapter;
     List<CourseLevel> levelList = new ArrayList<>();
     private String selectedDurationId = null;
     TextView txtAmount, txtLevel;
+
+    private int selectedCourseLevelId = -1;   // ✅ GLOBAL
+
+
+    private List<CourseLevel> selectedLevels = new ArrayList<>();
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -72,10 +84,16 @@ public class CourseDetailActivity extends AppCompatActivity {
 
 
         ivCart = findViewById(R.id.ivCart);
+        tvCartCount = findViewById(R.id.tvCartCount);
+
+// default ga hide
+        tvCartCount.setVisibility(View.GONE);
 
         layoutCart = findViewById(R.id.layout_cart);
+        butAddCart = findViewById(R.id.but_addCart);
+        butViewCart = findViewById(R.id.but_view_cart);
 
-
+        layoutCourseBack = findViewById(R.id.layout_course_back);
 
         courseId = getIntent().getStringExtra("CoursesTypeId");
 
@@ -86,7 +104,18 @@ public class CourseDetailActivity extends AppCompatActivity {
 
         durationAdapter = new DurationAdapter(this, durationId -> {
             selectedDurationId = durationId;
+            String worksheetRnm =
+                    CartManager.getInstance(CourseDetailActivity.this)
+                            .getWorksheetRnm();
+
+            // 🔥 SAVE selected duration
+            CartManager.getInstance(CourseDetailActivity.this)
+                    .saveSelectedDuration(worksheetRnm, courseId, durationId);
             fetchPricesForLevels(durationId);
+        });
+
+        layoutCourseBack.setOnClickListener(v -> {
+            finish();   // 🔥 DON'T create new intent
         });
         recyclerViewDurationList.setAdapter(durationAdapter);
 
@@ -104,32 +133,244 @@ public class CourseDetailActivity extends AppCompatActivity {
 
             @Override
             public void onLevelSelected(CourseLevel level) {
-                // 👉 Cart add logic ikada
-                /*CartManager.getInstance(getApplicationContext())
-                        .addLevel(level, selectedDurationId);*/
+                if (level == null) return;
+
+                if (level.isSelected()) {
+                    if (!selectedLevels.contains(level)) {
+                        selectedLevels.add(level);
+                    }
+                } else {
+                    selectedLevels.remove(level);
+                }
+
+                Log.e("Reddy",
+                        "Selected courseTypeId = " + courseId +
+                                " | Selected levels count = " + selectedLevels.size());
+                String worksheetRnm =
+                        CartManager.getInstance(CourseDetailActivity.this)
+                                .getWorksheetRnm();
+
+                // 🔥 SAVE selected levels
+                CartManager.getInstance(CourseDetailActivity.this)
+                        .saveSelectedLevels(worksheetRnm, courseId, selectedLevels);
+
                 updateSummary();
+               // updateAddCartButton();
             }
         });
         recyclerViewLevelList.setAdapter(levelsAdapter);
 
-
-
-        layoutCart.setOnClickListener(new View.OnClickListener() {
+        butAddCart.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if (CartManager.getInstance(getApplicationContext()).getAllSelectedLevels("live").isEmpty()) {
-                    Toast.makeText(CourseDetailActivity.this, "Cart is empty", Toast.LENGTH_SHORT).show();
-                } else {
-                    Intent intent = new Intent(CourseDetailActivity.this, CartActivity.class);
+            public void onClick(View v) {
+                Log.e("Reddy", "Button clicked");
+
+
+                if (selectedDurationId == null) {
+                    Toast.makeText(CourseDetailActivity.this, "Please select duration", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (selectedLevels == null || selectedLevels.isEmpty()) {
+                    Toast.makeText(CourseDetailActivity.this, "Please select level", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String worksheetRnm =
+                        CartManager.getInstance(CourseDetailActivity.this).getWorksheetRnm();
+
+
+                Log.e("Reddy", "worksheetRnm = " + worksheetRnm);
+                Log.e("Reddy", "courseTypeId = " + courseId);
+
+                Log.e("Reddy", "durationId = " + selectedDurationId);
+
+                for (CourseLevel level : selectedLevels) {
+
+
+
+                    Log.e("Reddy",
+                            "Adding CourseLevelId = " + level.getCourseLevelId());
+
+                    addToCartApi(
+                            worksheetRnm,
+                            courseId,
+                            level.getCourseLevelId(),
+                            selectedDurationId
+                    );
+
+                    Intent intent =new Intent(CourseDetailActivity.this, CartActivity.class);
+                    intent.putExtra("WorkSheetRnm",worksheetRnm);
                     startActivity(intent);
+
                 }
             }
+
+
         });
 
+        butViewCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("Reddy", "Button clicked");
 
+
+                if (selectedDurationId == null) {
+                    Toast.makeText(CourseDetailActivity.this, "Please select duration", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (selectedLevels == null || selectedLevels.isEmpty()) {
+                    Toast.makeText(CourseDetailActivity.this, "Please select level", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String worksheetRnm =
+                        CartManager.getInstance(CourseDetailActivity.this).getWorksheetRnm();
+
+
+                Log.e("Reddy", "worksheetRnm = " + worksheetRnm);
+                Log.e("Reddy", "courseTypeId = " + courseId);
+
+                Log.e("Reddy", "durationId = " + selectedDurationId);
+
+                for (CourseLevel level : selectedLevels) {
+
+
+
+                    Log.e("Reddy",
+                            "Adding CourseLevelId = " + level.getCourseLevelId());
+
+                    addToCartApi(
+                            worksheetRnm,
+                            courseId,
+                            level.getCourseLevelId(),
+                            selectedDurationId
+                    );
+
+                    Intent intent =new Intent(CourseDetailActivity.this, CartActivity.class);
+                    intent.putExtra("WorkSheetRnm",worksheetRnm);
+                    startActivity(intent);
+
+                }
+            }
+
+
+        });
+
+        restoreSelections();
         loadDurations();
         loadLevels(courseId);
 
+    }
+
+    private void restoreSelections() {
+        String worksheetRnm =
+                CartManager.getInstance(this).getWorksheetRnm();
+
+        // 🔥 Restore Duration
+        selectedDurationId =
+                CartManager.getInstance(this)
+                        .getSelectedDuration(worksheetRnm, courseId);
+
+        // 🔥 Restore Levels
+        List<String> savedLevelIds =
+                CartManager.getInstance(this)
+                        .getSelectedLevelIds(worksheetRnm, courseId);
+
+        if (savedLevelIds != null) {
+
+            for (CourseLevel level : levelList) {
+
+                if (savedLevelIds.contains(level.getCourseLevelId())) {
+                    level.setSelected(true);
+                    selectedLevels.add(level);
+                }
+            }
+
+            levelsAdapter.notifyDataSetChanged();
+            updateSummary();
+        }
+    }
+
+
+    private void addToCartApi(String worksheetRnm, String courseId, String courseLevelId, String selectedDurationId) {
+
+        Log.e("Reddy", "API CALL STARTED");
+
+        Log.e("Reddy", "worksheetRnm=" + worksheetRnm);
+        Log.e("Reddy", "courseTypeId=" + courseId);
+        Log.e("Reddy", "courseLevelId=" + courseLevelId);
+        Log.e("Reddy", "durationId=" + selectedDurationId);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor()
+                        .setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+
+        RequestBody rnmBody =
+                RequestBody.create(MediaType.parse("text/plain"), worksheetRnm);
+        RequestBody courseTypeBody =
+                RequestBody.create(MediaType.parse("text/plain"), courseId);
+        RequestBody levelBody =
+                RequestBody.create(MediaType.parse("text/plain"), courseLevelId);
+        RequestBody durationBody =
+                RequestBody.create(MediaType.parse("text/plain"), selectedDurationId);
+
+        Call<CartResponse> call= apiClient.worksheetAddToCart(rnmBody, courseTypeBody, levelBody, durationBody);
+
+        call.enqueue(new Callback<CartResponse>() {
+            @Override
+            public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
+                Log.e("Reddy", "Response code = " + response.code());
+
+                if (response.isSuccessful() && response.body() != null) {
+
+                    CartResponse cartResponse = response.body();
+
+                    if ("Success".equals(cartResponse.getStatus())
+                            && cartResponse.getResult() != null
+                            && cartResponse.getResult().getCourseLevels() != null
+                            && !cartResponse.getResult().getCourseLevels().isEmpty()) {
+
+                        CourseLevelCart level =
+                                cartResponse.getResult().getCourseLevels().get(0);
+
+                        Log.e("Reddy", "CartId = " + level.getCartId());
+                        updateCartUI();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartResponse> call, Throwable t) {
+
+                Log.e("Reddy", "API FAILED ❌ " + t.getMessage());
+
+                Toast.makeText(
+                        CourseDetailActivity.this,
+                        "Failed to add cart",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
+    }
+
+    private void updateCartUI() {
+        cartCount++;
+
+        tvCartCount.setVisibility(View.VISIBLE);
+        tvCartCount.setText(String.valueOf(cartCount));
+
+        //ivCart.setImageResource(R.drawable.ic_cart_filled);
     }
 
     private void updateSummary() {
@@ -227,6 +468,7 @@ public class CourseDetailActivity extends AppCompatActivity {
 
                         // 🔥 RecyclerView ki data set
                         levelsAdapter.setLevels(levels);
+                        restoreSelections();
                     }
                 }
             }
@@ -273,5 +515,45 @@ public class CourseDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        String worksheetRnm =
+                CartManager.getInstance(this).getWorksheetRnm();
+
+        // 🔥 Restore Duration
+        selectedDurationId =
+                CartManager.getInstance(this)
+                        .getSelectedDuration(worksheetRnm, courseId);
+
+        if (selectedDurationId != null) {
+            fetchPricesForLevels(selectedDurationId);
+        }
+
+        // 🔥 Restore Levels
+        List<String> savedLevelIds =
+                CartManager.getInstance(this)
+                        .getSelectedLevelIds(worksheetRnm, courseId);
+
+        if (savedLevelIds != null) {
+
+            selectedLevels.clear();
+
+            for (CourseLevel level : levelList) {
+
+                if (savedLevelIds.contains(level.getCourseLevelId())) {
+                    level.setSelected(true);
+                    selectedLevels.add(level);
+                } else {
+                    level.setSelected(false);
+                }
+            }
+
+            levelsAdapter.notifyDataSetChanged();
+            updateSummary();
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed(); // ✅ Only navigate back
     }
 }

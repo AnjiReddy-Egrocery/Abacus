@@ -6,6 +6,7 @@ import androidx.core.text.HtmlCompat;
 
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,6 +22,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -134,8 +136,13 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
     String studentId,topicId,topicName;
     private static final int REQ_CODE_SPEECH_INPUT = 100;
 
-    private TextToSpeech textToSpeech;
+
     private String currentNumber;
+
+    private TextToSpeech textToSpeech;
+    private boolean isTtsReady = false;
+
+    private boolean isQuestionActive = false;
 
 
     @SuppressLint("MissingInflatedId")
@@ -165,6 +172,8 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
         scrollView = findViewById(R.id.horizontalScrollView);
         questionImageView = findViewById(R.id.questionImageView);
 
+        butSubmit.setEnabled(false);
+        butSubmit.setClickable(false);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -191,13 +200,30 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveTimerState();
-                displayQuestion(currentQuestionIndex);
-                answerEditText.getText().clear();
+                //displayQuestion(currentQuestionIndex);
+                 //answerEditText.getText().clear();
                 restoreTimerState();
                 showCompletionDialog();
 
             }
         });
+
+        textToSpeech = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                int result = textToSpeech.setLanguage(Locale.US); // or Locale.ENGLISH
+
+                if (result == TextToSpeech.LANG_MISSING_DATA ||
+                        result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Log.e("TTS", "Language not supported");
+                } else {
+                    isTtsReady = true;
+                }
+            } else {
+                Log.e("TTS", "Initialization failed");
+            }
+        });
+
+
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,9 +269,11 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
         handler.post(runnable);
 
 
+
         butSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
 
                 int currentX = scrollView.getScrollX();
                 int moveX = currentX + 100;  // Move 100 pixels to the left
@@ -297,6 +325,10 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
         butPreviousQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isQuestionActive) {
+                    return;
+                }
+
                 stopTimer();
 
                 int currentX = scrollView.getScrollX();
@@ -375,6 +407,8 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
         stopTimer();
         saveTimerState();
 
+
+
         String answer = answerEditText.getText().toString();
 
         originalAnswer = answerArray[currentQuestionIndex];
@@ -388,7 +422,8 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
 
         if (currentQuestionIndex >= 0 && currentQuestionIndex < questionsArray.length) {
             String enteredAnswer = answerEditText.getText().toString();
-            enteredAnswers.add(enteredAnswer);
+            //enteredAnswers.add(enteredAnswer);
+            enteredAnswers.set(currentQuestionIndex, enteredAnswer);
 
             Log.e("DebugTag", "Index: " + currentQuestionIndex);
             Log.e("DebugTag", "Entered Answer: " + enteredAnswer);
@@ -471,6 +506,43 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
         }
     }
     private void displayQuestion(int currentQuestionIndex) {
+
+        isQuestionActive = true;
+
+        answerEditText.setVisibility(View.GONE);   // 🔥 Always hide first
+        answerEditText.setText("");
+
+        butSave.setEnabled(false);
+        butSubmit.setEnabled(false);
+
+
+        // 🔥 If question already answered
+        if (isQuestionAnswered != null &&
+                isQuestionAnswered.size() > currentQuestionIndex &&
+                isQuestionAnswered.get(currentQuestionIndex)) {
+
+            txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":");
+
+            questionImageView.setVisibility(View.GONE);
+            questionTextView.setVisibility(View.VISIBLE);
+            questionTextView.setText("Answer is ?");
+
+            answerEditText.setVisibility(View.VISIBLE);
+            answerEditText.setText(enteredAnswers.get(currentQuestionIndex));
+
+            butSave.setEnabled(true);
+            butSave.setClickable(true);
+
+            butPreviousQuestion.setEnabled(true);
+            butPreviousQuestion.setClickable(true);
+
+            isQuestionActive = false;
+
+            return;   // 🔥 VERY IMPORTANT
+        }
+        butPreviousQuestion.setEnabled(false);
+        butPreviousQuestion.setClickable(false);
+
         if (questionsArray != null && questionsArray.length > currentQuestionIndex) {
             String questionHtml = questionsArray[currentQuestionIndex];
 
@@ -511,14 +583,37 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
                         .dontAnimate()
                         .into(questionImageView);
 
+                speakQuestion("Please observe the question image and answer");
+
             } else {
                 // ✅ Show only text
                 questionImageView.setVisibility(View.GONE);
                 questionTextView.setVisibility(View.VISIBLE);
 
-                questionTextView.setText("   " + questionTextOnly.replace("\n", "\n   "));
+                if (textToSpeech != null) {
+                    textToSpeech.stop();
+                }
 
-                // Set margin
+                // 🔴 Stop previous TTS
+                if (textToSpeech != null) {
+                    textToSpeech.stop();
+                }
+
+                // 🔴 CLEAN question text (VERY IMPORTANT)
+                questionTextOnly = questionTextOnly
+                        .replace("\u00A0", " ")   // remove NBSP
+                        .replace("\n", " ")       // new line → space
+                        .trim();
+
+                // 🔵 Split correctly (space / newline / tabs)
+                List<String> elements =
+                        Arrays.asList(questionTextOnly.split("\\s+"));
+
+                Log.d("TTS_DEBUG", "Elements: " + elements);
+
+                // 🔊 Speak + display one by one
+                speakAndDisplayOneByOne(elements);
+
                 ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();
                 layoutParams.leftMargin = (int) getResources().getDimension(R.dimen.question_margin_left);
                 questionTextView.setLayoutParams(layoutParams);
@@ -719,19 +814,22 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
                                     isQuestionAnswered = new ArrayList<>(questionCount);
 
                                     // questionsArray = new String[jsonArray.length()];
-
                                     for (int i = 0; i < jsonArray.length(); i++) {
+
                                         enteredAnswers.add("");
                                         isQuestionAnswered.add(false);
                                         questionTimes.add(0L);
 
                                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        enteredAnswers.add("");
-                                        isQuestionAnswered.add(false);
+
                                         String questionHtml = jsonObject.getString("question");
-                                        String answerHtml=jsonObject.getString("answer");
-                                        questionsArray[i] = HtmlCompat.fromHtml(questionHtml, HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
-                                        answerArray[i] = HtmlCompat.fromHtml(answerHtml, HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
+                                        String answerHtml = jsonObject.getString("answer");
+
+                                        questionsArray[i] = HtmlCompat.fromHtml(questionHtml,
+                                                HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
+
+                                        answerArray[i] = HtmlCompat.fromHtml(answerHtml,
+                                                HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
                                     }
 
                                     displayQuestion(currentQuestionIndex);
@@ -932,6 +1030,107 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
         int buttonWidth=scrollView.getWidth();
         int scrollX =(view.getLeft()+ view.getRight())/2-scrollViewWidth/2;
         scrollView.smoothScrollTo(scrollX,0);
+    }
+
+    private void speakQuestion(String text) {
+        if (isTtsReady && text != null && !text.isEmpty()) {
+            textToSpeech.stop(); // previous speech stop
+            textToSpeech.speak(
+                    text,
+                    TextToSpeech.QUEUE_FLUSH,
+                    null,
+                    "QUESTION_TTS"
+            );
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
+        super.onDestroy();
+    }
+
+    private void speakAndDisplayOneByOne(List<String> elements) {
+        Log.d("TTS_DEBUG", "Elements: " + elements.toString());
+
+
+        questionTextView.setText("");
+
+        Handler handler = new Handler();
+        long delay = 0;
+
+        for (int i = 0; i < elements.size(); i++) {
+
+            String clean = elements.get(i).trim();
+            if (clean.isEmpty()) continue;
+
+            int index = i;
+
+            handler.postDelayed(() -> {
+
+                String speakText;
+                String displayText;
+
+                if (clean.startsWith("+")) {
+                    String num = clean.substring(1);
+                    speakText = "plus " + num;
+                    displayText = "+ " + num;
+                }
+                else if (clean.startsWith("-")) {
+                    String num = clean.substring(1);
+                    speakText = "minus " + num;
+                    displayText = "- " + num;
+                }
+                else {
+                    speakText = "plus " + clean;
+                    displayText = "+ " + clean;
+                }
+
+                questionTextView.setText(displayText);
+
+                if (isTtsReady) {
+                    textToSpeech.speak(
+                            speakText,
+                            TextToSpeech.QUEUE_ADD,
+                            null,
+                            null
+                    );
+                }
+
+                // ✅ LAST ELEMENT ayyaka
+                if (index == elements.size() - 1) {
+
+                    new Handler().postDelayed(() -> {
+
+                        questionTextView.setText("Answer is ?");
+
+                        if (isTtsReady) {
+                            textToSpeech.speak("Answer is", TextToSpeech.QUEUE_ADD, null, null);
+                        }
+
+                        // 🔥 IMPORTANT — Always show here
+                        answerEditText.setVisibility(View.VISIBLE);
+                        answerEditText.requestFocus();
+
+                        butSave.setEnabled(true);
+                        butSubmit.setEnabled(true);
+                        isQuestionActive = false;
+                        butPreviousQuestion.setEnabled(true);
+                        butPreviousQuestion.setClickable(true);
+                        butPreviousQuestion.setVisibility(View.VISIBLE); // 🔥 Add this
+
+                       //
+
+                    }, 1200);
+                }
+
+            }, delay);
+
+            delay += 1200;
+        }
     }
 
 }

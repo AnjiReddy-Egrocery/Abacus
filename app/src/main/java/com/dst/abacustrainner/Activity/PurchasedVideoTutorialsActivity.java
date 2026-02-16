@@ -52,9 +52,9 @@ public class PurchasedVideoTutorialsActivity extends AppCompatActivity {
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        Map<String, List<String>> data = cartManager.getSelectedLevelsByCourse(cartType);
+        //    Map<String, List<String>> data = cartManager.getSelectedLevelsByCourse(cartType);
 
-        if (data.isEmpty()) {
+     /*   if (data.isEmpty()) {
             Toast.makeText(this, "No purchased levels found", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -86,6 +86,6 @@ public class PurchasedVideoTutorialsActivity extends AppCompatActivity {
                 layoutPurchasedLevels.addView(row);
             }
         }
+    }*/
     }
-
 }

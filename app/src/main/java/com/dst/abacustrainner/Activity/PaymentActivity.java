@@ -1,5 +1,7 @@
 package com.dst.abacustrainner.Activity;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,30 +10,41 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dst.abacustrainner.Model.CartManager;
+import com.dst.abacustrainner.Model.PaymentParams;
+import com.dst.abacustrainner.Model.TokenUtils;
 import com.dst.abacustrainner.R;
-import com.dst.abacustrainner.User.HomeActivity;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
 public class PaymentActivity extends AppCompatActivity {
 
-    private LinearLayout layoutSelectedLevels,layoutBack;
-    private TextView tvTotal;
-    private Button btnPayNow;
-    private final CartManager cartManager = CartManager.getInstance(this);
+    private LinearLayout layoutSelectedLevel;
+    ImageView layoutBack;
+    TextView tvTotal;
+    Button btnPayNow;
+    String studentId, workRnm, totalAmount;
+    ArrayList<String> levelNames, levelPrices, cartIds;
 
+    private static final String CLIENT_ID = "M23EB6GY8RWOK_2601021928";
+    private static final String CLIENT_SECRET = "ZjBlZDlhNzQtOWRjOC00YzQzLWJkM2ItNDRiMTY0YTExMGZh";
+    private static final int PHONEPE_REQUEST_CODE = 4321;
 
 
     @SuppressLint("MissingInflatedId")
@@ -40,133 +53,129 @@ public class PaymentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
 
-        layoutSelectedLevels = findViewById(R.id.layoutSelectedLevels);
+        initViews();
+        receiveIntentData();
+        setLevelsUI();
+        setTotalAmount();
+        clickListeners();
+
+
+
+
+
+
+    }
+    private void initViews() {
+        layoutSelectedLevel = findViewById(R.id.layoutSelectedLevels);
         tvTotal = findViewById(R.id.tvTotal);
         btnPayNow = findViewById(R.id.btnPayNow);
         layoutBack = findViewById(R.id.layout_payment_back);
+    }
 
-        showSelectedLevels();
+    private void receiveIntentData() {
+        Intent intent = getIntent();
+
+        studentId = intent.getStringExtra("StudentId");
+        workRnm = intent.getStringExtra("WorkRNM");
+        totalAmount = intent.getStringExtra("TotalAmount");
+
+        levelNames = intent.getStringArrayListExtra("LevelNames");
+        levelPrices = intent.getStringArrayListExtra("LevelPrices");
+        cartIds = intent.getStringArrayListExtra("CartIds");
+
+        Log.e("Chandu", workRnm);
+        Log.e("Chandu", totalAmount);
+        Log.e("Chandu", studentId);
+        Log.e("Chandu", String.valueOf(levelNames));
+        Log.e("Chandu", String.valueOf(levelPrices));
+
+
+    }
+    @SuppressLint("MissingInflatedId")
+    private void setLevelsUI() {
+        if (levelNames == null || levelPrices == null) {
+            Toast.makeText(this, "No levels selected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        layoutSelectedLevel.removeAllViews();
+
+        for (int i = 0; i < levelNames.size(); i++) {
+
+            View view = LayoutInflater.from(this)
+                    .inflate(R.layout.row_selected_level, layoutSelectedLevel, false);
+
+             TextView tvLevelName = view.findViewById(R.id.tvLevelName);
+            TextView tvLevelPrice = view.findViewById(R.id.tvLevelPrice);
+
+            tvLevelName.setText(levelNames.get(i));
+            tvLevelPrice.setText("₹" + levelPrices.get(i));
+
+            layoutSelectedLevel.addView(view);
+        }
+    }
+
+    private void setTotalAmount() {
+        if (totalAmount != null) {
+            tvTotal.setText(totalAmount);
+        } else {
+            tvTotal.setText("₹0");
+        }
+    }
+
+    private void clickListeners() {
+
+        layoutBack.setOnClickListener(v -> finish());
 
         btnPayNow.setOnClickListener(v -> {
-            ArrayList<String> cartTypes = new ArrayList<>();
-            if (!cartManager.getSelectedLevelsByCourse("video").isEmpty()) {
-                cartTypes.add("video");
-            }
-            if (!cartManager.getSelectedLevelsByCourse("live").isEmpty()) {
-                cartTypes.add("live");
-            }
+            String orderId = "SU2512311150282994206185";
+            String orderToken = "6108bcdf-e9e8-4d7f-9c8f-12724cd06134";
 
-            if (cartTypes.isEmpty()) {
-                Toast.makeText(this, "No items in cart!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Intent intent = new Intent(PaymentActivity.this, PaymentOptionsActivity.class);
-            intent.putStringArrayListExtra("cartTypes", cartTypes);
-            startActivity(intent);
-        });
-
-        layoutBack.setOnClickListener(view -> {
-            Intent intent = new Intent(PaymentActivity.this, CartActivity.class);
-            startActivity(intent);
-            finish();
+            startPhonePePayment();
         });
     }
 
-    private void showSelectedLevels() {
-        layoutSelectedLevels.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(this);
+    private void startPhonePePayment() {
+        JSONObject orderPayload = PaymentParams.getOrderData();
+        String orderString = orderPayload.toString();
 
-        int total = 0;
+        // Generate Token (Testing only)
+        String token = TokenUtils.generateToken(CLIENT_ID, CLIENT_SECRET, orderString);
 
-        // Loop through all types (video, live, worksheet)
-        Set<String> allTypes = cartManager.getAllTypes();
+        Intent intent = new Intent();
+        intent.setAction("com.phonepe.intent.action.PAYMENT");
+        intent.putExtra("clientId", CLIENT_ID);
+        intent.putExtra("orderData", orderString);
+        intent.putExtra("token", token);
+        intent.putExtra("mode", "TEST"); // important for sandbox
+        intent.putExtra("redirectUrl", "phonepe://callback");
 
-        for (String cartType : allTypes) {
-            Map<String, List<String>> courseLevelMap = cartManager.getSelectedLevelsByCourse(cartType);
-
-            if (courseLevelMap.isEmpty()) continue;
-
-            // Section Heading (Video Tutorials, Live Classes, Worksheets)
-            TextView typeHeading = new TextView(this);
-            typeHeading.setText(getTypeHeading(cartType));
-            typeHeading.setTextSize(20);
-            typeHeading.setPadding(0, 24, 0, 16);
-            layoutSelectedLevels.addView(typeHeading);
-
-            for (Map.Entry<String, List<String>> entry : courseLevelMap.entrySet()) {
-                String courseName = entry.getKey();
-                List<String> levels = entry.getValue();
-
-                // Course Name
-                TextView courseTitle = new TextView(this);
-                courseTitle.setText(courseName);
-                courseTitle.setTextSize(18);
-                courseTitle.setPadding(16, 16, 16, 8);
-                layoutSelectedLevels.addView(courseTitle);
-
-                for (String level : levels) {
-                    View row = inflater.inflate(R.layout.item_level_payment, layoutSelectedLevels, false);
-                    TextView tv = row.findViewById(R.id.tvLevelText);
-                    CheckBox cb = row.findViewById(R.id.checkboxLevel);
-
-                    cb.setVisibility(View.GONE); // Hide checkbox in Payment page
-                    tv.setText(level);
-
-                    int price = extractPrice(level);
-                    total += price;
-
-                    layoutSelectedLevels.addView(row);
-                }
+        // Use this for testing: check if PhonePe app exists first
+        if (isPhonePeInstalled()) {
+            intent.setPackage("com.phonepe.app"); // or "com.phonepe.sandbox" if using sandbox APK
+            try {
+                startActivityForResult(intent, PHONEPE_REQUEST_CODE);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(this, "PhonePe app not found to handle payment.", Toast.LENGTH_LONG).show();
             }
+        } else {
+            Toast.makeText(this, "PhonePe app is not installed!", Toast.LENGTH_LONG).show();
+            // Optional: redirect user to Play Store
+            Intent goToMarket = new Intent(Intent.ACTION_VIEW)
+                    .setData(Uri.parse("market://details?id=com.phonepe.app"));
+            startActivity(goToMarket);
         }
-
-        tvTotal.setText("Total Amount: ₹" + total);
     }
 
-    private int extractPrice(String levelText) {
+    // Helper method to check if PhonePe app is installed
+    private boolean isPhonePeInstalled() {
         try {
-            String num = levelText.substring(levelText.indexOf("₹") + 1).trim();
-            return Integer.parseInt(num);
+            getPackageManager().getPackageInfo("com.phonepe.app", 0);
+            return true;
         } catch (Exception e) {
-            return 0;
+            return false;
         }
     }
 
-    private String getTypeHeading(String type) {
-        switch (type) {
-            case "video":
-                return "Video Tutorials";
-            case "live":
-                return "Worksheets";
 
-            default:
-                return "Other Items";
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 123) {
-            if (data != null) {
-                String response = data.getStringExtra("response");
-                if (response != null && response.toLowerCase().contains("success")) {
-                    Toast.makeText(this, "Payment Successful", Toast.LENGTH_SHORT).show();
-
-                    cartManager.clearAll(); // Clear entire cart after payment
-
-                    Intent intent = new Intent(PaymentActivity.this, HomeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Toast.makeText(this, "Payment Failed or Cancelled", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(this, "No response from payment app", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 }

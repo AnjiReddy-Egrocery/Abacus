@@ -4,6 +4,8 @@ import com.dst.abacustrainner.Model.AssignmentExamResponse;
 import com.dst.abacustrainner.Model.AssignmentListResponse;
 import com.dst.abacustrainner.Model.AssignmentSubmitDataResponse;
 import com.dst.abacustrainner.Model.BachDetailsResponse;
+import com.dst.abacustrainner.Model.CartDetailsResponse;
+import com.dst.abacustrainner.Model.CartResponse;
 import com.dst.abacustrainner.Model.CourseLevelResponse;
 import com.dst.abacustrainner.Model.CourseLevelTopicResponse;
 import com.dst.abacustrainner.Model.CourseListResponse;
@@ -25,9 +27,12 @@ import com.dst.abacustrainner.Model.TopicExamResponse;
 import com.dst.abacustrainner.Model.TopicListResponse;
 import com.dst.abacustrainner.Model.ViewAssignmentListResponse;
 import com.dst.abacustrainner.Model.ViewAssignmentResultResponse;
+import com.dst.abacustrainner.Model.ViewSubTopicListResponse;
+import com.dst.abacustrainner.Model.ViewSubTopicResultResponse;
 import com.dst.abacustrainner.Model.ViewTopicListResponse;
 import com.dst.abacustrainner.Model.ViewTopicResultResponse;
 import com.dst.abacustrainner.Model.WorkSheetSubmitDataResponse;
+import com.dst.abacustrainner.Model.cartDeleteResponse;
 
 
 import okhttp3.MultipartBody;
@@ -201,4 +206,31 @@ public interface ApiClient {
     @POST("apicalls/Index/submitWorksheetTopicExam")
     Call<WorkSheetSubmitDataResponse> worksheetDataResponse(@Part("examRnm") RequestBody examRnm,
                                                  @Part("questionsList") RequestBody questionsList);
+
+    @Multipart
+    @POST("apicalls/Index/getWorksheetTopicPratices")
+    Call<ViewSubTopicListResponse> getsubviewTopicList(@Part("studentId") RequestBody studentId,
+                                                       @Part("topicId") RequestBody topicId);
+
+    @Multipart
+    @POST("apicalls/Index/getWorksheetTopicPraticeResult")
+    Call<ViewSubTopicResultResponse> getviewResult(@Part("examRnm") RequestBody examRnm);
+
+    @Multipart
+    @POST("apicalls/Index/worksheetAddToCart")
+    Call<CartResponse> worksheetAddToCart(
+            @Part("worksheetRnm") RequestBody worksheetRnm,
+            @Part("courseTypeId") RequestBody courseTypeId,
+            @Part("courseLevelId") RequestBody courseLevelId,
+            @Part("durationId") RequestBody durationId
+    );
+
+    @Multipart
+    @POST("apicalls/Index/worksheetCartList")
+    Call<CartDetailsResponse> getCartList(@Part("worksheetRnm") RequestBody worksheetRnm);
+
+    @Multipart
+    @POST("apicalls/Index/worksheetRemoveFromCart")
+    Call<cartDeleteResponse> getDeleteCart(@Part("cartId") RequestBody cartId);
+
 }

@@ -60,7 +60,7 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
 
         courseName = getIntent().getStringExtra("course_name");
 
-        if (courseName != null) {
+      /*  if (courseName != null) {
             switch (courseName) {
                 case "Abacus Junior":
                     currentLevels = new String[]{
@@ -88,9 +88,9 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
             }
             setupLevelDescriptions();
             showCourseLevels();
-        }
+        }*/
 
-        ivCart.setOnClickListener(new View.OnClickListener() {
+     /*   ivCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (CartManager.getInstance(getApplicationContext()).getAllSelectedLevels("video").isEmpty()) {
@@ -101,13 +101,13 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             }
-        });
+        });*/
 
         btnpurchasemore1.setOnClickListener(v -> {
             finish();
         });
 
-        btnCart.setOnClickListener(v -> {
+     /*   btnCart.setOnClickListener(v -> {
             if (CartManager.getInstance(getApplicationContext()).getAllSelectedLevels("video").isEmpty()) {
                 Toast.makeText(VideoCourseDetailActivity.this, "Cart is empty", Toast.LENGTH_SHORT).show();
             } else {
@@ -115,7 +115,7 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
                 intent.putExtra("cartType", "video");
                 startActivity(intent);
             }
-        });
+        });*/
 
 
         layoutCourseDetailBack.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +128,7 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
         });
 
 
-
+/*
         selectAllListener = (buttonView, isChecked) -> {
             for (int i = 0; i < layoutLevels1.getChildCount(); i++) {
                 View row = layoutLevels1.getChildAt(i);
@@ -146,7 +146,7 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
                 cb.setOnCheckedChangeListener(getLevelCheckboxListener(levelText, cb));
             }
             updateCartCount();
-        };
+        };*/
 
         cbSelectAll1.setOnCheckedChangeListener(selectAllListener);
     }
@@ -188,7 +188,7 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
     }
 
     @SuppressLint("MissingInflatedId")
-    private void showCourseLevels() {
+/*    private void showCourseLevels() {
         tvCourseTitle1.setText(courseName);
         layoutLevels1.removeAllViews();
 
@@ -233,10 +233,10 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
         cbSelectAll1.setOnCheckedChangeListener(selectAllListener);
 
         updateCartCount();
-    }
+    }*/
 
 
-    private CompoundButton.OnCheckedChangeListener getLevelCheckboxListener(String levelText, CheckBox cb) {
+  /*  private CompoundButton.OnCheckedChangeListener getLevelCheckboxListener(String levelText, CheckBox cb) {
         return (buttonView, isChecked) -> {
             if (isChecked) {
                 CartManager.getInstance(getApplicationContext()).addLevel("video", courseName, levelText);
@@ -260,11 +260,11 @@ public class VideoCourseDetailActivity extends AppCompatActivity {
             if (!CartManager.getInstance(getApplicationContext()).isSelected("video", level)); return false;
         }
         return true;
-    }
+    }*/
 
     @Override
     protected void onResume() {
         super.onResume();
-        updateCartCount();
+      //  updateCartCount();
     }
 }

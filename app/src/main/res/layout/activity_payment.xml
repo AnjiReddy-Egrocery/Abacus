@@ -1,95 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    tools:context=".Activity.AllSchedulesActivity">
+    android:background="#F5F5F5"
+    android:fitsSystemWindows="true"
+    tools:context=".Activity.PaymentActivity">
 
+    <!-- 🔹 Toolbar -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/signin_background"
+        android:padding="12dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/layout_payment_back"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:padding="8dp"
+            android:background="@drawable/circle_image"
+            android:src="@drawable/baseline_arrow_back_ios_new_24" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Payment"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <!-- 🔹 Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
-        tools:ignore="MissingConstraints">
+        android:padding="16dp">
+
+        <!-- Selected Levels -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selected Levels"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#000"
+            android:layout_marginBottom="8dp"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/layoutSelectedLevels"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+        </ScrollView>
+
+        <!-- Total Amount Card -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/signin_background"
-            android:orientation="vertical"
-            tools:ignore="MissingConstraints">
-            <LinearLayout
-                android:layout_width="match_parent"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="10dp"
-                android:id="@+id/layout_payment_back">
-                <LinearLayout
-                    android:id="@+id/fragment_container"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/circle_image">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:src="@drawable/baseline_arrow_back_ios_new_24"/>
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Payment"
-                    android:textStyle="bold"
-                    android:textSize="20dp"
-                    android:gravity="center"
-                    android:textColor="#FFF"/>
-            </LinearLayout>
-
-        </LinearLayout>
-        <LinearLayout
-            android:background="#FAFAFA"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <LinearLayout
-                    android:id="@+id/layoutSelectedLevels"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </ScrollView>
+                android:layout_weight="1"
+                android:text="Total Amount"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#000"/>
 
             <TextView
                 android:id="@+id/tvTotal"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Amount: ₹0"
+                android:text="₹0"
                 android:textSize="18sp"
-                android:textColor="#000"
                 android:textStyle="bold"
-                android:padding="8dp"
-                android:gravity="end" />
-
-            <Button
-                android:id="@+id/btnPayNow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Pay Now"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="#FF6600"
-                android:textColor="#FFF"
-                android:textSize="16sp"/>
+                android:textColor="#FF6600"/>
         </LinearLayout>
 
+        <!-- Pay Button -->
+        <Button
+            android:id="@+id/btnPayNow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pay Now"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="25dp"
+            android:backgroundTint="#FF6600"
+            android:layout_marginTop="16dp"/>
     </LinearLayout>
+
 </LinearLayout>

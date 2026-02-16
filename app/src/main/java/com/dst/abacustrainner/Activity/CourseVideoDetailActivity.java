@@ -122,7 +122,7 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
 
                 cb.setOnCheckedChangeListener(getLevelCheckboxListener(levelKey, cb));
             }
-            updateCartCount();
+            //updateCartCount();
         };
 
         cbVideoSelectAll.setOnCheckedChangeListener(selectAllListener);
@@ -142,17 +142,17 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
             tv.setText(level);
             String levelKey = level;
 
-            cb.setChecked(CartManager.getInstance(getApplicationContext()).isSelected("video",levelKey));
+           // cb.setChecked(CartManager.getInstance(getApplicationContext()).isSelected("video",levelKey));
             cb.setOnCheckedChangeListener(getLevelCheckboxListener(levelKey, cb));
 
             layoutVideoLevels.addView(row);
         }
 
         cbVideoSelectAll.setOnCheckedChangeListener(null);
-        cbVideoSelectAll.setChecked(allLevelsSelected());
+       // cbVideoSelectAll.setChecked(allLevelsSelected());
         cbVideoSelectAll.setOnCheckedChangeListener(selectAllListener);
 
-        updateCartCount();
+       // updateCartCount();
     }
 
     private CompoundButton.OnCheckedChangeListener getLevelCheckboxListener(String levelKey, CheckBox cb) {
@@ -162,23 +162,23 @@ public class CourseVideoDetailActivity extends AppCompatActivity {
             } else {
              //  cartManager.removeLevel(levelKey);
             }
-            updateCartCount();
+/*            updateCartCount();
 
             cbVideoSelectAll.setOnCheckedChangeListener(null);
             cbVideoSelectAll.setChecked(allLevelsSelected());
-            cbVideoSelectAll.setOnCheckedChangeListener(selectAllListener);
+            cbVideoSelectAll.setOnCheckedChangeListener(selectAllListener);*/
         };
     }
 
-    private void updateCartCount() {
+  /*  private void updateCartCount() {
         tvCartCount.setText(String.valueOf(cartManager.getCount("video")));
-    }
+    }*/
 
-    private boolean allLevelsSelected() {
+  /*  private boolean allLevelsSelected() {
         for (String level : currentLevels) {
             String levelKey = level;
             if (!CartManager.getInstance(getApplicationContext()).isSelected("video",levelKey)) return false;
         }
         return true;
-    }
+    }*/
 }

@@ -133,13 +133,13 @@ public class VideoCoursesActivity extends AppCompatActivity {
         tvSenior1.setText("Selected: 0");
         tvVedic1.setText("Selected: 0");
 
-        Map<String, List<String>> selectedLevelsByCourse = cart.getSelectedLevelsByCourse("video");
+     //   Map<String, List<String>> selectedLevelsByCourse = cart.getSelectedLevelsByCourse("video");
 
         int juniorCount = 0;
         int seniorCount = 0;
         int vedicCount = 0;
 
-        for (Map.Entry<String, List<String>> entry : selectedLevelsByCourse.entrySet()) {
+      /*  for (Map.Entry<String, List<String>> entry : selectedLevelsByCourse.entrySet()) {
             String courseName = entry.getKey();
             int levelCount = entry.getValue().size();
 
@@ -150,7 +150,7 @@ public class VideoCoursesActivity extends AppCompatActivity {
             } else if (courseName.equals("Vedic Maths")) {
                 vedicCount = levelCount;
             }
-        }
+        }*/
 
         if (juniorCount > 0) {
             tvJunior1.setText("Selected: " + juniorCount);

@@ -12,8 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.dst.abacustrainner.Activity.CoursePracticesActivity;
 import com.dst.abacustrainner.Activity.ViewPracticeListActivity;
 import com.dst.abacustrainner.Activity.ViewResultDetailsActivity;
+import com.dst.abacustrainner.Model.ViewSubTopicListResponse;
 import com.dst.abacustrainner.Model.ViewTopicListResponse;
 import com.dst.abacustrainner.R;
 
@@ -30,6 +32,8 @@ public class ViewListTopicAdapter extends RecyclerView.Adapter<ViewListTopicAdap
         this.practicesList=result;
 
     }
+
+
 
     @NonNull
     @Override

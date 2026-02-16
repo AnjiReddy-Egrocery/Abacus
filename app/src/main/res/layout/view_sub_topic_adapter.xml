@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/layoutLevelRow"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:orientation="vertical"
-android:background="@drawable/bg_level_item"
-android:gravity="center_vertical"
-android:clickable="true"
-android:focusable="true"
-android:layout_margin="4dp">
+    android:id="@+id/layoutLevelRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_level_item"
+    android:gravity="center_vertical"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_margin="4dp">
 
     <androidx.cardview.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -48,37 +48,19 @@ android:layout_margin="4dp">
                     android:layout_margin="2dp"
                     android:weightSum="3">
 
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="PracticeNow"
-                        android:textColor="#FFF"
-                        android:textSize="11dp"
-                        android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:backgroundTint="#ff6600"
-                        android:id="@+id/but_practice"/>
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="ViewPractice"
-                        android:textColor="#FFF"
-                        android:textSize="11dp"
-                        android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:backgroundTint="#B1AAA5"
-                        android:id="@+id/but_view_practice"/>
+
+
 
                     <Button
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="Visualization"
-                        android:textColor="#FFF"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="View Result"
+                        android:textSize="14dp"
+                        android:fontFamily="@font/regular"
                         android:layout_weight="1"
-                        android:textSize="11dp"
                         android:textStyle="bold"
-                        android:backgroundTint="#384949"
-                        android:id="@+id/but_visualization"/>
+                        android:id="@+id/but_view_Result"
+                        android:backgroundTint="#D3481D"/>
 
 
                 </LinearLayout>

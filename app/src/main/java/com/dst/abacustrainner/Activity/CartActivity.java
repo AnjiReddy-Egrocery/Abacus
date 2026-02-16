@@ -1,9 +1,12 @@
 package com.dst.abacustrainner.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,21 +15,49 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.dst.abacustrainner.Adapter.CartDetailAdapter;
+import com.dst.abacustrainner.Adapter.CourseLevelAdapter;
+import com.dst.abacustrainner.Model.CartDetailsResponse;
 import com.dst.abacustrainner.Model.CartManager;
+import com.dst.abacustrainner.Model.CourseListResponse;
+import com.dst.abacustrainner.Model.OnCartDeleteListener;
+import com.dst.abacustrainner.Model.OnDeleteCart;
+import com.dst.abacustrainner.Model.StudentRegistationResponse;
+import com.dst.abacustrainner.Model.cartDeleteResponse;
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.User.HomeActivity;
+import com.dst.abacustrainner.database.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class CartActivity extends AppCompatActivity {
 
     private LinearLayout layoutCartItems, layoutCartBack;
-    private TextView tvTotalAmount;
     private Button btnContinueShopping, btnCheckout;
-    private final CartManager cart = CartManager.getInstance(this);
+    String workSheetRnm;
+    TextView txtCourseType;
+
+    RecyclerView recyclerCartList;
+    CartDetailAdapter cartDetalAdapter;
+    TextView textAmount;
+    Button butCheckOut;
+    String studentId;
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -36,102 +67,196 @@ public class CartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cart);
 
         layoutCartItems = findViewById(R.id.layoutCartItems);
-        tvTotalAmount = findViewById(R.id.tvTotalAmount);
         btnContinueShopping = findViewById(R.id.btnContinueShopping);
         btnCheckout = findViewById(R.id.btnCheckout);
         layoutCartBack = findViewById(R.id.layout_cart_back);
+        txtCourseType = findViewById(R.id.txt_name);
+        recyclerCartList = findViewById(R.id.recycler_cartItems);
+        textAmount = findViewById(R.id.txt_amount);
+        butCheckOut = findViewById(R.id.btnCheckout);
 
-        setupCartItems();
+        workSheetRnm = getIntent().getStringExtra("WorkSheetRnm");
+        StudentRegistationResponse.Result result= SharedPrefManager.getInstance(CartActivity.this).getUserData();
+        studentId=result.getStudentId();
+
+        Log.e("Reddy",workSheetRnm);
+
+        recyclerCartList.setLayoutManager(new LinearLayoutManager(this));
+        cartDetalAdapter = new CartDetailAdapter(CartActivity.this, new CartDetailAdapter.OnDeleteCart() {
+            @Override
+            public void onDeleteClick(String cartId) {
+                removeCartItem(cartId);
+            }
+        });
+        recyclerCartList.setAdapter(cartDetalAdapter);
 
         btnContinueShopping.setOnClickListener(view -> {
             Intent intent = new Intent(CartActivity.this, CoursesActivity.class);
             startActivity(intent);
         });
 
-        btnCheckout.setOnClickListener(v -> {
-            ArrayList<String> selectedCartTypes = new ArrayList<>(cart.getAllTypes());
-            Intent intent = new Intent(this, PaymentActivity.class);
-            intent.putStringArrayListExtra("cartTypes", selectedCartTypes);
-            startActivity(intent);
+
+
+        butCheckOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String totalAmount = textAmount.getText().toString();
+
+                ArrayList<String> levelNames = new ArrayList<>();
+                ArrayList<String> levelPrices = new ArrayList<>();
+                ArrayList<String> cartIds = new ArrayList<>();
+
+                for (CartDetailsResponse.CourseLevels level : cartDetalAdapter.getLevels()) {
+                    levelNames.add(level.getCourseLevel());
+                    levelPrices.add(level.getCourseLevelPrice());
+                    cartIds.add(level.getCartId());
+                }
+
+                Intent intent = new Intent(CartActivity.this, PaymentActivity.class);
+                intent.putExtra("StudentId", studentId);
+                intent.putExtra("WorkRNM", workSheetRnm);
+                intent.putExtra("TotalAmount", totalAmount);
+
+                // ✅ NEW DATA
+                intent.putStringArrayListExtra("LevelNames", levelNames);
+                intent.putStringArrayListExtra("LevelPrices", levelPrices);
+                intent.putStringArrayListExtra("CartIds", cartIds);
+
+                startActivity(intent);
+            }
         });
+
+
+                loadCartList(workSheetRnm);
 
 
     }
 
-    private void setupCartItems() {
-        layoutCartItems.removeAllViews();
-        int total = 0;
+    private void removeCartItem(String cartId) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+        RequestBody CartLevelPart = RequestBody.create(MediaType.parse("text/plain"), cartId);
+        Call<cartDeleteResponse> call = apiClient.getDeleteCart(CartLevelPart);
+        call.enqueue(new Callback<cartDeleteResponse>() {
+            @Override
+            public void onResponse(Call<cartDeleteResponse> call, Response<cartDeleteResponse> response) {
+                if (response.body() != null &&
+                        "200".equals(response.body().getErrorCode())) {
 
-        LayoutInflater inflater = LayoutInflater.from(this);
+                    Toast.makeText(CartActivity.this,
+                            "Item removed from cart",
+                            Toast.LENGTH_SHORT).show();
 
-        // Loop through all types (video, live, worksheet)
-        for (String cartType : cart.getAllTypes()) {
-            Map<String, List<String>> courseLevelMap = cart.getSelectedLevelsByCourse(cartType);
+                    // ✅ INSTANT UI UPDATE
+                    cartDetalAdapter.removeItemByCartId(cartId);
 
-            if (courseLevelMap.isEmpty()) continue;
+                    // ✅ TOTAL UPDATE
+                    recalculateTotal();
 
-            // Type Heading (Video Tutorials / Worksheets)
-            TextView tvTypeHeading = new TextView(this);
-            tvTypeHeading.setText(getTypeHeading(cartType));
-            tvTypeHeading.setTextSize(20);
-            tvTypeHeading.setPadding(0, 24, 0, 16);
-            layoutCartItems.addView(tvTypeHeading);
+                }
+            }
 
-            for (Map.Entry<String, List<String>> entry : courseLevelMap.entrySet()) {
-                String courseName = entry.getKey();
-                List<String> levels = entry.getValue();
+            @Override
+            public void onFailure(Call<cartDeleteResponse> call, Throwable t) {
 
-                // Show Course Name
-                TextView tvCourse = new TextView(this);
-                tvCourse.setText(courseName);
-                tvCourse.setTextSize(18);
-                tvCourse.setPadding(0, 16, 0, 8);
-                layoutCartItems.addView(tvCourse);
+            }
+        });
+    }
 
-                for (String level : levels) {
-                    View row = inflater.inflate(R.layout.item_level_cart, layoutCartItems, false);
-                    CheckBox cb = row.findViewById(R.id.checkboxLevel);
-                    TextView tv = row.findViewById(R.id.tvLevelText);
+    private void loadCartList(String workSheetRnm) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+        RequestBody CartLevelPart = RequestBody.create(MediaType.parse("text/plain"), workSheetRnm);
 
-                    tv.setText(level);
-                    cb.setOnCheckedChangeListener(null);
-                    cb.setChecked(true);
+        Call<CartDetailsResponse> call = apiClient.getCartList(CartLevelPart);
+        call.enqueue(new Callback<CartDetailsResponse>() {
+            @Override
+            public void onResponse(Call<CartDetailsResponse> call, Response<CartDetailsResponse> response) {
+                CartDetailsResponse res = response.body();
 
-                    cb.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                        if (!isChecked) {
-                            cart.removeLevel(cartType, courseName, level);
-                            setupCartItems(); // refresh view
+                if (res != null && "200".equals(res.getErrorCode())) {
+
+                    if (res.getResult() != null) {
+
+                        // ✅ SET courseType TO TEXTVIEW
+                        String courseType = res.getResult().getCourseType();
+
+                        if (courseType != null && !courseType.isEmpty()) {
+                            txtCourseType.setText(courseType);
                         }
-                    });
 
-                    row.setOnClickListener(v -> cb.setChecked(!cb.isChecked()));
-                    layoutCartItems.addView(row);
-                    total += extractPrice(level);
+                        // ✅ SET LEVELS TO ADAPTER
+                        if (res.getResult().getCourseLevels() != null &&
+                                !res.getResult().getCourseLevels().isEmpty()) {
+
+                            List<CartDetailsResponse.CourseLevels> levels =
+                                    res.getResult().getCourseLevels();
+
+                            cartDetalAdapter.setLevels(levels);
+                            updateCartTotal(levels);
+                        }else {
+                            cartDetalAdapter.setLevels(new ArrayList<>());
+                            textAmount.setText("₹0/-");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartDetailsResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void updateCartTotal(List<CartDetailsResponse.CourseLevels> levels) {
+        int totalAmount = 0;
+
+        for (CartDetailsResponse.CourseLevels level : levels) {
+            if (level.getCourseLevelPrice() != null && !level.getCourseLevelPrice().isEmpty()) {
+                try {
+                    totalAmount += Integer.parseInt(level.getCourseLevelPrice());
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
                 }
             }
         }
 
-        tvTotalAmount.setText("Total: ₹" + total);
+        textAmount.setText("₹" + totalAmount + "/-");
     }
+    private void recalculateTotal() {
+        int total = 0;
 
-    private int extractPrice(String levelText) {
-        try {
-            String num = levelText.substring(levelText.indexOf("₹") + 1).trim();
-            return Integer.parseInt(num);
-        } catch (Exception e) {
-            return 0;
+        List<CartDetailsResponse.CourseLevels> list =
+                cartDetalAdapter.getLevels();
+
+        for (CartDetailsResponse.CourseLevels level : list) {
+            if (level.getCourseLevelPrice() != null) {
+                try {
+                    total += Integer.parseInt(level.getCourseLevelPrice());
+                } catch (Exception ignored) {}
+            }
+        }
+
+        textAmount.setText("₹" + total + "/-");
+
+        if (list.isEmpty()) {
+            textAmount.setText("₹0/-");
         }
     }
 
-    private String getTypeHeading(String type) {
-        switch (type) {
-            case "video":
-                return "Video Tutorials";
-            case "live":
-                return "Worksheets";
-
-            default:
-                return "Other Items";
-        }
-    }
 }

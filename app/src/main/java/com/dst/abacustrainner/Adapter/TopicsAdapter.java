@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dst.abacustrainner.Activity.CoursePracticesActivity;
 import com.dst.abacustrainner.Activity.CourseTopicExamActivity;
 import com.dst.abacustrainner.Activity.CourseTopicVisualizationActivity;
 import com.dst.abacustrainner.Model.CourseLevelTopicResponse;
@@ -66,6 +67,10 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.TopicViewH
            @Override
            public void onClick(View v) {
 
+               Intent intent = new Intent(context, CoursePracticesActivity.class);
+               intent.putExtra("StudentId",studentId);
+               intent.putExtra("TopicId",topicId);
+               context.startActivity(intent);
            }
        });
 
