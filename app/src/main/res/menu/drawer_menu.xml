@@ -86,11 +86,6 @@
             android:icon="@drawable/nav_settings"/>
 
         <item
-            android:id="@+id/nav_about"
-            android:title="About Us"
-            android:icon="@drawable/nav_about"/>
-
-        <item
             android:id="@+id/nav_help"
             android:title="Help &amp; Support"
             android:icon="@drawable/nav_help"/>
@@ -107,6 +102,16 @@
             android:id="@+id/nav_profile"
             android:title="Profile"
             android:icon="@drawable/nav_profile"/>
+
+        <item
+            android:id="@+id/nav_privacypolicy"
+            android:title="Privacy Policy"
+            android:icon="@drawable/nav_help"/>
+
+        <item
+            android:id="@+id/nav_refoundpolicy"
+            android:title="Refound Policy"
+            android:icon="@drawable/nav_help"/>
 
         <item
             android:id="@+id/nav_logout"

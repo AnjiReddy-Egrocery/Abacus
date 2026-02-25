@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="30dp"
+    android:clipToPadding="false"
     tools:showIn="@layout/activity_welcome">
 
 
@@ -25,6 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:alpha=".5"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="16dp"
         android:layout_above="@id/layoutDots"
         android:background="#ECECFA" />
 
@@ -37,6 +41,8 @@
         android:text="Next"
         android:backgroundTint="#ff6600"
         android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="16dp"
         android:textColor="@android:color/white" />
 
     <TextView
@@ -46,8 +52,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:text="@string/skip"
-        android:layout_marginBottom="15dp"
         android:layout_marginStart="20dp"
+        android:layout_marginBottom="16dp"
         android:textColor="#ff6600" />
 
 </RelativeLayout>

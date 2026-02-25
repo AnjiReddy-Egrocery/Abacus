@@ -73,7 +73,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
     private TextView tvMonthYear,txtDate,txtTime;
     private ImageView btnPrevMonth, btnNextMonth;
     private Calendar currentCalendar;
-    private TextView txtviewall;
+    //private TextView txtviewall;
 
     RecyclerView recyclerTopicList;
     TopicListAdapter topicListAdapter;
@@ -98,7 +98,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
         tvMonthYear = view1.findViewById(R.id.tvMonthYear);
         btnPrevMonth = view1.findViewById(R.id.btnPrevMonth);
         btnNextMonth = view1.findViewById(R.id.btnNextMonth);
-        txtviewall = view1.findViewById(R.id.viewall);
+//        txtviewall = view1.findViewById(R.id.viewall);
         txtDate= view1.findViewById(R.id.txt_date);
         txtTime = view1.findViewById(R.id.txt_time);
 
@@ -138,6 +138,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
             }
         });
 
+/*
         txtviewall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,6 +149,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                 startActivity(intent);
             }
         });
+*/
 
         tableLayout = view1.findViewById(R.id.tableLayout);
         tableLayoutAssignments = view1.findViewById(R.id.tableLayoutassignment);

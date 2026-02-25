@@ -120,6 +120,7 @@
                 android:verticalSpacing="1dp"
                 android:horizontalSpacing="1dp"
                 android:background="#ffffff"/>
+<!--
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -155,7 +156,9 @@
                     />
 
             </LinearLayout>
+-->
 
+<!--
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -202,6 +205,7 @@
 
                     />
             </LinearLayout>
+-->
 
             <LinearLayout
                 android:layout_width="match_parent"

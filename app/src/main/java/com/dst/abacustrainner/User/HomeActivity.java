@@ -21,7 +21,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.signature.ObjectKey;
 import com.dst.abacustrainner.Activity.AboutUsActivity;
+import com.dst.abacustrainner.Activity.AppSettindsActivity;
+import com.dst.abacustrainner.Activity.HelpActivity;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
+import com.dst.abacustrainner.Activity.PrivacyPolicyActivity;
+import com.dst.abacustrainner.Activity.ProgressTrackerActivity;
+import com.dst.abacustrainner.Activity.RefoundPolicyActivity;
 import com.dst.abacustrainner.Activity.TermsConditionsActivity;
 import com.dst.abacustrainner.Activity.VisualiztionActivity;
 import com.dst.abacustrainner.Fragment.AIGenrationFragment;
@@ -379,10 +384,10 @@ public class HomeActivity extends AppCompatActivity {
                 selectedFragment = new CompetitionFragment();
             }*/else if (itemView == R.id.nav_schedules) {
                 scheduleMethod(studentId);  // Call method (no fragment return needed)
-                return true;
+               // return true;
             }else if (itemView == R.id.nav_profile) {
                 openProfileFragment(studentId, fullName, imageUrl);
-                 return true;
+               //  return true;
             }else if (itemView == R.id.nav_worksheet){
 
                /* Intent intent= new Intent(HomeActivity.this, WorksheetSubscriptionActivity.class);
@@ -414,7 +419,35 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomeActivity.this, TermsConditionsActivity.class);
                 intent.putExtra("studentId",studentId);
                 startActivity(intent);
-            }/*else if (itemView == R.id.nav_exam) {
+            }
+            else if (itemView == R.id.nav_privacypolicy) {
+                Intent intent = new Intent(HomeActivity.this, PrivacyPolicyActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }
+            else if (itemView == R.id.nav_refoundpolicy) {
+                Intent intent = new Intent(HomeActivity.this, RefoundPolicyActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }
+            else if (itemView == R.id.nav_progress_tracker) {
+                Intent intent = new Intent(HomeActivity.this, ProgressTrackerActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }
+
+            else if (itemView == R.id.nav_settings) {
+                Intent intent = new Intent(HomeActivity.this, AppSettindsActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }
+
+            else if (itemView == R.id.nav_help) {
+                Intent intent = new Intent(HomeActivity.this, HelpActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }
+            /*else if (itemView == R.id.nav_exam) {
                 selectedFragment = new AIGenrationFragment();
             }*/
 

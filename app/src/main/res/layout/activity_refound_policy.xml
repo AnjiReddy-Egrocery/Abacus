@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="About Us"
+                android:text="Refound Policy"
                 android:textStyle="bold"
                 android:textSize="25dp"
                 android:gravity="center_vertical"
@@ -69,14 +69,14 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="About Abacus Trainer"
+                            android:text="Abacus Trainer Refound Policy"
                             android:textSize="18dp"
                             android:textColor="#000"
                             android:layout_margin="12dp"
                             android:textStyle="bold"/>
 
                         <TextView
-                            android:id="@+id/tvAbout"
+                            android:id="@+id/tvRefound"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="16dp"

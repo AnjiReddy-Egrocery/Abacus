@@ -261,64 +261,6 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         pieChart.invalidate();
 
 
-//        HorizontalBarChart barChart = findViewById(R.id.barChart);
-//
-//// Prepare data entries
-//        ArrayList<BarEntry> barEntries = new ArrayList<>();
-//        barEntries.add(new BarEntry(0, attemptedCount));
-//        barEntries.add(new BarEntry(1, notAttemptedQuestions));
-//        barEntries.add(new BarEntry(2, correctCount));
-//        barEntries.add(new BarEntry(3, wrongAnswerCount));
-//
-//// Create dataset
-//        BarDataSet barDataSet = new BarDataSet(barEntries, "Question Statistics");
-//        barDataSet.setColors(new int[]{Color.MAGENTA, Color.YELLOW, Color.GREEN, Color.RED});
-//        barDataSet.setValueTextSize(14f);
-//        barDataSet.setValueTextColor(Color.BLACK);
-//        barDataSet.setDrawValues(false);
-//
-//
-//// Custom ValueFormatter to show labels on top of bars
-//        barDataSet.setValueFormatter(new ValueFormatter() {
-//            @Override
-//            public String getBarLabel(BarEntry barEntry) {
-//                // Define the labels for each bar
-//                String[] labels = {"Attempted", "Not Attempted", "Correct", "Incorrect"};
-//                int index = (int) barEntry.getX();
-//                return labels[index];
-//            }
-//        });
-//
-//// Customize the BarData
-//        BarData barData = new BarData(barDataSet);
-//        barData.setBarWidth(0.5f); // Set bar width
-//
-//// Customize the chart
-//        barChart.setData(barData);
-//        barChart.setFitBars(true);
-//        barChart.getDescription().setEnabled(false); // Disable description
-//        barChart.getLegend().setEnabled(false); // Disable legend
-//
-//// Set labels for the Y-axis (categories)
-//        String[] labels = new String[]{"Attempted", "Not Attempted", "Correct", "Incorrect"};
-//        XAxis xAxis = barChart.getXAxis();
-//        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-//        xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE);
-//        xAxis.setDrawAxisLine(false);
-//        xAxis.setDrawGridLines(false);
-//        xAxis.setGranularity(1f);
-//        xAxis.setGranularityEnabled(true);
-//
-//// Customize Y-axis
-//        barChart.getAxisLeft().setEnabled(false); // Hide left Y-axis
-//        barChart.getAxisRight().setDrawGridLines(false);
-//        barChart.getAxisRight().setDrawAxisLine(false);
-//        barChart.getAxisRight().setAxisMinimum(0f); // Start Y-axis from 0
-//
-//// Refresh the chart
-//        barChart.invalidate();
-
-
         for (int i = 0; i < questions.size(); i++) {
 
             Log.e("Debug", "Index: " + i);

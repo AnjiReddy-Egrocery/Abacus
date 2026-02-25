@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     android:background="@drawable/signin_background"
     tools:context=".Activity.ViewResultDetailsActivity">
@@ -68,19 +69,21 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Our Abacus Trainer Team believes that every child holds an essence of imagination, creativity, and profound insight. The ability to reveal this potential can be found in the ancient tools of the Abacus and Vedic Maths. We are an interdisciplinary team integrating mathematics, technology, and education. We have empowered over 5,000 children (ages 4-15) with advanced concentration, mental calculation skills, and self-assurance, guiding them to become global achievers."
-                android:textSize="16dp"
+                android:text="Abacus Trainer Terms &amp;Conditions"
+                android:textSize="18dp"
                 android:textColor="#000"
                 android:layout_margin="12dp"
-                android:textStyle="normal"/>
+                android:textStyle="bold"/>
+
             <TextView
+                android:id="@+id/tvTerms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Every tutor has undergone a rigorous assessment process, is engaged in lesson innovation, and possesses adept qualifications in Abacus teaching or Vedic Maths."
                 android:textSize="16dp"
-                android:textColor="#000"
-                android:layout_margin="12dp"
-                android:textStyle="normal"/>
+                android:textColor="#000000"
+                android:padding="16dp"/>
+
+
           </LinearLayout>
         </LinearLayout>
       </ScrollView>
