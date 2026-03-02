@@ -15,8 +15,15 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dst.abacustrainner.Activity.AllocatedAssignmentViewPracticeActivity;
+import com.dst.abacustrainner.Activity.AllocatedViewPracticeActivity;
 import com.dst.abacustrainner.Activity.CourseLevelActivity;
+import com.dst.abacustrainner.Activity.CoursePracticesActivity;
 import com.dst.abacustrainner.Activity.CourseTopicExamActivity;
+import com.dst.abacustrainner.Activity.LevelAssignmentExamActivity;
+import com.dst.abacustrainner.Activity.LevelAssignmentVisualizationActivity;
+import com.dst.abacustrainner.Activity.LevelTopicExamActivity;
+import com.dst.abacustrainner.Activity.LevelTopicVisualizationActivity;
 import com.dst.abacustrainner.Model.CourseLevelAssignmentTopic;
 import com.dst.abacustrainner.Model.CourseLevelTopic;
 import com.dst.abacustrainner.Model.CourseTypeLevel;
@@ -53,19 +60,20 @@ public class LevelTopicAdapter extends RecyclerView.Adapter<LevelTopicAdapter.Vi
 
         holder.txtTopic.setText(item.getTitle());
 
+        String topicName = item.getTitle();
+        String topicId = item.getTopicId();
 
-        // UI Styling based on type
         switch (item.getType()) {
 
+            // ===================== TOPIC HEADER =====================
             case LevelDisplayItem.TYPE_TOPIC_HEADER:
-                holder.txtTopic.setText("Course Level Topics");
+
+                holder.txtTopic.setText(item.getTitle());
                 holder.txtTopic.setTextSize(18);
                 holder.txtTopic.setTextColor(Color.WHITE);
                 holder.txtTopic.setPadding(20,20,20,20);
-
                 holder.txtTopic.setBackgroundResource(R.drawable.bg_header);
 
-                // remove card look
                 holder.cardView.setCardElevation(0);
                 holder.cardView.setCardBackgroundColor(Color.TRANSPARENT);
 
@@ -73,17 +81,16 @@ public class LevelTopicAdapter extends RecyclerView.Adapter<LevelTopicAdapter.Vi
                 holder.btnVisualization.setVisibility(View.GONE);
                 holder.btnPractice.setVisibility(View.GONE);
 
-
                 break;
 
-            // ✅ ASSIGNMENT HEADER
+
+            // ===================== ASSIGNMENT HEADER =====================
             case LevelDisplayItem.TYPE_ASSIGNMENT_HEADER:
 
-                holder.txtTopic.setText("Course Level Assignment Topics");
+                holder.txtTopic.setText("Assignment Topics");
                 holder.txtTopic.setTextSize(18);
                 holder.txtTopic.setTextColor(Color.WHITE);
                 holder.txtTopic.setPadding(20,20,20,20);
-
                 holder.txtTopic.setBackgroundResource(R.drawable.bg_header);
 
                 holder.cardView.setCardElevation(0);
@@ -93,64 +100,105 @@ public class LevelTopicAdapter extends RecyclerView.Adapter<LevelTopicAdapter.Vi
                 holder.btnVisualization.setVisibility(View.GONE);
                 holder.btnPractice.setVisibility(View.GONE);
 
+                break;
+
+
+            // ===================== NORMAL TOPIC =====================
+            case LevelDisplayItem.TYPE_TOPIC:
+
+                styleNormalItem(holder);
+
+                holder.btnPractice.setOnClickListener(v -> {
+
+                    Intent intent =
+                            new Intent(context, LevelTopicExamActivity.class);
+                    intent.putExtra("StudentId", studentId);
+                    intent.putExtra("TopicId", topicId);
+                    intent.putExtra("TopicName", topicName);
+                    context.startActivity(intent);
+                });
 
                 break;
 
-            // ✅ NORMAL ITEMS
-            default:
 
-                holder.txtTopic.setTextSize(14);
-                holder.txtTopic.setTextColor(Color.BLACK);
-                holder.txtTopic.setPadding(60,10,20,10);
+            // ===================== ASSIGNMENT TOPIC =====================
+            case LevelDisplayItem.TYPE_ASSIGNMENT_TOPIC:
 
-                holder.txtTopic.setBackground(null);
+                styleNormalItem(holder);
 
-                // restore card style (VERY IMPORTANT)
-                holder.cardView.setCardElevation(6);
-                holder.cardView.setCardBackgroundColor(Color.WHITE);
+                holder.btnPractice.setOnClickListener(v -> {
 
-                holder.btnView.setVisibility(View.VISIBLE);
-                holder.btnVisualization.setVisibility(View.VISIBLE);
-                holder.btnPractice.setVisibility(View.VISIBLE);
+                    Intent intent =
+                            new Intent(context, LevelAssignmentExamActivity.class);
+                    intent.putExtra("StudentId", studentId);
+                    intent.putExtra("TopicId", topicId);
+                    intent.putExtra("TopicName", topicName);
+                    context.startActivity(intent);
+                });
+                holder.btnVisualization.setOnClickListener(v -> {
+
+                    Intent intent =
+                            new Intent(context, LevelAssignmentVisualizationActivity.class);
+                    intent.putExtra("StudentId", studentId);
+                    intent.putExtra("TopicId", topicId);
+                    intent.putExtra("TopicName", topicName);
+                    context.startActivity(intent);
+                });
+
+                // ✅ View Practice (Assignment)
+                holder.btnView.setOnClickListener(v -> {
+
+                    Intent intent =
+                            new Intent(context, AllocatedAssignmentViewPracticeActivity.class);
+                    intent.putExtra("StudentId", studentId);
+                    intent.putExtra("TopicId", topicId);
+                    context.startActivity(intent);
+                });
+
 
 
                 break;
         }
-
-        holder.btnVisualization.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String topicName = item.getTitle();
-                String topicId = item.getTopicId();
-               /* Intent intent = new Intent(context, LevelTopicExamActivity.class);
-                intent.putExtra("StudentId",studentId);
-                intent.putExtra("TopicId",topicId);
-                intent.putExtra("TopicName",topicName);
-                context.startActivity(intent);
-*/
-            }
-        });
-        holder.btnPractice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String topicName = item.getTitle();
-                Toast.makeText(context,
-                        "View clicked : " + topicName,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-        holder.btnView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String topicName = item.getTitle();
-                Toast.makeText(context,
-                        "View clicked : " + topicName,
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
     }
 
+    private void styleNormalItem(ViewHolder holder) {
+
+        holder.txtTopic.setTextSize(14);
+        holder.txtTopic.setTextColor(Color.BLACK);
+        holder.txtTopic.setPadding(60,10,20,10);
+        holder.txtTopic.setBackground(null);
+
+        holder.cardView.setCardElevation(6);
+        holder.cardView.setCardBackgroundColor(Color.WHITE);
+
+        holder.btnView.setVisibility(View.VISIBLE);
+        holder.btnVisualization.setVisibility(View.VISIBLE);
+        holder.btnPractice.setVisibility(View.VISIBLE);
+
+        // Visualization common
+        holder.btnVisualization.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(context, LevelTopicVisualizationActivity.class);
+            intent.putExtra("StudentId", studentId);
+            intent.putExtra("TopicId",
+                    displayList.get(holder.getAdapterPosition()).getTopicId());
+            intent.putExtra("TopicName",
+                    displayList.get(holder.getAdapterPosition()).getTitle());
+            context.startActivity(intent);
+        });
+
+        // View practice common
+        holder.btnView.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(context, AllocatedViewPracticeActivity.class);
+            intent.putExtra("StudentId", studentId);
+            intent.putExtra("TopicId",
+                    displayList.get(holder.getAdapterPosition()).getTopicId());
+            context.startActivity(intent);
+        });
+    }
     @Override
     public int getItemCount() {
         return displayList.size();

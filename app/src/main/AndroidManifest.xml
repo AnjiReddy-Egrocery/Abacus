@@ -27,6 +27,42 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.OrderDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.AllocatedViewSubAssignmentResultDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.AllocatedVisualizationWorkSheetResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.AllocatedAssignmentViewPracticeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.LevelAssignmentVisualizationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.AllocatedAssignmentPracticeWorkSheetResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.LevelAssignmentExamActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.AllocatedViewSubResultDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.AllocatedViewPracticeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.LevelTopicVisualizationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.AllocatedPracticeWorkSheetResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.LevelTopicExamActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.CourseLevelActivity"
             android:exported="false" />
         <activity

@@ -1,5 +1,8 @@
 package com.dst.abacustrainner.Services;
 
+import com.dst.abacustrainner.Model.AlloactedViewSubTopicListResponse;
+import com.dst.abacustrainner.Model.AllocatedTopicExamResponse;
+import com.dst.abacustrainner.Model.AllocatedViewSubTopicResultResponse;
 import com.dst.abacustrainner.Model.AssignmentExamResponse;
 import com.dst.abacustrainner.Model.AssignmentListResponse;
 import com.dst.abacustrainner.Model.AssignmentSubmitDataResponse;
@@ -21,6 +24,7 @@ import com.dst.abacustrainner.Model.GameResponse;
 import com.dst.abacustrainner.Model.LevelPriceResponse;
 import com.dst.abacustrainner.Model.OrderListResponse;
 import com.dst.abacustrainner.Model.StudentDetails;
+import com.dst.abacustrainner.Model.StudentOrdersResponse;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.Model.StudentScheduleInfo;
 import com.dst.abacustrainner.Model.StudentTotalDetails;
@@ -35,6 +39,7 @@ import com.dst.abacustrainner.Model.ViewSubTopicResultResponse;
 import com.dst.abacustrainner.Model.ViewTopicListResponse;
 import com.dst.abacustrainner.Model.ViewTopicResultResponse;
 import com.dst.abacustrainner.Model.WorkSheetSubmitDataResponse;
+import com.dst.abacustrainner.Model.aloocatedWorkSheetSubmitDataResponse;
 import com.dst.abacustrainner.Model.cartDeleteResponse;
 
 
@@ -244,6 +249,53 @@ public interface ApiClient {
     @POST("apicalls/Index/getAllocatedCourseLevelTopics")
     Call<CoursesResponse> getCourseTypeListTopics(@Part("studentId") RequestBody studentId,
                                                   @Part("courseLevelId") RequestBody courseLevelId);
+
+    @Multipart
+    @POST("apicalls/Index/startAllocatedTopicExam")
+    Call<AllocatedTopicExamResponse> allocatedtopicExamList(@Part("studentId") RequestBody studentId,
+                                                            @Part("topicId") RequestBody topicId );
+
+    @Multipart
+    @POST("apicalls/Index/startAllocatedAssignmentTopicExam")
+    Call<AllocatedTopicExamResponse> allocatedassignmentExamList(@Part("studentId") RequestBody studentId,
+                                                            @Part("topicId") RequestBody topicId );
+
+
+    @Multipart
+    @POST("apicalls/Index/submitAllocatedTopicExam")
+    Call<aloocatedWorkSheetSubmitDataResponse> allocatedworksheetDataResponse(@Part("examRnm") RequestBody examRnm,
+                                                                              @Part("questionsList") RequestBody questionsList);
+
+    @Multipart
+    @POST("apicalls/Index/submitAllocatedAssignmentTopicExam")
+    Call<aloocatedWorkSheetSubmitDataResponse> allocatedworksheetAssignmentDataResponse(@Part("examRnm") RequestBody examRnm,
+                                                                              @Part("questionsList") RequestBody questionsList);
+
+
+    @Multipart
+    @POST("apicalls/Index/getAllocatedTopicPratices")
+    Call<AlloactedViewSubTopicListResponse> getAllocatedSubViewListPractice(@Part("studentId") RequestBody studentId,
+                                                                            @Part("topicId") RequestBody topicId);
+    @Multipart
+    @POST("apicalls/Index/getAllocatedAssignmentTopicPratices")
+    Call<AlloactedViewSubTopicListResponse> getAllocatedAssignmentSubViewListPractice(@Part("studentId") RequestBody studentId,
+                                                                            @Part("topicId") RequestBody topicId);
+
+    @Multipart
+    @POST("apicalls/Index/getAllocatedTopicPraticeResult")
+    Call<AllocatedViewSubTopicResultResponse> getAllocatedviewResult(@Part("examRnm") RequestBody examRnm);
+
+
+    @Multipart
+    @POST("apicalls/Index/getAllocatedAssignmentTopicPraticeResult")
+    Call<AllocatedViewSubTopicResultResponse> getAllocatedAssignmentviewResult(@Part("examRnm") RequestBody examRnm);
+
+    @Multipart
+    @POST("apicalls/Index/getStudentOrdersList")
+    Call<StudentOrdersResponse> getStudentOrders(@Part("studentId") RequestBody studentId);
+
+
+
 
 
 }
