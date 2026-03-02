@@ -54,8 +54,8 @@ public class AppSettindsActivity extends AppCompatActivity {
                 "View your active plans, purchase history, and payment details. Manage your subscription and review refund policies easily.\n\n"+
                 "Help & Support\n\n" +
                 "Need help? Check frequently asked questions, contact our support team, or send feedback to improve your experience.\n\n" +
-                "About App"+
-                "Learn more about AbacusTrainer, app version details, and developer information." +
+                "About App\n\n"+
+                "Learn more about AbacusTrainer, app version details, and developer information.\n\n" +
                 "Logout\n\n" +
                 "Sign out securely from your account.\n\n";
 

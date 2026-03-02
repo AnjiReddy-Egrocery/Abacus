@@ -1,8 +1,10 @@
 package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,20 +37,21 @@ public class AssignmentListActivity extends AppCompatActivity {
     String dateid="";
     String studentid="";
     String name="",date="",startTime="",endTime="";
-    TextView txtName,txtDate,txtStartTime,txtEndTime;
+    TextView txtName;
 
     AssignmentListAdapter assignmentListAdapter;
     ProgressBar progressBar;
+
+    LinearLayout btnBack;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assignment_list);
+
+        btnBack = findViewById(R.id.btn_back_to_home);
         txtName=findViewById(R.id.txt_batch_name);
-        txtDate=findViewById(R.id.txt_date);
-        txtStartTime=findViewById(R.id.txt_time);
-        txtEndTime=findViewById(R.id.txtdate);
         Bundle bundle=getIntent().getExtras();
         dateid=bundle.getString("dateId");
         studentid=bundle.getString("studentId");
@@ -57,16 +60,23 @@ public class AssignmentListActivity extends AppCompatActivity {
         startTime=bundle.getString("startTime");
         endTime=bundle.getString("endTime");
         progressBar= findViewById(R.id.progress);
-        txtStartTime.setText(startTime);
-        txtEndTime.setText(endTime);
-        txtName.setText(name);
-        txtDate.setText(date);
+        String header = name + "||" + date;
+
+        txtName.setText(header);
 
 
         recyclerAssignList=findViewById(R.id.recycler_assignments);
 
         LinearLayoutManager layoutManager=new LinearLayoutManager(AssignmentListActivity.this);
         recyclerAssignList.setLayoutManager(layoutManager);
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(AssignmentListActivity.this, BatchDatesDetailsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         VerifyMethod(dateid,studentid);
 

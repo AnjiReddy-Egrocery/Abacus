@@ -21,8 +21,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.signature.ObjectKey;
 import com.dst.abacustrainner.Activity.AboutUsActivity;
+import com.dst.abacustrainner.Activity.AllocatedCoursesActivity;
 import com.dst.abacustrainner.Activity.AppSettindsActivity;
 import com.dst.abacustrainner.Activity.HelpActivity;
+import com.dst.abacustrainner.Activity.OrdersActivity;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
 import com.dst.abacustrainner.Activity.PrivacyPolicyActivity;
 import com.dst.abacustrainner.Activity.ProgressTrackerActivity;
@@ -217,7 +219,7 @@ public class HomeActivity extends AppCompatActivity {
                 selectedFragment =new AIGenrationFragment();
             }else if(itemView == R.id.navigation_schedules){
 
-                scheduleMethod(studentId);  // Call method (no fragment return needed)
+                openSchedulesFragment(studentId);  // Call method (no fragment return needed)
                 return true;
 
             }else if(itemView == R.id.navigation_profile){
@@ -232,6 +234,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     };
 
+/*
     private void scheduleMethod(String studentId) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(3, TimeUnit.SECONDS)
@@ -283,13 +286,14 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+*/
 
 
-    private void openSchedulesFragment(String studentId, String batchId) {
+    private void openSchedulesFragment(String studentId) {
 
         Bundle bundle = new Bundle();
         bundle.putString("studentId", studentId);
-        bundle.putString("batchId",batchId);
+        //bundle.putString("batchId",batchId);
 
         SchedulesFragment schedulesFragment = new SchedulesFragment();
         schedulesFragment.setArguments(bundle);
@@ -383,11 +387,16 @@ public class HomeActivity extends AppCompatActivity {
             }/*else if (itemView == R.id.nav_events) {
                 selectedFragment = new CompetitionFragment();
             }*/else if (itemView == R.id.nav_schedules) {
-                scheduleMethod(studentId);  // Call method (no fragment return needed)
+                openSchedulesFragment(studentId);  // Call method (no fragment return needed)
                // return true;
             }else if (itemView == R.id.nav_profile) {
+
+                DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+
                 openProfileFragment(studentId, fullName, imageUrl);
-               //  return true;
+                return true;
+
             }else if (itemView == R.id.nav_worksheet){
 
                /* Intent intent= new Intent(HomeActivity.this, WorksheetSubscriptionActivity.class);
@@ -411,7 +420,16 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomeActivity.this, VisualiztionActivity.class);
                 intent.putExtra("studentId",studentId);
                 startActivity(intent);
-            }else if (itemView == R.id.nav_about_us) {
+            }else if (itemView == R.id.nav_allocated_courses) {
+                Intent intent = new Intent(HomeActivity.this, AllocatedCoursesActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }else if (itemView == R.id.nav_orders) {
+                Intent intent = new Intent(HomeActivity.this, OrdersActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }
+            else if (itemView == R.id.nav_about_us) {
                 Intent intent = new Intent(HomeActivity.this, AboutUsActivity.class);
                 intent.putExtra("studentId",studentId);
                 startActivity(intent);

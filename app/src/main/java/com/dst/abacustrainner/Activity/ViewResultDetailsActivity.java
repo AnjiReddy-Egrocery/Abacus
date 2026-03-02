@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -22,6 +23,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 
 
+import com.bumptech.glide.Glide;
 import com.dst.abacustrainner.Model.ViewTopicResultResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
@@ -39,6 +41,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -301,15 +305,60 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
                                     TableRow row = new TableRow(getApplicationContext());
 
                                     // Create and configure TextViews
-                                    TextView questionView = new TextView(getApplicationContext());
-                                    questionView.setText(questionText);
-                                    questionView.setPadding(14, 14, 14, 14);
-                                    questionView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-                                    questionView.setTextColor(Color.BLACK);
-                                    questionView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-                                    questionView.setGravity(Gravity.CENTER);
+                                    LinearLayout questionLayout = new LinearLayout(ViewResultDetailsActivity.this);
+                                    questionLayout.setOrientation(LinearLayout.VERTICAL);
+                                    questionLayout.setLayoutParams(
+                                            new TableRow.LayoutParams(
+                                                    0,
+                                                    TableRow.LayoutParams.WRAP_CONTENT,
+                                                    1
+                                            )
+                                    );
+                                    questionLayout.setGravity(Gravity.CENTER);
 
+// ✅ Extract image from HTML
+                                    Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
+                                    Matcher matcher = pattern.matcher(questionHtml);
 
+                                    if (matcher.find()) {
+
+                                        // ---------- IMAGE QUESTION ----------
+                                        String imageUrl = matcher.group(1);
+
+                                        ImageView imageView = new ImageView(ViewResultDetailsActivity.this);
+                                        imageView.setAdjustViewBounds(true);
+                                        imageView.setMaxHeight(300);
+
+                                        Glide.with(ViewResultDetailsActivity.this)
+                                                .load(imageUrl)
+                                                .into(imageView);
+
+                                        questionLayout.addView(imageView);
+
+                                    } else {
+
+                                        // ---------- TEXT QUESTION ----------
+                                        TextView questionTextView = new TextView(ViewResultDetailsActivity.this);
+
+                                        String cleanedHtml = questionHtml.replaceAll("<img[^>]+>", "");
+
+                                        Spanned spannedText = HtmlCompat.fromHtml(
+                                                cleanedHtml,
+                                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                                        );
+
+                                        String finalText = spannedText.toString()
+                                                .replace("\u00A0", "")
+                                                .trim();
+
+                                        questionTextView.setText(finalText);
+                                        questionTextView.setTextSize(18);
+                                        questionTextView.setTextColor(Color.BLACK);
+                                        questionTextView.setGravity(Gravity.CENTER);
+                                        questionTextView.setPadding(12,12,12,12);
+
+                                        questionLayout.addView(questionTextView);
+                                    }
 
                                     TextView answersView = new TextView(getApplicationContext());
                                     answersView.setText(answerText);
@@ -337,7 +386,7 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
                                     timeView.setGravity(Gravity.CENTER);
 
                                     // Add views to row
-                                    row.addView(questionView);
+                                    row.addView(questionLayout);
                                     row.addView(answersView);
                                     row.addView(givenView);
                                     row.addView(timeView);

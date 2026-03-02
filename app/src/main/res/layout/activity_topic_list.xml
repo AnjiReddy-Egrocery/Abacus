@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_inner"
     xmlns:card_view="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_margin="14dp">
+        >
 
 <!--        <ImageView-->
 <!--            android:layout_width="match_parent"-->
@@ -19,105 +19,60 @@
 <!--            android:src="@drawable/big_logo_total"-->
 <!--            android:adjustViewBounds="true"-->
 <!--            android:scaleType="fitCenter"/>-->
-
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical">
+            android:background="#4e148c"
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textStyle="bold"
-                android:textSize="16dp"
-                android:fontFamily="@font/regular"
-                android:textColor="#fff"
-                android:id="@+id/txt_batch_name"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Date :  "
-                    android:fontFamily="@font/regular"
-                    android:textSize="18dp"
-                    android:textStyle="bold"
-                    android:textColor="#fff"/>
+                android:orientation="horizontal"
+                android:layout_margin="12dp"
+                >
+
+
+                <LinearLayout
+                    android:id="@+id/btn_back_to_home"
+                    android:layout_width="38dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circle_image"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="7dp"
+                        android:layout_margin="12dp"
+                        android:src="@drawable/baseline_arrow_back_ios_new_24" />
+                </LinearLayout>
+
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:fontFamily="@font/regular"
-                    android:textSize="16dp"
-                    android:textStyle="normal"
-                    android:textColor="#fff"
-                    android:id="@+id/txt_date"/>
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Timing : "
-                    android:textColor="#fff"
-                    android:fontFamily="@font/regular"
                     android:textStyle="bold"
-                    android:textSize="18dp" />
+                    android:textSize="14dp"
+                    android:layout_margin="8dp"
+                    android:fontFamily="@font/regular"
+                    android:textColor="#fff"
+                    android:id="@+id/txt_batch_name"/>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:fontFamily="@font/regular"
-                        android:id="@+id/txt_time"
-                        android:textColor="#fff"
-                        android:textStyle="normal"
-                        android:textSize="16dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="-"
-                        android:fontFamily="@font/regular"
-                        android:textStyle="normal"
-                        android:textColor="#000"
-                        android:textSize="16dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:fontFamily="@font/regular"
-                        android:textStyle="normal"
-                        android:id="@+id/txtdate"
-                        android:textColor="#fff"
-                        android:textSize="16dp"/>
-                </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
+
+
+
+
+
+
 
        <LinearLayout
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
-           android:layout_marginTop="18dp"
+           android:layout_margin="14dp"
            android:orientation="vertical">
            <androidx.recyclerview.widget.RecyclerView
                android:layout_width="match_parent"

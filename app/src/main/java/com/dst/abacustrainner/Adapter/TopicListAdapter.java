@@ -97,7 +97,7 @@ public class TopicListAdapter extends RecyclerView.Adapter<TopicListAdapter.Topi
             super(itemView);
             txtTopicName=itemView.findViewById(R.id.txt_topic_name);
             txtPracticeCount=itemView.findViewById(R.id.txt_count);
-            layoutPractice=itemView.findViewById(R.id.layout_practice);
+            layoutPractice=itemView.findViewById(R.id.layout_result);
             butPracticeExam=itemView.findViewById(R.id.but_practice);
         }
     }

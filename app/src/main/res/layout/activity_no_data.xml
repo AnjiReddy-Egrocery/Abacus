@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     tools:context=".Activity.ViewPracticeListActivity">
 
@@ -11,54 +12,76 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_margin="14dp">
+        >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#4e148c">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:src="@drawable/big_logo_total"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp">
-            <TextView
-                android:layout_width="wrap_content"
+            android:layout_margin="12dp"
+            android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/layout_back"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:background="@drawable/circle_image">
+
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:src="@drawable/baseline_arrow_back_ios_new_24" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:fontFamily="@font/regular"
-                android:textStyle="bold"
-                android:textColor="#000"
-                android:textSize="18dp"
-                android:id="@+id/txt_name"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" - "
-                android:fontFamily="@font/regular"
-                android:textStyle="bold"
-                android:textColor="#000"
-                android:textSize="18dp"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" - "
-                android:fontFamily="@font/regular"
-                android:textStyle="bold"
-                android:textColor="#000"
-                android:textSize="18dp"
-                android:id="@+id/txt_topic_name"/>
+                android:orientation="vertical"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="4dp">
+
+                <!--  <TextView
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="AssignMent Topic Name"
+                      android:fontFamily="@font/regular"
+                      android:textStyle="bold"
+                      android:textColor="#fff"
+                      android:textSize="16dp"
+                      />-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:fontFamily="@font/regular"
+                    android:textStyle="bold"
+                    android:textColor="#fff"
+                    android:textSize="14dp"
+                    android:layout_marginTop="6dp"
+                    android:id="@+id/txt_topic_name"/>
+            </LinearLayout>
+
         </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_margin="12dp"
             android:orientation="vertical">
 
             <TextView

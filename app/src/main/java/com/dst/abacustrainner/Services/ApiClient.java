@@ -10,7 +10,10 @@ import com.dst.abacustrainner.Model.CourseLevelResponse;
 import com.dst.abacustrainner.Model.CourseLevelTopicResponse;
 import com.dst.abacustrainner.Model.CourseListResponse;
 import com.dst.abacustrainner.Model.CourseTopicExamResponse;
+import com.dst.abacustrainner.Model.CourseType;
+import com.dst.abacustrainner.Model.CourseTypeResponse;
 import com.dst.abacustrainner.Model.CoursesListResponse;
+import com.dst.abacustrainner.Model.CoursesResponse;
 import com.dst.abacustrainner.Model.DatedetailsResponse;
 import com.dst.abacustrainner.Model.DurationListResponse;
 import com.dst.abacustrainner.Model.ForgotPassword;
@@ -232,5 +235,15 @@ public interface ApiClient {
     @Multipart
     @POST("apicalls/Index/worksheetRemoveFromCart")
     Call<cartDeleteResponse> getDeleteCart(@Part("cartId") RequestBody cartId);
+
+    @Multipart
+    @POST("apicalls/Index/getAllocatedCourseTypesList")
+    Call<CourseTypeResponse> getCourseTypeList(@Part("studentId") RequestBody studentId);
+
+    @Multipart
+    @POST("apicalls/Index/getAllocatedCourseLevelTopics")
+    Call<CoursesResponse> getCourseTypeListTopics(@Part("studentId") RequestBody studentId,
+                                                  @Part("courseLevelId") RequestBody courseLevelId);
+
 
 }

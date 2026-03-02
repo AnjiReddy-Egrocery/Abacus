@@ -51,15 +51,26 @@
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="10dp">
                     <Button
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="View Result"
-                        android:textSize="14dp"
+                        android:text="View Topics"
+                        android:textSize="12dp"
                         android:fontFamily="@font/regular"
                         android:layout_weight="1"
                         android:textStyle="bold"
-                        android:id="@+id/but_viewResult"
-                        android:backgroundTint="#D3481D"/>
+                        android:id="@+id/but_viewTopic"
+                        android:backgroundTint="#ff6600"/>
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View AssignmentTopics"
+                        android:textSize="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:fontFamily="@font/regular"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:id="@+id/but_viewAssignments"
+                        android:backgroundTint="#198754"/>
 
                 </LinearLayout>
 

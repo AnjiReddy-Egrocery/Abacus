@@ -5,16 +5,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <LinearLayout
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="All Batches List"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="#673AB7"
+                android:layout_margin="12dp"/>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recycler_batches"
+                android:layout_margin="12dp"/>
+           <!-- <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -23,7 +35,7 @@
                 android:layout_marginRight="12dp"
                 android:padding="8dp">
 
-                <!-- Left Arrow -->
+                &lt;!&ndash; Left Arrow &ndash;&gt;
                 <ImageView
                     android:id="@+id/btnPrevMonth"
                     android:layout_width="40dp"
@@ -31,7 +43,7 @@
                     android:src="@android:drawable/ic_media_previous"
                     android:contentDescription="Previous Month"/>
 
-                <!-- Month & Year -->
+                &lt;!&ndash; Month & Year &ndash;&gt;
                 <TextView
                     android:id="@+id/tvMonthYear"
                     android:layout_width="wrap_content"
@@ -42,7 +54,7 @@
                     android:textStyle="bold"
                     android:paddingHorizontal="20dp"/>
 
-                <!-- Right Arrow -->
+                &lt;!&ndash; Right Arrow &ndash;&gt;
                 <ImageView
                     android:id="@+id/btnNextMonth"
                     android:layout_width="40dp"
@@ -59,7 +71,7 @@
                 android:layout_marginRight="12dp"
                 android:padding="5dp">
 
-                <!-- Sunday (Orange) -->
+                &lt;!&ndash; Sunday (Orange) &ndash;&gt;
                 <TextView
                     android:text="Sun"
                     style="@style/WeekendHeaderStyle"/>
@@ -69,7 +81,7 @@
                     android:layout_height="match_parent"
                     android:background="#FFFFFF"/>
 
-                <!-- Monday to Thursday (Purple) -->
+                &lt;!&ndash; Monday to Thursday (Purple) &ndash;&gt;
                 <TextView android:text="Mon" style="@style/WeekdayHeaderStyle"/>
 
                 <View
@@ -90,13 +102,13 @@
                     android:background="#FFFFFF"/>
                 <TextView android:text="Thu" style="@style/WeekdayHeaderStyle"/>
 
-                <!-- White Line (Divider) -->
+                &lt;!&ndash; White Line (Divider) &ndash;&gt;
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
                     android:background="#FFFFFF"/>
 
-                <!-- Friday (Purple) -->
+                &lt;!&ndash; Friday (Purple) &ndash;&gt;
                 <TextView android:text="Fri" style="@style/WeekdayHeaderStyle"/>
 
                 <View
@@ -104,22 +116,12 @@
                     android:layout_height="match_parent"
                     android:background="#FFFFFF"/>
 
-                <!-- Saturday (Orange) -->
+                &lt;!&ndash; Saturday (Orange) &ndash;&gt;
                 <TextView android:text="Sat" style="@style/WeekendHeaderStyle"/>
 
 
-            </LinearLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/calendarRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginLeft="12dp"
-                android:numColumns="7"
-                android:verticalSpacing="1dp"
-                android:horizontalSpacing="1dp"
-                android:background="#ffffff"/>
+            </LinearLayout>-->
+
 <!--
             <LinearLayout
                 android:layout_width="match_parent"
@@ -207,7 +209,7 @@
             </LinearLayout>
 -->
 
-            <LinearLayout
+         <!--   <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -229,7 +231,7 @@
                     android:layout_marginBottom="0dp"
                     android:orientation="vertical">
 
-                    <!-- Table Layout (Header + Data Rows) -->
+                    &lt;!&ndash; Table Layout (Header + Data Rows) &ndash;&gt;
                     <TableLayout
                         android:id="@+id/tableLayout"
                         android:layout_width="match_parent"
@@ -260,7 +262,7 @@
                     android:layout_marginBottom="40dp"
                     android:orientation="vertical">
 
-                    <!-- Table Layout (Header + Data Rows) -->
+                    &lt;!&ndash; Table Layout (Header + Data Rows) &ndash;&gt;
                     <TableLayout
                         android:id="@+id/tableLayoutassignment"
                         android:layout_width="match_parent"
@@ -268,10 +270,9 @@
                         android:stretchColumns="1"
                         android:padding="0dp"/>
                 </LinearLayout>
-            </LinearLayout>
+            </LinearLayout>-->
 
         </LinearLayout>
-    </ScrollView>
 </LinearLayout>
 
 

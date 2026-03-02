@@ -1,9 +1,11 @@
 package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +20,7 @@ import com.dst.abacustrainner.Model.DatedetailsResponse;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
+import com.dst.abacustrainner.User.HomeActivity;
 import com.dst.abacustrainner.database.SharedPrefManager;
 
 import java.util.List;
@@ -45,6 +48,7 @@ public class BatchDatesDetailsActivity extends AppCompatActivity {
     BatchDatesDetailsAdapter batchDatesDetailsAdapter;
 
     ProgressBar progressBar;
+    private LinearLayout btnBack;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -53,13 +57,14 @@ public class BatchDatesDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_batch_dates_details);
 
         txtName=findViewById(R.id.txt_batch_name);
+        btnBack=findViewById(R.id.btn_back_to_home);
         Bundle bundle=getIntent().getExtras();
-        bactchId=bundle.getString("batchId");
-        name=bundle.getString("batchName");
+        bactchId=bundle.getString("BatchId");
+        name=bundle.getString("BatchName");
         StudentRegistationResponse.Result result= SharedPrefManager.getInstance(getApplicationContext()).getUserData();
         id=result.getStudentId();
-
-        txtName.setText(name);
+        String batchName = "\"" + name + "\"" + " Schedule Details";
+        txtName.setText(batchName);
 
         progressBar = findViewById(R.id.progressBar);
 
@@ -69,6 +74,14 @@ public class BatchDatesDetailsActivity extends AppCompatActivity {
         recyclerBatchDates=findViewById(R.id.recycler_dates);
         LinearLayoutManager layoutManager=new LinearLayoutManager(BatchDatesDetailsActivity.this);
         recyclerBatchDates.setLayoutManager(layoutManager);
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(BatchDatesDetailsActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         VerifyMethod(id,bactchId);

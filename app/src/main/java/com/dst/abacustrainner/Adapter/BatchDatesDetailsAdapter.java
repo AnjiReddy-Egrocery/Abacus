@@ -12,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.dst.abacustrainner.Activity.AssignmentListActivity;
 import com.dst.abacustrainner.Activity.BatchDatesDetailsActivity;
+import com.dst.abacustrainner.Activity.TopicListActivity;
 import com.dst.abacustrainner.Activity.ViewDetailsActivity;
 import com.dst.abacustrainner.Model.DatedetailsResponse;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
@@ -61,7 +63,7 @@ public class BatchDatesDetailsAdapter extends RecyclerView.Adapter<BatchDatesDet
      holder.butResult.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
-             Intent intent=new Intent(mContext, ViewDetailsActivity.class);
+             Intent intent=new Intent(mContext, AssignmentListActivity.class);
              intent.putExtra("studentId",studentId);
              intent.putExtra("dateId",dateId);
              intent.putExtra("batchName",name);
@@ -72,6 +74,22 @@ public class BatchDatesDetailsAdapter extends RecyclerView.Adapter<BatchDatesDet
          }
      });
 
+     holder.butPractice.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+             Intent intent=new Intent(mContext, TopicListActivity.class);
+             intent.putExtra("dateId",dateId);
+             intent.putExtra("studentId",studentId);
+             intent.putExtra("batchName",name);
+             intent.putExtra("startTime",startTime);
+             intent.putExtra("endTime",endTime);
+             intent.putExtra("scheduleDate",dateName);
+             mContext.startActivity(intent);
+         }
+     });
+
+
+
     }
 
     @Override
@@ -81,12 +99,13 @@ public class BatchDatesDetailsAdapter extends RecyclerView.Adapter<BatchDatesDet
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView txtDate;
-        Button butResult;
+        Button butResult, butPractice;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             txtDate=itemView.findViewById(R.id.txt_date);
-            butResult=itemView.findViewById(R.id.but_viewResult);
+            butResult=itemView.findViewById(R.id.but_viewAssignments);
+            butPractice = itemView.findViewById(R.id.but_viewTopic);
 
         }
     }

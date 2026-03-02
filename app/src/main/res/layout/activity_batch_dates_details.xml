@@ -5,42 +5,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".Activity.ViewPracticeListActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="14dp">
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:src="@drawable/big_logo_total"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="12dp">
+            android:background="#4e148c"
+            >
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=" - "
-                android:fontFamily="@font/regular"
-                android:textStyle="bold"
-                android:textColor="#000"
-                android:textSize="14dp"
-                android:id="@+id/txt_batch_name"/>
+                android:orientation="horizontal"
+                android:layout_margin="12dp"
+                >
+                <LinearLayout
+                    android:id="@+id/btn_back_to_home"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/circle_image">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="11dp"
+                        android:layout_margin="12dp"
+                        android:src="@drawable/baseline_arrow_back_ios_new_24" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text=""
+                    android:textStyle="bold"
+                    android:textSize="18dp"
+                    android:id="@+id/txt_batch_name"
+                    android:gravity="center_vertical"
+                    android:textColor="#FFF"
+                    android:layout_marginLeft="16dp"/>
+            </LinearLayout>
+
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_margin="12dp"
             android:orientation="vertical">
             <ProgressBar
                 android:id="@+id/progressBar"

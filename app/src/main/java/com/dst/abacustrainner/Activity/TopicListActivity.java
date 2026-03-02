@@ -1,9 +1,11 @@
 package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,10 +37,11 @@ public class TopicListActivity extends AppCompatActivity {
     RecyclerView recyclerTopicList;
     String dateid="";
     String studentid="";
-    String name="",date="",startTime="",endTime="";
+    String name="",date="";
     TopicListAdapter topicListAdapter;
-    TextView txtName,txtDate,txtStartTime,txtEndTime;
+    TextView txtName;
     ProgressBar progressBar;
+    LinearLayout layoutBack;
 
 
     @SuppressLint("MissingInflatedId")
@@ -48,10 +51,8 @@ public class TopicListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_topic_list);
 
         txtName=findViewById(R.id.txt_batch_name);
-        txtDate=findViewById(R.id.txt_date);
-        txtStartTime=findViewById(R.id.txt_time);
-        txtEndTime=findViewById(R.id.txtdate);
         progressBar=findViewById(R.id.progress);
+        layoutBack = findViewById(R.id.btn_back_to_home);
 
         Bundle bundle=getIntent().getExtras();
 
@@ -60,13 +61,11 @@ public class TopicListActivity extends AppCompatActivity {
         studentid=bundle.getString("studentId");
         name=bundle.getString("batchName");
         date=bundle.getString("scheduleDate");
-        startTime=bundle.getString("startTime");
-        endTime=bundle.getString("endTime");
 
-        txtStartTime.setText(startTime);
-        txtEndTime.setText(endTime);
-        txtName.setText(name);
-        txtDate.setText(date);
+
+        String header = name + "||" + date;
+
+        txtName.setText(header);
 
 
         Log.e("Reddy",""+dateid);
@@ -75,6 +74,14 @@ public class TopicListActivity extends AppCompatActivity {
         recyclerTopicList=findViewById(R.id.recycler_topic);
         LinearLayoutManager layoutManager=new LinearLayoutManager(TopicListActivity.this);
         recyclerTopicList.setLayoutManager(layoutManager);
+
+        layoutBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TopicListActivity.this, BatchDatesDetailsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         VerifyMethod(dateid,studentid);
     }

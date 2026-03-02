@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spanned;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -16,7 +18,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 
+import com.bumptech.glide.Glide;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.User.HomeActivity;
 import com.dst.abacustrainner.database.ParcelableLong;
@@ -32,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PracticeListActivity extends AppCompatActivity {
 
@@ -267,14 +273,56 @@ public class PracticeListActivity extends AppCompatActivity {
             TableRow row = new TableRow(this);
 
             // Create TextView for question
-            TextView question1 = new TextView(getApplicationContext());
-            question1.setText(question);
-            question1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-            question1.setPadding(14, 14, 14, 14);
-            question1.setTextColor(Color.BLACK);
-            question1.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-            question1.setGravity(Gravity.CENTER);
+            LinearLayout questionLayout = new LinearLayout(this);
+            questionLayout.setOrientation(LinearLayout.VERTICAL);
+            questionLayout.setLayoutParams(
+                    new TableRow.LayoutParams(0,
+                            TableRow.LayoutParams.WRAP_CONTENT, 1)
+            );
+            questionLayout.setGravity(Gravity.CENTER);
 
+// ✅ Extract image URL
+            Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
+            Matcher matcher = pattern.matcher(question);
+
+            if (matcher.find()) {
+
+                String imageUrl = matcher.group(1);
+
+                ImageView imageView = new ImageView(this);
+                imageView.setAdjustViewBounds(true);
+                imageView.setMaxHeight(300);
+
+                Glide.with(this)
+                        .load(imageUrl)
+                        .into(imageView);
+
+                questionLayout.addView(imageView);
+
+            } else {
+
+                TextView questionText = new TextView(this);
+
+                // ✅ Remove image tags if any
+                String cleanedHtml = question.replaceAll("<img[^>]+>", "");
+
+                // ✅ Convert HTML → Normal Text
+                Spanned spannedText = HtmlCompat.fromHtml(
+                        cleanedHtml,
+                        HtmlCompat.FROM_HTML_MODE_LEGACY
+                );
+
+                String finalText = spannedText.toString()
+                        .replace("\u00A0", "")   // remove &nbsp;
+                        .trim();
+
+                questionText.setText(finalText);
+                questionText.setTextSize(18);
+                questionText.setGravity(Gravity.CENTER);
+
+                questionLayout.addView(questionText);
+
+            }
             TextView answerOrginal = new TextView(getApplicationContext());
             answerOrginal.setText(correctAnswer);
             answerOrginal.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
@@ -312,7 +360,7 @@ public class PracticeListActivity extends AppCompatActivity {
             times.setGravity(Gravity.CENTER);
 
             // Add TableRow to TableLayout
-            row.addView(question1);
+            row.addView(questionLayout);
             row.addView(answerOrginal);
             row.addView(answers);
             row.addView(times);

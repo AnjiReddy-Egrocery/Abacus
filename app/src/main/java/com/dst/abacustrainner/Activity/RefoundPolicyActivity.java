@@ -73,7 +73,8 @@ public class RefoundPolicyActivity extends AppCompatActivity {
                 "CONTACT US\n\n" +
                 "For any queries, feedback or support, contact us at:\n\n"+
                 "Email: info@abacustrainer.com\n" +
-                "Address: Narsingi, Gandipet, Hyderabad, Telangana";
+                "Address: Narsingi, Gandipet, Hyderabad, Telangana\n" +
+                "Contact : +91 7799 121 321";
 
         SpannableStringBuilder spannable = new SpannableStringBuilder(termsText);
         // Headings list

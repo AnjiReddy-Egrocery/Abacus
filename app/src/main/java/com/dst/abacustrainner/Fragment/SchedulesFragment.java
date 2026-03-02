@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dst.abacustrainner.Activity.AllSchedulesActivity;
@@ -34,9 +35,11 @@ import com.dst.abacustrainner.Activity.AssignmentPracticeActivity;
 import com.dst.abacustrainner.Activity.TopicPracticeActivity;
 import com.dst.abacustrainner.Activity.ViewAssignmentListActivity;
 import com.dst.abacustrainner.Activity.ViewPracticeListActivity;
+import com.dst.abacustrainner.Adapter.BatchesAdapter;
 import com.dst.abacustrainner.Adapter.CalendarAdapter;
 import com.dst.abacustrainner.Adapter.TopicListAdapter;
 import com.dst.abacustrainner.Model.AssignmentListResponse;
+import com.dst.abacustrainner.Model.BachDetailsResponse;
 import com.dst.abacustrainner.Model.DatedetailsResponse;
 import com.dst.abacustrainner.Model.TopicListResponse;
 import com.dst.abacustrainner.R;
@@ -52,6 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -66,13 +70,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import android.text.TextUtils;
 
 
-public class SchedulesFragment extends Fragment  implements OnDateClickListener {
-    private RecyclerView calendarRecyclerView;
-    private CalendarAdapter calendarAdapter;
-    private List<String> daysList;
-    private TextView tvMonthYear,txtDate,txtTime;
-    private ImageView btnPrevMonth, btnNextMonth;
-    private Calendar currentCalendar;
+public class SchedulesFragment extends Fragment {
+ /*   private RecyclerView calendarRecyclerView;
+   // private CalendarAdapter calendarAdapter;
+   // private List<String> daysList;
+  //  private TextView tvMonthYear,txtDate,txtTime;
+   // private ImageView btnPrevMonth, btnNextMonth;
+   // private Calendar currentCalendar;
     //private TextView txtviewall;
 
     RecyclerView recyclerTopicList;
@@ -86,15 +90,85 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
     TableLayout tableLayout,tableLayoutAssignments ;
     String dateId;
     String startTime,endTime,timeText,amPm,startHour,endHour;
+*/
+ private String studentId;
 
+ RecyclerView recyclerSchedules;
+ BatchesAdapter batchesAdapter;
 
     @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view1=inflater.inflate(R.layout.fragment_schedules,container,false);
+        View view1 = inflater.inflate(R.layout.fragment_schedules, container, false);
 
-        calendarRecyclerView =view1.findViewById(R.id.calendarRecyclerView);
+        if (getArguments() != null) {
+            studentId = getArguments().getString("studentId");
+           // batchId = getArguments().getString("batchId");
+
+            Log.d("Reddy","StudentId"+studentId);
+        }
+
+        recyclerSchedules = view1.findViewById(R.id.recycler_batches);
+        recyclerSchedules.setLayoutManager(new LinearLayoutManager(getContext()));
+        batchesAdapter = new BatchesAdapter(getContext(),studentId);
+        recyclerSchedules.setAdapter(batchesAdapter);
+
+
+        batchesMethod(studentId);
+
+        return view1;
+    }
+
+    private void batchesMethod(String studentId) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(3, TimeUnit.SECONDS)
+                .readTimeout(3, TimeUnit.SECONDS)
+                .writeTimeout(3, TimeUnit.SECONDS)
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient=retrofit.create(ApiClient.class);
+        RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
+        Call<BachDetailsResponse> call=apiClient.batchData(idPart);
+        call.enqueue(new Callback<BachDetailsResponse>() {
+            @Override
+            public void onResponse(Call<BachDetailsResponse> call, Response<BachDetailsResponse> response) {
+
+                if (response.isSuccessful()){
+                    BachDetailsResponse bachDetailsResponse=response.body();
+                    if (bachDetailsResponse.getErrorCode().equals("202")){
+                        Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
+                    }else if (bachDetailsResponse.getErrorCode().equals("200")){
+
+                        List<BachDetailsResponse.Result> results= bachDetailsResponse.getResult();
+
+                        if (!results.isEmpty()) {
+
+                            batchesAdapter.setData(results);
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Data Error", Toast.LENGTH_LONG).show();
+                    }
+
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BachDetailsResponse> call, Throwable t) {
+
+            }
+        });
+    }
+}
+
+       /* calendarRecyclerView =view1.findViewById(R.id.calendarRecyclerView);
         tvMonthYear = view1.findViewById(R.id.tvMonthYear);
         btnPrevMonth = view1.findViewById(R.id.btnPrevMonth);
         btnNextMonth = view1.findViewById(R.id.btnNextMonth);
@@ -138,7 +212,7 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
             }
         });
 
-/*
+*//*
         txtviewall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,14 +223,13 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
                 startActivity(intent);
             }
         });
-*/
+*//*
 
         tableLayout = view1.findViewById(R.id.tableLayout);
         tableLayoutAssignments = view1.findViewById(R.id.tableLayoutassignment);
 
 
 
-        return view1;
     }
 
     private void ScheduledateMethod(String studentId, String batchId) {
@@ -751,6 +824,6 @@ public class SchedulesFragment extends Fragment  implements OnDateClickListener 
             }
         });
     }
+*/
 
-}
 

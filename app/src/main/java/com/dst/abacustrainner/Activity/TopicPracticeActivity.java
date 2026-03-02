@@ -175,6 +175,9 @@ public class TopicPracticeActivity extends AppCompatActivity {
         questionTimes = new ArrayList<>(20);
         listData = new ArrayList<>();
 
+        Log.d("Reddy","StudentId"+ studentid);
+        Log.e("Reddy","TopicId"+topicid);
+
         Log.e("Anji","Data"+listData);
         Log.e("Anji","isQuestionAnswered"+isQuestionAnswered);
         Log.e("Anji","Answer"+enteredAnswers);
@@ -531,19 +534,18 @@ public class TopicPracticeActivity extends AppCompatActivity {
             }
 
             // Extract <img src="...">
-            Pattern pattern = Pattern.compile("<img[^>]+src=\\\\*\"([^\"]+)\\\\*\"");
+            Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
             Matcher matcher = pattern.matcher(questionHtml);
 
             String imageUrl = null;
+
             if (matcher.find()) {
-                String relativePath = matcher.group(1).replace("\\", "");
-                imageUrl = "https://www.abacustrainer.com/" + relativePath.replace("../../../", "");
+                imageUrl = matcher.group(1);
                 Log.d("QuestionDebug", "Image URL: " + imageUrl);
             }
-
             // Remove <img> tag and backslashes from HTML to get plain text
-            String questionTextOnly = questionHtml.replaceAll("<img[^>]+>", "").replaceAll("\\\\", "");
-            Log.d("QuestionDebug", "Cleaned Text: " + questionTextOnly);
+           // String questionTextOnly = questionHtml.replaceAll("<img[^>]+>", "").replaceAll("\\\\", "");
+            //Log.d("QuestionDebug", "Cleaned Text: " + questionTextOnly);
 
             // Set question number
             txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":");
@@ -564,11 +566,26 @@ public class TopicPracticeActivity extends AppCompatActivity {
                 questionImageView.setVisibility(View.GONE);
                 questionTextView.setVisibility(View.VISIBLE);
 
-                questionTextView.setText("   " + questionTextOnly.replace("\n", "\n   "));
+                String cleanedHtml = questionHtml.replaceAll("<img[^>]+>", "");
 
-                // Set margin
-                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();
-                layoutParams.leftMargin = (int) getResources().getDimension(R.dimen.question_margin_left);
+                Spanned spannedText =
+                        HtmlCompat.fromHtml(
+                                cleanedHtml,
+                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                        );
+
+                String questionTextOnly = spannedText.toString()
+                        .replace("\u00A0", "")
+                        .trim();
+
+                questionTextView.setText(questionTextOnly);
+
+                ViewGroup.MarginLayoutParams layoutParams =
+                        (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();
+
+                layoutParams.leftMargin =
+                        (int) getResources().getDimension(R.dimen.question_margin_left);
+
                 questionTextView.setLayoutParams(layoutParams);
             }
 
@@ -789,8 +806,12 @@ public class TopicPracticeActivity extends AppCompatActivity {
                                         isQuestionAnswered.add(false);
                                         String questionHtml = jsonObject.getString("question");
                                         String answerHtml=jsonObject.getString("answer");
-                                        questionsArray[i] = HtmlCompat.fromHtml(questionHtml, HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
-                                        answerArray[i] = HtmlCompat.fromHtml(answerHtml, HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
+                                        questionsArray[i] = questionHtml; // ⭐ MAIN FIX
+
+                                        answerArray[i] =
+                                                HtmlCompat.fromHtml(answerHtml,
+                                                        HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
+
                                     }
 
                                     displayQuestion(currentQuestionIndex);
