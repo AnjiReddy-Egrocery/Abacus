@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Refound Policy"
+                android:text="Refund Policy"
                 android:textStyle="bold"
                 android:textSize="25dp"
                 android:gravity="center_vertical"
@@ -69,7 +69,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Abacus Trainer Refound Policy"
+                            android:text="Abacus Trainer Refund Policy"
                             android:textSize="18dp"
                             android:textColor="#000"
                             android:layout_margin="12dp"

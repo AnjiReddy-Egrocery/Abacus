@@ -27,6 +27,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.PdfViewActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.OrderDetailsActivity"
             android:exported="false" />
         <activity
@@ -396,6 +399,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
     </application>
 
 </manifest>

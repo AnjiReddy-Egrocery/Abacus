@@ -13,7 +13,6 @@ import com.dst.abacustrainner.Model.CourseLevelResponse;
 import com.dst.abacustrainner.Model.CourseLevelTopicResponse;
 import com.dst.abacustrainner.Model.CourseListResponse;
 import com.dst.abacustrainner.Model.CourseTopicExamResponse;
-import com.dst.abacustrainner.Model.CourseType;
 import com.dst.abacustrainner.Model.CourseTypeResponse;
 import com.dst.abacustrainner.Model.CoursesListResponse;
 import com.dst.abacustrainner.Model.CoursesResponse;
@@ -22,6 +21,7 @@ import com.dst.abacustrainner.Model.DurationListResponse;
 import com.dst.abacustrainner.Model.ForgotPassword;
 import com.dst.abacustrainner.Model.GameResponse;
 import com.dst.abacustrainner.Model.LevelPriceResponse;
+import com.dst.abacustrainner.Model.OrderInfoResponse;
 import com.dst.abacustrainner.Model.OrderListResponse;
 import com.dst.abacustrainner.Model.StudentDetails;
 import com.dst.abacustrainner.Model.StudentOrdersResponse;
@@ -293,6 +293,13 @@ public interface ApiClient {
     @Multipart
     @POST("apicalls/Index/getStudentOrdersList")
     Call<StudentOrdersResponse> getStudentOrders(@Part("studentId") RequestBody studentId);
+
+    @Multipart
+    @POST("apicalls/Index/getStudentWorksheetOrderInfo")
+    Call<OrderInfoResponse> getOrderInfo(
+            @Part("studentId") RequestBody studentId,
+            @Part("orderId") RequestBody orderId
+    );
 
 
 
