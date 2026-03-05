@@ -5,6 +5,7 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -58,8 +59,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
     Button butDownloadReceipt;
 
     OrderInfoAdapter orderInfoAdapter;
+    LinearLayout layoutBack;
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +77,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
         txtCurrency = findViewById(R.id.txt_currency);
         txtAmount = findViewById(R.id.txt_amount);
 
+        layoutBack = findViewById(R.id.layout_back);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
@@ -83,6 +88,13 @@ public class OrderDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 generatePDF();
+            }
+        });
+
+        layoutBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

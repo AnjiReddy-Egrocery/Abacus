@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ public class OrdersActivity extends AppCompatActivity {
 
     TableLayout tableLayout;
     private String studentId;
+    LinearLayout layoutBack;
 
 
     @Override
@@ -48,8 +50,16 @@ public class OrdersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_orders);
 
         tableLayout = findViewById(R.id.tableLayout);
+        layoutBack = findViewById(R.id.layout_back);
         studentId = getIntent().getStringExtra("studentId");
         Log.e("Reddy",studentId);
+
+        layoutBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         loadOrders(studentId);
 
