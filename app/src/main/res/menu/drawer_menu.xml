@@ -80,7 +80,7 @@
 
         <item
             android:id="@+id/nav_refoundpolicy"
-            android:title="Refound Policy"
+            android:title="Refund Policy"
             android:icon="@drawable/nav_help"/>
 
         <item

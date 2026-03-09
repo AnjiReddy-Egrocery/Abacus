@@ -5,13 +5,14 @@ plugins {
 android {
     namespace 'com.dst.abacustrainner'
     compileSdk 35
+    ndkVersion "26.1.10909125"
 
     defaultConfig {
         applicationId "com.dst.abacustrainner"
         minSdk 21
         targetSdk 35
-        versionCode 11
-        versionName "1.12" +
+        versionCode 17
+        versionName "1.18" +
                 "" +
                 "" +
                 "" +
@@ -79,7 +80,7 @@ dependencies {
 
 
     implementation "androidx.core:core-splashscreen:1.0.1"
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.24'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.28'
 
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
