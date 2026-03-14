@@ -19,6 +19,7 @@ import com.dst.abacustrainner.Model.ViewTopicListResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -117,6 +118,7 @@ public class ViewPracticeListActivity extends AppCompatActivity {
                         txtNodata.setVisibility(View.VISIBLE); // Show No Data Found TextView
                         recyclerViewTopic.setVisibility(View.GONE); // Hide RecyclerView
                     } else {
+                          // 👈 Latest data first
                         txtNodata.setVisibility(View.GONE); // Hide No Data Found TextView
                         recyclerViewTopic.setVisibility(View.VISIBLE); // Show RecyclerView
 

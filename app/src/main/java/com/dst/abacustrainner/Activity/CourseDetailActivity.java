@@ -155,7 +155,7 @@ public class CourseDetailActivity extends AppCompatActivity {
                         .saveSelectedLevels(worksheetRnm, courseId, selectedLevels);
 
                 updateSummary();
-               // updateAddCartButton();
+                // updateAddCartButton();
             }
         });
         recyclerViewLevelList.setAdapter(levelsAdapter);
@@ -188,7 +188,6 @@ public class CourseDetailActivity extends AppCompatActivity {
                 for (CourseLevel level : selectedLevels) {
 
 
-
                     Log.e("Reddy",
                             "Adding CourseLevelId = " + level.getCourseLevelId());
 
@@ -198,12 +197,14 @@ public class CourseDetailActivity extends AppCompatActivity {
                             level.getCourseLevelId(),
                             selectedDurationId
                     );
+                }
+
 
                     Intent intent =new Intent(CourseDetailActivity.this, CartActivity.class);
                     intent.putExtra("WorkSheetRnm",worksheetRnm);
                     startActivity(intent);
 
-                }
+
             }
 
 
@@ -237,7 +238,6 @@ public class CourseDetailActivity extends AppCompatActivity {
                 for (CourseLevel level : selectedLevels) {
 
 
-
                     Log.e("Reddy",
                             "Adding CourseLevelId = " + level.getCourseLevelId());
 
@@ -247,12 +247,13 @@ public class CourseDetailActivity extends AppCompatActivity {
                             level.getCourseLevelId(),
                             selectedDurationId
                     );
+                }
 
                     Intent intent =new Intent(CourseDetailActivity.this, CartActivity.class);
                     intent.putExtra("WorkSheetRnm",worksheetRnm);
                     startActivity(intent);
 
-                }
+
             }
 
 
@@ -365,27 +366,37 @@ public class CourseDetailActivity extends AppCompatActivity {
     }
 
     private void updateCartUI() {
+
         cartCount++;
 
-        tvCartCount.setVisibility(View.VISIBLE);
-        tvCartCount.setText(String.valueOf(cartCount));
-
-        //ivCart.setImageResource(R.drawable.ic_cart_filled);
+        if (cartCount > 0) {
+            tvCartCount.setVisibility(View.VISIBLE);
+            tvCartCount.setText(String.valueOf(cartCount));
+        } else {
+            tvCartCount.setVisibility(View.GONE);
+        }
     }
-
     private void updateSummary() {
         int totalAmount = 0;
         int selectedCount = 0;
 
         for (CourseLevel level : levelList) {
+
             if (level.isSelected() && level.getPrice() != null) {
+
                 selectedCount++;
-                totalAmount += Integer.parseInt(level.getPrice());
+
+                try {
+                    totalAmount += Integer.parseInt(level.getPrice());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         txtAmount.setText("₹" + totalAmount + "/-");
         txtLevel.setText(selectedCount + " levels selected");
+
     }
 
     private void fetchPricesForLevels(String  durationId) {
@@ -499,6 +510,9 @@ public class CourseDetailActivity extends AppCompatActivity {
             public void onResponse(Call<DurationListResponse> call, Response<DurationListResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     durationAdapter.setData(response.body().getResult());
+                    if (selectedDurationId != null) {
+                        durationAdapter.setSelectedDuration(selectedDurationId);
+                    }
                 }
 
             }
@@ -514,6 +528,11 @@ public class CourseDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (cartCount > 0) {
+            tvCartCount.setVisibility(View.VISIBLE);
+            tvCartCount.setText(String.valueOf(cartCount));
+        }
 
         String worksheetRnm =
                 CartManager.getInstance(this).getWorksheetRnm();

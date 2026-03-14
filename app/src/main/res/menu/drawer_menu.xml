@@ -12,8 +12,10 @@
 
         <item
             android:id="@+id/nav_worksheet"
-            android:title="Work Sheet Subscription"
-            android:icon="@drawable/worksheet" />
+            android:title="Subscriptions"
+            android:icon="@drawable/worksheet"/>
+
+
         <item
             android:id="@+id/nav_video"
             android:title="Video Tutorials"

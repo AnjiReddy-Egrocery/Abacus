@@ -8,7 +8,7 @@ public class SendData {
     long timeTaken;
     String status;
 
-    public SendData(String question, String correctAnswer, String enterAnswer, String isCorrect, String status,long timeTaken) {
+    public SendData(String question, String correctAnswer, String enterAnswer, String isCorrect,long timeTaken,String status) {
         this.question = question;
         this.correctAnswer = correctAnswer;
         this.enterAnswer = enterAnswer;

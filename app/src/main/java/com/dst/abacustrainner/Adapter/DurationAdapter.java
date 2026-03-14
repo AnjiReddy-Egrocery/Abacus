@@ -25,6 +25,7 @@ public class DurationAdapter extends RecyclerView.Adapter<DurationAdapter.ViewHo
     private List<DurationResult> list = new ArrayList<>();
     private OnDurationSelectListener listener;
     private int selectedPosition = -1;
+    private String selectedDurationId;
 
     public DurationAdapter(CourseDetailActivity courseDetailActivity, OnDurationSelectListener listener) {
         this.mContext = courseDetailActivity;
@@ -77,6 +78,18 @@ public class DurationAdapter extends RecyclerView.Adapter<DurationAdapter.ViewHo
     public void setData(List<DurationResult> result) {
 
         this.list = result;
+        notifyDataSetChanged();
+    }
+
+    public void setSelectedDuration(String durationId) {
+        this.selectedDurationId = durationId;
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getDurationId().equals(durationId)) {
+                selectedPosition = i;
+                break;
+            }
+        }
         notifyDataSetChanged();
     }
 

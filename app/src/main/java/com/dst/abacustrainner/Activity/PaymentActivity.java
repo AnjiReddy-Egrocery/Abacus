@@ -1,68 +1,66 @@
 package com.dst.abacustrainner.Activity;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.annotation.SuppressLint;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dst.abacustrainner.Model.CartManager;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.dst.abacustrainner.Model.CartDetailsResponse;
 import com.dst.abacustrainner.Model.MetaInfo;
+import com.dst.abacustrainner.Model.OrderCreateResponse;
 import com.dst.abacustrainner.Model.OrderRequest;
 import com.dst.abacustrainner.Model.OrderResponse;
 import com.dst.abacustrainner.Model.OrderStatusResponse;
 import com.dst.abacustrainner.Model.PaymentFlow;
-import com.dst.abacustrainner.Model.PaymentParams;
+import com.dst.abacustrainner.Model.PaymentRefrence;
 import com.dst.abacustrainner.Model.TokenResponse;
-import com.dst.abacustrainner.Model.TokenUtils;
 import com.dst.abacustrainner.R;
+import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.Services.PhonePeApi;
 import com.dst.abacustrainner.Services.RetrofitClient;
-import com.google.gson.Gson;
 import com.phonepe.intent.sdk.api.PhonePeKt;
 import com.phonepe.intent.sdk.api.models.PhonePeEnvironment;
 
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PaymentActivity extends AppCompatActivity {
 
     private LinearLayout layoutSelectedLevel;
-    ImageView layoutBack;
-    TextView tvTotal;
-    Button btnPayNow;
-    String studentId, workRnm, totalAmount;
-    ArrayList<String> levelNames, levelPrices, cartIds;
 
-    private String orderIdGlobal;
-    private String tokenGlobal;
-    private String flowId; // Production flowId
+    ImageView  layoutBack;
+    private TextView tvTotal;
+    private Button btnPayNow;
 
+    private String studentId, workRnm, totalAmount, merchantref;
+    private ArrayList<String> levelNames, levelPrices, cartIds;
 
-    @SuppressLint("MissingInflatedId")
+    private String accessTokenGlobal, orderIdGlobal, orderTokenGlobal;
+    private String merchantOrderId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,30 +72,10 @@ public class PaymentActivity extends AppCompatActivity {
         setTotalAmount();
         clickListeners();
 
-        flowId = "FLOW_PROD_ABC123";
-
-        boolean initResult = PhonePeKt.init(
-                this,                         // Activity context
-                "M23EB6GY8RWOK",              // Production MID
-                flowId,
-                PhonePeEnvironment.RELEASE,   // Production environment
-                false,                        // Disable logging in production
-                null                          // appId (optional)
-        );
-
-        if (initResult) {
-            Log.d("Anji", "✅ PhonePe SDK initialized successfully with Production FlowId: " + flowId);
-        } else {
-            Log.e("Anji", "❌ SDK initialization failed. Do not call other SDK methods.");
-        }
-
-        Log.d("Anji", "SDK Init Result: " + initResult);
-
-
-
-
-
+        boolean initResult = PhonePeKt.init(this, "M23EB6GY8RWOK", "flowId", PhonePeEnvironment.RELEASE, false, null);
+        Log.d("Anji", initResult ? "✅ PhonePe SDK initialized successfully" : "❌ SDK initialization failed");
     }
+
     private void initViews() {
         layoutSelectedLevel = findViewById(R.id.layoutSelectedLevels);
         tvTotal = findViewById(R.id.tvTotal);
@@ -106,332 +84,290 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void receiveIntentData() {
-        Intent intent = getIntent();
+        studentId = getIntent().getStringExtra("StudentId");
+        workRnm = getIntent().getStringExtra("WorkRNM");
+        totalAmount = getIntent().getStringExtra("TotalAmount");
+        levelNames = getIntent().getStringArrayListExtra("LevelNames");
+        levelPrices = getIntent().getStringArrayListExtra("LevelPrices");
+        cartIds = getIntent().getStringArrayListExtra("CartIds");
+        merchantref = getIntent().getStringExtra("merchantRef");
 
-        studentId = intent.getStringExtra("StudentId");
-        workRnm = intent.getStringExtra("WorkRNM");
-        totalAmount = intent.getStringExtra("TotalAmount");
-
-        levelNames = intent.getStringArrayListExtra("LevelNames");
-        levelPrices = intent.getStringArrayListExtra("LevelPrices");
-        cartIds = intent.getStringArrayListExtra("CartIds");
-
-        Log.e("Chandu", workRnm);
-        Log.e("Chandu", totalAmount);
-        Log.e("Chandu", studentId);
-        Log.e("Chandu", String.valueOf(levelNames));
-        Log.e("Chandu", String.valueOf(levelPrices));
-
-
+        Log.d("Anji", "Intent Data -> studentId: " + studentId + ", workRnm: " + workRnm + ", totalAmount: " + totalAmount + ", MerchantRef: " + merchantref);
+        Log.d("Anji", "LevelNames: " + levelNames);
+        Log.d("Anji", "LevelPrices: " + levelPrices);
     }
-    @SuppressLint("MissingInflatedId")
+
     private void setLevelsUI() {
         if (levelNames == null || levelPrices == null) {
             Toast.makeText(this, "No levels selected", Toast.LENGTH_SHORT).show();
             return;
         }
-
         layoutSelectedLevel.removeAllViews();
-
         for (int i = 0; i < levelNames.size(); i++) {
-
-            View view = LayoutInflater.from(this)
-                    .inflate(R.layout.row_selected_level, layoutSelectedLevel, false);
-
-             TextView tvLevelName = view.findViewById(R.id.tvLevelName);
+            View view = LayoutInflater.from(this).inflate(R.layout.row_selected_level, layoutSelectedLevel, false);
+            TextView tvLevelName = view.findViewById(R.id.tvLevelName);
             TextView tvLevelPrice = view.findViewById(R.id.tvLevelPrice);
-
             tvLevelName.setText(levelNames.get(i));
             tvLevelPrice.setText("₹" + levelPrices.get(i));
-
             layoutSelectedLevel.addView(view);
         }
     }
 
     private void setTotalAmount() {
-        if (totalAmount != null) {
-            tvTotal.setText(totalAmount);
-        } else {
-            tvTotal.setText("₹0");
-        }
+        tvTotal.setText(totalAmount != null ? totalAmount : "₹0");
+        Log.d("Anji", "Total Amount set: " + tvTotal.getText());
     }
 
     private void clickListeners() {
-
         layoutBack.setOnClickListener(v -> finish());
-
         btnPayNow.setOnClickListener(v -> {
+            Log.d("Anji", "Pay Now clicked");
             generateToken();
         });
     }
 
     private void generateToken() {
-        Log.d("Anji", "Generate Token button clicked");
-
+        Log.d("Anji", "Generating Token...");
         PhonePeApi api = RetrofitClient.getClient().create(PhonePeApi.class);
-
         Call<TokenResponse> call = api.generateToken(
-                "SU2512311150282994206185",       // Production Client ID
-                "1",                               // Scope/version
-                "6108bcdf-e9e8-4d7f-9c8f-12724cd06134", // Production Client Secret
+                "SU2512311150282994206185",
+                "1",
+                "6108bcdf-e9e8-4d7f-9c8f-12724cd06134",
                 "client_credentials"
         );
 
         call.enqueue(new Callback<TokenResponse>() {
             @Override
             public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
-                Log.d("Anji", "Token API Response code: " + response.code());
-
                 if (response.isSuccessful() && response.body() != null) {
-                    TokenResponse tokenResponse = response.body();
-                    String accessToken = tokenResponse.getAccessToken();
-                    String encryptedToken = tokenResponse.getEncryptedAccessToken();
-
-                    tokenGlobal = accessToken; // Keep global access token
-
-                    // Log the tokens
-                    Log.d("Anji", "Access Token: " + accessToken);
-                    Log.d("Anji", "Encrypted Access Token: " + encryptedToken);
-
-                    //txtAccessToken.setText(accessToken);
-                    //txtEncryptedToken.setText(encryptedToken);
-
-                    // Proceed to create order
-                    createOrder(accessToken);
-
+                    accessTokenGlobal = response.body().getAccessToken();
+                    Log.d("Anji", "Token received: " + accessTokenGlobal);
+                    createOrder(accessTokenGlobal);
                 } else {
-                    try {
-                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "null";
-                        Log.e("Anji", "Token API Error body: " + errorBody);
-                    } catch (Exception e) {
-                        Log.e("Anji", "Token parsing failed", e);
-                    }
+                    Log.e("Anji", "Token API Error: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<TokenResponse> call, Throwable t) {
-                Log.e("Anji", "Token API Failure: " + t.getMessage(), t);
+                Log.e("Anji", "Token API Failure: " + t.getMessage());
             }
         });
     }
 
-    // ---------------- Order Creation ----------------
     private void createOrder(String accessToken) {
+        Log.d("Anji", "Creating Order...");
+        int amountInPaisa = 0;
+
+        try {
+            double rupees = Double.parseDouble(totalAmount);
+            amountInPaisa = (int) (rupees * 100);
+        } catch (Exception e) {
+            Log.e("Anji", "Amount conversion error: " + e.getMessage());
+        }
         PhonePeApi api = RetrofitClient.getClient().create(PhonePeApi.class);
-
-        MetaInfo metaInfo = new MetaInfo("Test1", "Test2");
-
-
+        merchantOrderId = "TX" + System.currentTimeMillis();
         OrderRequest request = new OrderRequest(
-                "TX" + System.currentTimeMillis(), // Unique orderId
-                1000,                              // Amount in paise
-                1200,                              // Total
-                metaInfo,
+                merchantOrderId,
+                amountInPaisa,
+                amountInPaisa,
+                new MetaInfo("Test1", "Test2"),
                 new PaymentFlow("PG_CHECKOUT")
         );
 
-        Log.d("Anji", "CreateOrder Request: " + new Gson().toJson(request));
-
         Call<OrderResponse> call = api.createOrder("O-Bearer " + accessToken, request);
-
         call.enqueue(new Callback<OrderResponse>() {
             @Override
             public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    OrderResponse order = response.body();
-
-                    orderIdGlobal = order.getOrderId();
-                    tokenGlobal = order.getToken();
-
-                    Log.d("Anji", "CreateOrder Response: " + new Gson().toJson(order));
-
-                    ///txtOrderId.setText("OrderId:\n" + orderIdGlobal);
-                   // txtEncryptedToken.setText("Order Token:\n" + tokenGlobal);
-
-                    // ✅ Validate token
-                    if (tokenGlobal == null || tokenGlobal.isEmpty()) {
-                        Log.e("Anji", "❌ Order token is empty! Cannot start payment.");
-                       // txtOrderId.setText("❌ Order Token empty, check credentials / flowId");
-                        return;
-                    }
-
-                    startPhonePePayment(orderIdGlobal, tokenGlobal);
+                    orderIdGlobal = response.body().getOrderId();
+                    orderTokenGlobal = response.body().getToken();
+                    Log.d("Anji", "Order Created: orderId=" + orderIdGlobal + ", token=" + orderTokenGlobal);
+                    startPhonePePayment(orderIdGlobal, orderTokenGlobal);
                 } else {
-                    try {
-                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "";
-                        Log.e("Anji", "Order Error Body: " + errorBody);
-                      //  txtOrderId.setText("❌ Failed to create order");
-                    } catch (Exception e) {
-                        Log.e("Anji", "Order parsing failed", e);
-                    }
+                    Log.e("Anji", "CreateOrder Error: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<OrderResponse> call, Throwable t) {
-                Log.e("Anji", "Order API Failure: " + t.getMessage());
-               // txtOrderId.setText("❌ Failed to create order");
+                Log.e("Anji", "CreateOrder Failure: " + t.getMessage());
             }
         });
     }
 
-    // ---------------- Start PhonePe Checkout ----------------
-    private void startPhonePePayment(String orderId, String token) {
-        if (token == null || token.isEmpty()) {
-            Log.e("API_RESPONSE", "❌ Order token is empty! Cannot start payment.");
-           // txtOrderId.setText("❌ Order Token empty, check credentials / flowId");
-            return;
-        }
-
-        Log.d("Anji", "Starting PhonePe Checkout");
-        Log.d("Anji", "OrderId: " + orderId);
-        Log.d("Anji", "Token: " + token);
-        Log.d("Anji", "FlowId: " + flowId);
-
+    private void startPhonePePayment(String orderId, String orderToken) {
+        if (orderToken == null || orderToken.isEmpty()) return;
         try {
-            PhonePeKt.startCheckoutPage(this, token, orderId, activityResultLauncher);
-
+            Log.d("Anji", "Starting PhonePe Checkout -> orderId: " + orderId);
+            PhonePeKt.startCheckoutPage(this, orderToken, orderId, activityResultLauncher);
         } catch (Exception e) {
             Log.e("API_RESPONSE", "Checkout Start Error: " + e.getMessage());
         }
     }
 
-    // ---------------- Payment Status Check ----------------
-    // Check Payment Status
-    private void checkOrderStatus(String orderId) {
-        Log.d("API_RESPONSE", "Checking status for OrderId: " + orderId);
+    private void checkOrderStatusWithRetry(String merchantOrderId, int attempt) {
+        if (attempt > 4) return;
+        if (accessTokenGlobal == null || accessTokenGlobal.isEmpty()) return;
 
-        if (tokenGlobal == null || tokenGlobal.isEmpty()) {
-            Log.e("API_RESPONSE", "❌ Access token is empty! Cannot check order status.");
-           // txtOrderId.setText("❌ Access token empty");
-            return;
-        }
-
+        Log.d("Anji", "Checking Order Status attempt " + attempt + " for orderId: " + merchantOrderId);
         PhonePeApi api = RetrofitClient.getClient().create(PhonePeApi.class);
-
-        // Query parameters: details=true, errorContext=true
         Call<OrderStatusResponse> call = api.checkOrderStatus(
-                "O-Bearer " + tokenGlobal,
-                orderId,
-                true,   // details
-                true    // errorContext
+                "O-Bearer " + accessTokenGlobal,
+                merchantOrderId,
+                false, // safer default first
+                false
         );
 
         call.enqueue(new Callback<OrderStatusResponse>() {
             @Override
             public void onResponse(Call<OrderStatusResponse> call, Response<OrderStatusResponse> response) {
-                Log.d("API_RESPONSE", "Status Response Code: " + response.code());
-
                 if (response.isSuccessful() && response.body() != null) {
-                    OrderStatusResponse status = response.body();
-                    Log.d("API_RESPONSE", "Full Order Status Response: " + new Gson().toJson(status));
-
-                    String state = status.getState() != null ? status.getState().toUpperCase() : "UNKNOWN";
-                    Log.d("API_RESPONSE", "Payment State: " + state);
-
-                    switch (state) {
-                        case "COMPLETED":
-                            //txtOrderId.setText("✅ Payment Success");
-                            logPaymentDetails(status);
-                            break;
-
-                        case "FAILED":
-                            //txtOrderId.setText("❌ Payment Failed");
-                            if (status.getErrorContext() != null) {
-                                Log.e("Anji", "Error Code: " + status.getErrorContext().getErrorCode());
-                                Log.e("Anji", "Error Description: " + status.getErrorContext().getDescription());
-                            }
-                            break;
-
-                        case "PENDING":
-                           // txtOrderId.setText("⏳ Payment Pending");
-                            break;
-
-                        default:
-                            //txtOrderId.setText("⚠️ Unknown Payment State");
-                            Log.w("Anji", "Unknown payment state: " + state);
-                            break;
-                    }
-
+                    logPaymentDetails(response.body());
+                } else if (response.code() == 400 || response.code() == 401) {
+                    Log.d("Anji", "Order Status API retryable error: " + response.code());
+                    new Handler(Looper.getMainLooper()).postDelayed(() ->
+                            checkOrderStatusWithRetry(merchantOrderId, attempt + 1), 3000);
                 } else {
-                    try {
-                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "";
-                        Log.e("Anji", "Status Error Body: " + errorBody);
-
-                        if (errorBody.contains("MERCHANT_ORDER_MAPPING_NOT_FOUND")) {
-                            //txtOrderId.setText("❌ Invalid Order ID");
-                            Log.e("Anji", "Invalid Order ID: " + orderId);
-                        } else {
-                           // txtOrderId.setText("❌ Error checking order status");
-                        }
-                    } catch (Exception e) {
-                        Log.e("Anji", "Status Error parsing failed", e);
-                        //txtOrderId.setText("❌ Status parsing failed");
-                    }
+                    Log.e("Anji", "Status API Error: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<OrderStatusResponse> call, Throwable t) {
                 Log.e("Anji", "Status API Failure: " + t.getMessage());
-                //txtOrderId.setText("❌ Failed to check status");
             }
         });
     }
 
-    // Helper method to log detailed payment info
     private void logPaymentDetails(OrderStatusResponse status) {
-        if (status.getPaymentDetails() == null || status.getPaymentDetails().isEmpty()) return;
+        String orderState = status.getState() != null ? status.getState().toUpperCase() : "UNKNOWN";
+        if ("FAILED".equals(orderState)) {
+
+            String errorCode = status.getErrorContext().getErrorCode() != null ? status.getErrorContext().getErrorCode() : "PAYMENT_FAILED";
+
+            Intent intent = new Intent(PaymentActivity.this, PaymentDetailsActivity.class);
+            intent.putExtra("StudentId", studentId);
+            intent.putExtra("Status", status.getState());
+            intent.putExtra("ErrorCode", errorCode);
+            intent.putExtra("Amount", totalAmount);
+            intent.putExtra("Currency", "INR");
+
+            startActivity(intent);
+            return;   // ⭐ very important
+        }
+
+        if (status.getPaymentDetails() == null || status.getPaymentDetails().isEmpty()) {
+            Log.d("Anji", "No payment attempts yet.");
+            return;
+        }
 
         for (OrderStatusResponse.PaymentDetail detail : status.getPaymentDetails()) {
-            Log.d("Anji", "Payment Mode: " + detail.getPaymentMode());
-            Log.d("Anji", "Amount: " + detail.getAmount());
-            Log.d("Anji", "TransactionId: " + detail.getTransactionId());
+            String worksheetRnm = workRnm != null ? workRnm : "UNKNOWN";
+            String studentID = studentId != null ? studentId : "UNKNOWN";
+            String totalAmt = totalAmount != null ? totalAmount : "0";
 
-            if (detail.getRail() != null) {
-                Log.d("Anji", "Rail Type: " + detail.getRail().getType());
-                Log.d("Anji", "UPI TransactionId: " + detail.getRail().getUpiTransactionId());
-                Log.d("Anji", "VPA: " + detail.getRail().getVpa());
-            }
+            String transactionId = detail.getTransactionId() != null ? detail.getTransactionId() : "UNKNOWN";
+            String state = detail.getState() != null ? detail.getState().toUpperCase() : "UNKNOWN";
+            String currency = "INR";
+            long amount = detail.getAmount();
+            String orderId = status.getOrderId() != null ? status.getOrderId() : "UNKNOWN";
+            String paymentMode = detail.getPaymentMode() != null ? detail.getPaymentMode() : "UNKNOWN";
+            long timestamp = detail.getTimestamp();
 
-            if (detail.getInstrument() != null) {
-                Log.d("Anji", "Instrument Type: " + detail.getInstrument().getType());
-                Log.d("Anji", "Masked Account: " + detail.getInstrument().getMaskedAccountNumber());
-            }
+            Log.d("Anji", "✅ Payment Successful Details:");
+            Log.d("Anji", "WorksheetRnm: " + worksheetRnm);
+            Log.d("Anji", "StudentId: " + studentID);
+            Log.d("Anji", "TotalAmount: " + totalAmt);
+            Log.d("Anji", "TransactionId: " + transactionId);
+            Log.d("Anji", "State: " + state);
+            Log.d("Anji", "Currency: " + currency);
+            Log.d("Anji", "Amount: " + amount);
+            Log.d("Anji", "OrderId: " + orderId);
+            Log.d("Anji", "PaymentMode: " + paymentMode);
+            Log.d("Anji", "Timestamp: " + timestamp);
 
-            if (detail.getSplitInstruments() != null) {
-                for (OrderStatusResponse.SplitInstrument split : detail.getSplitInstruments()) {
-                    Log.d("Anji", "Split Amount: " + split.getAmount());
-                    Log.d("Anji", "Split Instrument Type: " + split.getInstrument().getType());
-                    Log.d("Anji", "Split UPI: " + split.getRail().getUpiTransactionId());
+            showPaymentSuccessDialog(worksheetRnm, studentID, totalAmt, transactionId, state, currency, amount, orderId, paymentMode, timestamp);
+        }
+    }
+
+    private void showPaymentSuccessDialog(String worksheetRnm, String studentId, String totalAmount,
+                                          String transactionId, String state, String currency,
+                                          long amount, String orderId, String paymentMode, long timestamp) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+        RequestBody WorksheetPart = RequestBody.create(MediaType.parse("text/plain"), worksheetRnm);
+        RequestBody StudentPartPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
+        RequestBody AmountPart = RequestBody.create(MediaType.parse("text/plain"), totalAmount);
+        RequestBody TransctionPartPart = RequestBody.create(MediaType.parse("text/plain"), transactionId);
+        RequestBody statePart = RequestBody.create(MediaType.parse("text/plain"), state);
+        RequestBody currencyPart = RequestBody.create(MediaType.parse("text/plain"), currency);
+        RequestBody amountPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(amount));
+        RequestBody orderPart = RequestBody.create(MediaType.parse("text/plain"), orderId);
+        RequestBody paymentModePart = RequestBody.create(MediaType.parse("text/plain"), paymentMode);
+        RequestBody timeStampPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(timestamp));
+
+        Call<PaymentRefrence> call = apiClient.getPaymentInfo(WorksheetPart,StudentPartPart,AmountPart,TransctionPartPart,statePart,currencyPart,amountPart,orderPart,paymentModePart,timeStampPart);
+        call.enqueue(new Callback<PaymentRefrence>() {
+            @Override
+            public void onResponse(Call<PaymentRefrence> call, Response<PaymentRefrence> response) {
+                if (response.body() != null &&
+                        "200".equals(response.body().getErrorCode())) {
+
+                    PaymentRefrence.Result result = response.body().getResult();
+
+                    String transction = result.getTransactionID();
+                    String status = result.getState();
+                    String currency = result.getCurrency();
+                    String Amount = result.getAmount();
+                    String paymentMethod = result.getPaymentMethod();
+                    String created = result.getDateCreated();
+                    Intent intent = new Intent(PaymentActivity.this, PaymentDetailsActivity.class);
+                    intent.putExtra("StudentId",studentId);
+                    intent.putExtra("Transaction",transction);
+                    intent.putExtra("Status",status);
+                    intent.putExtra("Currency",currency);
+                    intent.putExtra("Amount",Amount);
+                    intent.putExtra("Payment",paymentMethod);
+                    intent.putExtra("Date",created);
+                    startActivity(intent);
                 }
             }
-        }
+
+            @Override
+            public void onFailure(Call<PaymentRefrence> call, Throwable t) {
+
+            }
+        });
     }
 
     private final ActivityResultLauncher<Intent> activityResultLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
-                        Log.d("Anji", "Payment Result Received");
 
-                        if (result.getData() != null) {
+                        Log.d("Anji", "Payment SDK callback received");
+
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+
                             String response = result.getData().getStringExtra("response");
-                            Log.d("Anji", "Checkout Response: " + response);
-                        } else {
-                            Log.d("Anji", "Checkout Response is null");
-                        }
+                            Log.d("Anji", "PhonePe SDK Response: " + response);
 
-                        if (orderIdGlobal != null) {
-                            Log.d("Anji", "Checking order status for: " + orderIdGlobal);
-                            checkOrderStatus(orderIdGlobal);
-                        } else {
-                            Log.e("Anji", "Order ID is null, cannot check status");
-                        }
-                    }
-            );
+                            // Always verify payment from server
+                            checkOrderStatusWithRetry(merchantOrderId, 1);
 
+                        } else {
+
+                            Log.d("Anji", "⚠ Payment cancelled by user");
+
+                            checkOrderStatusWithRetry(merchantOrderId, 1);
+                        }
+                    });
 }
-
-

@@ -14,7 +14,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -51,7 +53,9 @@ import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,11 +83,11 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
     View lineSignIn,lineSignUp;
     String parentEmail,password;
     EditText edtEmail,edtPassword;
-    EditText edtFirstName,edtLastName,edtDate,edtMotherTongue,edtRegisterEmail,edtNumber;
+    EditText edtFirstName,edtLastName,edtDate,edtMotherTongue,edtRegisterEmail,edtNumber,edtMiddleName;
     TextView txtForgotPassword;
     private RadioGroup genderRadioGroup;
     private Calendar calendar;
-    String firstName,lastName,mobileNumber,registeremail,date,tongue,selectedGender;
+    String firstName,lastName,mobileNumber,registeremail,date,tongue,selectedGender,middlename;
     private SharedPreferences sharedPreferences;
 
     Button butSchools;
@@ -99,6 +103,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
     private static final int RC_SIGN_UP_WITH_GOOGLE = 9002;
     private static final int CREDENTIAL_PICKER_REQUEST = 1001;
     private String apiDob = "";
+    TextView genderErrorText,txtfirstname,txtmothertongue,txtlastname,txtmiddlename,txtmobilenumber,txtemail,txtdob,txtPasswordError;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -128,6 +133,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         edtPassword=findViewById(R.id.edt_password);
 
         edtFirstName=findViewById(R.id.edt_first_name);
+        edtMiddleName = findViewById(R.id.edt_middle_Name);
         edtLastName=findViewById(R.id.edt_last_name);
         edtMotherTongue=findViewById(R.id.edt_tongue);
         edtRegisterEmail=findViewById(R.id.edt_email);
@@ -135,6 +141,26 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         butRegister=findViewById(R.id.but_register);
         edtDate=findViewById(R.id.edt_date);
         genderRadioGroup=findViewById(R.id.radio);
+
+        genderErrorText = findViewById(R.id.txt_gender_error);
+        txtfirstname = findViewById(R.id.txt_first_name);
+        txtlastname = findViewById(R.id.txt_last_name);
+        txtmothertongue = findViewById(R.id.txt_mother_tongue);
+        txtmiddlename = findViewById(R.id.txt_middle_name);
+        txtmobilenumber = findViewById(R.id.txt_mobile_number);
+        txtemail = findViewById(R.id.txt_email);
+        txtdob = findViewById(R.id.txt_date);
+        txtPasswordError = findViewById(R.id.txt_password);
+
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            edtFirstName.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+            edtMiddleName.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+            edtLastName.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+            edtRegisterEmail.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+            edtNumber.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+            edtMotherTongue.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+        }
 
         //butSchools = findViewById(R.id.but_schools);
 
@@ -226,6 +252,112 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                 FormRegisterMethod();
             }
         });
+
+        genderRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                genderErrorText.setVisibility(View.GONE);
+            }
+        });
+        edtFirstName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                txtfirstname.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        edtLastName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                txtlastname.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+        edtMotherTongue.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                txtmothertongue.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        edtMiddleName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                txtmiddlename.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        edtNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                txtmobilenumber.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        edtRegisterEmail.addTextChangedListener(new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                txtemail.setVisibility(View.GONE);
+            }
+
+            public void afterTextChanged(Editable s) {}
+        });
+
+        edtPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                txtPasswordError.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        edtEmail.addTextChangedListener(new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                txtemail.setVisibility(View.GONE);
+            }
+
+            public void afterTextChanged(Editable s) {}
+        });
+
+
+
     }
 
 /*    private void checkPermissionAndShowAccounts() {
@@ -443,6 +575,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                 SimpleDateFormat uiFormat =
                         new SimpleDateFormat("dd-MM-yyyy", Locale.US);
                 edtDate.setText(uiFormat.format(calendar.getTime()));
+                txtdob.setVisibility(View.GONE);
 
                 // API format (backend required)
                 SimpleDateFormat apiFormat =
@@ -489,14 +622,21 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                 parentEmail =edtEmail.getText().toString();
                 password=edtPassword.getText().toString();
 
+                boolean isValid = true;
+
                 if (!isValidEmail(parentEmail)) {
-                    edtEmail.setError("Invalid email address");
-                    return; // Stop further processing
-                }else if (!isValidPassword(password)) {
-                    edtPassword.setError("Invalid password");
-                    return; // Stop further processing
-                }else {
+                    isValid = false;
+                }
+
+                if (!isValidPassword(password)) {
+                    isValid = false;
+                }
+
+                if (isValid) {
                     LoginMethod(parentEmail,password);
+
+                } else {
+                    //Toast.makeText(UserCreateActivity.this, "Validation failed. Please check your input.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -530,29 +670,69 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
             @Override
             public void onClick(View view) {
                 firstName = edtFirstName.getText().toString().trim();
+                middlename = edtMiddleName.getText().toString().trim();
                 lastName = edtLastName.getText().toString().trim();
                 mobileNumber = edtNumber.getText().toString().trim();
                 registeremail = edtRegisterEmail.getText().toString().trim();
                 date = edtDate.getText().toString().trim();
                 tongue = edtMotherTongue.getText().toString().trim();
 
-                boolean error = false;
 
-                if (isValidFirstName(firstName)
-                        && isValidLastName(lastName)
-                        && isValidMotherTongue(tongue)
-                        && isValidEmail(registeremail)
-                        && isValidMobileNumber(mobileNumber)) {
 
-                    registerMenthod(firstName, lastName, mobileNumber, registeremail, apiDob, tongue);
+                boolean isValid = true;
+
+                if (!isValidFirstName(firstName)) {
+                    isValid = false;
+                }
+
+                if (!isValidMiddleName(middlename)) {
+                    isValid = false;
+                }
+
+                if (!isValidLastName(lastName)) {
+                    isValid = false;
+                }
+
+                if (!isValidMotherTongue(tongue)) {
+                    isValid = false;
+                }
+
+                if (!isValidEmail(registeremail)) {
+                    isValid = false;
+                }
+
+                if (!isValidMobileNumber(mobileNumber)) {
+                    isValid = false;
+                }
+
+                if (!isValidDOB(date)) {
+                    isValid = false;
+                }
+
+                if (!isValidGender()) {
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    registerMenthod(firstName,middlename, lastName, mobileNumber, registeremail, apiDob, tongue);
+
                 } else {
-                    Toast.makeText(UserCreateActivity.this, "Validation failed. Please check your input.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(UserCreateActivity.this, "Validation failed. Please check your input.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    private void registerMenthod(String firstName, String lastName, String mobileNumber, String registeremail, String date, String tongue) {
+    private boolean isValidMiddleName(String middlename) {
+        if (middlename.isEmpty()) {
+            txtmiddlename.setVisibility(View.VISIBLE);
+
+            return false;
+        }
+        return true;
+    }
+
+    private void registerMenthod(String firstName,String middlename, String lastName, String mobileNumber, String registeremail, String date, String tongue) {
         String selectedGender = getSelectedGender();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -571,6 +751,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                 .build();
         ApiClient apiClient=retrofit.create(ApiClient.class);
         RequestBody firstNamePart = RequestBody.create(MediaType.parse("text/plain"), firstName);
+        RequestBody middleNamePart = RequestBody.create(MediaType.parse("text/plain"), middlename);
         RequestBody lastnamePart = RequestBody.create(MediaType.parse("text/plain"), lastName);
         RequestBody genderPart = RequestBody.create(MediaType.parse("text/plain"), selectedGender);
         RequestBody dateofbirthPart = RequestBody.create(MediaType.parse("text/plain"), date);
@@ -578,7 +759,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         RequestBody emailPart = RequestBody.create(MediaType.parse("text/plain"), registeremail);
         RequestBody mobilenumberPart = RequestBody.create(MediaType.parse("text/plain"), mobileNumber);
 
-        Call<StudentRegistationResponse> call=apiClient.studentRegisterPost(firstNamePart,lastnamePart,genderPart,dateofbirthPart,mothertonguePart, emailPart,mobilenumberPart);
+        Call<StudentRegistationResponse> call=apiClient.studentRegisterPost(firstNamePart,middleNamePart,lastnamePart,genderPart,dateofbirthPart,mothertonguePart, emailPart,mobilenumberPart);
         call.enqueue(new Callback<StudentRegistationResponse>() {
             @Override
             public void onResponse(Call<StudentRegistationResponse> call, Response<StudentRegistationResponse> response) {
@@ -593,15 +774,20 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                         String studentId="";
                         String otp="";
                         String parentEmailId="";
-                        StudentRegistationResponse.Result list =registrationResponse.getResult();
-                        studentId=list.getStudentId();
-                        otp=list.getOtp();
-                        parentEmailId=list.getParentEmail();
-                        Intent intent = new Intent(UserCreateActivity.this, VerifyActivity.class);
-                        intent.putExtra("studentId", studentId);
-                        intent.putExtra("Otp", otp);
-                        intent.putExtra("parentEmail",parentEmailId);
-                        startActivity(intent);
+                        List<StudentRegistationResponse.Result> list =registrationResponse.getResult();
+                        if (list != null && list.size() > 0) {
+
+                             studentId = list.get(0).getStudentId();
+                            otp = list.get(0).getOtp();
+                            parentEmailId = list.get(0).getParentEmail();
+
+                            Intent intent = new Intent(UserCreateActivity.this, VerifyActivity.class);
+                            intent.putExtra("studentId", studentId);
+                            intent.putExtra("Otp", otp);
+                            intent.putExtra("parentEmail", parentEmailId);
+                            startActivity(intent);
+                        }
+
                     }
 
                 }else {
@@ -627,19 +813,67 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
 
 
     private boolean isValidMobileNumber(String mobileNumber) {
-        return Patterns.PHONE.matcher(mobileNumber).matches();
+        if (mobileNumber.isEmpty()) {
+            txtmobilenumber.setVisibility(View.VISIBLE);
+
+            return false;
+        }
+
+
+        return true;
     }
 
     private boolean isValidMotherTongue(String tongue) {
-        return !TextUtils.isEmpty(tongue);
+        if (tongue.isEmpty()) {
+            txtmothertongue.setVisibility(View.VISIBLE);
+
+            return false;
+        }
+
+        return true;
     }
 
     private boolean isValidLastName(String lastName) {
-        return !TextUtils.isEmpty(lastName);
+        if (lastName.isEmpty()) {
+            txtlastname.setVisibility(View.VISIBLE);
+
+            return false;
+        }
+
+        return true;
     }
 
     private boolean isValidFirstName(String firstName) {
-        return !TextUtils.isEmpty(firstName);
+        if (firstName.isEmpty()) {
+            txtfirstname.setVisibility(View.VISIBLE);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isValidDOB(String dob) {
+
+        if (dob.isEmpty()) {
+            txtdob.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+
+        return true;
+    }
+
+    private boolean isValidGender() {
+
+        int selectedId = genderRadioGroup.getCheckedRadioButtonId();
+
+        if (selectedId == -1) {
+            genderErrorText.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -667,10 +901,40 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                     if (registrationResponse.getErrorCode().equals("202")){
                         Toast.makeText(UserCreateActivity.this, "Incorrect , please Check Email and Password.", Toast.LENGTH_SHORT).show();
                     }else if (registrationResponse.getErrorCode().equals("200")) {
-                        SharedPrefManager.getInstance(getApplicationContext()).insertData(response.body());
-                        Toast.makeText(UserCreateActivity.this, "Student Login Completed Successfully.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(UserCreateActivity.this, HomeActivity.class);
-                        startActivity(intent);
+
+                        SharedPrefManager.getInstance(getApplicationContext())
+                                .insertData(registrationResponse);
+
+                        // students list
+                        List<StudentRegistationResponse.Result> studentList = registrationResponse.getResult();
+                        if (studentList == null) {
+                            studentList = new ArrayList<>(); // avoid null
+                        }
+
+                        // save student list and image URL in SharedPreferences
+                        SharedPreferences pref = getSharedPreferences("userProfile", MODE_PRIVATE);
+                        Gson gson = new Gson();
+                        String studentListJson = gson.toJson(studentList); // convert list to JSON
+
+                        pref.edit()
+                                .putInt("student_count", studentList.size())
+                                .putString("student_list", studentListJson) // save actual list
+                                .putString("image_url", registrationResponse.getImageUrl()) // save image URL
+                                .apply();
+
+                        // decide which activity to open
+                        if (studentList.size() > 1) {
+                            // multiple students → StudentDetailsActivity
+                            Intent intent = new Intent(UserCreateActivity.this, StudentDetailsActivity.class);
+                            intent.putExtra("studentList", (Serializable) studentList);
+                            intent.putExtra("imageUrl", registrationResponse.getImageUrl());
+                            startActivity(intent);
+                        } else {
+                            // single student → HomeActivity
+                            Intent intent = new Intent(UserCreateActivity.this, HomeActivity.class);
+                            startActivity(intent);
+                        }
+
                         finish();
                     }
                 }else {
@@ -684,12 +948,39 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
     }
 
     private boolean isValidPassword(String password) {
-        return password.length() >= 6;
+
+        if (password.isEmpty()) {
+            txtPasswordError.setText("Enter Password");
+            txtPasswordError.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        if (password.length() < 6) {
+            txtPasswordError.setText("Password must be at least 6 characters");
+            txtPasswordError.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        txtPasswordError.setVisibility(View.GONE);
+        return true;
     }
 
     private boolean isValidEmail(String parentEmail) {
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        return parentEmail.matches(emailPattern);
+
+        if (parentEmail.isEmpty()) {
+            //txtemail.setText("Enter Email");
+            txtemail.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(parentEmail).matches()) {
+            txtemail.setText("Enter Valid Email");
+            txtemail.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        txtemail.setVisibility(View.GONE);
+        return true;
     }
 
 

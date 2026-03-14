@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-
+    android:background="@drawable/background_inner"
     tools:context=".Activity.ViewResultDetailsActivity">
 
     <LinearLayout
@@ -303,11 +303,9 @@
                                     android:id="@+id/answerEditText"
                                     android:layout_width="90dp"
                                     android:layout_height="50dp"
-
                                     android:background="@drawable/submit_btn_border"
                                     android:gravity="center"
                                     android:inputType="number"
-                                    android:paddingLeft="10dp"
                                     android:textColor="#000"
                                     android:textColorHint="#000" />
 

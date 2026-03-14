@@ -24,7 +24,9 @@ import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.Model.CourseListResponse;
 import com.dst.abacustrainner.Model.OnCartDeleteListener;
 import com.dst.abacustrainner.Model.OnDeleteCart;
+import com.dst.abacustrainner.Model.OrderCreateResponse;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
+import com.dst.abacustrainner.Model.SubmitDataResponse;
 import com.dst.abacustrainner.Model.cartDeleteResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
@@ -101,28 +103,9 @@ public class CartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String totalAmount = textAmount.getText().toString();
+                String cleanAmount = totalAmount.replace("₹", "").replace("/-", "");
 
-                ArrayList<String> levelNames = new ArrayList<>();
-                ArrayList<String> levelPrices = new ArrayList<>();
-                ArrayList<String> cartIds = new ArrayList<>();
-
-                for (CartDetailsResponse.CourseLevels level : cartDetalAdapter.getLevels()) {
-                    levelNames.add(level.getCourseLevel());
-                    levelPrices.add(level.getCourseLevelPrice());
-                    cartIds.add(level.getCartId());
-                }
-
-                Intent intent = new Intent(CartActivity.this, PaymentActivity.class);
-                intent.putExtra("StudentId", studentId);
-                intent.putExtra("WorkRNM", workSheetRnm);
-                intent.putExtra("TotalAmount", totalAmount);
-
-                // ✅ NEW DATA
-                intent.putStringArrayListExtra("LevelNames", levelNames);
-                intent.putStringArrayListExtra("LevelPrices", levelPrices);
-                intent.putStringArrayListExtra("CartIds", cartIds);
-
-                startActivity(intent);
+                SubmitCartData(workSheetRnm,studentId,cleanAmount);
             }
         });
 
@@ -130,6 +113,69 @@ public class CartActivity extends AppCompatActivity {
                 loadCartList(workSheetRnm);
 
 
+    }
+
+    private void SubmitCartData(String workSheetRnm, String studentId, String totalAmount) {
+        Log.d("Reddy","Amount"+totalAmount);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+        RequestBody WorksheetPart = RequestBody.create(MediaType.parse("text/plain"), workSheetRnm);
+        RequestBody StudentPartPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
+        RequestBody AmountPart = RequestBody.create(MediaType.parse("text/plain"), totalAmount);
+        Call<OrderCreateResponse> call = apiClient.getCheckOutSubmit(WorksheetPart,StudentPartPart,AmountPart);
+        call.enqueue(new Callback<OrderCreateResponse>() {
+            @Override
+            public void onResponse(Call<OrderCreateResponse> call, Response<OrderCreateResponse> response) {
+                if (response.body() != null &&
+                        "200".equals(response.body().getErrorCode())) {
+
+                    OrderCreateResponse.Result result = response.body().getResult();
+
+                    String merchantRefNo = result.getMerchantRefNo();
+                    String amount = result.getPrice();
+
+                    ArrayList<String> levelNames = new ArrayList<>();
+                    ArrayList<String> levelPrices = new ArrayList<>();
+                    ArrayList<String> cartIds = new ArrayList<>();
+
+                    for (CartDetailsResponse.CourseLevels level : cartDetalAdapter.getLevels()) {
+                        levelNames.add(level.getCourseLevel());
+                        levelPrices.add(level.getCourseLevelPrice());
+                        cartIds.add(level.getCartId());
+                    }
+
+                    Log.d("Reddy","OrderId"+merchantRefNo);
+                    Log.d("Reddy","amount"+amount);
+                    Log.d("Reddy","worksheetRnm"+workSheetRnm);
+                    Log.d("Reddy","StudentId"+studentId);
+
+                    Intent intent = new Intent(CartActivity.this, PaymentActivity.class);
+                    intent.putExtra("StudentId", studentId);
+                    intent.putExtra("WorkRNM", workSheetRnm);
+                    intent.putExtra("TotalAmount", amount);
+                    intent.putExtra("merchantRef",merchantRefNo);
+                    intent.putStringArrayListExtra("LevelNames", levelNames);
+                    intent.putStringArrayListExtra("LevelPrices", levelPrices);
+                    intent.putStringArrayListExtra("CartIds", cartIds);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OrderCreateResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     private void removeCartItem(String cartId) {
@@ -256,6 +302,15 @@ public class CartActivity extends AppCompatActivity {
 
         if (list.isEmpty()) {
             textAmount.setText("₹0/-");
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (workSheetRnm != null) {
+            loadCartList(workSheetRnm);
         }
     }
 

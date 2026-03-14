@@ -3,9 +3,12 @@ package com.dst.abacustrainner.User;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +33,7 @@ public class VerifyActivity extends AppCompatActivity {
     Button butVerify;
     String id,otp,email;
     EditText edtOtp,edtPassword,edtReEnterPwd;
+    TextView txtOtp,txtPassword,txtConfirmPassword;
 
 
     @SuppressLint("MissingInflatedId")
@@ -43,13 +47,50 @@ public class VerifyActivity extends AppCompatActivity {
         edtPassword=findViewById(R.id.password);
         edtReEnterPwd=findViewById(R.id.edt_reenter_password);
 
+        txtOtp = findViewById(R.id.txt_otp);
+        txtPassword = findViewById(R.id.txt_password);
+        txtConfirmPassword = findViewById(R.id.txt_confirm_password);
+
         Bundle bundle=getIntent().getExtras();
 
         id=bundle.getString("studentId");
         otp=bundle.getString("Otp");
         email=bundle.getString("parentEmail");
 
-        edtOtp.setText(otp);
+        //edtOtp.setText(otp);
+
+        edtOtp.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                txtOtp.setVisibility(View.GONE);
+            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void afterTextChanged(Editable s) {}
+        });
+        edtPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                txtPassword.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        edtReEnterPwd.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                txtConfirmPassword.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         butVerify.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,30 +99,61 @@ public class VerifyActivity extends AppCompatActivity {
                 String password = edtPassword.getText().toString();
                 String reEnterPassword = edtReEnterPwd.getText().toString();
 
+                boolean isValid = true;
+
                 if (!isValidOTP(otp)) {
-                    edtOtp.setError("Plz Enter Valid Otp");
-                    return; // Stop further processing
-                } else if (!isValidPassword(password)) {
-                    edtPassword.setError("Invalid password");
-                    return; // Stop further processing
-                } else if (!doPasswordsMatch(password, reEnterPassword)) {
-                    Toast.makeText(VerifyActivity.this, "PassWord Doen't Match.", Toast.LENGTH_SHORT).show();
-                } else {
+                    isValid = false;
+                }
+
+                if (!isValidPassword(password)) {
+                    isValid = false;
+                }
+
+                if (!doPasswordsMatch(password, reEnterPassword)) {
+                    isValid = false;
+                }
+
+                if (isValid) {
                     VerifyMethod(id, otp, password);
                 }
             }
         });
     }
     private boolean doPasswordsMatch(String password, String reEnterPassword) {
-        return password.equals(reEnterPassword);
+        if (!password.equals(reEnterPassword)) {
+            txtConfirmPassword.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        txtConfirmPassword.setVisibility(View.GONE);
+        return true;
     }
 
     private boolean isValidPassword(String password) {
-        return password.length() >= 6;
+        if (password.length() < 6) {
+            txtPassword.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        txtPassword.setVisibility(View.GONE);
+        return true;
     }
 
     private boolean isValidOTP(String otp) {
-        return otp.length() == 6;
+        if (otp.isEmpty()) {
+            txtOtp.setText("Enter OTP");
+            txtOtp.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        if (otp.length() != 6) {
+            txtOtp.setText("OTP must be 6 digits");
+            txtOtp.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        txtOtp.setVisibility(View.GONE);
+        return true;
     }
 
     private void VerifyMethod(String id, String otp, String password) {
@@ -114,7 +186,7 @@ public class VerifyActivity extends AppCompatActivity {
                     } else if (registrationResponse.getErrorCode().equals("200")){
                         String parentEmailId="";
                         String password="";
-                        StudentRegistationResponse.Result result = registrationResponse.getResult();
+                       /* StudentRegistationResponse.Result result = registrationResponse.getResult();
 
                         parentEmailId=result.getParentEmail();
                         password= result.getPassword();
@@ -122,7 +194,7 @@ public class VerifyActivity extends AppCompatActivity {
                         Intent intent = new Intent(VerifyActivity.this, UserCreateActivity .class);
                         intent.putExtra("parentEmail",parentEmailId);
                         intent.putExtra("password",password);
-                        startActivity(intent);
+                        startActivity(intent);*/
 
                     }
                 }else {

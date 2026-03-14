@@ -27,6 +27,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.PaymentDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.SubscriptionDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".User.StudentDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.PdfViewActivity"
             android:exported="false" />
         <activity
@@ -399,7 +408,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

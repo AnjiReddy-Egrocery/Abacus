@@ -140,6 +140,9 @@
         app:itemBackground="@android:color/transparent"
         app:itemTextAppearance="@style/CustomTextAppearance">
 
+
+
+
     </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

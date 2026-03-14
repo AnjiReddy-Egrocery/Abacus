@@ -1,5 +1,7 @@
 package com.dst.abacustrainner.Model;
 
+import java.util.List;
+
 public class AllocatedViewSubTopicResultResponse {
 
     private String status;
@@ -45,7 +47,16 @@ public class AllocatedViewSubTopicResultResponse {
         private String studentId;
 
         private String topicId;
-        private String questionsList;
+        private List<Question> questionsList;
+
+        public List<Question> getQuestionsList() {
+            return questionsList;
+        }
+
+        public void setQuestionsList(List<Question> questionsList) {
+            this.questionsList = questionsList;
+        }
+
         private String startedOn;
         private String submitedOn;
         private String practiceStatus;
@@ -86,13 +97,7 @@ public class AllocatedViewSubTopicResultResponse {
             this.topicId = topicId;
         }
 
-        public String getQuestionsList() {
-            return questionsList;
-        }
 
-        public void setQuestionsList(String questionsList) {
-            this.questionsList = questionsList;
-        }
 
         public String getStartedOn() {
             return startedOn;
@@ -149,5 +154,21 @@ public class AllocatedViewSubTopicResultResponse {
         public void setLastName(String lastName) {
             this.lastName = lastName;
         }
+    }
+    public static class Question {
+
+        private String question;
+        private String answer;
+        private String given;
+        private int is_currect;
+        private int time_taken;
+        private int status;
+
+        public String getQuestion() { return question; }
+        public String getAnswer() { return answer; }
+        public String getGiven() { return given; }
+        public int getIs_currect() { return is_currect; }
+        public int getTime_taken() { return time_taken; }
+        public int getStatus() { return status; }
     }
 }

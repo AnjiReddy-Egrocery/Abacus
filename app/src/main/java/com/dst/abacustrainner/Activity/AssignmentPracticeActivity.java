@@ -33,6 +33,7 @@ import com.dst.abacustrainner.Model.SendData;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.database.ParcelableLong;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -188,6 +189,8 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
 
         txtTopicName.setText(topicName);
 
+        Log.d("Reddy","StudentId"+ studentid);
+        Log.e("Reddy","TopicId"+topicid);
 
         displayQuestion(currentQuestionIndex);
         questionTimers = new ArrayList<>();
@@ -202,10 +205,37 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
         butSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                stopTimer();
                 saveTimerState();
-                displayQuestion(currentQuestionIndex);
-                answerEditText.getText().clear();
-                restoreTimerState();
+
+                String answer = answerEditText.getText().toString().trim();
+                originalAnswer = answerArray[currentQuestionIndex];
+
+                if (!answer.isEmpty()) {
+
+                    enteredAnswers.set(currentQuestionIndex, answer);
+                    questionTimes.set(currentQuestionIndex, currentTime);
+
+                    if (answer.equals(originalAnswer)) {
+                        isCorrected = "1";
+                        status = "1";
+                    } else {
+                        isCorrected = "0";
+                        status = "0";
+                    }
+
+                    listData.add(new SendData(
+                            questionTextView.getText().toString(),
+                            originalAnswer,
+                            answer,
+                            isCorrected,
+                            currentTime / 1000,
+                            status
+                    ));
+
+                    isQuestionAnswered.set(currentQuestionIndex, true);
+                }
+
                 showCompletionDialog();
             }
         });
@@ -381,50 +411,32 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
 
         String answer = answerEditText.getText().toString();
 
-        originalAnswer = answerArray[currentQuestionIndex];
-        if (!answer.isEmpty()) {
-            questionTimes.set(currentQuestionIndex,currentTime);
-            listData.add(new SendData(questionTextView.getText().toString(), answer, originalAnswer, isCorrected, status,currentTime / 1000));
+        questionTimes.set(currentQuestionIndex,currentTime);
+
+        if(answer.isEmpty()){
+            answer = "";
+            isCorrected = "0";
+            status = "0";
         }
+
+        listData.add(new SendData(
+                questionsArray[currentQuestionIndex],
+                originalAnswer,
+                answer,
+                isCorrected,
+                currentTime / 1000,
+                status
+        ));
 
         Log.e("Anji","Data"+listData);
 
-/*        if (isQuestionAnswered != null && !isQuestionAnswered.isEmpty()) {
-            // Display the next question
-            String enteredAnswer = answerEditText.getText().toString();
-            enteredAnswers.add(enteredAnswer);
 
-            boolean attempted = !enteredAnswer.isEmpty();
-            isQuestionAttempted.add(attempted);
-            int previousButtonIndex = currentQuestionIndex - 1 ; // Previous button index
-            int currentButtonIndex = currentQuestionIndex * 2;       // Current button index
-
-            // Reset previous question's button color
-            if (previousButtonIndex >= 0 && previousButtonIndex < gridLayout.getChildCount()) {
-                View previousButtonView = gridLayout.getChildAt(previousButtonIndex);
-                if (previousButtonView instanceof Button) {
-                    Button previousButton = (Button) previousButtonView;
-                    previousButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor)); // Answered color
-                }
-            }
-
-            if (!enteredAnswer.isEmpty()) {
-                int buttonIndex = currentQuestionIndex*2; // Step buttons are at even indices
-                if (buttonIndex >= 0 && buttonIndex < gridLayout.getChildCount()) {
-                    View buttonView = gridLayout.getChildAt(buttonIndex);
-                    if (buttonView instanceof Button) {
-                        Button stepButton = (Button) buttonView;
-                        stepButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
-                        isQuestionAnswered.set(currentQuestionIndex, true);
-                    }
-                }
-            }
-        }*/
 
 
         if (currentQuestionIndex >= 0 && currentQuestionIndex < questionsArray.length) {
             String enteredAnswer = answerEditText.getText().toString();
-            enteredAnswers.add(enteredAnswer);
+            enteredAnswers.set(currentQuestionIndex, enteredAnswer);
+
 
             Log.e("DebugTag", "Index: " + currentQuestionIndex);
             Log.e("DebugTag", "Entered Answer: " + enteredAnswer);
@@ -432,12 +444,7 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
             boolean attempted = !enteredAnswer.isEmpty();
             isQuestionAttempted.add(attempted);
 
-//            if (originalAnswers != null && currentQuestionIndex < originalAnswers.size()) {
-//                boolean correctAnswer = enteredAnswer.equals(originalAnswers.get(currentQuestionIndex));
-//                isQuestionCorrect.add(correctAnswer);
-//            } else {
-//                isQuestionCorrect.add(false); // Default to false
-//            }
+
 
             int previousButtonIndex = (currentQuestionIndex - 1) * 2; // Previous button index
             int currentButtonIndex = currentQuestionIndex * 2;       // Current button index
@@ -516,8 +523,10 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
 
             // Display the question text with indentation and monospaced font
             txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":");
-            questionTextView.setText( "   " + questionHtml.replace("\n", "\n   "));
-
+            questionTextView.setText(
+                    HtmlCompat.fromHtml(questionsArray[currentQuestionIndex],
+                            HtmlCompat.FROM_HTML_MODE_LEGACY)
+            );
             // Set left margin for questionTextView
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();
             layoutParams.leftMargin = (int) getResources().getDimension(R.dimen.question_margin_left);
@@ -609,89 +618,12 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
         }
     }
 
-//    private void generateButtons() {
-//        gridLayout.removeAllViews();
-//
-//        int totalSteps = questionsArray.length; // Total steps (buttons)
-//        int totalColumns = totalSteps * 2 - 1; // Steps + Connectors
-//
-//        for (int i = 0; i < totalColumns; i++) {
-//            if (i % 2 == 0) {
-//                // Create a circular step button
-//                Button stepButton = new Button(this);
-//                stepButton.setText(String.valueOf((i / 2) + 1)); // Step number
-//                stepButton.setGravity(Gravity.CENTER);
-//                final int[] stepIndex = {i / 2}; // Determine the step index
-//                if (isQuestionAnswered.size() > stepIndex[0] && isQuestionAnswered.get(stepIndex[0])){
-//                    stepButton.setTextColor(Color.WHITE);
-//                }else{
-//                    stepButton.setTextColor(Color.BLACK);
-//                }
-//
-//                stepButton.setTextSize(14);
-//                stepButton.setTypeface(null, Typeface.BOLD);
-//
-//                // Set background color based on status
-//
-//                if (isQuestionAnswered.size() > stepIndex[0] && isQuestionAnswered.get(stepIndex[0])) {
-//                    stepButton.setBackground(getDrawable(R.drawable.circle_green)); // Answered
-//                } else if (stepIndex[0] == currentStep) {
-//                    stepButton.setBackground(getDrawable(R.drawable.circle_orange)); // Current step
-//                } else {
-//                    stepButton.setBackground(getDrawable(R.drawable.circle_gray)); // Unanswered
-//                }
-//
-//                // Set layout parameters for the step button
-//                GridLayout.LayoutParams stepParams = new GridLayout.LayoutParams();
-//                stepParams.width = dpToPx(40); // Circular size
-//                stepParams.height = dpToPx(40);
-//                stepParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(0), dpToPx(16));
-//                stepButton.setLayoutParams(stepParams);
-//
-//                // Add click listener for the step button
-//                stepButton.setTag(stepIndex[0]);
-//
-//                stepButton.setOnClickListener(view -> {
-//                    int clickedStep = (int) view.getTag();
-//
-//
-//                    onButtonClicked(clickedStep);
-//
-//                });
-//
-//                // Add the step button to the GridLayout
-//                gridLayout.addView(stepButton);
-//            } else {
-//                // Create a connector line
-//                View connector = new View(this);
-//                connector.setBackgroundColor(Color.GRAY); // Connector color
-//                // Set layout parameters for the connector
-//                GridLayout.LayoutParams connectorParams = new GridLayout.LayoutParams();
-//                connectorParams.width = dpToPx(15); // Connector width
-//                connectorParams.height = dpToPx(4); // Connector height
-//                connectorParams.setMargins(0, dpToPx(35), 0, dpToPx(0)); // Vertical alignment
-//                connector.setLayoutParams(connectorParams);
-//
-//                // Add the connector to the GridLayout
-//                gridLayout.addView(connector);
-//            }
-//        }
-//    }
 
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
 
-//    private void onButtonClicked(int tag) {
-//        saveTimerState();
-//        currentQuestionIndex = tag;
-//        Log.e("Reddy","CurrentQuestion"+currentQuestionIndex);
-//        displayQuestion(currentQuestionIndex);
-//        String storedAnswer = enteredAnswers.get(currentQuestionIndex);
-//        answerEditText.setText(storedAnswer);
-//        restoreTimerState();
-//    }
 
 
     int temp=0;
@@ -764,81 +696,94 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
     }
 
     private void VerifyMethod(String studentid, String topicid) {
-       /* HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
+
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(new HttpLoggingInterceptor()
+                        .setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        ApiClient apiClient=retrofit.create(ApiClient.class);
-        RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), studentid);
-        RequestBody topicIdPart=RequestBody.create(MediaType.parse("text/plain"), topicid);
 
-        Call<AssignmentExamResponse> call=apiClient.assignmentexam(idPart,topicIdPart);
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+
+        RequestBody idPart = RequestBody.create(
+                MediaType.parse("text/plain"), studentid);
+
+        RequestBody topicIdPart = RequestBody.create(
+                MediaType.parse("text/plain"), topicid);
+
+        Call<AssignmentExamResponse> call =
+                apiClient.assignmentexam(idPart, topicIdPart);
+
         call.enqueue(new Callback<AssignmentExamResponse>() {
+
             @Override
-            public void onResponse(Call<AssignmentExamResponse> call, Response<AssignmentExamResponse> response) {
-                if (response.isSuccessful()){
-                    AssignmentExamResponse examResponse=response.body();
-                    if (examResponse!=null){
-                        AssignmentExamResponse.Result examResponseResult=examResponse.getResult();
-                        examNum =examResponseResult.getExamRnm();
-                        startedDate  = examResponseResult.getStartedOn();
-                        String questionsListJsonString =examResponseResult.getQuestionsList();
-                        if (questionsListJsonString!=null){
-                            try {
-                                JSONArray jsonArray=new JSONArray(questionsListJsonString);
-                                questionsArray = new String[jsonArray.length()];
-                                answerArray=new String[jsonArray.length()];
-                                if (questionsArray != null){
-                                    int questionCount = jsonArray.length();
-                                    questionsArray = new String[questionCount];
-                                    enteredAnswers = new ArrayList<>(questionCount);
-                                    isQuestionAnswered = new ArrayList<>(questionCount);
-                                    buttons = new Button[questionCount];
-                                    //questionsArray = new String[jsonArray.length()];
+            public void onResponse(Call<AssignmentExamResponse> call,
+                                   Response<AssignmentExamResponse> response) {
 
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        enteredAnswers.add("");
-                                        isQuestionAnswered.add(false);
-                                        questionTimes.add(0L);
+                if (response.isSuccessful() && response.body() != null) {
 
-                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        enteredAnswers.add("");
-                                        isQuestionAnswered.add(false);
-                                        String questionHtml = jsonObject.getString("question");
-                                        String answerHtml=jsonObject.getString("answer");
-                                        questionsArray[i] = HtmlCompat.fromHtml(questionHtml, HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
-                                        answerArray[i] = HtmlCompat.fromHtml(answerHtml, HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
-                                    }
-                                    displayQuestion(currentQuestionIndex);
-                                } else {
+                    try {
 
-                                }
+                        AssignmentExamResponse examResponse = response.body();
+                        AssignmentExamResponse.Result result = examResponse.getResult();
 
+                        examNum = result.getExamRnm();
+                        startedDate = result.getStartedOn();
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                        List<AssignmentExamResponse.QuestionItem> questionList =
+                                result.getQuestionsList();
+
+                        int questionCount = questionList.size();
+
+                        questionsArray = new String[questionCount];
+                        answerArray = new String[questionCount];
+
+                        enteredAnswers = new ArrayList<>();
+                        isQuestionAnswered = new ArrayList<>();
+                        questionTimes = new ArrayList<>();
+                        buttons = new Button[questionCount];
+
+                        for (int i = 0; i < questionCount; i++) {
+
+                            AssignmentExamResponse.QuestionItem q = questionList.get(i);
+
+                            questionsArray[i] = q.getQuestion();
+                            answerArray[i] = q.getAnswer();
+
+                            enteredAnswers.add("");
+                            isQuestionAnswered.add(false);
+                            questionTimes.add(0L);
                         }
-                    }
-                }else {
 
+                        displayQuestion(currentQuestionIndex);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(),
+                            "Response Error", Toast.LENGTH_SHORT).show();
                 }
+
             }
 
             @Override
             public void onFailure(Call<AssignmentExamResponse> call, Throwable t) {
 
+                Toast.makeText(getApplicationContext(),
+                        "API Failed : " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+
             }
         });
-    }
-
-    private CountDownTimer createCountDownTimer(final int questionIndex) {
+    }    private CountDownTimer createCountDownTimer(final int questionIndex) {
         final long smallerInterval = 500;
         return new CountDownTimer(Long.MAX_VALUE, interval) {
             @Override
@@ -881,81 +826,149 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
     }
 
     private void showReportACtivity() {
+
         JSONArray jsonArray = new JSONArray();
         try {
-            for (int i=0;i<listData.size();i++) {
+            for (int i=0;i<questionsArray.length;i++) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("question",listData.get(i).getQuestion());
-                jsonObject.put("given",listData.get(i).getEnterAnswer());
-                jsonObject.put("answer",listData.get(i).getCorrectAnswer());
-                jsonObject.put("is_currect",listData.get(i).getIsCorrect());
-                jsonObject.put("time_taken",listData.get(i).getTimeTaken());
-                jsonObject.put("status",listData.get(i).getStatus());
+                String givenAnswer = enteredAnswers.get(i);
+                if(givenAnswer == null){
+                    givenAnswer = "";
+                }
+
+                givenAnswer = givenAnswer.trim().replace("\n","").replace("\r","");
+                String correctAnswer = answerArray[i];
+
+                int isCorrect = givenAnswer.equals(correctAnswer) ? 1 : 0;
+                jsonObject.put("question", questionsArray[i]);
+                jsonObject.put("given", givenAnswer == null ? "" : givenAnswer);
+                jsonObject.put("answer", correctAnswer);
+                jsonObject.put("is_currect", isCorrect);
+                jsonObject.put("time_taken", questionTimes.get(i) / 1000);
+                jsonObject.put("status", givenAnswer.isEmpty() ? 0 : 1);
 
                 jsonArray.put(jsonObject);
 
             }
-            Log.e("Reddy", "Formatted JSON Array Contents: " + jsonArray.toString());
+            logLargeString("Reddy", jsonArray.toString());
             ResultMethod(examNum,jsonArray);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
-
+    private void logLargeString(String tag, String message) {
+        int maxLogSize = 1000; // or 4000
+        for (int i = 0; i <= message.length() / maxLogSize; i++) {
+            int start = i * maxLogSize;
+            int end = Math.min((i+1) * maxLogSize, message.length());
+            Log.e(tag, message.substring(start, end));
+        }
+    }
     private void ResultMethod(String examNum, JSONArray jsonArray) {
-        Log.e("Reddy","id"+examNum);
-        Log.e("Reddy","Array"+jsonArray.toString());
+
+        Log.e("Reddy","Exam Id : "+examNum);
+        logLargeString("Reddy", jsonArray.toString());
 
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(new HttpLoggingInterceptor()
+                        .setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        ApiClient apiClient=retrofit.create(ApiClient.class);
-        RequestBody examNumPart = RequestBody.create(MediaType.parse("text/plain"), examNum);
-        RequestBody questionListPart=RequestBody.create(MediaType.parse("text/plain"), jsonArray.toString());
-        Call<AssignmentSubmitDataResponse> call=apiClient.assignmentSubmitData(examNumPart,questionListPart);
-       call.enqueue(new Callback<AssignmentSubmitDataResponse>() {
-           @Override
-           public void onResponse(Call<AssignmentSubmitDataResponse> call, Response<AssignmentSubmitDataResponse> response) {
-               Log.e("Reddy","Response"+response);
-               if (response.isSuccessful()){
-                   AssignmentSubmitDataResponse assignmentSubmitDataResponse = response.body();
-                   if (assignmentSubmitDataResponse != null){
-                       Toast.makeText(AssignmentPracticeActivity.this,"All Questions are Submited",Toast.LENGTH_LONG).show();
-                       ArrayList<String> stringIsQuestionAttempted = convertBooleanListToStringList(isQuestionAttempted);
-                       Intent intent = new Intent(AssignmentPracticeActivity.this, AssignmentResultActivity.class);
-                       intent.putExtra("topicName",topicName);
-                       intent.putExtra("firstName",studentName);
-                       intent.putExtra("startedOn",startedDate);
-                       intent.putStringArrayListExtra("answers", new ArrayList<>(Arrays.asList(answerArray)));
-                       intent.putStringArrayListExtra("questions", new ArrayList<>(Arrays.asList(questionsArray)));
-                       intent.putStringArrayListExtra("enteredAnswers", enteredAnswers);
-                       intent.putStringArrayListExtra("isQuestionAttempted", stringIsQuestionAttempted);
-                       intent.putExtra("TOTAL_TIME", totalTime);
 
-                       ArrayList<ParcelableLong> parcelableTimes = new ArrayList<>();
-                       for (Long time : questionTimes) {
-                           parcelableTimes.add(new ParcelableLong(time));
-                       }
-                       intent.putParcelableArrayListExtra("questionTimes", parcelableTimes);
+        ApiClient apiClient = retrofit.create(ApiClient.class);
 
-                       startActivity(intent);
-                       finish();
-                   }
-               }
-           }
+        RequestBody examNumPart =
+                RequestBody.create(MediaType.parse("text/plain"), examNum);
 
-           @Override
-           public void onFailure(Call<AssignmentSubmitDataResponse> call, Throwable t) {
+        RequestBody questionListPart =
+                RequestBody.create(MediaType.parse("application/json"),
+                        jsonArray.toString());
 
-           }
-       });
+        Call<AssignmentSubmitDataResponse> call =
+                apiClient.assignmentSubmitData(examNumPart, questionListPart);
+
+        call.enqueue(new Callback<AssignmentSubmitDataResponse>() {
+
+            @Override
+            public void onResponse(Call<AssignmentSubmitDataResponse> call,
+                                   Response<AssignmentSubmitDataResponse> response) {
+
+                Log.e("Reddy","Response Code : "+response.code());
+
+                if(response.body()==null){
+                    Log.e("Reddy","Response Body NULL");
+                    return;
+                }
+
+                AssignmentSubmitDataResponse res = response.body();
+
+                Log.e("Reddy","Status : "+res.getStatus());
+                Log.e("Reddy","Message : "+res.getMessage());
+
+                if("Success".equalsIgnoreCase(res.getStatus())){
+
+                    Toast.makeText(AssignmentPracticeActivity.this,
+                            "All Questions Submitted",
+                            Toast.LENGTH_LONG).show();
+
+                    ArrayList<String> stringIsQuestionAttempted =
+                            convertBooleanListToStringList(isQuestionAttempted);
+
+                    Intent intent =
+                            new Intent(AssignmentPracticeActivity.this,
+                                    AssignmentResultActivity.class);
+
+                    intent.putExtra("topicName", topicName);
+                    intent.putExtra("firstName", studentName);
+                    intent.putExtra("startedOn", startedDate);
+
+                    intent.putStringArrayListExtra(
+                            "answers",
+                            new ArrayList<>(Arrays.asList(answerArray)));
+
+                    intent.putStringArrayListExtra(
+                            "questions",
+                            new ArrayList<>(Arrays.asList(questionsArray)));
+
+                    intent.putStringArrayListExtra("enteredAnswers", enteredAnswers);
+                    intent.putStringArrayListExtra("isQuestionAttempted", stringIsQuestionAttempted);
+                    intent.putExtra("TOTAL_TIME", totalTime);
+
+                    ArrayList<ParcelableLong> parcelableTimes = new ArrayList<>();
+
+                    for (Long time : questionTimes) {
+                        parcelableTimes.add(new ParcelableLong(time));
+                    }
+
+                    intent.putParcelableArrayListExtra("questionTimes", parcelableTimes);
+
+                    startActivity(intent);
+                    finish();
+
+                } else {
+
+                    Toast.makeText(AssignmentPracticeActivity.this,
+                            res.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AssignmentSubmitDataResponse> call, Throwable t) {
+
+                Log.e("Reddy","API FAILED : "+t.getMessage());
+
+                Toast.makeText(AssignmentPracticeActivity.this,
+                        "Submission Failed",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
-
 
     private ArrayList<String> convertBooleanListToStringList(List<Boolean> isQuestionAttempted) {
         ArrayList<String> stringList = new ArrayList<>();

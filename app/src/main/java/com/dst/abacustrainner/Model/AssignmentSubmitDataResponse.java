@@ -1,9 +1,11 @@
 package com.dst.abacustrainner.Model;
 
+import java.util.List;
+
 public class AssignmentSubmitDataResponse {
     private String status;
     private String errorCode;
-    private SubmitDataResponse.Result result;
+    private Result result;
     private String message;
 
     public String getStatus() {
@@ -22,11 +24,11 @@ public class AssignmentSubmitDataResponse {
         this.errorCode = errorCode;
     }
 
-    public SubmitDataResponse.Result getResult() {
+    public Result getResult() {
         return result;
     }
 
-    public void setResult(SubmitDataResponse.Result result) {
+    public void setResult(Result result) {
         this.result = result;
     }
 
@@ -45,7 +47,16 @@ public class AssignmentSubmitDataResponse {
         private String studentId;
         private String instructorId;
         private String topicId;
-        private String questionsList;
+        private List<QuestionResult> questionsList;
+
+        public List<QuestionResult> getQuestionsList() {
+            return questionsList;
+        }
+
+        public void setQuestionsList(List<QuestionResult> questionsList) {
+            this.questionsList = questionsList;
+        }
+
         private String startedOn;
         private String submitedOn;
         private String practiceStatus;
@@ -94,13 +105,6 @@ public class AssignmentSubmitDataResponse {
             this.topicId = topicId;
         }
 
-        public String getQuestionsList() {
-            return questionsList;
-        }
-
-        public void setQuestionsList(String questionsList) {
-            this.questionsList = questionsList;
-        }
 
         public String getStartedOn() {
             return startedOn;
@@ -158,5 +162,39 @@ public class AssignmentSubmitDataResponse {
             this.lastName = lastName;
         }
 
+    }
+
+    public class QuestionResult {
+
+        private String question;
+        private String given;
+        private String answer;
+        private int is_currect;
+        private int time_taken;
+        private int status;
+
+        public String getQuestion() {
+            return question;
+        }
+
+        public String getGiven() {
+            return given;
+        }
+
+        public String getAnswer() {
+            return answer;
+        }
+
+        public int getIs_currect() {
+            return is_currect;
+        }
+
+        public int getTime_taken() {
+            return time_taken;
+        }
+
+        public int getStatus() {
+            return status;
+        }
     }
 }

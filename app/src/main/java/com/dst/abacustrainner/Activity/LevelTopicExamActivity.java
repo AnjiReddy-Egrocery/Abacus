@@ -30,9 +30,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.dst.abacustrainner.Model.AllocatedTopicExamResponse;
-import com.dst.abacustrainner.Model.CourseTopicExamResponse;
+import com.dst.abacustrainner.Model.AssignmentSubmitDataResponse;
 import com.dst.abacustrainner.Model.SendData;
-import com.dst.abacustrainner.Model.WorkSheetSubmitDataResponse;
 import com.dst.abacustrainner.Model.aloocatedWorkSheetSubmitDataResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
@@ -168,8 +167,8 @@ public class LevelTopicExamActivity extends AppCompatActivity {
         Log.e("Reddy", "StudentId"+studentId);
         Log.e("Reddy","topicId"+topicId);
         txtTopicName.setText(topicName);
-
         displayQuestion(currentQuestionIndex);
+
         questionTimers = new ArrayList<>();
         for (int i = 0; i < MAX_QUESTIONS; i++) {
             questionTimers.add(createCountDownTimer(i));
@@ -186,12 +185,38 @@ public class LevelTopicExamActivity extends AppCompatActivity {
         butSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                stopTimer();
                 saveTimerState();
-                displayQuestion(currentQuestionIndex);
-                answerEditText.getText().clear();
-                restoreTimerState();
-                showCompletionDialog();
 
+                String answer = answerEditText.getText().toString().trim();
+                originalAnswer = answerArray[currentQuestionIndex];
+
+                if (!answer.isEmpty()) {
+
+                    enteredAnswers.set(currentQuestionIndex, answer);
+                    questionTimes.set(currentQuestionIndex, currentTime);
+
+                    if (answer.equals(originalAnswer)) {
+                        isCorrected = "1";
+                        status = "1";
+                    } else {
+                        isCorrected = "0";
+                        status = "0";
+                    }
+
+                    listData.add(new SendData(
+                            questionTextView.getText().toString(),
+                            originalAnswer,
+                            answer,
+                            isCorrected,
+                            currentTime / 1000,
+                            status
+                    ));
+
+                    isQuestionAnswered.set(currentQuestionIndex, true);
+                }
+
+                showCompletionDialog();
             }
         });
 
@@ -362,9 +387,10 @@ public class LevelTopicExamActivity extends AppCompatActivity {
         });
 
 
-
         startTimer();
+
         VerifyMethod(studentId, topicId);
+
 
     }
     private void saveAnswerAndMoveToNextQuestion() {
@@ -376,7 +402,7 @@ public class LevelTopicExamActivity extends AppCompatActivity {
         originalAnswer = answerArray[currentQuestionIndex];
         if (!answer.isEmpty()) {
             questionTimes.set(currentQuestionIndex,currentTime);
-            listData.add(new SendData(questionTextView.getText().toString(), answer, originalAnswer, isCorrected, status,currentTime / 1000));
+            listData.add(new SendData(questionTextView.getText().toString(),  originalAnswer,answer, isCorrected,currentTime / 1000, status));
         }
 
         Log.e("Anji","Data"+listData);
@@ -688,86 +714,89 @@ public class LevelTopicExamActivity extends AppCompatActivity {
     }
 
     private void VerifyMethod(String studentid, String topicid) {
-        /*HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        ApiClient apiClient=retrofit.create(ApiClient.class);
+
+        ApiClient apiClient = retrofit.create(ApiClient.class);
 
         RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), studentid);
-        RequestBody topicIdPart=RequestBody.create(MediaType.parse("text/plain"), topicid);
+        RequestBody topicIdPart = RequestBody.create(MediaType.parse("text/plain"), topicid);
 
-        Call<AllocatedTopicExamResponse> call=apiClient.allocatedtopicExamList(idPart,topicIdPart);
+        Call<AllocatedTopicExamResponse> call =
+                apiClient.allocatedtopicExamList(idPart, topicIdPart);
+
         call.enqueue(new Callback<AllocatedTopicExamResponse>() {
             @Override
-            public void onResponse(Call<AllocatedTopicExamResponse> call, Response<AllocatedTopicExamResponse> response) {
-                if (response.isSuccessful()){
-                    AllocatedTopicExamResponse examResponse=response.body();
-                    if (examResponse!=null){
-                        AllocatedTopicExamResponse.Result examResponseResult=examResponse.getResult();
+            public void onResponse(Call<AllocatedTopicExamResponse> call,
+                                   Response<AllocatedTopicExamResponse> response) {
 
-                        examNum =examResponseResult.getExamRnm();
-                        startedDate  = examResponseResult.getStartedOn();
-                        String questionsListJsonString =examResponseResult.getQuestionsList();
-                        Log.e("Anji","ExamRnm"+examNum);
-                        if (questionsListJsonString!=null){
-                            try {
-                                JSONArray jsonArray=new JSONArray(questionsListJsonString);
-                                questionsArray = new String[jsonArray.length()];
-                                answerArray=new String[jsonArray.length()];
+                if (response.isSuccessful()) {
 
-                                if (questionsArray != null){
-                                    int questionCount = jsonArray.length();
-                                    questionsArray = new String[questionCount];
-                                    enteredAnswers = new ArrayList<>(questionCount);
-                                    isQuestionAnswered = new ArrayList<>(questionCount);
+                    AllocatedTopicExamResponse examResponse = response.body();
 
-                                    // questionsArray = new String[jsonArray.length()];
+                    if (examResponse != null) {
 
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        enteredAnswers.add("");
-                                        isQuestionAnswered.add(false);
-                                        questionTimes.add(0L);
+                        AllocatedTopicExamResponse.Result examResponseResult =
+                                examResponse.getResult();
 
-                                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                        enteredAnswers.add("");
-                                        isQuestionAnswered.add(false);
-                                        String questionHtml = jsonObject.getString("question");
-                                        String answerHtml=jsonObject.getString("answer");
-                                        questionsArray[i] = questionHtml; // ⭐ MAIN FIX
+                        examNum = examResponseResult.getExamRnm();
+                        startedDate = examResponseResult.getStartedOn();
 
-                                        answerArray[i] =
-                                                HtmlCompat.fromHtml(answerHtml,
-                                                        HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
-                                    }
+                        Log.e("Reddy","ExamRnm: "+examNum);
 
-                                    displayQuestion(currentQuestionIndex);
-                                } else {
+                        List<AllocatedTopicExamResponse.Question> questionsListJsonString =
+                                examResponseResult.getQuestionsList();
+
+                                int questionCount = questionsListJsonString.size();
+
+                                questionsArray = new String[questionCount];
+                                answerArray = new String[questionCount];
+
+                                enteredAnswers = new ArrayList<>(questionCount);
+                                isQuestionAnswered = new ArrayList<>(questionCount);
+                                questionTimes = new ArrayList<>(questionCount);
+
+                                for (int i = 0; i < questionCount; i++) {
+
+                                    enteredAnswers.add("");
+                                    isQuestionAnswered.add(false);
+                                    questionTimes.add(0L);
+
+                                   AllocatedTopicExamResponse.Question question= questionsListJsonString.get(i);
+
+                                    questionsArray[i] = question.getQuestion();
+
+                                    answerArray[i] =question.getAnswer();
 
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+
+                                // ⭐ Display first question after loading
+                                displayQuestion(currentQuestionIndex);
+
                             }
                         }
                     }
-                }else {
 
-                }
-            }
+
 
             @Override
             public void onFailure(Call<AllocatedTopicExamResponse> call, Throwable t) {
 
+                Log.e("Reddy","API Error: "+t.getMessage());
+                Toast.makeText(LevelTopicExamActivity.this,
+                        "Failed to load questions",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
-
     private CountDownTimer createCountDownTimer(final int questionIndex) {
         final long smallerInterval = 500;
         return new CountDownTimer(Long.MAX_VALUE, interval) {
@@ -811,27 +840,45 @@ public class LevelTopicExamActivity extends AppCompatActivity {
     private void showReportACtivity() {
         JSONArray jsonArray = new JSONArray();
         try {
-            for (int i=0;i<listData.size();i++) {
+            for (int i=0;i<questionsArray.length;i++) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("question",listData.get(i).getQuestion());
-                jsonObject.put("given",listData.get(i).getEnterAnswer());
-                jsonObject.put("answer",listData.get(i).getCorrectAnswer());
-                jsonObject.put("is_currect",listData.get(i).getIsCorrect());
-                jsonObject.put("time_taken",listData.get(i).getTimeTaken());
-                jsonObject.put("status",listData.get(i).getStatus());
+                String givenAnswer = enteredAnswers.get(i);
+                if(givenAnswer == null){
+                    givenAnswer = "";
+                }
+
+                givenAnswer = givenAnswer.trim().replace("\n","").replace("\r","");
+                String correctAnswer = answerArray[i];
+
+                int isCorrect = givenAnswer.equals(correctAnswer) ? 1 : 0;
+                jsonObject.put("question", questionsArray[i]);
+                jsonObject.put("given", givenAnswer == null ? "" : givenAnswer);
+                jsonObject.put("answer", correctAnswer);
+                jsonObject.put("is_currect", isCorrect);
+                jsonObject.put("time_taken", questionTimes.get(i) / 1000);
+                jsonObject.put("status", givenAnswer.isEmpty() ? 0 : 1);
 
                 jsonArray.put(jsonObject);
 
             }
-            Log.e("Reddy", "Formatted JSON Array Contents: " + jsonArray.toString());
+            logLargeString("Reddy", jsonArray.toString());
             ResultMethod(examNum,jsonArray);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
-    private void ResultMethod(String examRnm, JSONArray jsonArray) {
-        Log.e("Reddy","id"+examRnm);
-        Log.e("Reddy","Array"+jsonArray.toString());
+
+    private void logLargeString(String tag, String message) {
+        int maxLogSize = 1000; // or 4000
+        for (int i = 0; i <= message.length() / maxLogSize; i++) {
+            int start = i * maxLogSize;
+            int end = Math.min((i+1) * maxLogSize, message.length());
+            Log.e(tag, message.substring(start, end));
+        }
+    }
+    private void ResultMethod(String examNum, JSONArray jsonArray) {
+        Log.e("Reddy","id"+examNum);
+        logLargeString("Reddy", jsonArray.toString());
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
@@ -843,33 +890,58 @@ public class LevelTopicExamActivity extends AppCompatActivity {
                 .build();
         ApiClient apiClient=retrofit.create(ApiClient.class);
         RequestBody examNumPart = RequestBody.create(MediaType.parse("text/plain"), examNum);
-        RequestBody questionListPart=RequestBody.create(MediaType.parse("text/plain"), jsonArray.toString());
+        RequestBody questionListPart=RequestBody.create(MediaType.parse("application/json"), jsonArray.toString());
         Call<aloocatedWorkSheetSubmitDataResponse> call=apiClient.allocatedworksheetDataResponse(examNumPart,questionListPart);
         call.enqueue(new Callback<aloocatedWorkSheetSubmitDataResponse>() {
             @Override
             public void onResponse(Call<aloocatedWorkSheetSubmitDataResponse> call, Response<aloocatedWorkSheetSubmitDataResponse> response) {
                 Log.e("Reddy","Response"+response);
                 if (response.isSuccessful()) {
-                    aloocatedWorkSheetSubmitDataResponse submitDataResponse = response.body();
-                    if (submitDataResponse != null) {
-                        Toast.makeText(LevelTopicExamActivity.this, "All Questions are Submited", Toast.LENGTH_LONG).show();
+                    if(response.body()==null){
+                        Log.e("Reddy","Response Body NULL");
+                        return;
+                    }
 
-                        // If you don't want to start a new activity, remove or modify the following code
-                        ArrayList<String> stringIsQuestionAttempted = convertBooleanListToStringList(isQuestionAttempted);
-                        Intent intent = new Intent(LevelTopicExamActivity.this, AllocatedPracticeWorkSheetResultActivity.class);
+                    aloocatedWorkSheetSubmitDataResponse res = response.body();
+
+                    Log.e("Reddy","Status : "+res.getStatus());
+                    Log.e("Reddy","Message : "+res.getMessage());
+
+                    if("Success".equalsIgnoreCase(res.getStatus())){
+
+                    /*    Toast.makeText(LevelTopicExamActivity.this,
+                                "All Questions Submitted",
+                                Toast.LENGTH_LONG).show();*/
+
+                        ArrayList<String> stringIsQuestionAttempted =
+                                convertBooleanListToStringList(isQuestionAttempted);
+
+                        Intent intent =
+                                new Intent(LevelTopicExamActivity.this,
+                                        AllocatedPracticeWorkSheetResultActivity.class);
+
                         intent.putExtra("topicName", topicName);
                         intent.putExtra("firstName", studentName);
                         intent.putExtra("startedOn", startedDate);
-                        intent.putStringArrayListExtra("answers", new ArrayList<>(Arrays.asList(answerArray)));
-                        intent.putStringArrayListExtra("questions", new ArrayList<>(Arrays.asList(questionsArray)));
+
+                        intent.putStringArrayListExtra(
+                                "answers",
+                                new ArrayList<>(Arrays.asList(answerArray)));
+
+                        intent.putStringArrayListExtra(
+                                "questions",
+                                new ArrayList<>(Arrays.asList(questionsArray)));
+
                         intent.putStringArrayListExtra("enteredAnswers", enteredAnswers);
                         intent.putStringArrayListExtra("isQuestionAttempted", stringIsQuestionAttempted);
                         intent.putExtra("TOTAL_TIME", totalTime);
 
                         ArrayList<ParcelableLong> parcelableTimes = new ArrayList<>();
+
                         for (Long time : questionTimes) {
                             parcelableTimes.add(new ParcelableLong(time));
                         }
+
                         intent.putParcelableArrayListExtra("questionTimes", parcelableTimes);
 
                         startActivity(intent);

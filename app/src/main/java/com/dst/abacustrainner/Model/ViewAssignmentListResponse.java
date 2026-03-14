@@ -47,7 +47,7 @@ public class ViewAssignmentListResponse {
         private String courseLevelId;
         private String topicName;
         private String formulaName;
-        private String questionsList;
+
         private String topicOrder;
         private Object topicImage;
         private List<Practices> practicesList;
@@ -100,13 +100,6 @@ public class ViewAssignmentListResponse {
             this.formulaName = formulaName;
         }
 
-        public String getQuestionsList() {
-            return questionsList;
-        }
-
-        public void setQuestionsList(String questionsList) {
-            this.questionsList = questionsList;
-        }
 
         public String getTopicOrder() {
             return topicOrder;

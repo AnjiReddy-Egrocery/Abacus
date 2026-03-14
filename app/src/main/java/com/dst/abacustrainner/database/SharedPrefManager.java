@@ -38,20 +38,31 @@ public class SharedPrefManager {
     }
     //insert user data
     public void insertData(StudentRegistationResponse userInfo){
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sharedPreferences.edit();
-        editor.putString(STUDENT_ID,userInfo.getResult().getStudentId());
 
-        editor.putString(FIRST_NAME,userInfo.getResult().getFirstName());
-        editor.putString(LAST_NAME,userInfo.getResult().getLastName());
-        editor.putString(EMAIL_ID,userInfo.getResult().getEmailId());
-        editor.putString(FATHER_MOBILE,userInfo.getResult().getFatherMobile());
-        editor.putString(PARENT_EMAIL,userInfo.getResult().getParentEmail());
-        editor.putString(Profile_PIC,userInfo.getResult().getProfilePic());
-        editor.commit();
+        SharedPreferences sharedPreferences =
+                mContext.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
 
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (userInfo.getResult() != null && userInfo.getResult().size() > 0) {
+
+            // first student
+            StudentRegistationResponse.Result result = userInfo.getResult().get(0);
+
+            editor.putString(STUDENT_ID, result.getStudentId());
+            editor.putString(FIRST_NAME, result.getFirstName());
+            editor.putString(LAST_NAME, result.getLastName());
+            editor.putString(EMAIL_ID, result.getEmailId());
+            editor.putString(FATHER_MOBILE, result.getFatherMobile());
+            editor.putString(PARENT_EMAIL, result.getParentEmail());
+            editor.putString(Profile_PIC, result.getProfilePic());
+
+            // save student count
+            editor.putInt("student_count", userInfo.getResult().size());
+        }
+
+        editor.apply();
     }
-
     public StudentRegistationResponse.Result getUserData(){
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         StudentRegistationResponse.Result userInfo=new StudentRegistationResponse.Result(

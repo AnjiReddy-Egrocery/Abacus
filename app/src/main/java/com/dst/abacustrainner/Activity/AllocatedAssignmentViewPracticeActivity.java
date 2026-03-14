@@ -17,6 +17,8 @@ import com.dst.abacustrainner.Model.AlloactedViewSubTopicListResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -104,7 +106,7 @@ public class AllocatedAssignmentViewPracticeActivity extends AppCompatActivity {
                     if (topicsList.isEmpty()) {
                         recyclerViewSubTopics.setVisibility(View.GONE); // Hide RecyclerView
                     } else {
-
+                        Collections.reverse(topicsList);
                         viewListTopicAdapter = new AllocatedAssignmentViewSubListAdataper(AllocatedAssignmentViewPracticeActivity.this, topicsList);
                         recyclerViewSubTopics.setAdapter(viewListTopicAdapter);
                     }

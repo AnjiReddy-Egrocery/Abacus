@@ -21,8 +21,11 @@ import com.dst.abacustrainner.Model.DurationListResponse;
 import com.dst.abacustrainner.Model.ForgotPassword;
 import com.dst.abacustrainner.Model.GameResponse;
 import com.dst.abacustrainner.Model.LevelPriceResponse;
+import com.dst.abacustrainner.Model.OrderCreateResponse;
 import com.dst.abacustrainner.Model.OrderInfoResponse;
 import com.dst.abacustrainner.Model.OrderListResponse;
+import com.dst.abacustrainner.Model.PaymentRefrence;
+
 import com.dst.abacustrainner.Model.StudentDetails;
 import com.dst.abacustrainner.Model.StudentOrdersResponse;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
@@ -54,6 +57,7 @@ public interface ApiClient {
     @Multipart
     @POST("apicalls/Index/studentRegistration")
     Call<StudentRegistationResponse> studentRegisterPost( @Part("firstName") RequestBody firstName,
+                                                          @Part("middleName") RequestBody middleName,
                                                           @Part("lastName") RequestBody lastName,
                                                           @Part("gender") RequestBody gender,
                                                           @Part("dateOfBirth") RequestBody dateOfBirth,                                                           @Part("motherTongue") RequestBody motherTongue,
@@ -80,7 +84,7 @@ public interface ApiClient {
                                                  @Part("password") RequestBody password);
 
     @Multipart
-    @POST("apicalls/Index/studentLogin")
+    @POST("apicalls/Index/loginStudents")
     Call<StudentRegistationResponse> LoginPost(@Part("parentEmail") RequestBody parentEmail,
                                                @Part("password") RequestBody password);
 
@@ -238,6 +242,12 @@ public interface ApiClient {
     Call<CartDetailsResponse> getCartList(@Part("worksheetRnm") RequestBody worksheetRnm);
 
     @Multipart
+    @POST("apicalls/Index/submitWorksheetSubscription")
+    Call<OrderCreateResponse> getCheckOutSubmit(@Part("worksheetRnm") RequestBody worksheetRnm,
+                                                @Part("studentId") RequestBody studentId,
+                                                @Part("totalAmount") RequestBody totalAmount);
+
+    @Multipart
     @POST("apicalls/Index/worksheetRemoveFromCart")
     Call<cartDeleteResponse> getDeleteCart(@Part("cartId") RequestBody cartId);
 
@@ -301,7 +311,20 @@ public interface ApiClient {
             @Part("orderId") RequestBody orderId
     );
 
-
+    @Multipart
+    @POST("apicalls/Index/updatePaymentInfo")
+    Call<PaymentRefrence> getPaymentInfo(
+            @Part("worksheetRnm") RequestBody worksheetRnm,
+            @Part("studentId") RequestBody studentId,
+            @Part("totalAmount") RequestBody totalAmount,
+            @Part("transactionId") RequestBody transactionId,
+            @Part("state") RequestBody state,
+            @Part("currency") RequestBody currency,
+            @Part("amount") RequestBody amount,
+            @Part("orderId") RequestBody orderId,
+            @Part("paymentMode") RequestBody paymentMode,
+            @Part("timestamp") RequestBody timestamp
+    );
 
 
 

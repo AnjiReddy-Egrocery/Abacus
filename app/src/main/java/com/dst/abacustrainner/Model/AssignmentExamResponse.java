@@ -1,5 +1,7 @@
 package com.dst.abacustrainner.Model;
 
+import java.util.List;
+
 public class AssignmentExamResponse {
     private String status;
     private String errorCode;
@@ -44,7 +46,16 @@ public class AssignmentExamResponse {
         private String studentId;
         private String instructorId;
         private String topicId;
-        private String questionsList;
+        private List<QuestionItem> questionsList;
+
+        public List<QuestionItem> getQuestionsList() {
+            return questionsList;
+        }
+
+        public void setQuestionsList(List<QuestionItem> questionsList) {
+            this.questionsList = questionsList;
+        }
+
         private String startedOn;
         private String submitedOn;
         private String practiceStatus;
@@ -93,13 +104,6 @@ public class AssignmentExamResponse {
             this.topicId = topicId;
         }
 
-        public String getQuestionsList() {
-            return questionsList;
-        }
-
-        public void setQuestionsList(String questionsList) {
-            this.questionsList = questionsList;
-        }
 
         public String getStartedOn() {
             return startedOn;
@@ -155,6 +159,44 @@ public class AssignmentExamResponse {
 
         public void setLastName(String lastName) {
             this.lastName = lastName;
+        }
+    }
+    public class QuestionItem {
+
+        private String question;
+
+        private String answer;
+
+        private String given;
+
+        private int isCurrect;
+
+        private int timeTaken;
+
+        private int status;
+
+        public String getQuestion() {
+            return question;
+        }
+
+        public String getAnswer() {
+            return answer;
+        }
+
+        public String getGiven() {
+            return given;
+        }
+
+        public int getIsCurrect() {
+            return isCurrect;
+        }
+
+        public int getTimeTaken() {
+            return timeTaken;
+        }
+
+        public int getStatus() {
+            return status;
         }
     }
 }

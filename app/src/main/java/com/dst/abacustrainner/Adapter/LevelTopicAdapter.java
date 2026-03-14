@@ -68,7 +68,7 @@ public class LevelTopicAdapter extends RecyclerView.Adapter<LevelTopicAdapter.Vi
             // ===================== TOPIC HEADER =====================
             case LevelDisplayItem.TYPE_TOPIC_HEADER:
 
-                holder.txtTopic.setText(item.getTitle());
+                holder.txtTopic.setText("Topics");
                 holder.txtTopic.setTextSize(18);
                 holder.txtTopic.setTextColor(Color.WHITE);
                 holder.txtTopic.setPadding(20,20,20,20);

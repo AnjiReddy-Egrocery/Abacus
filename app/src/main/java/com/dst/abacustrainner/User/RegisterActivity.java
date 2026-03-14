@@ -101,7 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
                         && isValidEmail(email)
                         && isValidMobileNumber(mobileNumber)) {
 
-                    registerMenthod(firstName, lastName, mobileNumber, email, date, tongue);
+                    registerMenthod(firstName,"", lastName, mobileNumber, email, date, tongue);
                 } else {
                    Toast.makeText(RegisterActivity.this, "Validation failed. Please check your input.", Toast.LENGTH_SHORT).show();
                 }
@@ -142,7 +142,7 @@ public class RegisterActivity extends AppCompatActivity {
                 calendar.get(Calendar.DAY_OF_MONTH)
         ).show();
     }
-    private void registerMenthod(String firstName, String lastName, String mobileNumber, String email, String date, String tongue) {
+    private void registerMenthod(String firstName,String middlename, String lastName, String mobileNumber, String email, String date, String tongue) {
         String selectedGender = getSelectedGender();
 
         /*HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -157,6 +157,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .build();
         ApiClient apiClient=retrofit.create(ApiClient.class);
         RequestBody firstNamePart = RequestBody.create(MediaType.parse("text/plain"), firstName);
+        RequestBody middleNamePart = RequestBody.create(MediaType.parse("text/plain"), middlename);
         RequestBody lastnamePart = RequestBody.create(MediaType.parse("text/plain"), lastName);
         RequestBody mobilenumberPart = RequestBody.create(MediaType.parse("text/plain"), mobileNumber);
         RequestBody emailPart = RequestBody.create(MediaType.parse("text/plain"), email);
@@ -164,7 +165,7 @@ public class RegisterActivity extends AppCompatActivity {
         RequestBody mothertonguePart = RequestBody.create(MediaType.parse("text/plain"), tongue);
         RequestBody dateofbirthPart = RequestBody.create(MediaType.parse("text/plain"), date);
 
-          Call<StudentRegistationResponse> call=apiClient.studentRegisterPost(firstNamePart,lastnamePart,emailPart,mobilenumberPart,genderPart,mothertonguePart,dateofbirthPart);
+          Call<StudentRegistationResponse> call=apiClient.studentRegisterPost(firstNamePart,middleNamePart,lastnamePart,emailPart,mobilenumberPart,genderPart,mothertonguePart,dateofbirthPart);
           call.enqueue(new Callback<StudentRegistationResponse>() {
               @Override
               public void onResponse(Call<StudentRegistationResponse> call, Response<StudentRegistationResponse> response) {
@@ -179,15 +180,15 @@ public class RegisterActivity extends AppCompatActivity {
                           String studentId="2251";
                           String otp="";
                           String parentEmailId="";
-                          StudentRegistationResponse.Result list =registrationResponse.getResult();
+                          //StudentRegistationResponse.Result list =registrationResponse.getResult();
                          // studentId=list.getStudentId();
-                          otp=list.getOtp();
+                         /* otp=list.getOtp();
                           parentEmailId=list.getParentEmail();
                           Intent intent = new Intent(RegisterActivity.this, VerifyActivity.class);
                           intent.putExtra("studentId", studentId);
                           intent.putExtra("Otp", otp);
                           intent.putExtra("parentEmail",parentEmailId);
-                          startActivity(intent);
+                          startActivity(intent);*/
                       }
 
                   }else {

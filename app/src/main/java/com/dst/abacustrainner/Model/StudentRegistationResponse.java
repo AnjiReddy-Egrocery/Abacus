@@ -1,20 +1,37 @@
 package com.dst.abacustrainner.Model;
 
+import java.io.Serializable;
+import java.util.List;
+
 public class StudentRegistationResponse {
+
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     private String status;
     private String errorCode;
-    private Result result;
+    private List<Result> result;
+
+    public List<Result> getResult() {
+        return result;
+    }
+
+    public void setResult(List<Result> result) {
+        this.result = result;
+    }
+
     private String message;
 
 
 
-    public Result getResult() {
-        return result;
-    }
 
-    public void setResult(Result result) {
-        this.result = result;
-    }
 
     public String getStatus() {
         return status;
@@ -41,7 +58,7 @@ public class StudentRegistationResponse {
         this.message = message;
     }
 
-    public static class Result{
+    public static class Result implements Serializable {
         private String studentId;
         private String mId;
         private Object ufMid;

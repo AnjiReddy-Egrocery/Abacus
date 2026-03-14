@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,8 +28,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.dst.abacustrainner.Activity.AllSchedulesActivity;
+import com.dst.abacustrainner.Activity.AllocatedCoursesActivity;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
 import com.dst.abacustrainner.Activity.PurchasedVideoTutorialsActivity;
+import com.dst.abacustrainner.Activity.SubscriptionDetailsActivity;
 import com.dst.abacustrainner.Activity.VisualiztionActivity;
 import com.dst.abacustrainner.Adapter.BatchDetailsAdapter;
 import com.dst.abacustrainner.Adapter.OrderListAdapter;
@@ -42,6 +45,7 @@ import com.dst.abacustrainner.Model.StudentDetails;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
+import com.dst.abacustrainner.User.HomeActivity;
 import com.dst.abacustrainner.database.SharedPrefManager;
 
 import java.text.ParseException;
@@ -65,7 +69,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
     TextView txtName,   txtPurchases, txtTime,txtTime1,txtClckSchedule,txtNextSchedule,txtNextTime,txtCompleted,txtRemaining,txtEmpty;
-    ImageView imageCalender;
+    Button butViewMoreDetails, butSubdetails, butCourses;
     String currentDate,textWithBrackets;
     private Calendar calendar;
     private String studentId, batchId;
@@ -80,9 +84,7 @@ public class HomeFragment extends Fragment {
 
     String EmployeeId = String.valueOf(2251);
 
-    RecyclerView recyclerView;
 
-    OrderListAdapter orderListAdapter;
 
 
     @SuppressLint("MissingInflatedId")
@@ -98,9 +100,12 @@ public class HomeFragment extends Fragment {
         txtNextTime = view.findViewById(R.id.txt_nextTime);
         txtCompleted = view.findViewById(R.id.txt_Completed);
         txtRemaining = view.findViewById(R.id.txt_upComing);
-        imageCalender = view.findViewById(R.id.image_calender);
+        butViewMoreDetails = view.findViewById(R.id.but_viewmoredetails);
         layoutSchedule = view.findViewById(R.id.layou_schedule);
         layoutScheduleInfo = view.findViewById(R.id.layout_schedule_information);
+
+        butSubdetails = view.findViewById(R.id.but_subscription_details);
+        butCourses = view.findViewById(R.id.but_view_courses);
 
        // layoutVideoTutorials = view.findViewById(R.id.layout_video_tutorials);
         txtEmpty = view.findViewById(R.id.tvEmptyMessage);
@@ -117,10 +122,26 @@ public class HomeFragment extends Fragment {
 
          Log.e("Reddy","StudentId" + id);
         firsstname=" Hello " +  result.getFirstName() + "";
-        imageCalender.setOnClickListener(new View.OnClickListener() {
+        butViewMoreDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openScheduleFragment();
+            }
+        });
+        butSubdetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), SubscriptionDetailsActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }
+        });
+        butCourses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), AllocatedCoursesActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
             }
         });
         Bundle args = getArguments();
@@ -134,12 +155,6 @@ public class HomeFragment extends Fragment {
         }
 
 
-        recyclerView = view.findViewById(R.id.recycler_order_list);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        orderListAdapter = new OrderListAdapter(getContext());
-        recyclerView.setAdapter(orderListAdapter);
 
 
 
@@ -202,76 +217,12 @@ public class HomeFragment extends Fragment {
         layoutSchedule.setVisibility(View.GONE);
         layoutScheduleInfo.setVisibility(View.GONE);
 
-        loadOrdersList(studentId);
+
 
         return view;
     }
 
-    private void loadOrdersList(String studentId) {
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .build();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-        ApiClient apiClient = retrofit.create(ApiClient.class);
-        RequestBody OrderLevelPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
-
-        Call<OrderListResponse> call = apiClient.getOrderList(OrderLevelPart);
-        call.enqueue(new Callback<OrderListResponse>() {
-            @Override
-            public void onResponse(Call<OrderListResponse> call, Response<OrderListResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-
-                    OrderListResponse res = response.body();
-
-                    // ✅ SUCCESS CASE
-                    if ("200".equals(res.getErrorCode())) {
-
-                        if (res.getResult() != null &&
-                                res.getResult().getCourseTypes() != null &&
-                                !res.getResult().getCourseTypes().isEmpty()) {
-
-                            List<OrderListResponse.CourseType> levels =
-                                    res.getResult().getCourseTypes();
-
-                            orderListAdapter.setLevels(levels,studentId);
-
-                        } else {
-                            showEmptyMessage(res.getEmptyAssignmentTopicsessage());
-                        }
-
-                    }
-                    // ⚠️ NO ACTIVE SUBSCRIPTION
-                    else if ("202".equals(res.getErrorCode())) {
-
-                        showEmptyMessage(
-                                "You do not have any active worksheet subscriptions. " +
-                                        "Please contact the administrator for more information."
-                        );
-                    }
-                    // ❌ OTHER ERROR
-                    else {
-                        showEmptyMessage(res.getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<OrderListResponse> call, Throwable t) {
-                showEmptyMessage("Server error. Please try again.");
-            }
-        });
-    }
-
-    private void showEmptyMessage(String emptyAssignmentTopicsessage) {
-        recyclerView.setVisibility(View.GONE);
-        txtEmpty.setVisibility(View.VISIBLE);
-        txtEmpty.setText(emptyAssignmentTopicsessage);
-    }
 
     private void openScheduleFragment() {
         SchedulesFragment scheduleFragment = new SchedulesFragment();

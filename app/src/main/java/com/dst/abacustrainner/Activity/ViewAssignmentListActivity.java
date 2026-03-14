@@ -2,6 +2,7 @@ package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -19,6 +20,7 @@ import com.dst.abacustrainner.Model.ViewAssignmentListResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -67,8 +69,13 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
         //txtName.setText(name);
         txtTopicName.setText(topicname);
 
+        Log.d("Reddy","StudentId"+ studentid);
+        Log.e("Reddy","TopicId"+topicid);
+
 
         LinearLayoutManager layoutManager=new LinearLayoutManager(ViewAssignmentListActivity.this);
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         recyclerViewTopic.setLayoutManager(layoutManager);
 
         layoutBack.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +122,7 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
                         txtNodata.setVisibility(View.VISIBLE); // Show No Data Found TextView
                         recyclerViewTopic.setVisibility(View.GONE); // Hide RecyclerView
                     } else {
+                        // 👈 Latest data first
                         txtNodata.setVisibility(View.GONE); // Hide No Data Found TextView
                         recyclerViewTopic.setVisibility(View.VISIBLE); // Show RecyclerView
 

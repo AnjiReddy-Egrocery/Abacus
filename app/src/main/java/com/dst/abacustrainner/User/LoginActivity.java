@@ -161,14 +161,14 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Some thing went wrong, please Check Email and Password.", Toast.LENGTH_SHORT).show();
                     }else if (registrationResponse.getErrorCode().equals("200")) {
                         SharedPrefManager.getInstance(getApplicationContext()).insertData(response.body());
-                        String firstname= registrationResponse.getResult().getFirstName();
-                        String lastname = registrationResponse.getResult().getLastName();
-                        Log.e("Reddy","Name"+firstname+lastname);
+                      //  String firstname= registrationResponse.getResult().getFirstName();
+                        //String lastname = registrationResponse.getResult().getLastName();
+                        /*Log.e("Reddy","Name"+firstname+lastname);
                         Toast.makeText(LoginActivity.this, "Student Login Completed Successfully.", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         intent.putExtra("FirstName",firstname);
                         intent.putExtra("LastName",lastname);
-                        startActivity(intent);
+                        startActivity(intent);*/
                         finish();
                     }
                 }else {

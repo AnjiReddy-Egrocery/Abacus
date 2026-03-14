@@ -95,6 +95,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
 
     public class TopicViewHolder extends RecyclerView.ViewHolder {
         TextView txtAssignmentName,txtAssignPracticeCount;
+
         LinearLayout layoutAssignmentPractice;
         Button butAssignmentExam;
         public TopicViewHolder(@NonNull View itemView) {

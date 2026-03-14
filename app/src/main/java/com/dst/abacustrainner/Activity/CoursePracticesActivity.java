@@ -19,6 +19,7 @@ import com.dst.abacustrainner.Model.ViewTopicListResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -105,7 +106,7 @@ public class CoursePracticesActivity extends AppCompatActivity {
                     if (topicsList.isEmpty()) {
                         recyclerViewSubTopics.setVisibility(View.GONE); // Hide RecyclerView
                     } else {
-
+                        Collections.reverse(topicsList);
                         viewListTopicAdapter = new ViewSubListTopicAdapter(CoursePracticesActivity.this, topicsList);
                         recyclerViewSubTopics.setAdapter(viewListTopicAdapter);
                     }

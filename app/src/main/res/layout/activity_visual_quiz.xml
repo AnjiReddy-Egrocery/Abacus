@@ -338,7 +338,7 @@
                     android:id="@+id/questionTextView"
                     android:layout_width="100dp"
                     android:layout_height="50dp"
-                    android:text="dfdsgdhf"
+                    android:text=""
                     android:background="@drawable/question_bg"
                     android:gravity="center"
                     android:layout_marginRight="3dp"

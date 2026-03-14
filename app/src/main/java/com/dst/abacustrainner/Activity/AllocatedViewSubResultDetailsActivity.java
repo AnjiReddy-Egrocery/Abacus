@@ -39,6 +39,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -223,220 +224,176 @@ public class AllocatedViewSubResultDetailsActivity extends AppCompatActivity {
 
     private void ViewMethod(String examRnm) {
 
-       /* HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        ApiClient apiClient=retrofit.create(ApiClient.class);
-        RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), examRnm);
 
-        Call<AllocatedViewSubTopicResultResponse> call=apiClient.getAllocatedviewResult(idPart);
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+
+        RequestBody idPart = RequestBody.create(MediaType.parse("application/json"), examRnm);
+
+        Call<AllocatedViewSubTopicResultResponse> call = apiClient.getAllocatedviewResult(idPart);
+
         call.enqueue(new Callback<AllocatedViewSubTopicResultResponse>() {
 
             @Override
-            public void onResponse(Call<AllocatedViewSubTopicResultResponse> call, Response<AllocatedViewSubTopicResultResponse> response) {
-                if (response.isSuccessful()) {
-                    AllocatedViewSubTopicResultResponse result = response.body();
-                    Log.d("Response", "Anji" + result);
+            public void onResponse(Call<AllocatedViewSubTopicResultResponse> call,
+                                   Response<AllocatedViewSubTopicResultResponse> response) {
 
-                    if (result != null) {
-                        AllocatedViewSubTopicResultResponse.Result viewTopicResult = result.getResult();
-                       firstName = viewTopicResult.getFirstName();
-                        startDate = viewTopicResult.getStartedOn();
+                if (response.isSuccessful() && response.body() != null) {
 
-                        // Set Name and Start Date if required
-//            txtName.setText(firstName);
-//            txtStartDate.setText(startDate);
+                    AllocatedViewSubTopicResultResponse.Result result = response.body().getResult();
 
-                        String questionsListJsonString = viewTopicResult.getQuestionsList();
-                        if (questionsListJsonString != null) {
-                            try {
-                                JSONArray jsonArray = new JSONArray(questionsListJsonString);
+                    firstName = result.getFirstName();
+                    startDate = result.getStartedOn();
 
-                                // Initialize counters
-                                totalQuestions = jsonArray.length();
-                                attempted = 0;
-                                correct = 0;
-                                incorrect = 0;
+                    List<AllocatedViewSubTopicResultResponse.Question> questionsList = result.getQuestionsList();
 
-                                LayoutInflater inflater = LayoutInflater.from(AllocatedViewSubResultDetailsActivity.this);
+                    totalQuestions = questionsList.size();
+                    attempted = 0;
+                    correct = 0;
+                    incorrect = 0;
 
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject questionObject = jsonArray.getJSONObject(i);
+                    LayoutInflater inflater = LayoutInflater.from(AllocatedViewSubResultDetailsActivity.this);
 
-                                    // Extract fields
-                                    String questionHtml = questionObject.getString("question");
-                                    String answer = questionObject.getString("answer");
-                                    String given = questionObject.getString("given");
-                                    int isCorrect = questionObject.getInt("is_currect");
-                                    String timeTaken = questionObject.getString("time_taken");
-                                    int status = questionObject.getInt("status");
+                    for (int i = 0; i < questionsList.size(); i++) {
 
-                                    // Update counts
-                                    if (status == 1) {
-                                        attempted++;
-                                    }
-                                    if (isCorrect == 1) {
-                                        correct++;
-                                    } else {
-                                        incorrect++;
-                                    }
-                                    int notAttempted = totalQuestions - attempted;
+                        AllocatedViewSubTopicResultResponse.Question questionObj = questionsList.get(i);
 
-                                    // ✅ Now update Pie Chart
-                                    updatePieChart(attempted, notAttempted, correct, incorrect);
+                        String questionHtml = questionObj.getQuestion();
+                        String answer = questionObj.getAnswer();
+                        String given = questionObj.getGiven();
+                        int isCorrect = questionObj.getIs_currect();
+                        int status = questionObj.getStatus();
+                        String timeTaken = String.valueOf(questionObj.getTime_taken());
 
+                        // counts
+                        if (status == 1) {
+                            attempted++;
+                        }
 
-                                    // Convert HTML to Spanned text for display
-                                    Spanned questionText = HtmlCompat.fromHtml(questionHtml, HtmlCompat.FROM_HTML_MODE_LEGACY);
-                                    Spanned answerText = HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY);
-                                    Spanned givenText = HtmlCompat.fromHtml(given, HtmlCompat.FROM_HTML_MODE_LEGACY);
-                                    Spanned timeText = HtmlCompat.fromHtml(timeTaken, HtmlCompat.FROM_HTML_MODE_LEGACY);
+                        if (isCorrect == 1) {
+                            correct++;
+                        } else {
+                            incorrect++;
+                        }
 
-                                    // Create table row
-                                    TableRow row = new TableRow(getApplicationContext());
+                        int notAttempted = totalQuestions - attempted;
 
-                                    // Create and configure TextViews
-                                    LinearLayout questionLayout = new LinearLayout(AllocatedViewSubResultDetailsActivity.this);
-                                    questionLayout.setOrientation(LinearLayout.VERTICAL);
-                                    questionLayout.setLayoutParams(
-                                            new TableRow.LayoutParams(
-                                                    0,
-                                                    TableRow.LayoutParams.WRAP_CONTENT,
-                                                    1
-                                            )
-                                    );
-                                    questionLayout.setGravity(Gravity.CENTER);
+                        // update chart
+                        updatePieChart(attempted, notAttempted, correct, incorrect);
 
-// ✅ Extract image from HTML
-                                    Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
-                                    Matcher matcher = pattern.matcher(questionHtml);
+                        TableRow row = new TableRow(AllocatedViewSubResultDetailsActivity.this);
 
-                                    if (matcher.find()) {
+                        LinearLayout questionLayout = new LinearLayout(AllocatedViewSubResultDetailsActivity.this);
+                        questionLayout.setOrientation(LinearLayout.VERTICAL);
+                        questionLayout.setLayoutParams(new TableRow.LayoutParams(
+                                0, TableRow.LayoutParams.WRAP_CONTENT, 1));
 
-                                        // ---------- IMAGE QUESTION ----------
-                                        String imageUrl = matcher.group(1);
+                        questionLayout.setGravity(Gravity.CENTER);
 
-                                        ImageView imageView = new ImageView(AllocatedViewSubResultDetailsActivity.this);
-                                        imageView.setAdjustViewBounds(true);
-                                        imageView.setMaxHeight(300);
+                        Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
+                        Matcher matcher = pattern.matcher(questionHtml);
 
-                                        Glide.with(AllocatedViewSubResultDetailsActivity.this)
-                                                .load(imageUrl)
-                                                .into(imageView);
+                        if (matcher.find()) {
 
-                                        questionLayout.addView(imageView);
+                            String imageUrl = matcher.group(1);
 
-                                    } else {
+                            ImageView imageView = new ImageView(AllocatedViewSubResultDetailsActivity.this);
+                            imageView.setAdjustViewBounds(true);
+                            imageView.setMaxHeight(300);
 
-                                        // ---------- TEXT QUESTION ----------
-                                        TextView questionTextView = new TextView(AllocatedViewSubResultDetailsActivity.this);
+                            Glide.with(AllocatedViewSubResultDetailsActivity.this)
+                                    .load(imageUrl)
+                                    .into(imageView);
 
-                                        String cleanedHtml = questionHtml.replaceAll("<img[^>]+>", "");
+                            questionLayout.addView(imageView);
 
-                                        Spanned spannedText = HtmlCompat.fromHtml(
-                                                cleanedHtml,
-                                                HtmlCompat.FROM_HTML_MODE_LEGACY
-                                        );
+                        } else {
 
-                                        String finalText = spannedText.toString()
-                                                .replace("\u00A0", "")
-                                                .trim();
+                            TextView questionTextView = new TextView(AllocatedViewSubResultDetailsActivity.this);
 
-                                        questionTextView.setText(finalText);
-                                        questionTextView.setTextSize(18);
-                                        questionTextView.setTextColor(Color.BLACK);
-                                        questionTextView.setGravity(Gravity.CENTER);
-                                        questionTextView.setPadding(12,12,12,12);
+                            String cleanedHtml = questionHtml.replaceAll("<img[^>]+>", "");
 
-                                        questionLayout.addView(questionTextView);
-                                    }
+                            Spanned spannedText = HtmlCompat.fromHtml(
+                                    cleanedHtml,
+                                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                            );
 
+                            String finalText = spannedText.toString()
+                                    .replace("\u00A0", "")
+                                    .trim();
 
+                            questionTextView.setText(finalText);
+                            questionTextView.setTextSize(18);
+                            questionTextView.setTextColor(Color.BLACK);
+                            questionTextView.setGravity(Gravity.CENTER);
+                            questionTextView.setPadding(12, 12, 12, 12);
 
-                                    TextView answersView = new TextView(getApplicationContext());
-                                    answersView.setText(answerText);
-                                    answersView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-                                    answersView.setPadding(14, 14, 14, 14);
-                                    answersView.setTextColor(Color.BLACK);
-                                    answersView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-                                    answersView.setGravity(Gravity.CENTER);
+                            questionLayout.addView(questionTextView);
+                        }
 
+                        TextView answerView = new TextView(AllocatedViewSubResultDetailsActivity.this);
+                        answerView.setText(answer);
+                        answerView.setGravity(Gravity.CENTER);
+                        answerView.setPadding(14,14,14,14);
+                        answerView.setLayoutParams(new TableRow.LayoutParams(
+                                0, TableRow.LayoutParams.WRAP_CONTENT, 1));
 
-                                    TextView givenView = new TextView(getApplicationContext());
-                                    givenView.setText(givenText);
-                                    givenView.setPadding(14, 14, 14, 14);
-                                    givenView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-                                    givenView.setTextColor(Color.BLACK);
-                                    givenView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-                                    givenView.setGravity(Gravity.CENTER);
+                        TextView givenView = new TextView(AllocatedViewSubResultDetailsActivity.this);
+                        givenView.setText(given);
+                        givenView.setGravity(Gravity.CENTER);
+                        givenView.setPadding(14,14,14,14);
+                        givenView.setLayoutParams(new TableRow.LayoutParams(
+                                0, TableRow.LayoutParams.WRAP_CONTENT, 1));
 
-                                    TextView timeView = new TextView(getApplicationContext());
-                                    timeView.setText(timeText);
-                                    timeView.setPadding(14, 14, 14, 14);
-                                    timeView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-                                    timeView.setTextColor(Color.BLACK);
-                                    timeView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-                                    timeView.setGravity(Gravity.CENTER);
+                        TextView timeView = new TextView(AllocatedViewSubResultDetailsActivity.this);
+                        timeView.setText(timeTaken);
+                        timeView.setGravity(Gravity.CENTER);
+                        timeView.setPadding(14,14,14,14);
+                        timeView.setLayoutParams(new TableRow.LayoutParams(
+                                0, TableRow.LayoutParams.WRAP_CONTENT, 1));
 
-                                    // Add views to row
-                                    row.addView(questionLayout);
-                                    row.addView(answersView);
-                                    row.addView(givenView);
-                                    row.addView(timeView);
+                        row.addView(questionLayout);
+                        row.addView(answerView);
+                        row.addView(givenView);
+                        row.addView(timeView);
 
-                                    // Add row to table
-                                    tabLayout.addView(row);
+                        tabLayout.addView(row);
 
-                                    // Add separator between rows
-                                    if (i < jsonArray.length() - 1) {
-                                        View separator = inflater.inflate(R.layout.separator_row, tabLayout, false);
-                                        tabLayout.addView(separator);
-                                    }
-                                }
-
-                                // Set total values to respective TextViews
-                                txtTotalQuestions.setText(String.valueOf(totalQuestions));
-                                txtAttemtedQueston.setText(String.valueOf(attempted));
-                                txtCorrectAnswer.setText(String.valueOf(correct));
-                                txtworngAnswer.setText(String.valueOf(incorrect));
-
-                                txtTotalQuestion.setText(String.valueOf(totalQuestions));
-                                txtAttemtedQuestons.setText(String.valueOf(attempted));
-                                txtCorrectAnswers.setText(String.valueOf(correct));
-                                txtworngAnswers.setText(String.valueOf(incorrect));
-
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                        if (i < questionsList.size() - 1) {
+                            View separator = inflater.inflate(R.layout.separator_row, tabLayout, false);
+                            tabLayout.addView(separator);
                         }
                     }
+
+                    txtTotalQuestions.setText(String.valueOf(totalQuestions));
+                    txtAttemtedQueston.setText(String.valueOf(attempted));
+                    txtCorrectAnswer.setText(String.valueOf(correct));
+                    txtworngAnswer.setText(String.valueOf(incorrect));
+
+                    txtTotalQuestion.setText(String.valueOf(totalQuestions));
+                    txtAttemtedQuestons.setText(String.valueOf(attempted));
+                    txtCorrectAnswers.setText(String.valueOf(correct));
+                    txtworngAnswers.setText(String.valueOf(incorrect));
+
                 } else {
-                    Log.e("Response", "Request failed");
+                    Log.e("API", "Response not successful");
                 }
             }
 
             @Override
             public void onFailure(Call<AllocatedViewSubTopicResultResponse> call, Throwable t) {
-                Log.e("Response", "Request failed: " + t.getMessage());
+                Log.e("API", "Error : " + t.getMessage());
             }
-
-
-
-
         });
-
-
-
     }
-
     private String getCurrentDateTime() {
         // Format for date and time
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy | hh:mm a", Locale.getDefault());

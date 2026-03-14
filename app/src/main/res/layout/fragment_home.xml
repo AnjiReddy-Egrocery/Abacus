@@ -22,29 +22,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_margin="14dp"
-                    android:id="@+id/layou_schedule"
-                    android:padding="8dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Class Schedule"
-                        android:textSize="20dp"
-                        android:textColor="#000"
-                        android:textStyle="bold"
-                        android:layout_weight="1"
-                        android:paddingLeft="10dp"/>
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="right"
-                        android:id="@+id/image_calender"
-                        android:src="@drawable/calender_icon"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="8dp"
                     android:id="@+id/layout_schedule_information"
@@ -94,7 +71,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/bottom_card_view"
                         android:orientation="vertical"
-                      >
+                        >
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -139,13 +116,13 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginBottom="8dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="H/W(Last Class)"
-                            android:textColor="#000"
-                            android:textSize="16dp"
-                            android:textStyle="bold"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="H/W(Last Class)"
+                                android:textColor="#000"
+                                android:textSize="16dp"
+                                android:textStyle="bold"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -169,13 +146,13 @@
                             android:layout_marginLeft="12dp"
                             android:layout_marginRight="12dp"
                             android:layout_marginBottom="8dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="#000"
-                            android:text="Total Class"
-                            android:textStyle="bold"
-                            android:textSize="14dp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#000"
+                                android:text="Total Class"
+                                android:textStyle="bold"
+                                android:textSize="14dp" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -207,6 +184,105 @@
 
 
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/layou_schedule">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp"
+                        android:layout_marginLeft="14dp"
+                        android:layout_marginRight="14dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/top_card_view">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_margin="10dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:text="Schedules"
+                                    android:textSize="20dp"
+                                    android:textStyle="bold"
+                                    android:textColor="#000"
+                                    android:paddingStart="16dp"
+                                    android:gravity="center"/>
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bottom_card_view"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginLeft="12dp"
+                                android:layout_marginRight="12dp"
+                                android:layout_marginTop="12dp"
+                                android:layout_marginBottom="12dp">
+                                <ImageView
+                                    android:layout_width="75dp"
+                                    android:layout_height="75dp"
+                                    android:src="@drawable/baseline_supervised_user_circle_24"/>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:layout_marginLeft="12dp">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="#000"
+                                        android:text="Enrolled"
+                                        android:layout_marginLeft="4dp"
+                                        android:textStyle="normal"
+                                        android:textSize="16dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="27dp"
+                                        android:layout_marginLeft="4dp"
+                                        android:text="Batches"
+                                        android:textColor="#000"
+                                        android:layout_marginTop="6dp"
+                                        android:textStyle="bold"
+                                        android:textSize="18dp" />
+                                    <Button
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="View More Details"
+                                        android:backgroundTint="#198754"
+                                        android:id="@+id/but_viewmoredetails"/>
+                                </LinearLayout>
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -261,103 +337,142 @@
                             android:layout_marginBottom="12dp"
                             android:gravity="center_vertical">
 
-                           <androidx.recyclerview.widget.RecyclerView
-                               android:layout_width="match_parent"
-                               android:layout_height="match_parent"
-                               android:visibility="visible"
-                               android:id="@+id/recycler_order_list"/>
+                            <ImageView
+                                android:layout_width="75dp"
+                                android:layout_height="75dp"
+                                android:src="@drawable/baseline_menu_book_24"/>
 
-                            <TextView
-                                android:id="@+id/tvEmptyMessage"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="5dp"
-                                android:gravity="center_vertical"
-                                android:text="Abacus Junior (6 Levels)"
-                                android:textStyle="bold"
-                                android:visibility="gone"
-                                android:textSize="16dp"
-                                android:textColor="#000000" />
+                                android:layout_marginLeft="12dp"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#000"
+                                    android:text="Subscribed"
+                                    android:layout_marginLeft="4dp"
+                                    android:textStyle="normal"
+                                    android:textSize="16dp" />
 
-
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="27dp"
+                                    android:layout_marginLeft="4dp"
+                                    android:text="Worksheets"
+                                    android:textColor="#000"
+                                    android:layout_marginTop="6dp"
+                                    android:textStyle="bold"
+                                    android:textSize="18dp" />
+                                <Button
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="View More Details"
+                                    android:backgroundTint="#0dcaf0"
+                                    android:id="@+id/but_subscription_details"/>
+                            </LinearLayout>
                         </LinearLayout>
-
                     </LinearLayout>
-
-
-
                 </LinearLayout>
-               <!-- <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="8dp"
-                    android:id="@+id/layout_video_tutorials"
-                    android:visibility="visible"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginLeft="14dp"
-                    android:layout_marginRight="14dp">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/top_card_view">
+                        android:orientation="vertical"
+                        android:padding="8dp"
+                        android:layout_marginLeft="14dp"
+                        android:layout_marginRight="14dp">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_margin="10dp">
+                            android:background="@drawable/top_card_view">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_margin="10dp">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:text="Video Purchased List"
-                                android:textSize="20dp"
-                                android:textStyle="bold"
-                                android:textColor="#000"
-                                android:paddingStart="16dp"
-                                android:gravity="center"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:text="Courses"
+                                    android:textSize="20dp"
+                                    android:textStyle="bold"
+                                    android:textColor="#000"
+                                    android:paddingStart="16dp"
+                                    android:gravity="center"/>
 
 
+                            </LinearLayout>
 
                         </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bottom_card_view"
-                        android:orientation="vertical">
-
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:orientation="horizontal"
-                            android:layout_marginRight="12dp"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:gravity="center_vertical">
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bottom_card_view"
+                            android:orientation="vertical">
 
-                            <TextView
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Video Tutorials"
-                                android:textColor="#000"
-                                android:textSize="20dp"
-                                android:gravity="center"
-                                android:textStyle="bold"/>
+                                android:orientation="horizontal"
+                                android:layout_marginLeft="12dp"
+                                android:layout_marginRight="12dp"
+                                android:layout_marginTop="12dp"
+                                android:layout_marginBottom="12dp">
+                                <ImageView
+                                    android:layout_width="75dp"
+                                    android:layout_height="75dp"
+                                    android:src="@drawable/baseline_list_24"/>
 
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:layout_marginLeft="12dp">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="#000"
+                                        android:text="Allocated"
+                                        android:layout_marginLeft="4dp"
+                                        android:textStyle="normal"
+                                        android:textSize="16dp" />
 
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="27dp"
+                                        android:layout_marginLeft="4dp"
+                                        android:text="Courses"
+                                        android:textColor="#000"
+                                        android:layout_marginTop="6dp"
+                                        android:textStyle="bold"
+                                        android:textSize="18dp" />
+                                    <Button
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="View More Details"
+                                        android:backgroundTint="#6c757d"
+                                        android:id="@+id/but_view_courses"/>
+                                </LinearLayout>
+
+                            </LinearLayout>
                         </LinearLayout>
+
+
 
                     </LinearLayout>
 
-
-
-                </LinearLayout>-->
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

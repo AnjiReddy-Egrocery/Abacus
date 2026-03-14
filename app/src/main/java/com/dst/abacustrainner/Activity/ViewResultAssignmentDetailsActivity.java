@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -21,6 +22,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 
 
+import com.bumptech.glide.Glide;
+import com.dst.abacustrainner.Model.AllocatedViewSubTopicResultResponse;
 import com.dst.abacustrainner.Model.ViewAssignmentResultResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
@@ -37,7 +40,10 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -151,32 +157,27 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ViewAssignmentResultResponse> call, Response<ViewAssignmentResultResponse> response) {
 
-                if (response.isSuccessful()) {
-                    ViewAssignmentResultResponse result = response.body();
-                    Log.d("Response","Anji"+result);
-                    if (result != null) {
-                        ViewAssignmentResultResponse.Result viewTopicResult=result.getResult();
+                if (response.isSuccessful() && response.body() != null) {
+                    ViewAssignmentResultResponse.Result result = response.body().getResult();
 
-                        topicName=viewTopicResult.getTopicName();
+                        topicName=result.getTopicName();
 
                         txtTopicName.setText(topicName);
-                        String questionsListJsonString = viewTopicResult.getQuestionsList();
-                        if (questionsListJsonString != null) {
-                            try {
-                                JSONArray jsonArray = new JSONArray(questionsListJsonString);
-                                int totalQuestions = jsonArray.length();
+                    List<ViewAssignmentResultResponse.Question> questionsList = result.getQuestionsList();
+
+                                int totalQuestions = questionsList.size();
                                 int attempted = 0;
                                 int correct = 0;
                                 int incorrect = 0;
                                 LayoutInflater inflater = LayoutInflater.from(ViewResultAssignmentDetailsActivity.this);
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject questionObject = jsonArray.getJSONObject(i);
-                                    String questionHtml = questionObject.getString("question");
-                                    String answer = questionObject.getString("answer");
-                                    String given = questionObject.getString("given");
-                                    int isCorrect = questionObject.getInt("is_currect");
-                                    String timeTaken = questionObject.getString("time_taken");
-                                    int status = questionObject.getInt("status");
+                                for (int i = 0; i < questionsList.size(); i++) {
+                                    ViewAssignmentResultResponse.Question questionObj = questionsList.get(i);
+                                    String questionHtml = questionObj.getQuestion();
+                                    String answer = questionObj.getAnswer();
+                                    String given = questionObj.getGiven();
+                                    int isCorrect = questionObj.getIs_currect();
+                                    int status = questionObj.getStatus();
+                                    String timeTaken = String.valueOf(questionObj.getTime_taken());
 
                                     if (status == 1) {
                                         attempted++;
@@ -194,25 +195,77 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
                                     Log.d("Question_Debug", "Question Text: " + questionHtml);
 
 
-                                    Spanned questionText = HtmlCompat.fromHtml(questionHtml, HtmlCompat.FROM_HTML_MODE_LEGACY);
-                                    Spanned answerText = HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY);
-                                    Spanned givenText = HtmlCompat.fromHtml(given, HtmlCompat.FROM_HTML_MODE_LEGACY);
-                                    Spanned timeText = HtmlCompat.fromHtml(timeTaken, HtmlCompat.FROM_HTML_MODE_LEGACY);
 
 
                                     // Set question and its properties in separate TextViews
                                     TableRow row = new TableRow(getApplicationContext());
 
-                                    TextView question = new TextView(getApplicationContext());
-                                    question.setText(questionText);
-                                    question.setPadding(14,14,14,14);
-                                    question.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-                                    question.setTextColor(Color.BLACK);
-                                    question.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-                                    question.setGravity(Gravity.CENTER);
+                                    LinearLayout questionLayout = new LinearLayout(ViewResultAssignmentDetailsActivity.this);
+                                    questionLayout.setOrientation(LinearLayout.VERTICAL);
+                                    questionLayout.setLayoutParams(
+                                            new TableRow.LayoutParams(
+                                                    0,
+                                                    TableRow.LayoutParams.WRAP_CONTENT,
+                                                    1
+                                            )
+                                    );
+                                    questionLayout.setGravity(Gravity.CENTER);
+
+// ✅ Extract image from HTML
+                                    Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
+                                    Matcher matcher = pattern.matcher(questionHtml);
+
+                                    if (matcher.find()) {
+
+                                        String imageUrl = matcher.group(1);
+
+                                        Log.d("QuestionDebug", "Original URL: " + imageUrl);
+
+                                        // ✅ FIX RELATIVE PATH
+                                        if (imageUrl.contains("../../../")) {
+                                            imageUrl = imageUrl.replace("../../../", "");
+                                            imageUrl = "https://www.abacustrainer.com/" + imageUrl;
+                                        }
+                                        Log.d("QuestionDebug", "Final URL: " + imageUrl);
+
+                                        ImageView imageView = new ImageView(ViewResultAssignmentDetailsActivity.this);
+                                        imageView.setAdjustViewBounds(true);
+                                        imageView.setMaxHeight(300);
+
+                                        Glide.with(ViewResultAssignmentDetailsActivity.this)
+                                                .load(imageUrl)
+                                                .into(imageView);
+
+                                        questionLayout.addView(imageView);
+
+                                    } else {
+
+                                        // ---------- TEXT QUESTION ----------
+                                        TextView questionTextView = new TextView(ViewResultAssignmentDetailsActivity.this);
+
+                                        String cleanedHtml = questionHtml.replaceAll("<img[^>]+>", "");
+
+                                        Spanned spannedText = HtmlCompat.fromHtml(
+                                                cleanedHtml,
+                                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                                        );
+
+                                        String finalText = spannedText.toString()
+                                                .replace("\u00A0", "")
+                                                .trim();
+
+                                        questionTextView.setText(finalText);
+                                        questionTextView.setTextSize(18);
+                                        questionTextView.setTextColor(Color.BLACK);
+                                        questionTextView.setGravity(Gravity.CENTER);
+                                        questionTextView.setPadding(12,12,12,12);
+
+                                        questionLayout.addView(questionTextView);
+                                    }
+
 
                                     TextView answers = new TextView(getApplicationContext());
-                                    answers.setText(answerText);
+                                    answers.setText(answer);
                                     answers.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
                                     answers.setPadding(14,14,14,14);
                                     answers.setTextColor(Color.BLACK);
@@ -221,7 +274,7 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
 
 
                                     TextView givenname = new TextView(getApplicationContext());
-                                    givenname.setText(givenText);
+                                    givenname.setText(given);
                                     givenname.setPadding(14,14,14,14);
                                     givenname.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
                                     givenname.setTextColor(Color.BLACK);
@@ -229,7 +282,7 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
                                     givenname.setGravity(Gravity.CENTER);
 
                                     TextView time = new TextView(getApplicationContext());
-                                    time.setText(timeText);
+                                    time.setText(timeTaken);
                                     time.setPadding(14,14,14,14);
                                     time.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
                                     time.setTextColor(Color.BLACK);
@@ -237,14 +290,14 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
                                     time.setGravity(Gravity.CENTER);
 
 
-                                    row.addView(question);
+                                    row.addView(questionLayout);
                                     row.addView(answers);
                                     row.addView(givenname);
                                     row.addView(time);
 
                                     tabLayout.addView(row);
 
-                                    if (i < jsonArray.length() - 1) {
+                                    if (i < questionsList.size() - 1) {
                                         View separator = inflater.inflate(R.layout.separator_row, tabLayout, false);
                                         tabLayout.addView(separator);
                                     }
@@ -261,12 +314,7 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
                                 txtCorrectAnswers.setText(String.valueOf(correct));
                                 txtworngAnswers.setText(String.valueOf(incorrect));
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                } else {
+                            }else {
 
                 }
 

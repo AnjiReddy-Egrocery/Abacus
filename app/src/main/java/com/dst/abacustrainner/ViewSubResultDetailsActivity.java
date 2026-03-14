@@ -13,13 +13,17 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.dst.abacustrainner.Activity.AllocatedViewSubResultDetailsActivity;
 import com.dst.abacustrainner.Activity.ViewResultDetailsActivity;
+import com.dst.abacustrainner.Model.AllocatedViewSubTopicResultResponse;
 import com.dst.abacustrainner.Model.ViewSubTopicResultResponse;
 import com.dst.abacustrainner.Model.ViewTopicResultResponse;
 import com.dst.abacustrainner.Services.ApiClient;
@@ -36,7 +40,10 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -228,19 +235,16 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
                 .client(client)
                 .build();
         ApiClient apiClient=retrofit.create(ApiClient.class);
-        RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), examRnm);
+        RequestBody idPart = RequestBody.create(MediaType.parse("application/json"), examRnm);
 
         Call<ViewSubTopicResultResponse> call=apiClient.getviewResult(idPart);
         call.enqueue(new Callback<ViewSubTopicResultResponse>() {
 
             @Override
             public void onResponse(Call<ViewSubTopicResultResponse> call, Response<ViewSubTopicResultResponse> response) {
-                if (response.isSuccessful()) {
-                    ViewSubTopicResultResponse result = response.body();
-                    Log.d("Response", "Anji" + result);
+                if (response.isSuccessful() && response.body() != null) {
 
-                    if (result != null) {
-                        ViewSubTopicResultResponse.Result viewTopicResult = result.getResult();
+                    ViewSubTopicResultResponse.Result viewTopicResult = response.body().getResult();
                         firstName = viewTopicResult.getFirstName();
                         startDate = viewTopicResult.getStartedOn();
 
@@ -248,29 +252,26 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
 //            txtName.setText(firstName);
 //            txtStartDate.setText(startDate);
 
-                        String questionsListJsonString = viewTopicResult.getQuestionsList();
-                        if (questionsListJsonString != null) {
-                            try {
-                                JSONArray jsonArray = new JSONArray(questionsListJsonString);
+                        List<ViewSubTopicResultResponse.Question> questionsList = viewTopicResult.getQuestionsList();
 
-                                // Initialize counters
-                                totalQuestions = jsonArray.length();
+
+                                totalQuestions = questionsList.size();
                                 attempted = 0;
                                 correct = 0;
                                 incorrect = 0;
 
                                 LayoutInflater inflater = LayoutInflater.from(ViewSubResultDetailsActivity.this);
 
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject questionObject = jsonArray.getJSONObject(i);
+                                for (int i = 0; i < questionsList.size(); i++) {
+                                    ViewSubTopicResultResponse.Question question=questionsList.get(i);
 
                                     // Extract fields
-                                    String questionHtml = questionObject.getString("question");
-                                    String answer = questionObject.getString("answer");
-                                    String given = questionObject.getString("given");
-                                    int isCorrect = questionObject.getInt("is_currect");
-                                    String timeTaken = questionObject.getString("time_taken");
-                                    int status = questionObject.getInt("status");
+                                    String questionHtml = question.getQuestion();
+                                    String answer = question.getAnswer();
+                                    String given = question.getGiven();
+                                    int isCorrect = question.getIs_currect();
+                                    int status = question.getStatus();
+                                    String timeTaken = String.valueOf(question.getTime_taken());
 
                                     // Update counts
                                     if (status == 1) {
@@ -287,28 +288,65 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
                                     updatePieChart(attempted, notAttempted, correct, incorrect);
 
 
-                                    // Convert HTML to Spanned text for display
-                                    Spanned questionText = HtmlCompat.fromHtml(questionHtml, HtmlCompat.FROM_HTML_MODE_LEGACY);
-                                    Spanned answerText = HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY);
-                                    Spanned givenText = HtmlCompat.fromHtml(given, HtmlCompat.FROM_HTML_MODE_LEGACY);
-                                    Spanned timeText = HtmlCompat.fromHtml(timeTaken, HtmlCompat.FROM_HTML_MODE_LEGACY);
+
 
                                     // Create table row
                                     TableRow row = new TableRow(getApplicationContext());
 
                                     // Create and configure TextViews
-                                    TextView questionView = new TextView(getApplicationContext());
-                                    questionView.setText(questionText);
-                                    questionView.setPadding(14, 14, 14, 14);
-                                    questionView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-                                    questionView.setTextColor(Color.BLACK);
-                                    questionView.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
-                                    questionView.setGravity(Gravity.CENTER);
+                                    LinearLayout questionLayout = new LinearLayout(ViewSubResultDetailsActivity.this);
+                                    questionLayout.setOrientation(LinearLayout.VERTICAL);
+                                    questionLayout.setLayoutParams(new TableRow.LayoutParams(
+                                            0, TableRow.LayoutParams.WRAP_CONTENT, 1));
+
+                                    questionLayout.setGravity(Gravity.CENTER);
+
+                                    Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
+                                    Matcher matcher = pattern.matcher(questionHtml);
+
+                                    if (matcher.find()) {
+
+                                        String imageUrl = matcher.group(1);
+
+                                        ImageView imageView = new ImageView(ViewSubResultDetailsActivity.this);
+                                        imageView.setAdjustViewBounds(true);
+                                        imageView.setMaxHeight(300);
+
+                                        Glide.with(ViewSubResultDetailsActivity.this)
+                                                .load(imageUrl)
+                                                .into(imageView);
+
+                                        questionLayout.addView(imageView);
+
+                                    } else {
+
+                                        TextView questionTextView = new TextView(ViewSubResultDetailsActivity.this);
+
+                                        String cleanedHtml = questionHtml.replaceAll("<img[^>]+>", "");
+
+                                        Spanned spannedText = HtmlCompat.fromHtml(
+                                                cleanedHtml,
+                                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                                        );
+
+                                        String finalText = spannedText.toString()
+                                                .replace("\u00A0", "")
+                                                .trim();
+
+                                        questionTextView.setText(finalText);
+                                        questionTextView.setTextSize(18);
+                                        questionTextView.setTextColor(Color.BLACK);
+                                        questionTextView.setGravity(Gravity.CENTER);
+                                        questionTextView.setPadding(12, 12, 12, 12);
+
+                                        questionLayout.addView(questionTextView);
+                                    }
+
 
 
 
                                     TextView answersView = new TextView(getApplicationContext());
-                                    answersView.setText(answerText);
+                                    answersView.setText(answer);
                                     answersView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
                                     answersView.setPadding(14, 14, 14, 14);
                                     answersView.setTextColor(Color.BLACK);
@@ -317,7 +355,7 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
 
 
                                     TextView givenView = new TextView(getApplicationContext());
-                                    givenView.setText(givenText);
+                                    givenView.setText(given);
                                     givenView.setPadding(14, 14, 14, 14);
                                     givenView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
                                     givenView.setTextColor(Color.BLACK);
@@ -325,7 +363,7 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
                                     givenView.setGravity(Gravity.CENTER);
 
                                     TextView timeView = new TextView(getApplicationContext());
-                                    timeView.setText(timeText);
+                                    timeView.setText(timeTaken);
                                     timeView.setPadding(14, 14, 14, 14);
                                     timeView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
                                     timeView.setTextColor(Color.BLACK);
@@ -333,7 +371,7 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
                                     timeView.setGravity(Gravity.CENTER);
 
                                     // Add views to row
-                                    row.addView(questionView);
+                                    row.addView(questionLayout);
                                     row.addView(answersView);
                                     row.addView(givenView);
                                     row.addView(timeView);
@@ -342,7 +380,7 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
                                     tabLayout.addView(row);
 
                                     // Add separator between rows
-                                    if (i < jsonArray.length() - 1) {
+                                    if (i < questionsList.size() - 1) {
                                         View separator = inflater.inflate(R.layout.separator_row, tabLayout, false);
                                         tabLayout.addView(separator);
                                     }
@@ -360,11 +398,6 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
                                 txtworngAnswers.setText(String.valueOf(incorrect));
 
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
                 } else {
                     Log.e("Response", "Request failed");
                 }

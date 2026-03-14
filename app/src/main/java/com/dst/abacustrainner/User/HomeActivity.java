@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,6 +77,8 @@ public class HomeActivity extends AppCompatActivity {
     String batchId;
     String Hi;
     String studentId;
+    LinearLayout llSubMenuWorksheet;
+    TextView worksheetItem,videoItem;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,14 @@ public class HomeActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         txtName = findViewById(R.id.txt_name);
         imageProfile = findViewById(R.id.imgProfile);
+
+        studentId = getIntent().getStringExtra("StudentId");
+
+        if (studentId == null) {
+            studentId = SharedPrefManager.getInstance(getApplicationContext())
+                    .getUser()
+                    .getStudentId();
+        }
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -100,19 +111,15 @@ public class HomeActivity extends AppCompatActivity {
 
         bottomNavigationView.setPadding(0, 0, 0, 0);  // Padding around the view
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-        StudentTotalDetails.Result studentdetails = SharedPrefManager.getInstance(getApplicationContext()).getUser();
-        studentId = studentdetails.getStudentId();
 
 
-        StudentDetailsMethod(studentId);
+       // StudentTotalDetails.Result studentdetails = SharedPrefManager.getInstance(getApplicationContext()).getUser();
+        //studentId = studentdetails.getStudentId();
 
-        if (studentId != null) {
-            studentId = "2251"; // safety fallback
-            loadHomeFragmentWithStudentId(studentId);
+        Log.e("Shanker","Home StudentId"+studentId);
 
-        } else {
-            Toast.makeText(HomeActivity.this, "Student ID not available. Please log in again.", Toast.LENGTH_LONG).show();
-        }
+
+
         // Pass navigateTo to HomeFragment as argument
         String navigateTo = getIntent().getStringExtra("navigate_to");  // "video" or "live"
 
@@ -128,7 +135,6 @@ public class HomeActivity extends AppCompatActivity {
                 .commit();
 
 
-       // studentId = getIntent().getStringExtra("studentId");
         String batchId = getIntent().getStringExtra("batchId");
         Log.d("HomeActivity", "Received studentId=" + studentId + " batchId=" + batchId);
 
@@ -153,10 +159,12 @@ public class HomeActivity extends AppCompatActivity {
 
         navigationView.setItemIconSize(80);
 
+
+
+
+
         View headerView = navigationView.getHeaderView(0);
         ImageView closeIcon = headerView.findViewById(R.id.close_icon);
-
-
         closeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,6 +173,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+
 
 
 // Enable the "hamburger" icon to open the drawer
@@ -177,6 +186,10 @@ public class HomeActivity extends AppCompatActivity {
 
         // Set up NavigationView listener for the Drawer
         navigationView.setNavigationItemSelectedListener(navDrawerListener);
+        StudentDetailsMethod(studentId);
+
+
+
 
 
     }
@@ -377,6 +390,7 @@ public class HomeActivity extends AppCompatActivity {
     private NavigationView.OnNavigationItemSelectedListener navDrawerListener = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(MenuItem item) {
+
             Fragment selectedFragment = null;
             int itemView = item.getItemId();
 
@@ -399,11 +413,13 @@ public class HomeActivity extends AppCompatActivity {
 
             }else if (itemView == R.id.nav_worksheet){
 
-               /* Intent intent= new Intent(HomeActivity.this, WorksheetSubscriptionActivity.class);
-                startActivity(intent);*/
-
+               /* if (llSubMenuWorksheet.getVisibility() == View.GONE) {
+                    llSubMenuWorksheet.setVisibility(View.VISIBLE);
+                } else {
+                    llSubMenuWorksheet.setVisibility(View.GONE);
+                }*/
                 WorksheetSubscriptionMethod();
-                //return true;
+
 
             }else if (itemView == R.id.nav_video){
              /*   Intent intent= new Intent(HomeActivity.this, VideoTutorialsActivity.class);
@@ -482,6 +498,8 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         }
     };
+
+
 
     private void videotutorialsmethod() {
 
