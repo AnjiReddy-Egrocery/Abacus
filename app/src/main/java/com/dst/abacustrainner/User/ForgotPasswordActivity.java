@@ -48,8 +48,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                  String email = edtEmail.getText().toString().trim();
+                Log.d("API_ERROR", "Entered Email: " + email);
 
-                 if (isValidEmail(email)){
+
+                if (isValidEmail(email)){
+
+                    Log.d("API_ERROR", "Valid Email, calling API");
 
                      resetPasswordMethod(email);
                  }
@@ -58,7 +62,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void resetPasswordMethod(String email) {
-
+        Log.d("API_ERROR", "Sending Email to API: " + email);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -75,33 +79,60 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         call.enqueue(new Callback<ForgotPassword>() {
             @Override
             public void onResponse(Call<ForgotPassword> call, Response<ForgotPassword> response) {
-                if (response.isSuccessful()){
-                    ForgotPassword forgotPassword = response.body();
-                    Log.e("USERDADA","list: "+forgotPassword);
-                  if (forgotPassword.getErrorCode() .equals("200")){
+                Log.d("API_ERROR","Code: "+response.code());
 
-                      String studentId="";
-                      String otp="";
-                      String parentEmailId="";
-                      ForgotPassword.Result list =forgotPassword.getResult();
-                      studentId=list.getStudentId();
-                        otp=list.getOtp();
-                        parentEmailId=list.getParentEmail();
-                        Intent intent = new Intent(ForgotPasswordActivity.this, VerifyActivity.class);
-                      intent.putExtra("studentId", studentId);
-                      intent.putExtra("Otp", otp);
-                      intent.putExtra("parentEmail",parentEmailId);
-                      startActivity(intent);
+                if(response.isSuccessful() && response.body()!=null){
+
+                    ForgotPassword forgotPassword = response.body();
+
+                    Log.d("API_ERROR","ErrorCode: "+forgotPassword.getErrorCode());
+                    Log.d("API_ERROR","Message: "+forgotPassword.getMessage());
+
+                    if("200".equals(forgotPassword.getErrorCode())){
+
+                        ForgotPassword.Result list = forgotPassword.getResult();
+
+                        if(list!=null){
+
+                            String studentId = list.getStudentId();
+                            String otp = list.getOtp();
+                            String parentEmailId = list.getParentEmail();
+
+                            Log.d("API_ERROR","StudentId: "+studentId);
+                            Log.d("API_ERROR","OTP: "+otp);
+
+                            Intent intent = new Intent(ForgotPasswordActivity.this, VerifyActivity.class);
+                            intent.putExtra("studentId", studentId);
+                            intent.putExtra("Otp", otp);
+                            intent.putExtra("parentEmail", parentEmailId);
+                            startActivity(intent);
+                        }
+
+                    }else{
+
+                        Toast.makeText(ForgotPasswordActivity.this,
+                                forgotPassword.getMessage(),
+                                Toast.LENGTH_LONG).show();
                     }
 
-                }else {
-                    Toast.makeText(ForgotPasswordActivity.this,"Data Error",Toast.LENGTH_LONG).show();
+                }else{
+
+                    Log.e("API_ERROR","Response Failed");
+
+                    Toast.makeText(ForgotPasswordActivity.this,
+                            "Server Error",
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
+
             @Override
             public void onFailure(Call<ForgotPassword> call, Throwable t) {
+                Log.e("API_ERROR","Error: "+t.getMessage());
 
+                Toast.makeText(ForgotPasswordActivity.this,
+                        "Network Error",
+                        Toast.LENGTH_LONG).show();
             }
         });
 
