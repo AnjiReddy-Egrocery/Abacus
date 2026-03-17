@@ -390,7 +390,7 @@ public class VisualiztionActivity extends AppCompatActivity {
                     int selectedRange;
                     try {
                         selectedRange = Integer.parseInt(selectedValue);
-                        if (selectedRange < 1 || selectedRange > 10 || selectedRange > selectedOperandCount) {
+                        if (selectedRange < 1 || selectedRange > 10 ) {
                             return false; // Return false if the selected range is invalid
                         }
                     } catch (NumberFormatException e) {

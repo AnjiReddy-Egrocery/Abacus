@@ -45,6 +45,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
+import com.dst.abacustrainner.Model.StudentUserMethod;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.database.SharedPrefManager;
@@ -103,6 +104,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
     private static final int RC_SIGN_UP_WITH_GOOGLE = 9002;
     private static final int CREDENTIAL_PICKER_REQUEST = 1001;
     private String apiDob = "";
+    String parentEmailId ;
     TextView genderErrorText,txtfirstname,txtmothertongue,txtlastname,txtmiddlename,txtmobilenumber,txtemail,txtdob,txtPasswordError;
 
     @SuppressLint("MissingInflatedId")
@@ -131,6 +133,8 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
 
         edtEmail=findViewById(R.id.edt_parent_email);
         edtPassword=findViewById(R.id.edt_password);
+
+        parentEmailId= getIntent().getStringExtra("parentEmail");
 
         edtFirstName=findViewById(R.id.edt_first_name);
         edtMiddleName = findViewById(R.id.edt_middle_Name);
@@ -759,12 +763,12 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         RequestBody emailPart = RequestBody.create(MediaType.parse("text/plain"), registeremail);
         RequestBody mobilenumberPart = RequestBody.create(MediaType.parse("text/plain"), mobileNumber);
 
-        Call<StudentRegistationResponse> call=apiClient.studentRegisterPost(firstNamePart,middleNamePart,lastnamePart,genderPart,dateofbirthPart,mothertonguePart, emailPart,mobilenumberPart);
-        call.enqueue(new Callback<StudentRegistationResponse>() {
+        Call<StudentUserMethod> call=apiClient.studentRegisterPost(firstNamePart,middleNamePart,lastnamePart,genderPart,dateofbirthPart,mothertonguePart, emailPart,mobilenumberPart);
+        call.enqueue(new Callback<StudentUserMethod>() {
             @Override
-            public void onResponse(Call<StudentRegistationResponse> call, Response<StudentRegistationResponse> response) {
+            public void onResponse(Call<StudentUserMethod> call, Response<StudentUserMethod> response) {
                 if (response.isSuccessful()){
-                    StudentRegistationResponse registrationResponse = response.body();
+                    StudentUserMethod registrationResponse = response.body();
                     Log.e("USERDADA","list: "+registrationResponse);
                     if(registrationResponse.getErrorCode() .equals("203")){
                         Toast.makeText(UserCreateActivity.this, "Email and Mobile Number alerady Exists", Toast.LENGTH_SHORT).show();
@@ -774,12 +778,14 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                         String studentId="";
                         String otp="";
                         String parentEmailId="";
-                        List<StudentRegistationResponse.Result> list =registrationResponse.getResult();
-                        if (list != null && list.size() > 0) {
+                        StudentUserMethod.Result list =registrationResponse.getResult();
+                        if (list != null) {
 
-                             studentId = list.get(0).getStudentId();
-                            otp = list.get(0).getOtp();
-                            parentEmailId = list.get(0).getParentEmail();
+                             studentId = list.getStudentId();
+                            otp = list.getOtp();
+                            parentEmailId = list.getParentEmail();
+
+                            Log.d("NAVIGATION","Opening VerifyActivity");
 
                             Intent intent = new Intent(UserCreateActivity.this, VerifyActivity.class);
                             intent.putExtra("studentId", studentId);
@@ -796,7 +802,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
             }
 
             @Override
-            public void onFailure(Call<StudentRegistationResponse> call, Throwable t) {
+            public void onFailure(Call<StudentUserMethod> call, Throwable t) {
 
             }
         });

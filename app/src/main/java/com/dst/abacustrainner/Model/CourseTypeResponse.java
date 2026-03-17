@@ -6,6 +6,15 @@ public class CourseTypeResponse {
     private String status;
     private String errorCode;
    private List<CourseType> result;
+   private  String errorMessage;
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
     private String message;
 

@@ -45,7 +45,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 public class FirstLevelResultActivity extends AppCompatActivity {
-    TextView txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers,txtTotalTime;
+    TextView showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers,txtTotalTime;
     LinearLayout btnSubmit,RetakeTest,NextLevel;
     TableLayout tableLayout;
     private int currentQuestionIndex = 0;
@@ -65,11 +65,7 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_level_result);
 
-        txtTotalQuestions=findViewById(R.id.txt_questions);
-        txtAttemtedQueston=findViewById(R.id.txt_attemted_question);
-        //txtNotAttemtedQuestion=findViewById(R.id.txt_not_questions);
-        txtCorrectAnswer=findViewById(R.id.txt_correct_answer);
-        txtworngAnswer=findViewById(R.id.txt_wrong_answer);
+
         tableLayout=findViewById(R.id.tablelayout);
         btnSubmit =findViewById(R.id.but_submit_result_first);
         RetakeTest =findViewById(R.id.retake);
@@ -87,17 +83,6 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         layoutFirst = findViewById(R.id.layout_first);
         layoutSecond = findViewById(R.id.layout_second);
 
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
-            int scrollY = scrollView.getScrollY();
-
-            if (scrollY > 100 && layoutFirst.getVisibility() == View.VISIBLE) {
-                fadeOut(layoutFirst);
-                fadeIn(layoutSecond);
-            } else if (scrollY <= 100 && layoutSecond.getVisibility() == View.VISIBLE) {
-                fadeOut(layoutSecond);
-                fadeIn(layoutFirst);
-            }
-        });
 
         Intent intent = getIntent();
         ArrayList<String> questions = intent.getStringArrayListExtra("questions");
@@ -163,15 +148,15 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         int attemptedCount = getAttemptedQuestionsCount(isQuestionAttempted);
         int correctCount = getCorrectAnswersCount(isQuestionAttempted, isQuestionCorrect);
         Log.e("ResultActivity", "Correct Count: " + correctCount);
-        txtCorrectAnswer.setText(String.valueOf(correctCount));
+       // txtCorrectAnswer.setText(String.valueOf(correctCount));
         txtCorrectAnswers.setText(String.valueOf(correctCount));
 
 
-        txtAttemtedQueston.setText(String.valueOf(attemptedCount));
+        //txtAttemtedQueston.setText(String.valueOf(attemptedCount));
         txtAttemtedQuestons.setText(String.valueOf(attemptedCount));
         // txtCorrectAnswer.setText(String.valueOf(correctCount));
 
-        txtTotalQuestions.setText(String.valueOf(totalQuestions));
+       // txtTotalQuestions.setText(String.valueOf(totalQuestions));
         txtTotalQuestion.setText(String.valueOf(totalQuestions));
 
         int attemptedQuestions = getAttemptedQuestionsCount(isQuestionAttempted);
@@ -184,7 +169,7 @@ public class FirstLevelResultActivity extends AppCompatActivity {
 
         //txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
         // txtCorrectAnswer.setText(String.valueOf(correctAnswerCount));
-        txtworngAnswer.setText(String.valueOf(wrongAnswerCount));
+        //txtworngAnswer.setText(String.valueOf(wrongAnswerCount));
         txtworngAnswers.setText(String.valueOf(wrongAnswerCount));
 
         // Get current date and time
@@ -240,6 +225,11 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         pieChart.setTransparentCircleRadius(50f);
         /*pieChart.setCenterText(totalTime);*/
         pieChart.setCenterTextSize(12f);
+
+        pieChart.setExtraTopOffset(10f);
+        pieChart.setExtraBottomOffset(0f);
+        pieChart.setExtraLeftOffset(0f);
+        pieChart.setExtraRightOffset(0f);
 
         // Set labels and values outside the slices
         dataSet.setValueLinePart1Length(0.5f);
@@ -380,16 +370,6 @@ public class FirstLevelResultActivity extends AppCompatActivity {
 
         }
 
-    }
-
-    private void fadeIn(View view) {
-        view.setAlpha(0f);
-        view.setVisibility(View.VISIBLE);
-        view.animate().alpha(1f).setDuration(0).start();
-    }
-
-    private void fadeOut(View view) {
-        view.animate().alpha(0f).setDuration(0).withEndAction(() -> view.setVisibility(View.GONE)).start();
     }
 
 

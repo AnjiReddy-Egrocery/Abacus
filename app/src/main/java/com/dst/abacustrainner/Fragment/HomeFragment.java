@@ -56,6 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -120,7 +121,7 @@ public class HomeFragment extends Fragment {
         StudentRegistationResponse.Result result= SharedPrefManager.getInstance(getContext().getApplicationContext()).getUserData();
         id=result.getStudentId();
 
-         Log.e("Reddy","StudentId" + id);
+         Log.e("Pranisha","StudentId" + id);
         firsstname=" Hello " +  result.getFirstName() + "";
         butViewMoreDetails.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +133,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), SubscriptionDetailsActivity.class);
-                intent.putExtra("studentId",studentId);
+                intent.putExtra("studentId",id);
                 startActivity(intent);
             }
         });
@@ -140,19 +141,19 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), AllocatedCoursesActivity.class);
-                intent.putExtra("studentId",studentId);
+                intent.putExtra("studentId",id);
                 startActivity(intent);
             }
         });
-        Bundle args = getArguments();
+      /*  Bundle args = getArguments();
         if (args != null) {
-            String studentId = args.getString("studentId");
-            String batchId = args.getString("batchId");
+            studentId = args.getString("StudentId");
+            batchId = args.getString("batchId");
 
             if (studentId != null && batchId != null) {
                 ScheduledateMethod(studentId, batchId);
             }
-        }
+        }*/
 
 
 
@@ -161,18 +162,18 @@ public class HomeFragment extends Fragment {
         VerifyMethod(id,currentDate);
         VerifyBatchDetails(id);
 
-        if (getArguments() != null && getArguments().getString("studentId") != null) {
-            studentId = getArguments().getString("studentId");
+        /*if (getArguments() != null && getArguments().getString("StudentId") != null) {
+            studentId = getArguments().getString("StudentId");
         } else {
             studentId = id; // fallback to SharedPref ID
-        }
+        }*/
 
         txtClckSchedule.setText(Html.fromHtml("<u>Click Here</u>"));
         txtClckSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (studentId != null && !studentId.isEmpty()) {
-                    scheduleMethod(studentId);
+                    scheduleMethod(id);
                 } else {
                     Toast.makeText(getContext(), "Student ID is missing", Toast.LENGTH_SHORT).show();
                 }
@@ -191,7 +192,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(getContext(), VisualiztionActivity.class);
-                intent.putExtra("studentId",id);
+                intent.putExtra("StudentId",id);
                 intent.putExtra("firstName",firsstname);
                 startActivity(intent);
             }
@@ -214,8 +215,7 @@ public class HomeFragment extends Fragment {
             }
         });*/
 
-        layoutSchedule.setVisibility(View.GONE);
-        layoutScheduleInfo.setVisibility(View.GONE);
+
 
 
 
@@ -239,10 +239,14 @@ public class HomeFragment extends Fragment {
 
     private void scheduleMethod(String studentId) {
         OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
@@ -256,7 +260,7 @@ public class HomeFragment extends Fragment {
                 if (response.isSuccessful()){
                     BachDetailsResponse bachDetailsResponse=response.body();
                     if (bachDetailsResponse.getErrorCode().equals("202")){
-                        Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
                     }else if (bachDetailsResponse.getErrorCode().equals("200")){
 
                         List<BachDetailsResponse.Result> results=bachDetailsResponse.getResult();
@@ -291,8 +295,12 @@ public class HomeFragment extends Fragment {
     private void ScheduledateMethod(String studentId, String batchId) {
 
         OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -406,10 +414,14 @@ public class HomeFragment extends Fragment {
 
     private void VerifyBatchDetails(String id) {
         OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
@@ -425,7 +437,7 @@ public class HomeFragment extends Fragment {
                     if (bachDetailsResponse.getErrorCode().equals("202")){
                         Context ctx= getContext();
                         if (ctx != null) {
-                            Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
                         }
 
                     }else if (bachDetailsResponse.getErrorCode().equals("200")){
@@ -455,10 +467,14 @@ public class HomeFragment extends Fragment {
         Log.e("Reddy","StudentId" + id);
         Log.e("Reddy","Date" + txtSchedule);
         OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();

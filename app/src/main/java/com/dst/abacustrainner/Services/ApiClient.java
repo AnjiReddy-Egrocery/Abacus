@@ -32,6 +32,7 @@ import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.Model.StudentScheduleInfo;
 import com.dst.abacustrainner.Model.StudentTotalDetails;
 import com.dst.abacustrainner.Model.StudentUpdateProfile;
+import com.dst.abacustrainner.Model.StudentUserMethod;
 import com.dst.abacustrainner.Model.SubmitDataResponse;
 import com.dst.abacustrainner.Model.TopicExamResponse;
 import com.dst.abacustrainner.Model.TopicListResponse;
@@ -56,13 +57,13 @@ import retrofit2.http.Part;
 public interface ApiClient {
     @Multipart
     @POST("apicalls/Index/studentRegistration")
-    Call<StudentRegistationResponse> studentRegisterPost( @Part("firstName") RequestBody firstName,
-                                                          @Part("middleName") RequestBody middleName,
-                                                          @Part("lastName") RequestBody lastName,
-                                                          @Part("gender") RequestBody gender,
-                                                          @Part("dateOfBirth") RequestBody dateOfBirth,                                                           @Part("motherTongue") RequestBody motherTongue,
-                                                          @Part("emailId") RequestBody emailId,
-                                                          @Part("mobileNumber") RequestBody mobileNumber);
+    Call<StudentUserMethod> studentRegisterPost(@Part("firstName") RequestBody firstName,
+                                                @Part("middleName") RequestBody middleName,
+                                                @Part("lastName") RequestBody lastName,
+                                                @Part("gender") RequestBody gender,
+                                                @Part("dateOfBirth") RequestBody dateOfBirth, @Part("motherTongue") RequestBody motherTongue,
+                                                @Part("emailId") RequestBody emailId,
+                                                @Part("mobileNumber") RequestBody mobileNumber);
 
     @Multipart
     @POST("apicalls/Index/updateStudentProfile")
@@ -79,7 +80,7 @@ public interface ApiClient {
 
     @Multipart
     @POST("apicalls/Index/verifyStudentAccount")
-    Call<StudentRegistationResponse> VerifyPost(@Part("studentId") RequestBody studentId,
+    Call<StudentUserMethod> VerifyPost(@Part("studentId") RequestBody studentId,
                                                  @Part("otp") RequestBody otp,
                                                  @Part("password") RequestBody password);
 

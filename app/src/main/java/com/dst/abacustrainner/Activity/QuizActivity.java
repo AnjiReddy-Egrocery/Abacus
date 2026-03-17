@@ -254,10 +254,48 @@ public class QuizActivity extends AppCompatActivity {
         butSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                stopTimer();
                 saveTimerState();
-                displayQuestion();
+
+                // Save the current question's answer if entered
+                String enteredAnswer = edtAnswer.getText().toString();
+                if (!enteredAnswer.isEmpty()) {
+                    if (answers.size() > currentQuestionIndex) {
+                        answers.set(currentQuestionIndex, enteredAnswer);
+                    } else {
+                        // If list size is smaller, add to list
+                        answers.add(enteredAnswer);
+                    }
+
+                    // Mark question as attempted
+                    if (isQuestionAttempted.size() > currentQuestionIndex) {
+                        isQuestionAttempted.set(currentQuestionIndex, true);
+                    } else {
+                        isQuestionAttempted.add(true);
+                    }
+
+                    // Check correctness
+                    if (coreectedAnswers != null && currentQuestionIndex < coreectedAnswers.size()) {
+                        boolean correct = enteredAnswer.equals(coreectedAnswers.get(currentQuestionIndex));
+                        if (isQuestionCorrect.size() > currentQuestionIndex) {
+                            isQuestionCorrect.set(currentQuestionIndex, correct);
+                        } else {
+                            isQuestionCorrect.add(correct);
+                        }
+                    }
+
+                    // Mark question as answered
+                    if (isQuestionAnswered.size() > currentQuestionIndex) {
+                        isQuestionAnswered.set(currentQuestionIndex, true);
+                    } else {
+                        isQuestionAnswered.add(true);
+                    }
+                }
+
+                // Clear the EditText if needed
                 edtAnswer.getText().clear();
-                restoreTimerState();
+
+                // Show result
                 showCompletionPopup();
             }
         });

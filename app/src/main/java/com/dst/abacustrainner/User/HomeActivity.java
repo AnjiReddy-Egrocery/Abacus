@@ -89,7 +89,7 @@ public class HomeActivity extends AppCompatActivity {
         txtName = findViewById(R.id.txt_name);
         imageProfile = findViewById(R.id.imgProfile);
 
-        studentId = getIntent().getStringExtra("StudentId");
+        studentId = getIntent().getStringExtra("studentId");
 
         if (studentId == null) {
             studentId = SharedPrefManager.getInstance(getApplicationContext())
@@ -202,22 +202,7 @@ public class HomeActivity extends AppCompatActivity {
         return firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
     }
 
-    private void loadHomeFragmentWithStudentId(String studentId) {
-        Log.d("CoursesActivity", "Loading HomeFragment with studentId = " + studentId);
-        Bundle bundle = new Bundle();
-        bundle.putString("studentId", studentId);
-        bundle.putString("batchId",batchId);
 
-        HomeFragment homeFragment = new HomeFragment();
-        homeFragment.setArguments(bundle);
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.flFragment, homeFragment)
-                .commit();
-
-        Log.d("Reddy", "HomeFragment replaced successfully with studentId=" + studentId + " batchId=" + batchId);
-    }
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(MenuItem item) {
@@ -247,59 +232,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     };
 
-/*
-    private void scheduleMethod(String studentId) {
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(3, TimeUnit.SECONDS)
-                .readTimeout(3, TimeUnit.SECONDS)
-                .writeTimeout(3, TimeUnit.SECONDS)
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .build();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-        ApiClient apiClient=retrofit.create(ApiClient.class);
-        RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
-        Call<BachDetailsResponse> call=apiClient.batchData(idPart);
-        call.enqueue(new Callback<BachDetailsResponse>() {
-            @Override
-            public void onResponse(Call<BachDetailsResponse> call, Response<BachDetailsResponse> response) {
-
-                if (response.isSuccessful()){
-                    BachDetailsResponse bachDetailsResponse=response.body();
-                    if (bachDetailsResponse.getErrorCode().equals("202")){
-                        Toast.makeText(HomeActivity.this, "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
-                    }else if (bachDetailsResponse.getErrorCode().equals("200")){
-
-                        List<BachDetailsResponse.Result> results= bachDetailsResponse.getResult();
-
-                        if (!results.isEmpty()) {
-
-                            batchId = results.get(0).getBatchId();
-                            Log.d("Reddy", "StudentId" + studentId);
-                            Log.d("Reddy", "BatchId" + batchId);
-
-                            openSchedulesFragment(studentId, batchId);
-
-                        }
-                    } else {
-                        Toast.makeText(HomeActivity.this, "Data Error", Toast.LENGTH_LONG).show();
-                    }
-
-
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BachDetailsResponse> call, Throwable t) {
-
-            }
-        });
-    }
-*/
 
 
     private void openSchedulesFragment(String studentId) {
@@ -320,13 +252,14 @@ public class HomeActivity extends AppCompatActivity {
 
     public void StudentDetailsMethod(String studentId) {
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(3, TimeUnit.SECONDS)
-                .readTimeout(3, TimeUnit.SECONDS)
-                .writeTimeout(3, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();

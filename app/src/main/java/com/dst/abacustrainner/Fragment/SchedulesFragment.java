@@ -71,30 +71,12 @@ import android.text.TextUtils;
 
 
 public class SchedulesFragment extends Fragment {
- /*   private RecyclerView calendarRecyclerView;
-   // private CalendarAdapter calendarAdapter;
-   // private List<String> daysList;
-  //  private TextView tvMonthYear,txtDate,txtTime;
-   // private ImageView btnPrevMonth, btnNextMonth;
-   // private Calendar currentCalendar;
-    //private TextView txtviewall;
 
-    RecyclerView recyclerTopicList;
-    TopicListAdapter topicListAdapter;
-
-    private String studentId, batchId;
-
-    private Map<String, String> scheduledDatesMap = new HashMap<>();
-    Map<String, String> dateIdMap = new HashMap<>();
-
-    TableLayout tableLayout,tableLayoutAssignments ;
-    String dateId;
-    String startTime,endTime,timeText,amPm,startHour,endHour;
-*/
  private String studentId;
 
  RecyclerView recyclerSchedules;
  BatchesAdapter batchesAdapter;
+    TextView txtNoData;
 
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -108,7 +90,7 @@ public class SchedulesFragment extends Fragment {
 
             Log.d("Reddy","StudentId"+studentId);
         }
-
+        txtNoData = view1.findViewById(R.id.txtNoData);
         recyclerSchedules = view1.findViewById(R.id.recycler_batches);
         recyclerSchedules.setLayoutManager(new LinearLayoutManager(getContext()));
         batchesAdapter = new BatchesAdapter(getContext(),studentId);
@@ -142,7 +124,11 @@ public class SchedulesFragment extends Fragment {
                 if (response.isSuccessful()){
                     BachDetailsResponse bachDetailsResponse=response.body();
                     if (bachDetailsResponse.getErrorCode().equals("202")){
-                        Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
+                        txtNoData.setVisibility(View.VISIBLE);
+                        txtNoData.setText(bachDetailsResponse.getErrorMessage());
+
+                        recyclerSchedules.setVisibility(View.GONE);
                     }else if (bachDetailsResponse.getErrorCode().equals("200")){
 
                         List<BachDetailsResponse.Result> results= bachDetailsResponse.getResult();

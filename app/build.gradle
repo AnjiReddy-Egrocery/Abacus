@@ -11,8 +11,8 @@ android {
         applicationId "com.dst.abacustrainner"
         minSdk 21
         targetSdk 35
-        versionCode 17
-        versionName "1.18" +
+        versionCode 20
+        versionName "1.21" +
                 "" +
                 "" +
                 "" +
@@ -20,7 +20,18 @@ android {
                 ""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
     }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging false
+        }
+    }
+
 
     buildTypes {
         release {

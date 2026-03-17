@@ -34,12 +34,14 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     Button butSend;
 
+
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
-        edtEmail = findViewById(R.id.edt_email);
+        edtEmail = findViewById(R.id.edt_forgot_email);
         butSend=findViewById(R.id.but_send);
 
         butSend.setOnClickListener(new View.OnClickListener() {

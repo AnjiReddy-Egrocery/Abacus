@@ -57,14 +57,14 @@ public class AllocatedViewSubAssignmentResultDetailsActivity extends AppCompatAc
     String examRnm="",topicName="",firstName="",startDate="",AttentQuestions="",Attamted="",Correct="",inCorrect="";
     TableLayout tabLayout;
     TextView txtName,txtStartDate,txtTopicName;
-    TextView txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers;
+    TextView dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers,txtNotAttemted;
     private PieChart pieChart;
     ScrollView scrollView;
     LinearLayout layoutFirst,layoutSecond;
     int totalQuestions ;
     int attempted ;
     int correct ;
-    int incorrect;
+    int incorrect,notAttempted;
 
 
 
@@ -79,32 +79,17 @@ public class AllocatedViewSubAssignmentResultDetailsActivity extends AppCompatAc
 //        txtName=findViewById(R.id.txt_stu_name);
 //        txtStartDate=findViewById(R.id.txt_date_start);
         txtTopicName=findViewById(R.id.txt_topic_name);
-        txtTotalQuestions=findViewById(R.id.txt_questions);
-        txtAttemtedQueston=findViewById(R.id.txt_attemted_question);
-        //txtNotAttemtedQuestion=findViewById(R.id.txt_not_questions);
-        txtCorrectAnswer=findViewById(R.id.txt_correct_answer);
-        txtworngAnswer=findViewById(R.id.txt_wrong_answer);
         txtTotalQuestion=findViewById(R.id.txt_question);
         txtAttemtedQuestons=findViewById(R.id.txt_attemted_questions);
         txtCorrectAnswers=findViewById(R.id.txt_correct_answers);
         txtworngAnswers=findViewById(R.id.txt_wrong_answers);
+        txtNotAttemted = findViewById(R.id.txt_notattemted_questions);
         dateTime = findViewById(R.id.txtDate);
 
         scrollView= findViewById(R.id.scroll_view);
         layoutFirst = findViewById(R.id.layout_first);
         layoutSecond = findViewById(R.id.layout_second);
 
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
-            int scrollY = scrollView.getScrollY();
-
-            if (scrollY > 100 && layoutFirst.getVisibility() == View.VISIBLE) {
-                fadeOut(layoutFirst);
-                fadeIn(layoutSecond);
-            } else if (scrollY <= 100 && layoutSecond.getVisibility() == View.VISIBLE) {
-                fadeOut(layoutSecond);
-                fadeIn(layoutFirst);
-            }
-        });
 
         Bundle bundle=getIntent().getExtras();
         examRnm=bundle.getString("examRnm");
@@ -112,10 +97,6 @@ public class AllocatedViewSubAssignmentResultDetailsActivity extends AppCompatAc
 
         txtTopicName.setText(topicName);
 
-        txtTotalQuestions.setText(AttentQuestions);
-        txtAttemtedQueston.setText(Attamted);
-        txtCorrectAnswer.setText(Correct);
-        txtworngAnswer.setText(inCorrect);
 
         txtTotalQuestion.setText(AttentQuestions);
         txtAttemtedQuestons.setText(Attamted);
@@ -255,6 +236,7 @@ public class AllocatedViewSubAssignmentResultDetailsActivity extends AppCompatAc
                     attempted = 0;
                     correct = 0;
                     incorrect = 0;
+                    notAttempted = 0;
 
                     LayoutInflater inflater = LayoutInflater.from(AllocatedViewSubAssignmentResultDetailsActivity.this);
 
@@ -272,15 +254,16 @@ public class AllocatedViewSubAssignmentResultDetailsActivity extends AppCompatAc
                         // counts
                         if (status == 1) {
                             attempted++;
+                            if (isCorrect == 1) {
+                                correct++;
+                            } else {
+                                incorrect++;
+                            }
                         }
 
-                        if (isCorrect == 1) {
-                            correct++;
-                        } else {
-                            incorrect++;
-                        }
 
-                        int notAttempted = totalQuestions - attempted;
+
+                        notAttempted = totalQuestions - attempted;
 
                         // update chart
                         updatePieChart(attempted, notAttempted, correct, incorrect);
@@ -364,6 +347,17 @@ public class AllocatedViewSubAssignmentResultDetailsActivity extends AppCompatAc
                         givenView.setLayoutParams(new TableRow.LayoutParams(
                                 0, TableRow.LayoutParams.WRAP_CONTENT, 1));
 
+                        if (given.isEmpty()) {
+                            givenView.setBackgroundColor(Color.WHITE); // Set background color to white
+                        } else if (given.equals(answer)) {
+                            givenView.setBackgroundColor(Color.parseColor("#008000"));
+                            //correctCount++;// Set background color to green
+                        } else {
+                            givenView.setBackgroundColor(Color.RED);
+                            // wrongCount++;// Set background color to red
+
+                        }
+
                         TextView timeView = new TextView(AllocatedViewSubAssignmentResultDetailsActivity.this);
                         timeView.setText(timeTaken);
                         timeView.setGravity(Gravity.CENTER);
@@ -384,15 +378,12 @@ public class AllocatedViewSubAssignmentResultDetailsActivity extends AppCompatAc
                         }
                     }
 
-                    txtTotalQuestions.setText(String.valueOf(totalQuestions));
-                    txtAttemtedQueston.setText(String.valueOf(attempted));
-                    txtCorrectAnswer.setText(String.valueOf(correct));
-                    txtworngAnswer.setText(String.valueOf(incorrect));
 
                     txtTotalQuestion.setText(String.valueOf(totalQuestions));
                     txtAttemtedQuestons.setText(String.valueOf(attempted));
                     txtCorrectAnswers.setText(String.valueOf(correct));
                     txtworngAnswers.setText(String.valueOf(incorrect));
+                    txtNotAttemted.setText(String.valueOf(notAttempted));
 
                 } else {
                     Log.e("API", "Response not successful");

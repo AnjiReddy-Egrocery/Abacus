@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.dst.abacustrainner.Adapter.CourseLevelAdapter;
 import com.dst.abacustrainner.Adapter.CourseTypeAdapter;
@@ -37,6 +38,7 @@ public class AllocatedCoursesActivity extends AppCompatActivity {
     RecyclerView recyclerCourseType;
     private String studentId;
     CourseTypeAdapter coursetypeAdapter;
+    TextView txtNoCourses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class AllocatedCoursesActivity extends AppCompatActivity {
 
         layoutBack = findViewById(R.id.layout_back);
         recyclerCourseType = findViewById(R.id.recycler_course_type);
+        txtNoCourses = findViewById(R.id.txtNoCourses);
 
         studentId = getIntent().getStringExtra("studentId");
         Log.e("Reddy",studentId);
@@ -96,15 +99,17 @@ public class AllocatedCoursesActivity extends AppCompatActivity {
                             coursetypeAdapter.setCourseTypes(courseTypes, studentId);
 
                         } else {
-                            Log.e("API", "No courses available");
+                            recyclerCourseType.setVisibility(View.GONE);
+                            txtNoCourses.setVisibility(View.VISIBLE);
+                            txtNoCourses.setText("No Courses Available");
                         }
                     } // ⚠️ NO ACTIVE SUBSCRIPTION
                     else if ("202".equals(res.getErrorCode())) {
 
-                       /* showEmptyMessage(
-                                "You do not have any active worksheet subscriptions. " +
-                                        "Please contact the administrator for more information."
-                        );*/
+                        recyclerCourseType.setVisibility(View.GONE);
+                        txtNoCourses.setVisibility(View.VISIBLE);
+
+                        txtNoCourses.setText(res.getErrorMessage());
                     }
                     // ❌ OTHER ERROR
                     else {

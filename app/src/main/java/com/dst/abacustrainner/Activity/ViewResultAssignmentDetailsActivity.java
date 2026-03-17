@@ -58,7 +58,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
     String examRnm="",topicName="",firstName="",startDate="",AttentQuestions="",Attamted="",Correct="",inCorrect="";
     TableLayout tabLayout;
-    TextView txtName,txtStartDate,txtTopicName,dateTime,txtTotalQuestions,txtAttemtedQueston,txtCorrectAnswer,txtworngAnswer,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers;
+    TextView txtName,txtStartDate,txtTopicName,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers,txtNotAttemptedQuestions;;
     private PieChart pieChart;
     ScrollView scrollView;
     LinearLayout layoutFirst,layoutSecond;
@@ -74,41 +74,23 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
        //txtStartDate=findViewById(R.id.txt_date_start);
         txtTopicName=findViewById(R.id.txt_topic_name);
         dateTime = findViewById(R.id.txtDate);
-        txtTotalQuestions=findViewById(R.id.txt_questions);
-        txtAttemtedQueston=findViewById(R.id.txt_attemted_question);
-        //txtNotAttemtedQuestion=findViewById(R.id.txt_not_questions);
-        txtCorrectAnswer=findViewById(R.id.txt_correct_answer);
-        txtworngAnswer=findViewById(R.id.txt_wrong_answer);
+
         txtTotalQuestion=findViewById(R.id.txt_question);
         txtAttemtedQuestons=findViewById(R.id.txt_attemted_questions);
         txtCorrectAnswers=findViewById(R.id.txt_correct_answers);
         txtworngAnswers=findViewById(R.id.txt_wrong_answers);
+        txtNotAttemptedQuestions = findViewById(R.id.txt_notattemted_questions);
 
         scrollView= findViewById(R.id.scroll_view);
         layoutFirst = findViewById(R.id.layout_first);
         layoutSecond = findViewById(R.id.layout_second);
         pieChart = findViewById(R.id.pieChart);
 
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
-            int scrollY = scrollView.getScrollY();
-
-            if (scrollY > 100 && layoutFirst.getVisibility() == View.VISIBLE) {
-                fadeOut(layoutFirst);
-                fadeIn(layoutSecond);
-            } else if (scrollY <= 100 && layoutSecond.getVisibility() == View.VISIBLE) {
-                fadeOut(layoutSecond);
-                fadeIn(layoutFirst);
-            }
-        });
         Bundle bundle=getIntent().getExtras();
         examRnm=bundle.getString("examRnm");
 
         Log.d("Reddy","Id"+examRnm);
 
-        txtTotalQuestions.setText(AttentQuestions);
-        txtAttemtedQueston.setText(Attamted);
-        txtCorrectAnswer.setText(Correct);
-        txtworngAnswer.setText(inCorrect);
 
         txtTotalQuestion.setText(AttentQuestions);
         txtAttemtedQuestons.setText(Attamted);
@@ -128,15 +110,7 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
 
     }
 
-    private void fadeIn(View view) {
-        view.setAlpha(0f);
-        view.setVisibility(View.VISIBLE);
-        view.animate().alpha(1f).setDuration(0).start();
-    }
 
-    private void fadeOut(View view) {
-        view.animate().alpha(0f).setDuration(0).withEndAction(() -> view.setVisibility(View.GONE)).start();
-    }
 
     private void ViewMethod(String examRnm) {
        /* HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -169,6 +143,8 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
                                 int attempted = 0;
                                 int correct = 0;
                                 int incorrect = 0;
+                                int notAttempted = 0;
+
                                 LayoutInflater inflater = LayoutInflater.from(ViewResultAssignmentDetailsActivity.this);
                                 for (int i = 0; i < questionsList.size(); i++) {
                                     ViewAssignmentResultResponse.Question questionObj = questionsList.get(i);
@@ -179,15 +155,19 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
                                     int status = questionObj.getStatus();
                                     String timeTaken = String.valueOf(questionObj.getTime_taken());
 
-                                    if (status == 1) {
+                                    if (status == 1) { // attempted question
+
                                         attempted++;
+
+                                        if (isCorrect == 1) {
+                                            correct++;
+                                        } else {
+                                            incorrect++;
+                                        }
+
                                     }
-                                    if (isCorrect == 1) {
-                                        correct++;
-                                    } else {
-                                        incorrect++;
-                                    }
-                                    int notAttempted = totalQuestions - attempted;
+
+                                    notAttempted = totalQuestions - attempted;
 
                                     // ✅ Now update Pie Chart
                                     updatePieChart(attempted, notAttempted, correct, incorrect);
@@ -281,6 +261,18 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
                                     givenname.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
                                     givenname.setGravity(Gravity.CENTER);
 
+                                    if (given.isEmpty()) {
+                                        givenname.setBackgroundColor(Color.WHITE); // Set background color to white
+                                    } else if (given.equals(answer)) {
+                                        givenname.setBackgroundColor(Color.parseColor("#008000"));
+                                        //correctCount++;// Set background color to green
+                                    } else {
+                                        givenname.setBackgroundColor(Color.RED);
+                                        //wrongCount++;// Set background color to red
+
+                                    }
+
+
                                     TextView time = new TextView(getApplicationContext());
                                     time.setText(timeTaken);
                                     time.setPadding(14,14,14,14);
@@ -304,15 +296,12 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
 
                                 }
 
-                                txtTotalQuestions.setText(String.valueOf(totalQuestions));
-                                txtAttemtedQueston.setText(String.valueOf(attempted));
-                                txtCorrectAnswer.setText(String.valueOf(correct));
-                                txtworngAnswer.setText(String.valueOf(incorrect));
 
                                 txtTotalQuestion.setText(String.valueOf(totalQuestions));
                                 txtAttemtedQuestons.setText(String.valueOf(attempted));
                                 txtCorrectAnswers.setText(String.valueOf(correct));
                                 txtworngAnswers.setText(String.valueOf(incorrect));
+                                txtNotAttemptedQuestions.setText(String.valueOf(notAttempted));
 
                             }else {
 

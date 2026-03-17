@@ -14,13 +14,6 @@
         android:orientation="vertical"
         android:layout_margin="14dp">
 
-<!--        <ImageView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="150dp"-->
-<!--            android:src="@drawable/big_logo_total"-->
-<!--            android:adjustViewBounds="true"-->
-<!--            android:scaleType="fitCenter"/>-->
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -87,173 +80,47 @@
 
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/layout_first"
-            android:layout_marginTop="-12dp"
-            android:visibility="visible" >
-            <LinearLayout
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:gravity="center"
+            android:background="@drawable/orange_border"
+            >
+            <TextView
+                android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:weightSum="2"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/orange_border"
-                    >
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="2dp"
-                        android:text="Total Question"
-                        android:textColor="#ff6600"
-                        android:textStyle="bold"
-                        android:textSize="18dp"
-                        android:gravity="center"
-                        />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txt_questions"
-                        android:textSize="14dp"
-                        android:fontFamily="@font/regular"
-                        android:layout_weight="1"
-                        android:textColor="#ff6600"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="10dp"
-                        android:text="0"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:weightSum="2"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/orange_border"
-                    >
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="2dp"
-                        android:text="Attempted"
-                        android:textColor="#ff6600"
-                        android:textStyle="bold"
-                        android:textSize="18dp"
-                        android:gravity="center"
-                        />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txt_attemted_question"
-                        android:textSize="14dp"
-                        android:fontFamily="@font/regular"
-                        android:layout_weight="1"
-                        android:textColor="#ff6600"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="10dp"
-                        android:text="0"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
+                android:layout_margin="2dp"
+                android:text="Total Question"
+                android:textColor="#ff6600"
+                android:textStyle="bold"
+                android:textSize="14dp"
+                android:gravity="center"
+                />
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2"
-
-                >
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:weightSum="2"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/orange_border"
-                    >
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="2dp"
-                        android:text="Correct"
-                        android:textColor="#ff6600"
-                        android:textStyle="bold"
-                        android:textSize="18dp"
-                        android:gravity="center"
-                        />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txt_correct_answer"
-                        android:textSize="14dp"
-                        android:fontFamily="@font/regular"
-                        android:layout_weight="1"
-                        android:textColor="#ff6600"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="10dp"
-                        android:text="0"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:weightSum="2"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/orange_border"
-                    >
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="2dp"
-                        android:text="Incorrect"
-                        android:textColor="#ff6600"
-                        android:textStyle="bold"
-                        android:textSize="18dp"
-                        android:gravity="center"
-                        />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txt_wrong_answer"
-                        android:textSize="14dp"
-                        android:fontFamily="@font/regular"
-                        android:layout_weight="1"
-                        android:textColor="#ff6600"
-                        android:gravity="center"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="10dp"
-                        android:text="0"/>
-                </LinearLayout>
-            </LinearLayout>
-
+                android:id="@+id/txt_question"
+                android:textSize="14dp"
+                android:fontFamily="@font/regular"
+                android:layout_weight="1"
+                android:textColor="#ff6600"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="0"/>
         </LinearLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="-12dp"
+            android:layout_marginTop="12dp"
             android:id="@+id/layout_second"
-            android:visibility="gone">
+            android:visibility="visible">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -274,7 +141,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="2dp"
-                        android:text="Total Question"
+                        android:text="Attempted"
                         android:textColor="#ff6600"
                         android:textStyle="bold"
                         android:textSize="14dp"
@@ -284,7 +151,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/txt_question"
+                        android:id="@+id/txt_attemted_questions"
                         android:textSize="14dp"
                         android:fontFamily="@font/regular"
                         android:layout_weight="1"
@@ -307,7 +174,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="2dp"
-                        android:text="Attempted"
+                        android:text="Not Attempted"
                         android:textColor="#ff6600"
                         android:textStyle="bold"
                         android:textSize="14dp"
@@ -316,7 +183,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/txt_attemted_questions"
+                        android:id="@+id/txt_notattemted_questions"
                         android:textSize="14dp"
                         android:fontFamily="@font/regular"
                         android:layout_weight="1"

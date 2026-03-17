@@ -106,7 +106,7 @@ public class AllocatedViewPracticeActivity extends AppCompatActivity {
                     if (topicsList.isEmpty()) {
                         recyclerViewSubTopics.setVisibility(View.GONE); // Hide RecyclerView
                     } else {
-                        Collections.reverse(topicsList);
+
                         viewListTopicAdapter = new AllocatedViewSubListAdataper(AllocatedViewPracticeActivity.this, topicsList);
                         recyclerViewSubTopics.setAdapter(viewListTopicAdapter);
                     }

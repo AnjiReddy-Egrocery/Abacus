@@ -42,6 +42,7 @@ public class OrdersActivity extends AppCompatActivity {
     TableLayout tableLayout;
     private String studentId;
     LinearLayout layoutBack;
+    TextView txtNoOrders;
 
 
     @Override
@@ -50,6 +51,7 @@ public class OrdersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_orders);
 
         tableLayout = findViewById(R.id.tableLayout);
+        txtNoOrders = findViewById(R.id.txtNoOrders);
         layoutBack = findViewById(R.id.layout_back);
         studentId = getIntent().getStringExtra("studentId");
         Log.e("Reddy",studentId);
@@ -89,8 +91,21 @@ public class OrdersActivity extends AppCompatActivity {
                                     .getResult()
                                     .getWorksheetOrders();
 
-                    setTableData(list);
-                }
+                    if (list != null && !list.isEmpty()) {
+
+                        tableLayout.setVisibility(View.VISIBLE);
+                        txtNoOrders.setVisibility(View.GONE);
+
+                        setTableData(list);
+
+                    } else {
+
+                        tableLayout.setVisibility(View.GONE);
+                        txtNoOrders.setVisibility(View.VISIBLE);
+                        txtNoOrders.setText("No Orders");
+
+                    }                }
+
             }
 
                     @Override

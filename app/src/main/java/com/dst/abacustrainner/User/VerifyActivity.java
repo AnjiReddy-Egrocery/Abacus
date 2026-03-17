@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
+import com.dst.abacustrainner.Model.StudentUserMethod;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 
@@ -57,7 +58,7 @@ public class VerifyActivity extends AppCompatActivity {
         otp=bundle.getString("Otp");
         email=bundle.getString("parentEmail");
 
-        //edtOtp.setText(otp);
+
 
         edtOtp.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -173,20 +174,20 @@ public class VerifyActivity extends AppCompatActivity {
         RequestBody passwordPart = RequestBody.create(MediaType.parse("text/plain"), password);
 
 
-        Call<StudentRegistationResponse> call=apiClient.VerifyPost(idPart,otpPart,passwordPart);
-        call.enqueue(new Callback<StudentRegistationResponse>() {
+        Call<StudentUserMethod> call=apiClient.VerifyPost(idPart,otpPart,passwordPart);
+        call.enqueue(new Callback<StudentUserMethod>() {
             @Override
-            public void onResponse(Call<StudentRegistationResponse> call, Response<StudentRegistationResponse> response) {
+            public void onResponse(Call<StudentUserMethod> call, Response<StudentUserMethod> response) {
                 if (response.isSuccessful()){
 
-                    StudentRegistationResponse registrationResponse = response.body();
+                    StudentUserMethod registrationResponse = response.body();
                     if (registrationResponse.getErrorCode().equals("203")) {
                         // Registration was successful
                         Toast.makeText(VerifyActivity.this, "Invalid OTP", Toast.LENGTH_SHORT).show();
                     } else if (registrationResponse.getErrorCode().equals("200")){
                         String parentEmailId="";
                         String password="";
-                       /* StudentRegistationResponse.Result result = registrationResponse.getResult();
+                        StudentUserMethod.Result result = registrationResponse.getResult();
 
                         parentEmailId=result.getParentEmail();
                         password= result.getPassword();
@@ -194,7 +195,7 @@ public class VerifyActivity extends AppCompatActivity {
                         Intent intent = new Intent(VerifyActivity.this, UserCreateActivity .class);
                         intent.putExtra("parentEmail",parentEmailId);
                         intent.putExtra("password",password);
-                        startActivity(intent);*/
+                        startActivity(intent);
 
                     }
                 }else {
@@ -202,7 +203,7 @@ public class VerifyActivity extends AppCompatActivity {
                 }
             }
             @Override
-            public void onFailure(Call<StudentRegistationResponse> call, Throwable t) {
+            public void onFailure(Call<StudentUserMethod> call, Throwable t) {
 
             }
         });

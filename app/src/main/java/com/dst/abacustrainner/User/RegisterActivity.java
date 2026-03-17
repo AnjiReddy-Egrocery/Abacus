@@ -101,7 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
                         && isValidEmail(email)
                         && isValidMobileNumber(mobileNumber)) {
 
-                    registerMenthod(firstName,"", lastName, mobileNumber, email, date, tongue);
+                   // registerMenthod(firstName,"", lastName, mobileNumber, email, date, tongue);
                 } else {
                    Toast.makeText(RegisterActivity.this, "Validation failed. Please check your input.", Toast.LENGTH_SHORT).show();
                 }
@@ -142,11 +142,11 @@ public class RegisterActivity extends AppCompatActivity {
                 calendar.get(Calendar.DAY_OF_MONTH)
         ).show();
     }
-    private void registerMenthod(String firstName,String middlename, String lastName, String mobileNumber, String email, String date, String tongue) {
+  /*  private void registerMenthod(String firstName,String middlename, String lastName, String mobileNumber, String email, String date, String tongue) {
         String selectedGender = getSelectedGender();
 
-        /*HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
+        *//*HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*//*
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -182,13 +182,13 @@ public class RegisterActivity extends AppCompatActivity {
                           String parentEmailId="";
                           //StudentRegistationResponse.Result list =registrationResponse.getResult();
                          // studentId=list.getStudentId();
-                         /* otp=list.getOtp();
+                         *//* otp=list.getOtp();
                           parentEmailId=list.getParentEmail();
                           Intent intent = new Intent(RegisterActivity.this, VerifyActivity.class);
                           intent.putExtra("studentId", studentId);
                           intent.putExtra("Otp", otp);
                           intent.putExtra("parentEmail",parentEmailId);
-                          startActivity(intent);*/
+                          startActivity(intent);*//*
                       }
 
                   }else {
@@ -201,7 +201,7 @@ public class RegisterActivity extends AppCompatActivity {
 
               }
           });
-    }
+    }*/
 
     private String getSelectedGender() {
 

@@ -6,6 +6,18 @@ public class BachDetailsResponse {
     private String status;
     private String errorCode;
     private List<Result> result;
+
+    private String errorMessage;
+
+    public String getErrorMessage() {
+
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     private String message;
 
     public String getStatus() {
