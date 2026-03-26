@@ -143,6 +143,7 @@ public class PaymentActivity extends AppCompatActivity {
                     accessTokenGlobal = response.body().getAccessToken();
                     Log.d("Anji", "Token received: " + accessTokenGlobal);
                     createOrder(accessTokenGlobal);
+
                 } else {
                     Log.e("Anji", "Token API Error: " + response.code());
                 }
@@ -157,45 +158,89 @@ public class PaymentActivity extends AppCompatActivity {
 
     private void createOrder(String accessToken) {
         Log.d("Anji", "Creating Order...");
-        int amountInPaisa = 0;
+
+        int amountInPaisa;
 
         try {
             double rupees = Double.parseDouble(totalAmount);
             amountInPaisa = (int) (rupees * 100);
         } catch (Exception e) {
             Log.e("Anji", "Amount conversion error: " + e.getMessage());
+            return;
         }
-        PhonePeApi api = RetrofitClient.getClient().create(PhonePeApi.class);
+
+        // ✅ IMPORTANT VALIDATIONS
+        if (amountInPaisa < 100) {
+            Log.e("Anji", "❌ Amount must be >= 100 paisa");
+            return;
+        }
+
+        long expireAfter = 3600; // ✅ must be between 300–3600
+
         merchantOrderId = "TX" + System.currentTimeMillis();
+
+        Log.d("Anji", "OrderId: " + merchantOrderId);
+        Log.d("Anji", "Amount (paisa): " + amountInPaisa);
+        Log.d("Anji", "ExpireAfter: " + expireAfter);
+
+        // ✅ CREATE REQUEST
         OrderRequest request = new OrderRequest(
                 merchantOrderId,
                 amountInPaisa,
-                amountInPaisa,
-                new MetaInfo("Test1", "Test2"),
+                expireAfter,
+                new MetaInfo("StudentPayment", "Abacus"),
                 new PaymentFlow("PG_CHECKOUT")
         );
 
-        Call<OrderResponse> call = api.createOrder("O-Bearer " + accessToken, request);
+        PhonePeApi api = RetrofitClient.getClient().create(PhonePeApi.class);
+
+        Call<OrderResponse> call = api.createOrder(
+                "O-Bearer " + accessToken,
+                request
+        );
+
         call.enqueue(new Callback<OrderResponse>() {
+
             @Override
             public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
+
+                Log.d("Anji", "Response Code: " + response.code());
+
                 if (response.isSuccessful() && response.body() != null) {
-                    orderIdGlobal = response.body().getOrderId();
-                    orderTokenGlobal = response.body().getToken();
-                    Log.d("Anji", "Order Created: orderId=" + orderIdGlobal + ", token=" + orderTokenGlobal);
-                    startPhonePePayment(orderIdGlobal, orderTokenGlobal);
+
+                    String orderId = response.body().getOrderId();
+                    String token = response.body().getToken();
+
+                    Log.d("Anji", "✅ ORDER CREATED SUCCESS");
+                    Log.d("Anji", "OrderId: " + orderId);
+                    Log.d("Anji", "Token: " + token);
+
+                    // 👉 Next Step
+                    startPhonePePayment(orderId, token);
+
                 } else {
-                    Log.e("Anji", "CreateOrder Error: " + response.code());
+
+                    Log.e("Anji", "❌ CreateOrder Failed");
+
+                    try {
+                        String error = response.errorBody() != null
+                                ? response.errorBody().string()
+                                : "No error body";
+
+                        Log.e("Anji", "❌ Error Body: " + error);
+
+                    } catch (Exception e) {
+                        Log.e("Anji", "Error parsing errorBody: " + e.getMessage());
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<OrderResponse> call, Throwable t) {
-                Log.e("Anji", "CreateOrder Failure: " + t.getMessage());
+                Log.e("Anji", "❌ API Failure: " + t.getMessage());
             }
         });
     }
-
     private void startPhonePePayment(String orderId, String orderToken) {
         if (orderToken == null || orderToken.isEmpty()) return;
         try {
@@ -242,19 +287,48 @@ public class PaymentActivity extends AppCompatActivity {
 
     private void logPaymentDetails(OrderStatusResponse status) {
         String orderState = status.getState() != null ? status.getState().toUpperCase() : "UNKNOWN";
-        if ("FAILED".equals(orderState)) {
+        if ("COMPLETED".equals(orderState) || "SUCCESS".equals(orderState)) {
+            Log.d("Anji", "✅ Payment Success");
+            // continue success flow
+        }
 
-            String errorCode = status.getErrorContext().getErrorCode() != null ? status.getErrorContext().getErrorCode() : "PAYMENT_FAILED";
+// ❌ FAILED → OPEN FAILURE SCREEN
+        else if ("FAILED".equals(orderState)) {
+
+            Log.d("Anji", "❌ Payment Failed");
+
+            String errorCode = status.getErrorContext() != null &&
+                    status.getErrorContext().getErrorCode() != null
+                    ? status.getErrorContext().getErrorCode()
+                    : "PAYMENT_FAILED";
 
             Intent intent = new Intent(PaymentActivity.this, PaymentDetailsActivity.class);
             intent.putExtra("StudentId", studentId);
-            intent.putExtra("Status", status.getState());
+            intent.putExtra("Status", orderState);
             intent.putExtra("ErrorCode", errorCode);
             intent.putExtra("Amount", totalAmount);
             intent.putExtra("Currency", "INR");
 
             startActivity(intent);
-            return;   // ⭐ very important
+            return; // ✅ STOP HERE
+        }
+
+// ⛔ EXPIRED → RETRY
+        else if ("EXPIRED".equals(orderState)) {
+
+            Log.d("Anji", "⛔ Order Expired → Retrying");
+
+            Toast.makeText(this, "Session expired. Retrying...", Toast.LENGTH_SHORT).show();
+
+            createOrder(accessTokenGlobal); // 🔁 NEW ORDER
+
+            return;
+        }
+
+// ⏳ PENDING
+        else if ("PENDING".equals(orderState)) {
+            Log.d("Anji", "⏳ Payment still pending...");
+            return;
         }
 
         if (status.getPaymentDetails() == null || status.getPaymentDetails().isEmpty()) {

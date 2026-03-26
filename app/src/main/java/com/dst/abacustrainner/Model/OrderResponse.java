@@ -1,9 +1,19 @@
 package com.dst.abacustrainner.Model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class OrderResponse {
+
+    @SerializedName("orderId")
     private String orderId;
+
+    @SerializedName("state")
     private String state;
+
+    @SerializedName("expireAt")
     private long expireAt;
+
+    @SerializedName("token")
     private String token;
 
     public String getOrderId() {
