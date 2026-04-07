@@ -82,6 +82,7 @@
                 android:text="No Assignments Available"
                 android:textSize="16sp"
                 android:gravity="center"
+                android:textColor="#000"
                 android:visibility="gone"
                 android:layout_marginTop="20dp"/>
         </LinearLayout>

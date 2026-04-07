@@ -14,9 +14,11 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -646,33 +648,27 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 // ✅ Show only image
                 questionImageView.setVisibility(View.VISIBLE);
-                questionTextView.setVisibility(View.GONE);
+                questionTextView.setVisibility(View.VISIBLE);
 
-                Glide.with(this)
+                questionTextView.setMaxLines(5);
+                questionTextView.setEllipsize(TextUtils.TruncateAt.END);
+                questionTextView.setText("Beads question not available for visualization practice.");
+
+               /* Glide.with(this)
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .dontAnimate()
-                        .into(questionImageView);
+                        .into(questionImageView);*/
 
-                speakQuestion("Please observe the question image and answer");
+               // speakQuestion("Please observe the question image and answer");
 
 // ✅ Start timer after instruction
-                new Handler().postDelayed(() -> {
-                    currentTime = questionTimes.get(currentQuestionIndex);
-                    startTimer();
-
-                    answerEditText.setVisibility(View.VISIBLE);
-                    answerEditText.requestFocus();
-
-                    butSave.setEnabled(true);
-                    butSubmit.setEnabled(true);
-
-                    isQuestionActive = false;
-
-                    butPreviousQuestion.setEnabled(true);
-                    butPreviousQuestion.setClickable(true);
-
-                }, 2000);
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();  // Go to previous activity
+                    }
+                }, 2000);  // 3 seconds delay
             } else {
                 // ✅ Show only text
                 questionImageView.setVisibility(View.GONE);
@@ -1266,7 +1262,21 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
                         currentTime = questionTimes.get(currentQuestionIndex); // restore if needed
                         startTimer();
                         linearRepeat.setVisibility(View.VISIBLE);
+                        answerEditText.setVisibility(View.VISIBLE);
+                        answerEditText.setFocusable(true);
+                        answerEditText.setFocusableInTouchMode(true);
+                        answerEditText.setClickable(true);
 
+
+
+                        answerEditText.post(() -> {
+                            answerEditText.requestFocus();
+
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (imm != null) {
+                                imm.showSoftInput(answerEditText, InputMethodManager.SHOW_IMPLICIT);
+                            }
+                        });
 
 
 

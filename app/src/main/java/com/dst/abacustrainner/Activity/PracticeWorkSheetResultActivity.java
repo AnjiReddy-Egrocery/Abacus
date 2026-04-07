@@ -267,12 +267,24 @@ public class PracticeWorkSheetResultActivity extends AppCompatActivity {
 
                 String imageUrl = matcher.group(1);
 
+                // ✅ Check relative URL
+                if (imageUrl.startsWith("../../../")) {
+
+                    String baseUrl = "https://www.abacustrainer.com/"; // 🔴 change this
+                    imageUrl = imageUrl.replace("../../../", "");
+                    imageUrl = baseUrl + imageUrl;
+                }
+
+                Log.d(" ", imageUrl); // debug
+
                 ImageView imageView = new ImageView(this);
                 imageView.setAdjustViewBounds(true);
                 imageView.setMaxHeight(300);
 
                 Glide.with(this)
                         .load(imageUrl)
+                        .placeholder(R.drawable.abacus_logo) // optional
+                        .error(R.drawable.abacus_logo)       // optional
                         .into(imageView);
 
                 questionLayout.addView(imageView);

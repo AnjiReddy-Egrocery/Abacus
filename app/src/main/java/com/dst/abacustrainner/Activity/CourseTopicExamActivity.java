@@ -471,7 +471,13 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                 isQuestionAnswered.set(currentQuestionIndex, true);
 
             }
+            if (currentQuestionIndex == questionsArray.length - 1) {
+                // 👉 LAST QUESTION
+                showCompletionDialog();
+                return;
+            }
             if (currentQuestionIndex < questionsArray.length-1) {
+
                 currentQuestionIndex++; // Increment index first
                 currentStep = currentQuestionIndex; // Sync the step index
                 displayQuestion(currentQuestionIndex); // Display next question
@@ -498,52 +504,74 @@ public class CourseTopicExamActivity extends AppCompatActivity {
     }
     private void displayQuestion(int currentQuestionIndex) {
         if (questionsArray != null && questionsArray.length > currentQuestionIndex) {
+
             String questionHtml = questionsArray[currentQuestionIndex];
 
-            // Log question length and raw content
             if (questionHtml == null || questionHtml.trim().isEmpty()) {
-                Log.d("QuestionDebug", "Empty or null question at index: " + currentQuestionIndex);
-            } else {
-                Log.d("QuestionDebug", "Raw HTML: " + questionHtml);
-                Log.d("QuestionDebug", "Question Length: " + questionHtml.length());
+                questionTextView.setVisibility(View.GONE);
+                questionImageView.setVisibility(View.GONE);
+                return;
             }
 
-            // Extract <img src="...">
-            Pattern pattern = Pattern.compile("<img[^>]+src=\\\\*\"([^\"]+)\\\\*\"");
-            Matcher matcher = pattern.matcher(questionHtml);
-
-            String imageUrl = null;
-            if (matcher.find()) {
-                String relativePath = matcher.group(1).replace("\\", "");
-                imageUrl = "https://www.abacustrainer.com/" + relativePath.replace("../../../", "");
-                Log.d("QuestionDebug", "Image URL: " + imageUrl);
-            }
-
-
-
-            // Remove <img> tag and backslashes from HTML to get plain text
-           // String questionTextOnly = questionHtml.replaceAll("<img[^>]+>", "").replaceAll("\\\\", "");
-            //Log.d("QuestionDebug", "Cleaned Text: " + questionTextOnly);
-
-            // Set question number
             txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":");
 
-            if (imageUrl != null && !imageUrl.isEmpty()) {
-                // ✅ Show only image
-                questionImageView.setVisibility(View.VISIBLE);
-                questionTextView.setVisibility(View.GONE);
+            // =========================
+            // 🔥 CLEAN HTML
+            // =========================
+            String cleanHtml = questionHtml;
 
-                Glide.with(this)
-                        .load(imageUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .dontAnimate()
-                        .into(questionImageView);
 
-            } else {
-                // ✅ Show only text
-                questionImageView.setVisibility(View.GONE);
+
+            // remove unwanted attributes
+            cleanHtml = cleanHtml.replaceAll("data-start=\".*?\"", "");
+            cleanHtml = cleanHtml.replaceAll("data-end=\".*?\"", "");
+
+// normalize paragraph
+            cleanHtml = cleanHtml.replaceAll("<p>", "");
+            cleanHtml = cleanHtml.replaceAll("</p>", "<br>");
+
+// remove extra breaks
+            cleanHtml = cleanHtml.replaceAll("(<br>\\s*){2,}", "<br><br>");
+
+// 🔥 IMPORTANT: numbers vertical ga undali
+            cleanHtml = cleanHtml.replaceAll("(\\d+)\\s*<br>\\s*(\\d+)", "$1<br>$2");
+
+// list fix
+            cleanHtml = cleanHtml.replace("<li>", "• ");
+            cleanHtml = cleanHtml.replace("</li>", "<br>");
+
+            // =========================
+            // 🔥 EXTRACT IMAGE
+            // =========================
+            Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
+            Matcher matcher = pattern.matcher(questionHtml);
+
+            boolean hasImage = false;
+            String finalUrl = null;
+
+            if (matcher.find()) {
+
+                hasImage = true;
+
+                String imagePath = matcher.group(1).replace("\\", "");
+
+                if (imagePath.startsWith("http")) {
+                    finalUrl = imagePath;
+                } else {
+                    finalUrl = "https://www.abacustrainer.com/" +
+                            imagePath.replace("../../../", "");
+                }
+            }
+
+            // =========================
+            // 🔥 TEXT PART
+            // =========================
+            String textOnlyHtml = cleanHtml.replaceAll("<img[^>]+>", "").trim();
+
+            boolean hasText = !textOnlyHtml.isEmpty();
+
+            if (hasText) {
                 questionTextView.setVisibility(View.VISIBLE);
-
                 String cleanedHtml = questionHtml.replaceAll("<img[^>]+>", "");
 
                 Spanned spannedText =
@@ -558,12 +586,36 @@ public class CourseTopicExamActivity extends AppCompatActivity {
 
                 questionTextView.setText(questionTextOnly);
 
-                // Set margin
-                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();
-                layoutParams.leftMargin = (int) getResources().getDimension(R.dimen.question_margin_left);
+                ViewGroup.MarginLayoutParams layoutParams =
+                        (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();
+
+                layoutParams.leftMargin =
+                        (int) getResources().getDimension(R.dimen.question_margin_left);
+
                 questionTextView.setLayoutParams(layoutParams);
+            } else {
+                questionTextView.setVisibility(View.GONE);
             }
 
+            // =========================
+            // 🔥 IMAGE PART
+            // =========================
+            if (hasImage && finalUrl != null) {
+                questionImageView.setVisibility(View.VISIBLE);
+
+                Glide.with(this)
+                        .load(finalUrl)
+                        .into(questionImageView);
+
+            } else {
+                questionImageView.setVisibility(View.GONE);
+            }
+
+
+
+            // =========================
+            // 🔥 BUTTONS
+            // =========================
             generateButtons();
         } else {
             if (questionsArray == null) {

@@ -172,11 +172,12 @@ public class HomeFragment extends Fragment {
         txtClckSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (studentId != null && !studentId.isEmpty()) {
-                    scheduleMethod(id);
+               /* if (studentId != null && !studentId.isEmpty()) {
+                    openScheduleFragment();
                 } else {
                     Toast.makeText(getContext(), "Student ID is missing", Toast.LENGTH_SHORT).show();
-                }
+                }*/
+                openScheduleFragment();
             }
         });
         layoutPlayWithNumbers.setOnClickListener(new View.OnClickListener() {
