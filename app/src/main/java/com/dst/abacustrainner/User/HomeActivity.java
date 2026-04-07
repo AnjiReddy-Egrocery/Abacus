@@ -272,14 +272,17 @@ public class HomeActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     StudentTotalDetails studentTotalDetails = response.body();
                     String firstName = capitalizeFirstLetter(studentTotalDetails.getResult().getFirstName());
+                    String middleNem = capitalizeFirstLetter(studentTotalDetails.getResult().getMiddleName());
                     String lastName = capitalizeFirstLetter(studentTotalDetails.getResult().getLastName());
-                    String fullName = firstName + " " + lastName;
+                    String fullName = "Hello,  " + firstName + middleNem + lastName;
                     txtName.setText(fullName);
 
                     String imageUrl = studentTotalDetails.getImageUrl() + studentTotalDetails.getResult().getProfilePic();
 
                     Glide.with(getApplicationContext())
                             .load(imageUrl)
+                            .placeholder(R.drawable.headerprofile) // loading time lo
+                            .error(R.drawable.headerprofile)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .signature(new ObjectKey(System.currentTimeMillis())) // forces fresh load
                             .circleCrop()

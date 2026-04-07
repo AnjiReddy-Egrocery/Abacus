@@ -80,6 +80,7 @@ public class FirstLevelActivity extends AppCompatActivity {
     private String totalTime = ""; // Class-level variable to hold total time
 
     List<View> questionList = new ArrayList<>();
+    private int levelValue;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +104,7 @@ public class FirstLevelActivity extends AppCompatActivity {
         // Initialize the TextView
 
         Intent intents = getIntent();
-        int levelValue = intents.getIntExtra("level", 0);
+        levelValue = intents.getIntExtra("level", 0);
 
         if (levelValue != 0) {
             txtHeader.setText("Level-" + levelValue); // TextView lo Level-1, Level-2 etc. set chesthunna
@@ -568,8 +569,8 @@ public class FirstLevelActivity extends AppCompatActivity {
         stopTimer();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Level-1 Completed");
-        builder.setMessage("Are you Sure want to Submit Play with Number Game.Your not able to modify any thing after submiting...");
+       builder.setTitle("Level-" + levelValue + " Completed");
+       builder.setMessage("Are you Sure want to Submit Play with Number Game.Your not able to modify any thing after submiting...");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -580,6 +581,8 @@ public class FirstLevelActivity extends AppCompatActivity {
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                restoreTimerState();
+                startTimer();          // 🔥 IMPORTANT: timer restart
                 dialogInterface.cancel();
             }
         });

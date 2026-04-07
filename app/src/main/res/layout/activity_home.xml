@@ -26,7 +26,7 @@
             <!-- Custom Layout Inside Toolbar -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:padding="8dp">
@@ -34,43 +34,35 @@
                 <!-- Profile Image -->
                 <ImageView
                     android:id="@+id/imgProfile"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@drawable/headerprofile"
-                    android:background="@drawable/circle_image"
                     android:scaleType="centerCrop"
+                    android:layout_marginEnd="8dp"
                     android:contentDescription="Profile Image"/>
-                <!-- Greeting Text -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text=""
-                    android:layout_marginStart="8dp"
-                    android:textColor="#fff"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+
+                <!-- Name -->
                 <TextView
                     android:id="@+id/txt_name"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Hello, Divya"
-                    android:layout_marginLeft="-70dp"
+                    android:text="Hello, Anji Reddy"
                     android:textColor="#fff"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end"/>
 
                 <!-- Logo -->
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@drawable/abacus_logo"
-                    android:layout_marginRight="10dp"
-                    android:contentDescription="Logo" />
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="Logo"/>
 
-            </LinearLayout>
-        </androidx.appcompat.widget.Toolbar>
+            </LinearLayout>        </androidx.appcompat.widget.Toolbar>
 
         <!-- Fragment Container -->
 

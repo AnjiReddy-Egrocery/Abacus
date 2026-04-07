@@ -5,6 +5,7 @@ public class LevelDisplayItem {
     public static final int TYPE_TOPIC = 1;
     public static final int TYPE_ASSIGNMENT_HEADER = 2;
     public static final int TYPE_ASSIGNMENT_TOPIC = 3;
+    public static final int TYPE_EMPTY_MESSAGE = 4;
 
     private int type;
     private String title;

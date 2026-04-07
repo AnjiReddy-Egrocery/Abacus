@@ -192,6 +192,7 @@ public class OrdersActivity extends AppCompatActivity {
         tv.setPadding(20, 20, 20, 20);
         tv.setGravity(Gravity.CENTER);
         tv.setTextSize(14);
+        tv.setTextColor(Color.BLACK);
 
 
         return tv;

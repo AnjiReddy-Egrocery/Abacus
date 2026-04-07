@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    android:background="@drawable/bg_level_item"
+    android:layout_margin="1dp"
+    android:background="#fff"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
@@ -16,6 +16,7 @@
         card_view:cardCornerRadius="12dp"
         card_view:cardElevation="6dp"
         android:id="@+id/cardView"
+        android:background="#fff"
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true">
@@ -24,6 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/layout_course_typelevel"
+            android:background="#fff"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -56,35 +58,38 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="end"
+                        android:weightSum="3"
                         android:layout_marginBottom="5dp"
                         android:layout_marginTop="8dp">
 
                         <Button
                             android:id="@+id/btnPractice"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="PracticeKnow"
+                            android:text="Practice now"
+                            android:layout_weight="1"
                             android:backgroundTint="#ff6600"
-                            android:textSize="12sp"/>
+                            android:textSize="10dp"/>
 
                         <Button
                             android:id="@+id/btnVisualization"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="6dp"
                             android:text="Visualization"
+                            android:layout_weight="1"
                             android:backgroundTint="#198754"
-                            android:textSize="12sp"/>
+                            android:textSize="10dp"/>
 
                         <Button
                             android:id="@+id/btnView"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="6dp"
                             android:text="ViewPractice"
+                            android:layout_weight="1"
                             android:backgroundTint="#8F8A8A"
-                            android:textSize="12sp"/>
+                            android:textSize="10dp"/>
 
 
 

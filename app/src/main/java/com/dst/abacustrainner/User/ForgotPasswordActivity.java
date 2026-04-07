@@ -88,28 +88,18 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     Log.d("API_ERROR","ErrorCode: "+forgotPassword.getErrorCode());
                     Log.d("API_ERROR","Message: "+forgotPassword.getMessage());
 
-                    if("200".equals(forgotPassword.getErrorCode())){
+                    if ("200".equals(forgotPassword.getErrorCode()) && forgotPassword.getResult() != null) {
+                        ForgotPassword.Result result = forgotPassword.getResult();
+                        Intent intent = new Intent(ForgotPasswordActivity.this, VerifyActivity.class);
+                        intent.putExtra("studentId", result.getStudentId());
+                        intent.putExtra("Otp", result.getOtp());
+                        intent.putExtra("parentEmail", result.getParentEmail());
+                        startActivity(intent);
 
-                        ForgotPassword.Result list = forgotPassword.getResult();
-
-                        if(list!=null){
-
-                            String studentId = list.getStudentId();
-                            String otp = list.getOtp();
-                            String parentEmailId = list.getParentEmail();
-
-                            Log.d("API_ERROR","StudentId: "+studentId);
-                            Log.d("API_ERROR","OTP: "+otp);
-
-                            Intent intent = new Intent(ForgotPasswordActivity.this, VerifyActivity.class);
-                            intent.putExtra("studentId", studentId);
-                            intent.putExtra("Otp", otp);
-                            intent.putExtra("parentEmail", parentEmailId);
-                            startActivity(intent);
-                        }
-
-                    }else{
-
+                        Toast.makeText(ForgotPasswordActivity.this,
+                                "OTP generated. Please check your email.",
+                                Toast.LENGTH_LONG).show();
+                    } else {
                         Toast.makeText(ForgotPasswordActivity.this,
                                 forgotPassword.getMessage(),
                                 Toast.LENGTH_LONG).show();

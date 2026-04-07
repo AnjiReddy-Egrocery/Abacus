@@ -143,6 +143,8 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
     private boolean isTtsReady = false;
 
     private boolean isQuestionActive = false;
+    LinearLayout linearRepeat;
+    private boolean isAnswerDisplayed = false;
 
 
     @SuppressLint("MissingInflatedId")
@@ -171,6 +173,7 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
         btnBack=findViewById(R.id.btn_back_level_select);
         scrollView = findViewById(R.id.horizontalScrollView);
         questionImageView = findViewById(R.id.questionImageView);
+        linearRepeat = findViewById(R.id.layout_repeat);
 
         butSubmit.setEnabled(false);
         butSubmit.setClickable(false);
@@ -192,6 +195,13 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
         //questionButtons = new ArrayList<>();
         questionTimes = new ArrayList<>(20);
         listData = new ArrayList<>();
+
+        linearRepeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                repeatCurrentQuestion();
+            }
+        });
 
         Log.e("Anji","Data"+listData);
         Log.e("Anji","isQuestionAnswered"+isQuestionAnswered);
@@ -372,7 +382,6 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
                 // Navigate to the previous question
                 navigateToPreviousQuestion();
                 restoreTimerState(); // Restore timer state for the previous question
-                startTimer();
             }
 
         });
@@ -426,13 +435,50 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
 
 
 
-        startTimer();
         VerifyMethod(studentId, topicId);
 
     }
+
+    private void repeatCurrentQuestion() {
+        if (isQuestionActive) return; // avoid multiple clicks
+
+        isQuestionActive = true;
+
+        // Hide repeat while replaying
+        linearRepeat.setVisibility(View.GONE);
+
+        // Stop previous speech
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+        }
+
+        // Reset UI
+        answerEditText.setVisibility(View.GONE);
+        butSave.setEnabled(false);
+        butSubmit.setEnabled(false);
+
+        // Re-run same question
+        String questionHtml = questionsArray[currentQuestionIndex];
+        String cleanedHtml = questionHtml.replaceAll("<img[^>]+>", "");
+
+        Spanned spannedText =
+                HtmlCompat.fromHtml(cleanedHtml, HtmlCompat.FROM_HTML_MODE_LEGACY);
+
+        String questionTextOnly = spannedText.toString()
+                .replace("\u00A0", "")
+                .trim();
+
+        List<String> elements =
+                Arrays.asList(questionTextOnly.split("\\s+"));
+
+        speakAndDisplayOneByOne(elements);
+    }
+
     private void saveAnswerAndMoveToNextQuestion() {
         stopTimer();
         saveTimerState();
+
+        linearRepeat.setVisibility(View.GONE);
 
 
 
@@ -514,7 +560,6 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
                 answerEditText.setText(""); // Clear the answer field for the next question
                 currentTime = questionTimes.get(currentQuestionIndex); // Restore timer state for the next question
                 restoreTimerState();
-                startTimer();
             }else {
                 showCompletionDialog();
             }
@@ -522,6 +567,7 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
         }
     }
     private void navigateToPreviousQuestion() {
+        linearRepeat.setVisibility(View.GONE);
         if (currentQuestionIndex > 0) {
 
             currentQuestionIndex--;
@@ -610,6 +656,23 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
 
                 speakQuestion("Please observe the question image and answer");
 
+// ✅ Start timer after instruction
+                new Handler().postDelayed(() -> {
+                    currentTime = questionTimes.get(currentQuestionIndex);
+                    startTimer();
+
+                    answerEditText.setVisibility(View.VISIBLE);
+                    answerEditText.requestFocus();
+
+                    butSave.setEnabled(true);
+                    butSubmit.setEnabled(true);
+
+                    isQuestionActive = false;
+
+                    butPreviousQuestion.setEnabled(true);
+                    butPreviousQuestion.setClickable(true);
+
+                }, 2000);
             } else {
                 // ✅ Show only text
                 questionImageView.setVisibility(View.GONE);
@@ -906,6 +969,8 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
         dialog.setNegativeButton("cancel",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                restoreTimerState();
+                startTimer();
                 dialog.dismiss();
             }
         });
@@ -1099,6 +1164,8 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
     }
 
     private void startTimer() {
+        stopTimer(); // ✅ prevent duplicate timers
+
         timerRunning = true;
         countDownTimer = createCountDownTimer(currentQuestionIndex);
         countDownTimer.start();
@@ -1195,6 +1262,13 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
                         if (isTtsReady) {
                             textToSpeech.speak("Answer is", TextToSpeech.QUEUE_ADD, null, null);
                         }
+
+                        currentTime = questionTimes.get(currentQuestionIndex); // restore if needed
+                        startTimer();
+                        linearRepeat.setVisibility(View.VISIBLE);
+
+
+
 
                         // 🔥 IMPORTANT — Always show here
                         answerEditText.setVisibility(View.VISIBLE);

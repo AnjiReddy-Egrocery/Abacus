@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.dst.abacustrainner.Adapter.AssignmentListAdapter;
 import com.dst.abacustrainner.Adapter.TopicListAdapter;
 import com.dst.abacustrainner.Model.TopicListResponse;
 import com.dst.abacustrainner.R;
@@ -42,6 +43,7 @@ public class TopicListActivity extends AppCompatActivity {
     TextView txtName;
     ProgressBar progressBar;
     LinearLayout layoutBack;
+    TextView txtEmpty;
 
 
     @SuppressLint("MissingInflatedId")
@@ -53,6 +55,7 @@ public class TopicListActivity extends AppCompatActivity {
         txtName=findViewById(R.id.txt_batch_name);
         progressBar=findViewById(R.id.progress);
         layoutBack = findViewById(R.id.btn_back_to_home);
+        txtEmpty = findViewById(R.id.txt_empty);
 
         Bundle bundle=getIntent().getExtras();
 
@@ -78,8 +81,9 @@ public class TopicListActivity extends AppCompatActivity {
         layoutBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TopicListActivity.this, BatchDatesDetailsActivity.class);
-                startActivity(intent);
+                finish(); // go back safely
+
+
             }
         });
 
@@ -115,12 +119,22 @@ public class TopicListActivity extends AppCompatActivity {
                     TopicListResponse.Result result = topicListResponse.getResult();
                     List<TopicListResponse.Result.Topics> topicsList = result.getTopicsList();
 
-                    topicListAdapter = new TopicListAdapter(TopicListActivity.this, topicsList);
-                    recyclerTopicList.setAdapter(topicListAdapter);
+                    if (topicsList != null && !topicsList.isEmpty()) {
+                        recyclerTopicList.setVisibility(View.VISIBLE);
+                        txtEmpty.setVisibility(View.GONE);
+
+                        topicListAdapter = new TopicListAdapter(TopicListActivity.this, topicsList);
+                        recyclerTopicList.setAdapter(topicListAdapter);
 
 
-                } else {
-                    Toast.makeText(TopicListActivity.this, "Data Error", Toast.LENGTH_LONG).show();
+                    } else {
+                        recyclerTopicList.setVisibility(View.GONE);
+                        txtEmpty.setVisibility(View.VISIBLE);
+
+                        // backend message use cheyyachu
+                        txtEmpty.setText(topicListResponse.getEmptyTopicsessage());
+                    }
+
                 }
             }
 

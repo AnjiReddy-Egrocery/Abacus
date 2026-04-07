@@ -103,7 +103,7 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         String combinedText1 =String.format("Level Play with number game level %s.", levelValue);
         showLevelTop.setText(String.valueOf(combinedText1));
 
-        String combinedText =String.format("Great job on completing level %s. Keep practicing!", levelValue);
+        String combinedText =String.format("Great job on completed level %s. Keep practicing!", levelValue);
         showLevelCompleted.setText(combinedText);
 
         RetakeTest.setOnClickListener(new View.OnClickListener() {
@@ -221,19 +221,19 @@ public class FirstLevelResultActivity extends AppCompatActivity {
         pieChart.setData(pieData);
         pieChart.setUsePercentValues(true);
         pieChart.setDrawHoleEnabled(true);
-        pieChart.setHoleRadius(40f);
-        pieChart.setTransparentCircleRadius(50f);
+        pieChart.setHoleRadius(50f);
+        pieChart.setTransparentCircleRadius(60f);
         /*pieChart.setCenterText(totalTime);*/
-        pieChart.setCenterTextSize(12f);
+        pieChart.setCenterTextSize(10f);
 
-        pieChart.setExtraTopOffset(10f);
+        pieChart.setExtraTopOffset(14f);
         pieChart.setExtraBottomOffset(0f);
         pieChart.setExtraLeftOffset(0f);
         pieChart.setExtraRightOffset(0f);
 
         // Set labels and values outside the slices
-        dataSet.setValueLinePart1Length(0.5f);
-        dataSet.setValueLinePart2Length(0.8f);
+        dataSet.setValueLinePart1Length(0.7f);
+        dataSet.setValueLinePart2Length(0.9f);
         dataSet.setValueLineColor(Color.BLACK);
         dataSet.setUsingSliceColorAsValueLineColor(true);
         dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);

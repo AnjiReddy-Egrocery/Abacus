@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dst.abacustrainner.Activity.NoDataActivity;
 import com.dst.abacustrainner.Activity.TopicListActivity;
 import com.dst.abacustrainner.Activity.TopicPracticeActivity;
+import com.dst.abacustrainner.Activity.TopicPracticeVisualizationActivity;
 import com.dst.abacustrainner.Activity.ViewPracticeListActivity;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.Model.TopicListResponse;
@@ -81,6 +82,18 @@ public class TopicListAdapter extends RecyclerView.Adapter<TopicListAdapter.Topi
                 mContext.startActivity(intent);
             }
         });
+
+        holder.layoutVisualization.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, TopicPracticeVisualizationActivity.class);
+                intent.putExtra("topicId", topicId);
+                intent.putExtra("studentId", studentId);
+                intent.putExtra("topicName", topicName);
+                intent.putExtra("firstName",studentName);
+                mContext.startActivity(intent);
+            }
+        });
     }
     @Override
     public int getItemCount() {
@@ -91,7 +104,7 @@ public class TopicListAdapter extends RecyclerView.Adapter<TopicListAdapter.Topi
 
         TextView txtTopicName,txtPracticeCount;
 
-        LinearLayout layoutPractice;
+        LinearLayout layoutPractice,layoutVisualization;
         LinearLayout butPracticeExam;
         public TopicViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -99,6 +112,7 @@ public class TopicListAdapter extends RecyclerView.Adapter<TopicListAdapter.Topi
             txtPracticeCount=itemView.findViewById(R.id.txt_count);
             layoutPractice=itemView.findViewById(R.id.layout_result);
             butPracticeExam=itemView.findViewById(R.id.but_practice);
+            layoutVisualization = itemView.findViewById(R.id.but_visualization);
         }
     }
 }

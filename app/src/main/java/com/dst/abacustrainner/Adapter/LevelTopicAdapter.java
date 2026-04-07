@@ -158,6 +158,22 @@ public class LevelTopicAdapter extends RecyclerView.Adapter<LevelTopicAdapter.Vi
 
 
                 break;
+
+            case LevelDisplayItem.TYPE_EMPTY_MESSAGE:
+
+                holder.txtTopic.setText(item.getTitle());
+                holder.txtTopic.setTextSize(14);
+                holder.txtTopic.setTextColor(Color.RED);
+                holder.txtTopic.setPadding(40, 20, 20, 20);
+
+                holder.cardView.setCardElevation(0);
+                holder.cardView.setCardBackgroundColor(Color.TRANSPARENT);
+
+                holder.btnView.setVisibility(View.GONE);
+                holder.btnVisualization.setVisibility(View.GONE);
+                holder.btnPractice.setVisibility(View.GONE);
+
+                break;
         }
     }
 
@@ -228,6 +244,12 @@ public class LevelTopicAdapter extends RecyclerView.Adapter<LevelTopicAdapter.Vi
                             topic.getTopicId()   // ✅ IMPORTANT
                     ));
                 }
+            }else {
+                // ✅ EMPTY MESSAGE
+                displayList.add(new LevelDisplayItem(
+                        LevelDisplayItem.TYPE_EMPTY_MESSAGE,
+                        "Instructor Not Allocated Topics, Please Contact Instructor"
+                ));
             }
 
             // ✅ ASSIGNMENT HEADER
@@ -250,6 +272,12 @@ public class LevelTopicAdapter extends RecyclerView.Adapter<LevelTopicAdapter.Vi
                             a.getTopicId()   // ✅ IMPORTANT
                     ));
                 }
+            }else {
+                // ✅ EMPTY MESSAGE
+                displayList.add(new LevelDisplayItem(
+                        LevelDisplayItem.TYPE_EMPTY_MESSAGE,
+                        "Instructor Not Allocated Assignments, Please Contact Instructor"
+                ));
             }
         }
 notifyDataSetChanged();

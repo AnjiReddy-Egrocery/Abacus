@@ -2,6 +2,7 @@ package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -87,6 +88,10 @@ public class VisualiztionActivity extends AppCompatActivity {
         spinnerSelectedLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(Color.BLACK);
+                }
+
                 String  selectedLevel = spinnerSelectedLevel.getSelectedItem().toString();
                 Log.e("Reddy","Level"+selectedLevel);
             }
@@ -106,6 +111,10 @@ public class VisualiztionActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                // selectedTimeInterval  = spinnerTimeInterval.getSelectedItem().toString();
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(Color.BLACK);
+                }
+
 
             }
 
@@ -117,6 +126,10 @@ public class VisualiztionActivity extends AppCompatActivity {
         spinnerOperation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (selectedItemView instanceof TextView) {
+                    ((TextView) selectedItemView).setTextColor(Color.BLACK);
+                }
+
                 String selectedOperation = spinnerOperation.getSelectedItem().toString();
                 Log.e("Spinner", "Selected Operation: " + selectedOperation);
                 onOperationChange();
@@ -141,6 +154,10 @@ public class VisualiztionActivity extends AppCompatActivity {
         spinnerOperands.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (selectedItemView instanceof TextView) {
+                    ((TextView) selectedItemView).setTextColor(Color.BLACK);
+                }
+
                 String selectedOperand = spinnerOperands.getSelectedItem().toString();
 
                 // Check if the selected item is a valid number
@@ -161,6 +178,9 @@ public class VisualiztionActivity extends AppCompatActivity {
         spinnerTotalQuestions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (selectedItemView instanceof TextView) {
+                    ((TextView) selectedItemView).setTextColor(Color.BLACK);
+                }
 
             }
 
@@ -217,7 +237,7 @@ public class VisualiztionActivity extends AppCompatActivity {
         for (int i = 1; i <= numberOfSpinners; i++) {
 
             TextView textView = new TextView(this);
-            textView.setText("Select " + i +"  Number Range(upto)");
+            textView.setText("Number" + i +"(Length upto)");
 
             // Customize TextView properties
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18); // Set text size in scaled pixels
@@ -268,6 +288,10 @@ public class VisualiztionActivity extends AppCompatActivity {
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    if (selectedItemView instanceof TextView) {
+                        ((TextView) selectedItemView).setTextColor(Color.BLACK);
+                    }
+
                     // Display selected item in the corresponding TextView
                     String selectedValue = parentView.getItemAtPosition(position).toString();
                     Log.e("Spinner", "Selected Value: " + selectedValue);
@@ -313,7 +337,7 @@ public class VisualiztionActivity extends AppCompatActivity {
             return; // Stop execution if time interval is not selected
         }
 
-        if (!selectedTotalQuestions.equals("Select the Total Questions")) {
+        if (!selectedTotalQuestions.equals("Select Num Of Questions")) {
             if ("Addition".equals(selectedOperation)) {
                 // Check if a valid number is selected in spinnerOperands
                 if (!validateSpinnerOperands()) {
@@ -325,7 +349,7 @@ public class VisualiztionActivity extends AppCompatActivity {
                 // Check if dynamic spinners have valid selections for Addition operation
                 if (!validateDynamicSpinnersForAddition()) {
                     // Show a toast message indicating that the user needs to select valid options in dynamic spinners
-                    Toast.makeText(this, "Please select valid options in dynamic spinners for Addition", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "please select the total number option. for Addition", Toast.LENGTH_SHORT).show();
                     return; // Stop execution if dynamic spinner values are not valid
                 }
 
@@ -334,7 +358,7 @@ public class VisualiztionActivity extends AppCompatActivity {
                 // Check if dynamic spinners have valid selections for Multiplication operation
                 if (!validateDynamicSpinnersForMultiplication()) {
                     // Show a toast message indicating that the user needs to select valid options in dynamic spinners
-                    Toast.makeText(this, "Please select valid options in dynamic spinners for Multiplication", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "please select the total number option. for Multiplication", Toast.LENGTH_SHORT).show();
                     return; // Stop execution if dynamic spinner values are not valid
                 }
 
@@ -382,7 +406,7 @@ public class VisualiztionActivity extends AppCompatActivity {
                     }
 
                     // Check if the selected value is not "Select the Total Numbers"
-                    if ("Select the Total Numbers".equals(selectedValue)) {
+                    if ("Select the Total Questions".equals(selectedValue)) {
                         return false; // Return false if any dynamic spinner value is not selected
                     }
 
@@ -510,9 +534,9 @@ public class VisualiztionActivity extends AppCompatActivity {
         selectedTotalQuestions = spinnerTotalQuestions.getSelectedItem().toString();
         selectedTimeInterval = spinnerTimeInterval.getSelectedItem().toString();
 
-        Log.e("Spinner", "Selected Operation: " + selectedOperation);
+        Log.e("Spinner", "Operation To Perform: " + selectedOperation);
         Log.e("Spinner", "Selected Operands: " + selectedOperands);
-        Log.e("Spinner", "Selected Total Questions: " + selectedTotalQuestions);
+        Log.e("Spinner", "Total No of Questions: " + selectedTotalQuestions);
         Log.e("Spinner","Selected Time Interval"+selectedTimeInterval);
 
         Intent intent = new Intent(VisualiztionActivity.this, VisualQuizActivity.class);
@@ -585,6 +609,14 @@ public class VisualiztionActivity extends AppCompatActivity {
                 String selectedValue = dynamicSpinner.getSelectedItem().toString();
 
                 // Check if the selected value is not "Select the Range"
+                /*if (selectedValue.matches("\\d+")) {
+                    int value = Integer.parseInt(selectedValue);
+                    List<String> range = generateRange(value);
+                    selectedRanges.add(range);
+                } else {
+                    Log.e("SpinnerError", "Invalid value: " + selectedValue);
+                }
+*/
                 if (!selectedValue.equals("Select the Range")) {
                     List<String> range = generateRange(Integer.parseInt(selectedValue));
                     selectedRanges.add(range);

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dst.abacustrainner.Activity.AssignmentListActivity;
 import com.dst.abacustrainner.Activity.AssignmentPracticeActivity;
+import com.dst.abacustrainner.Activity.AssignmentPracticeVisualizationActivity;
 import com.dst.abacustrainner.Activity.NoDataActivity;
 import com.dst.abacustrainner.Activity.ViewAssignmentListActivity;
 import com.dst.abacustrainner.Model.AssignmentListResponse;
@@ -86,6 +87,18 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
             }
         });
 
+        holder.butAssignmentVisualization.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mContext, AssignmentPracticeVisualizationActivity.class);
+                intent.putExtra("topicId", topicId);
+                intent.putExtra("studentId", studentId);
+                intent.putExtra("topicName", topicName);
+                intent.putExtra("firstName",studentName);
+                mContext.startActivity(intent);
+            }
+        });
+
     }
 
     @Override
@@ -97,7 +110,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
         TextView txtAssignmentName,txtAssignPracticeCount;
 
         LinearLayout layoutAssignmentPractice;
-        Button butAssignmentExam;
+        Button butAssignmentExam,butAssignmentVisualization;
         public TopicViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -106,6 +119,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
 
             layoutAssignmentPractice=itemView.findViewById(R.id.layout_practice);
             butAssignmentExam=itemView.findViewById(R.id.but_practice);
+            butAssignmentVisualization = itemView.findViewById(R.id.but_visualization);
         }
     }
 }

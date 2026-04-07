@@ -818,6 +818,9 @@ public class AssignmentPracticeActivity extends AppCompatActivity {
         dialog.setNegativeButton("cancel",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                restoreTimerState();
+                startTimer();          // 🔥 IMPORTANT: timer restart
+
                 dialog.dismiss();
             }
         });

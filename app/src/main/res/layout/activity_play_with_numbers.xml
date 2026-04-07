@@ -77,8 +77,7 @@
                             android:text="Start : Play with Number Game"
                             android:textStyle="bold"
                             android:textSize="20dp"
-                            android:textColor="#000"
-                            android:padding="12dp"
+                            android:textColor="#000"                            android:padding="12dp"
                             android:fontFamily="@font/regular"/>
 
                         <Spinner
@@ -86,7 +85,6 @@
                             android:layout_height="50dp"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            style="@android:style/Widget.Holo.Light.Spinner"
                             android:padding="10dp"
                             android:background="@drawable/spinner_bg"
                             android:paddingLeft="4dp"
@@ -121,8 +119,7 @@
                             android:text="Create : Play with Number Game"
                             android:textStyle="bold"
                             android:textSize="20dp"
-                            android:textColor="#000"
-                            android:padding="12dp"
+                            android:textColor="#000"                            android:padding="12dp"
                             android:fontFamily="@font/regular"/>
 
                         <LinearLayout
@@ -132,10 +129,10 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Select Total Operations"
+                                android:text="Operation To Perform"
                                 android:textSize="14dp"
-                                android:layout_marginLeft="10dp"
                                 android:textColor="#000"
+                                android:layout_marginLeft="10dp"
                                 android:layout_marginTop="1dp"
                                 android:textStyle="bold"/>
                             <Spinner
@@ -144,7 +141,6 @@
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
                                 android:layout_marginTop="2dp"
-                                style="@android:style/Widget.Holo.Light.Spinner"
                                 android:padding="10dp"
                                 android:background="@drawable/spinner_bg"
                                 android:paddingLeft="4dp"
@@ -162,12 +158,11 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Select Total Numbers"
+                                android:text="Total Numbers of rows"
                                 android:textSize="14dp"
                                 android:id="@+id/txt_total_numbers"
                                 android:layout_marginLeft="10dp"
-                                android:textColor="#000"
-                                android:layout_marginTop="12dp"
+                                android:textColor="#000"                                android:layout_marginTop="12dp"
                                 android:textStyle="bold"/>
                             <Spinner
                                 android:layout_width="match_parent"
@@ -175,7 +170,7 @@
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
                                 android:layout_marginTop="2dp"
-                                style="@android:style/Widget.Holo.Light.Spinner"
+
                                 android:padding="10dp"
                                 android:background="@drawable/spinner_bg"
                                 android:paddingLeft="4dp"
@@ -203,11 +198,10 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Select Total Questions"
+                                android:text="Total No of Questions"
                                 android:textSize="14dp"
                                 android:layout_marginLeft="10dp"
-                                android:textColor="#000"
-                                android:layout_marginTop="12dp"
+                                android:textColor="#000"                                android:layout_marginTop="12dp"
                                 android:textStyle="bold"/>
                             <Spinner
                                 android:id="@+id/spinnerTotalQuestions"
@@ -215,7 +209,6 @@
                                 android:layout_height="50dp"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
-                                style="@android:style/Widget.Holo.Light.Spinner"
                                 android:padding="10dp"
                                 android:background="@drawable/spinner_bg"
                                 android:paddingLeft="4dp"
@@ -263,7 +256,7 @@
                                         android:layout_height="wrap_content"
                                         android:text=""
                                         android:textSize="18dp"
-                                        android:textColor="#000"/>
+                                        android:textColor="?attr/colorOnBackground"/>
                                 </LinearLayout>
                                 <TextView
                                     android:id="@+id/timerTextView"
@@ -272,8 +265,7 @@
                                     android:text="00:00"
                                     android:padding="5dp"
                                     android:layout_weight="1"
-                                    android:textColor="#000"
-                                    android:textSize="18dp"/>
+                                    android:textColor="?attr/colorOnBackground"                                    android:textSize="18dp"/>
                             </LinearLayout>
 
                             <EditText
@@ -283,8 +275,7 @@
                                 android:paddingLeft="10dp"
                                 android:inputType="number"
                                 android:textColorHint="#000"
-                                android:textColor="#000"
-                                android:background="@drawable/back_ground"
+                                android:textColor="?attr/colorOnBackground"                                android:background="@drawable/back_ground"
                                 android:layout_marginTop="12dp"
                                 android:hint="Enter your answer" />
 
@@ -304,8 +295,7 @@
                                     android:layout_weight="1"
                                     android:textSize="16dp"
                                     android:layout_marginRight="8dp"
-                                    android:textColor="#000"
-                                    android:backgroundTint="#CCC4C4"/>
+                                    android:textColor="?attr/colorOnBackground"                                    android:backgroundTint="#CCC4C4"/>
                                 <Button
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"

@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 
 public class PracticeListActivity extends AppCompatActivity {
 
-    TextView txtTopicName,txtName,txtStartedOn,txtTotalQuestions,txtCorrectAnswer,txtWrongAnswer,txtAttemtedQuestion,txtNotAttemtedQuestion,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers,txtTotalTime;
+    TextView txtTopicName,txtName,txtStartedOn,txtNotAttemtedQuestion,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers,txtTotalTime;
     private PieChart pieChart;
     LinearLayout btnSubmit,RetakeTest,NextLevel;
     String topicName="";
@@ -71,10 +71,7 @@ public class PracticeListActivity extends AppCompatActivity {
         //txtTopicName = findViewById(R.id.txt_subject);
 //        txtName =findViewById(R.id.txt_name);
 //        txtStartedOn = findViewById(R.id.txt_date);
-        txtTotalQuestions = findViewById(R.id.txt_questions);
-        txtCorrectAnswer = findViewById(R.id.txt_correct_answer);
-        txtWrongAnswer =findViewById(R.id.txt_wrong_answer);
-        txtAttemtedQuestion = findViewById(R.id.txt_attemted_question);
+
         btnSubmit =findViewById(R.id.but_submit_result_first);
         dateTime = findViewById(R.id.txtDate);
         txtTotalQuestion=findViewById(R.id.txt_question);
@@ -84,22 +81,13 @@ public class PracticeListActivity extends AppCompatActivity {
         showLevelTop=findViewById(R.id.display_level);
         showLevelCompleted=findViewById(R.id.combined_text_view);
 //        txtNotAttemtedQuestion = findViewById(R.id.txt_not_questions);
+        pieChart = findViewById(R.id.pieChart);
 
-        scrollView= findViewById(R.id.scroll_view);
+
         layoutFirst = findViewById(R.id.layout_first);
         layoutSecond = findViewById(R.id.layout_second);
 
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
-            int scrollY = scrollView.getScrollY();
 
-            if (scrollY > 100 && layoutFirst.getVisibility() == View.VISIBLE) {
-                fadeOut(layoutFirst);
-                fadeIn(layoutSecond);
-            } else if (scrollY <= 100 && layoutSecond.getVisibility() == View.VISIBLE) {
-                fadeOut(layoutSecond);
-                fadeIn(layoutFirst);
-            }
-        });
 
         txtTotalTime = findViewById(R.id.txt_total_time);
 
@@ -155,9 +143,9 @@ public class PracticeListActivity extends AppCompatActivity {
 
         int wrongAnswerCount = attemptedQuestions - correctCount;
 
-        txtTotalQuestions.setText(String.valueOf(totalQuestions));
+
         txtTotalQuestion.setText(String.valueOf(totalQuestions));
-        txtAttemtedQuestion.setText(String.valueOf(attemptedCount));
+
         txtAttemtedQuestons.setText(String.valueOf(attemptedCount));
 //        txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
 
@@ -217,55 +205,53 @@ public class PracticeListActivity extends AppCompatActivity {
                 Log.e("Error", "Index out of bounds for questionTimes: " + i);
             }
 
-            pieChart = findViewById(R.id.pieChart);
 
-            ArrayList<PieEntry> pieEntries = new ArrayList<>();
-            pieEntries.add(new PieEntry(attemptedCount, "Attempted"));
-            pieEntries.add(new PieEntry(notAttemptedQuestions, "Not Attempted"));
-            pieEntries.add(new PieEntry(correctCount, "Correct"));
-            pieEntries.add(new PieEntry(wrongAnswerCount, "Incorrect"));
 
-            // Sample data for the Pie Chart
-            PieDataSet dataSet = new PieDataSet(pieEntries, "Sample Data");
+
+            ArrayList<PieEntry> entries = new ArrayList<>();
+            entries.add(new PieEntry(attemptedCount, "Attempted"));
+            entries.add(new PieEntry(notAttemptedQuestions, "Not Attempted"));
+            entries.add(new PieEntry(correctCount, "Correct"));
+            entries.add(new PieEntry(wrongCount, "Incorrect"));
+
+            PieDataSet dataSet = new PieDataSet(entries, "");
+
             dataSet.setColors(new int[]{
                     ContextCompat.getColor(this, R.color.purple),
                     ContextCompat.getColor(this, R.color.orange),
                     ContextCompat.getColor(this, R.color.dark_green),
-                    ContextCompat.getColor(this, R.color.dark_red),});
-            dataSet.setValueTextSize(14f);
+                    ContextCompat.getColor(this, R.color.dark_red)
+            });
+
+            dataSet.setValueTextSize(12f);
             dataSet.setValueTextColor(Color.BLACK);
-            dataSet.setDrawIcons(false);
 
 
-            PieData pieData = new PieData(dataSet);
-
-            // Customize the chart
-            pieChart.setData(pieData);
-            pieChart.setUsePercentValues(true);
-            pieChart.setDrawHoleEnabled(true);
-            pieChart.setHoleRadius(40f);
-            pieChart.setTransparentCircleRadius(50f);
-            pieChart.setCenterText(totalTime);
-            pieChart.setCenterTextSize(12f);
-
-            // Set labels and values outside the slices
+            // spacing fix
             dataSet.setValueLinePart1Length(0.5f);
-            dataSet.setValueLinePart2Length(0.8f);
-            dataSet.setValueLineColor(Color.BLACK);
-            dataSet.setUsingSliceColorAsValueLineColor(true);
+            dataSet.setValueLinePart2Length(0.7f);
             dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
             dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
 
-            // Set offset for better visibility
-            dataSet.setValueLineVariableLength(true);
+            PieData data = new PieData(dataSet);
 
-            // Disable description text
-            Description description = new Description();
-            description.setText("");
-            pieChart.setDescription(description);
-            // Refresh chart
-            pieChart.setData(pieData);
+            pieChart.setUsePercentValues(false); // important
+            pieChart.setData(data);
+            pieChart.setDrawHoleEnabled(true);
+            pieChart.setHoleRadius(30f);
+            pieChart.setTransparentCircleRadius(40f);
+            pieChart.setCenterText(totalTime);
+            pieChart.setCenterTextSize(10f);
+
+            pieChart.setExtraOffsets(5f, 5f, 5f, 5f);
+
+            Description desc = new Description();
+            desc.setText("");
+            pieChart.setDescription(desc);
+
             pieChart.invalidate();
+
+
 
 
 
@@ -375,20 +361,10 @@ public class PracticeListActivity extends AppCompatActivity {
             }
         }
 
-        txtCorrectAnswer.setText(String.valueOf(correctCount));
+
         txtCorrectAnswers.setText(String.valueOf(correctCount));
-        txtWrongAnswer.setText(String.valueOf(wrongCount));
+
         txtworngAnswers.setText(String.valueOf(wrongCount));
-    }
-
-    private void fadeIn(View view) {
-        view.setAlpha(0f);
-        view.setVisibility(View.VISIBLE);
-        view.animate().alpha(1f).setDuration(0).start();
-    }
-
-    private void fadeOut(View view) {
-        view.animate().alpha(0f).setDuration(0).withEndAction(() -> view.setVisibility(View.GONE)).start();
     }
 
 

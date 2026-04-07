@@ -321,7 +321,7 @@ public class AllocatedViewSubResultDetailsActivity extends AppCompatActivity {
                             questionTextView.setTextColor(Color.BLACK);
                             questionTextView.setGravity(Gravity.CENTER);
                             questionTextView.setPadding(12, 12, 12, 12);
-
+                            questionTextView.setTextColor(Color.BLACK);
                             questionLayout.addView(questionTextView);
                         }
 

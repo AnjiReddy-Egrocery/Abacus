@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -138,6 +140,7 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
     private boolean isTtsReady = false;
 
     private boolean isQuestionActive = false;
+    LinearLayout linearRepeat;
 
 
     @Override
@@ -165,6 +168,7 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
         btnBack=findViewById(R.id.btn_back_level_select);
         scrollView = findViewById(R.id.horizontalScrollView);
         questionImageView = findViewById(R.id.questionImageView);
+        linearRepeat = findViewById(R.id.layout_repeat);
 
         butSubmit.setEnabled(false);
         butSubmit.setClickable(false);
@@ -366,7 +370,6 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
                 // Navigate to the previous question
                 navigateToPreviousQuestion();
                 restoreTimerState(); // Restore timer state for the previous question
-                startTimer();
             }
 
         });
@@ -420,7 +423,7 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
 
 
 
-        startTimer();
+
         VerifyMethod(studentId, topicId);
 
     }
@@ -428,7 +431,7 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
         stopTimer();
         saveTimerState();
 
-
+       linearRepeat.setVisibility(View.GONE);
 
         String answer = answerEditText.getText().toString();
 
@@ -508,7 +511,7 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
                 answerEditText.setText(""); // Clear the answer field for the next question
                 currentTime = questionTimes.get(currentQuestionIndex); // Restore timer state for the next question
                 restoreTimerState();
-                startTimer();
+
             }else {
                 showCompletionDialog();
             }
@@ -516,6 +519,7 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
         }
     }
     private void navigateToPreviousQuestion() {
+        linearRepeat.setVisibility(View.GONE);
         if (currentQuestionIndex > 0) {
 
             currentQuestionIndex--;
@@ -596,7 +600,7 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
                 questionImageView.setVisibility(View.VISIBLE);
                 questionTextView.setVisibility(View.VISIBLE);
 
-                questionTextView.setMaxLines(1);
+                questionTextView.setMaxLines(5);
                 questionTextView.setEllipsize(TextUtils.TruncateAt.END);
                 questionTextView.setText("Beads question not available for visualization practice.");
 
@@ -784,7 +788,6 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
             answerEditText.setText(storedAnswer);
             currentTime = questionTimes.get(currentQuestionIndex);
             restoreTimerState();
-            startTimer();
 
             // Invalidate GridLayout to ensure changes are visible
             gridLayout.invalidate();
@@ -1062,6 +1065,8 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
         dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                restoreTimerState();
+                startTimer();
                 dialog.dismiss();
             }
         });
@@ -1087,6 +1092,7 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
     }
 
     private void startTimer() {
+        stopTimer();
         timerRunning = true;
         countDownTimer = createCountDownTimer(currentQuestionIndex);
         countDownTimer.start();
@@ -1183,6 +1189,26 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
                         if (isTtsReady) {
                             textToSpeech.speak("Answer is", TextToSpeech.QUEUE_ADD, null, null);
                         }
+
+                        currentTime = questionTimes.get(currentQuestionIndex); // restore if needed
+                        startTimer();
+                        linearRepeat.setVisibility(View.VISIBLE);
+                        answerEditText.setVisibility(View.VISIBLE);
+                        answerEditText.setFocusable(true);
+                        answerEditText.setFocusableInTouchMode(true);
+                        answerEditText.setClickable(true);
+
+
+
+                        answerEditText.post(() -> {
+                            answerEditText.requestFocus();
+
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (imm != null) {
+                                imm.showSoftInput(answerEditText, InputMethodManager.SHOW_IMPLICIT);
+                            }
+                        });
+
 
                         // 🔥 IMPORTANT — Always show here
                         answerEditText.setVisibility(View.VISIBLE);

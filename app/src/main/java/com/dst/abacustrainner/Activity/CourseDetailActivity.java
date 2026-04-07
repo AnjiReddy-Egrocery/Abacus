@@ -72,6 +72,7 @@ public class CourseDetailActivity extends AppCompatActivity {
 
 
     private List<CourseLevel> selectedLevels = new ArrayList<>();
+    TextView tvDurationError;
 
 
 
@@ -92,6 +93,7 @@ public class CourseDetailActivity extends AppCompatActivity {
         layoutCart = findViewById(R.id.layout_cart);
         butAddCart = findViewById(R.id.but_addCart);
         butViewCart = findViewById(R.id.but_view_cart);
+        tvDurationError = findViewById(R.id.tvDurationError);
 
         layoutCourseBack = findViewById(R.id.layout_course_back);
 
@@ -104,6 +106,8 @@ public class CourseDetailActivity extends AppCompatActivity {
 
         durationAdapter = new DurationAdapter(this, durationId -> {
             selectedDurationId = durationId;
+
+            tvDurationError.setVisibility(View.GONE); // 🔥 hide error
             String worksheetRnm =
                     CartManager.getInstance(CourseDetailActivity.this)
                             .getWorksheetRnm();
@@ -133,6 +137,18 @@ public class CourseDetailActivity extends AppCompatActivity {
 
             @Override
             public void onLevelSelected(CourseLevel level) {
+                // 🔥 Duration not selected
+                if (selectedDurationId == null) {
+
+                    tvDurationError.setVisibility(View.VISIBLE);
+
+                    Toast.makeText(CourseDetailActivity.this,
+                            "Please Select Subscription Duration",
+                            Toast.LENGTH_SHORT).show();
+
+                    return; // ❌ STOP selection
+                }
+                tvDurationError.setVisibility(View.GONE);
                 if (level == null) return;
 
                 if (level.isSelected()) {
@@ -229,11 +245,24 @@ public class CourseDetailActivity extends AppCompatActivity {
                 String worksheetRnm =
                         CartManager.getInstance(CourseDetailActivity.this).getWorksheetRnm();
 
+                int totalAmount = 0;
+
+                for (CourseLevel level : selectedLevels) {
+                    try {
+                        if (level.getPrice() != null) {
+                            totalAmount += Integer.parseInt(level.getPrice());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
 
                 Log.e("Reddy", "worksheetRnm = " + worksheetRnm);
                 Log.e("Reddy", "courseTypeId = " + courseId);
 
                 Log.e("Reddy", "durationId = " + selectedDurationId);
+                Log.d("Anji", String.valueOf(totalAmount));
 
                 for (CourseLevel level : selectedLevels) {
 
@@ -251,6 +280,7 @@ public class CourseDetailActivity extends AppCompatActivity {
 
                     Intent intent =new Intent(CourseDetailActivity.this, CartActivity.class);
                     intent.putExtra("WorkSheetRnm",worksheetRnm);
+                    intent.putExtra("TOTAL_AMOUNT",totalAmount);
                     startActivity(intent);
 
 
@@ -413,6 +443,9 @@ public class CourseDetailActivity extends AppCompatActivity {
 
         ApiClient apiClient = retrofit.create(ApiClient.class);
 
+        final int totalLevels = levelList.size();
+        final int[] loadedCount = {0}; // 🔥 track API calls
+
         for (CourseLevel level : levelList) {
 
             RequestBody levelIdBody =
@@ -437,15 +470,29 @@ public class CourseDetailActivity extends AppCompatActivity {
                                         response.body().getResult().getPrice();
 
                                 level.setPrice(price);
+                            }
+
+                            loadedCount[0]++;
+
+                            // 🔥 When all prices loaded → update UI
+                            if (loadedCount[0] == totalLevels) {
                                 levelsAdapter.notifyDataSetChanged();
+                                updateSummary(); // ✅ FIX HERE
                             }
                         }
 
                         @Override
                         public void onFailure(Call<LevelPriceResponse> call, Throwable t) {
+                            loadedCount[0]++;
+
+                            if (loadedCount[0] == totalLevels) {
+                                updateSummary(); // still update
+                            }
+
                             Log.e("PRICE_ERROR", t.getMessage());
                         }
                     });
+
         }
     }
 
@@ -480,6 +527,10 @@ public class CourseDetailActivity extends AppCompatActivity {
                         // 🔥 RecyclerView ki data set
                         levelsAdapter.setLevels(levels);
                         restoreSelections();
+                        // 🔥 VERY IMPORTANT FIX
+                        if (selectedDurationId != null) {
+                            fetchPricesForLevels(selectedDurationId);
+                        }
                     }
                 }
             }
@@ -542,9 +593,7 @@ public class CourseDetailActivity extends AppCompatActivity {
                 CartManager.getInstance(this)
                         .getSelectedDuration(worksheetRnm, courseId);
 
-        if (selectedDurationId != null) {
-            fetchPricesForLevels(selectedDurationId);
-        }
+
 
         // 🔥 Restore Levels
         List<String> savedLevelIds =

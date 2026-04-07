@@ -236,8 +236,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="00:00"
-
                             android:layout_weight="0.8"
+                            android:gravity="center"
                             android:layout_marginStart="10dp"
                             android:textColor="#000"
                             android:textSize="18dp"/>
@@ -393,6 +393,7 @@
                                 android:id="@+id/btnNext"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="25dp"
                                 android:background="@drawable/save_next_btn"
                                 android:orientation="horizontal">
 

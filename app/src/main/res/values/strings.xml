@@ -27,13 +27,13 @@
 
 
     <string-array name="operations">
-        <item>Select the Option</item>
+        <item>Select the Operation</item>
         <item>Addition</item>
         <item>Multiplication</item>
     </string-array>
 
     <string-array name="operands">
-        <item>Select the Total Numbers</item>
+        <item>Select the Total Number Of Rows</item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
@@ -46,7 +46,7 @@
     </string-array>
 
     <string-array name="dropdown_values">
-        <item>Select the Range</item>
+        <item>Upto Num of Digits</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -55,7 +55,7 @@
 
 
     <string-array name="total_questions">
-        <item>Select the Total Questions</item>
+        <item>Select Num Of Questions</item>
         <item>10</item>
         <item>20</item>
         <item>30</item>
@@ -98,7 +98,7 @@
     </string-array>
 
     <string-array name="operand_values">
-        <item>Select the Range</item>
+        <item>Upto Num Of Digits</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>

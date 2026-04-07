@@ -2,6 +2,7 @@ package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -71,6 +72,10 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
         spinnerSelectedLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(Color.BLACK);
+                }
+
                 String  selectedLevel = spinnerSelectedLevel.getSelectedItem().toString();
                 Log.e("Reddy","Level"+selectedLevel);
             }
@@ -103,6 +108,10 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
         spinnerOperation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (selectedItemView instanceof TextView) {
+                    ((TextView) selectedItemView).setTextColor(Color.BLACK);
+                }
+
                 String selectedOperation = spinnerOperation.getSelectedItem().toString();
                 Log.e("Spinner", "Selected Operation: " + selectedOperation);
                 onOperationChange();
@@ -127,6 +136,10 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
         spinnerOperands.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (selectedItemView instanceof TextView) {
+                    ((TextView) selectedItemView).setTextColor(Color.BLACK);
+                }
+
                 String selectedOperand = spinnerOperands.getSelectedItem().toString();
 
                 // Check if the selected item is a valid number
@@ -147,6 +160,11 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
         spinnerTotalQuestions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
+                if (selectedItemView instanceof TextView) {
+                    ((TextView) selectedItemView).setTextColor(Color.BLACK);
+                }
+
 
             }
 
@@ -284,7 +302,7 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
         for (int i = 1; i <= numberOfSpinners; i++) {
 
             TextView textView = new TextView(this);
-            textView.setText("Select " + i +"  Number Range(upto)");
+            textView.setText("Number" + i +"(Length upto)");
 
             // Customize TextView properties
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18); // Set text size in scaled pixels
@@ -335,6 +353,10 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    if (selectedItemView instanceof TextView) {
+                        ((TextView) selectedItemView).setTextColor(Color.BLACK);
+                    }
+
                     // Display selected item in the corresponding TextView
                     String selectedValue = parentView.getItemAtPosition(position).toString();
                     Log.e("Spinner", "Selected Value: " + selectedValue);
@@ -364,16 +386,16 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
         Log.e("Spinner", "Selected Operands: " + selectedOperands);
         Log.e("Spinner", "Selected Total Questions: " + selectedTotalQuestions);
 
-        if ("Select the Operation".equals(selectedOperation) ||
+        if ("Operation To Perform".equals(selectedOperation) ||
                 "Select the Operands".equals(selectedOperands) ||
-                "Select the Total Questions".equals(selectedTotalQuestions)) {
+                "Total No of Questions".equals(selectedTotalQuestions)) {
             // Show a toast message indicating that the user needs to select all options
             Toast.makeText(this, "Please select all Spinner options", Toast.LENGTH_SHORT).show();
             return; // Stop execution if any of the values is not selected
         }
 
 
-        if (!selectedTotalQuestions.equals("Select the Total Questions")) {
+        if (!selectedTotalQuestions.equals("Total No of Questions")) {
             if ("Addition".equals(selectedOperation)) {
                 // Check if a valid number is selected in spinnerOperands
                 if (!validateSpinnerOperands()) {
@@ -442,7 +464,7 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
                     }
 
                     // Check if the selected value is not "Select the Total Numbers"
-                    if ("Select the Total Numbers".equals(selectedValue)) {
+                    if ("Total Numbers of rows".equals(selectedValue)) {
                         return false; // Return false if any dynamic spinner value is not selected
                     }
 
@@ -575,9 +597,9 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
         //int selectedOperands = Integer.parseInt(selectedOperandsStr); // ✅ Safe now
         int selectedOperands = (selectedOperation.equals("Multiplication")) ? 2 : Integer.parseInt(selectedOperandsStr);
 
-        Log.e("Spinner", "Selected Operation: " + selectedOperation);
+        Log.e("Spinner", "Operation To Perform: " + selectedOperation);
         Log.e("Spinner", "Selected Operands: " + selectedOperands);
-        Log.e("Spinner", "Selected Total Questions: " + selectedTotalQuestions);
+        Log.e("Spinner", "Total No of Questions : " + selectedTotalQuestions);
 
         Intent intent = new Intent(PlayWithNumbersActivity.this, QuizActivity.class);
         intent.putStringArrayListExtra("questions", (ArrayList<String>) questions);

@@ -24,7 +24,7 @@ public class OrderRequest {
 
         this.merchantOrderId = merchantOrderId;
         this.amount = amount;
-        this.expireAfter = expireAfter;
+        this.expireAfter = expireAfter; // 👈 SET
         this.metaInfo = metaInfo;
         this.paymentFlow = paymentFlow;
     }

@@ -3,6 +3,7 @@ package com.dst.abacustrainner.Activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -43,6 +44,7 @@ public class AssignmentListActivity extends AppCompatActivity {
     ProgressBar progressBar;
 
     LinearLayout btnBack;
+    TextView txtEmpty;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -61,6 +63,7 @@ public class AssignmentListActivity extends AppCompatActivity {
         endTime=bundle.getString("endTime");
         progressBar= findViewById(R.id.progress);
         String header = name + "||" + date;
+        txtEmpty = findViewById(R.id.txt_empty);
 
         txtName.setText(header);
 
@@ -73,10 +76,12 @@ public class AssignmentListActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(AssignmentListActivity.this, BatchDatesDetailsActivity.class);
-                startActivity(intent);
-            }
+                 finish();
+                }
         });
+
+        Log.d("Reddy",dateid);
+        Log.d("Reddy",studentid);
 
         VerifyMethod(dateid,studentid);
 
@@ -104,6 +109,7 @@ public class AssignmentListActivity extends AppCompatActivity {
             public void onResponse(Call<AssignmentListResponse> call, Response<AssignmentListResponse> response) {
                 progressBar.setVisibility(View.GONE);
                 AssignmentListResponse assignmentListResponse=response.body();
+
                 if (assignmentListResponse.getErrorCode().equals("202")) {
 
                     Toast.makeText(AssignmentListActivity.this, "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
@@ -112,12 +118,21 @@ public class AssignmentListActivity extends AppCompatActivity {
                     AssignmentListResponse.Result result = assignmentListResponse.getResult();
                     List<AssignmentListResponse.Result.AssignmentTopics> assignmentTopicsList = result.getAssignmentTopicsList();
 
-                    assignmentListAdapter = new AssignmentListAdapter(AssignmentListActivity.this, assignmentTopicsList);
-                    recyclerAssignList.setAdapter(assignmentListAdapter);
+                    if (assignmentTopicsList != null && !assignmentTopicsList.isEmpty()) {
+                        recyclerAssignList.setVisibility(View.VISIBLE);
+                        txtEmpty.setVisibility(View.GONE);
+
+                        assignmentListAdapter = new AssignmentListAdapter(AssignmentListActivity.this, assignmentTopicsList);
+                        recyclerAssignList.setAdapter(assignmentListAdapter);
 
 
-                } else {
-                    Toast.makeText(AssignmentListActivity.this, "Data Error", Toast.LENGTH_LONG).show();
+                    } else {
+                        recyclerAssignList.setVisibility(View.GONE);
+                        txtEmpty.setVisibility(View.VISIBLE);
+
+                        // backend message use cheyyachu
+                        txtEmpty.setText(assignmentListResponse.getEmptyAssignmentTopicsessage());
+                    }
                 }
             }
 

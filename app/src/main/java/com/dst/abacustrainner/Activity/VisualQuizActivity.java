@@ -235,12 +235,15 @@ public class VisualQuizActivity extends AppCompatActivity  {
         quizData = new ArrayList<>();
         answers = new ArrayList<>(Collections.nCopies(questions.size(), ""));
         questionTimes = new ArrayList<>(Collections.nCopies(questions.size(), 0L));
+        isQuestionAttempted = new ArrayList<>(Collections.nCopies(questions.size(), false));
+        isQuestionCorrect = new ArrayList<>(Collections.nCopies(questions.size(), false));
+        isQuestionAnswered = new ArrayList<>(Collections.nCopies(questions.size(), false));
         questionTimers = new ArrayList<>();
         for (int i = 0; i < questions.size(); i++) {
             questionTimers.add(createCountDownTimer(i));
         }
         for (int i = 0; i < questions.size(); i++) {
-            isQuestionAnswered.add(false);
+            isQuestionAnswered = new ArrayList<>(Collections.nCopies(questions.size(), false));
         }
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -491,6 +494,11 @@ public class VisualQuizActivity extends AppCompatActivity  {
 //    }
 
     private void onPreviousButtonClick(View view) {
+        // ✅ FIRST check boundary
+        if (currentQuestionIndex == 0) {
+            Toast.makeText(VisualQuizActivity.this, "No previous questions available", Toast.LENGTH_SHORT).show();
+            return; // 🚀 STOP here
+        }
         stopTimer();
         saveTimerState();
         disableComponents();
@@ -517,7 +525,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
             if (answers.size() > currentQuestionIndex) {
                 answers.set(currentQuestionIndex, enteredAnswer);
             } else {
-                answers.add(enteredAnswer);
+                answers.set(currentQuestionIndex, enteredAnswer);
             }
 
             Log.e("DebugTag", "Index: " + currentQuestionIndex);
@@ -678,7 +686,6 @@ public class VisualQuizActivity extends AppCompatActivity  {
 
             boolean attempted = !enteredAnswer.isEmpty();
             isQuestionAttempted.add(attempted);
-
             if (correctAnswers != null && currentQuestionIndex < correctAnswers.size()) {
                 boolean correctAnswer = enteredAnswer.equals(correctAnswers.get(currentQuestionIndex));
                 isQuestionCorrect.add(correctAnswer);
@@ -975,7 +982,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
             if (answers.size() > currentQuestionIndex) {
                 answers.set(currentQuestionIndex, enteredAnswer);
             } else {
-                answers.add(enteredAnswer);
+                answers.set(currentQuestionIndex, enteredAnswer);
             }
 
             boolean attempted = !enteredAnswer.isEmpty();
@@ -996,8 +1003,7 @@ public class VisualQuizActivity extends AppCompatActivity  {
                 if (isQuestionCorrect.size() > currentQuestionIndex) {
                     isQuestionCorrect.set(currentQuestionIndex, false); // Default to false if no answer
                 } else {
-                    isQuestionCorrect.add(false);
-                }
+                    isQuestionCorrect.set(currentQuestionIndex, false);                }
             }
 
             // Update button colors based on answered state

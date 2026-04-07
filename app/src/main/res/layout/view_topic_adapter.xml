@@ -58,6 +58,7 @@
                         android:fontFamily="@font/regular"
                         android:layout_weight="1"
                         android:textStyle="bold"
+                        android:textColor="#fff"
                         android:id="@+id/but_view_Result"
                         android:backgroundTint="#D3481D"/>
 

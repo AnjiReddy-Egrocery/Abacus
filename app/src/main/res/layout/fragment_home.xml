@@ -271,6 +271,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="View More Details"
                                         android:backgroundTint="#198754"
+                                        android:textColor="#fff"
                                         android:id="@+id/but_viewmoredetails"/>
                                 </LinearLayout>
 
@@ -370,6 +371,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="View More Details"
                                     android:backgroundTint="#0dcaf0"
+                                    android:textColor="#fff"
                                     android:id="@+id/but_subscription_details"/>
                             </LinearLayout>
                         </LinearLayout>

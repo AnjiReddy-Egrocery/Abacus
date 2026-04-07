@@ -187,7 +187,7 @@ public class PaymentActivity extends AppCompatActivity {
         OrderRequest request = new OrderRequest(
                 merchantOrderId,
                 amountInPaisa,
-                expireAfter,
+                expireAfter, // 👈 MUST PASS
                 new MetaInfo("StudentPayment", "Abacus"),
                 new PaymentFlow("PG_CHECKOUT")
         );

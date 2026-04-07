@@ -413,56 +413,28 @@ public class TopicPracticeActivity extends AppCompatActivity {
         VerifyMethod(studentid, topicid);
 
     }
+
     private void saveAnswerAndMoveToNextQuestion() {
         stopTimer();
         saveTimerState();
+
+
 
         String answer = answerEditText.getText().toString();
 
         originalAnswer = answerArray[currentQuestionIndex];
         if (!answer.isEmpty()) {
             questionTimes.set(currentQuestionIndex,currentTime);
-            listData.add(new SendData(questionTextView.getText().toString(),originalAnswer ,answer , isCorrected, currentTime / 1000,status));
+            listData.add(new SendData(questionTextView.getText().toString(),  originalAnswer,answer, isCorrected,currentTime / 1000, status));
         }
 
         Log.e("Anji","Data"+listData);
 
-//        if (isQuestionAnswered != null && !isQuestionAnswered.isEmpty()) {
-//            // Display the next question
-//            String enteredAnswer = answerEditText.getText().toString();
-//            enteredAnswers.add(enteredAnswer);
-//
-//            boolean attempted = !enteredAnswer.isEmpty();
-//            isQuestionAttempted.add(attempted);
-//            int previousButtonIndex = currentQuestionIndex - 1 ; // Previous button index
-//            int currentButtonIndex = currentQuestionIndex * 2;       // Current button index
-//
-//            // Reset previous question's button color
-//            if (previousButtonIndex >= 0 && previousButtonIndex < gridLayout.getChildCount()) {
-//                View previousButtonView = gridLayout.getChildAt(previousButtonIndex);
-//                if (previousButtonView instanceof Button) {
-//                    Button previousButton = (Button) previousButtonView;
-//                    previousButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor)); // Answered color
-//                }
-//            }
-//
-//            if (!enteredAnswer.isEmpty()) {
-//                int buttonIndex = currentQuestionIndex*2; // Step buttons are at even indices
-//                if (buttonIndex >= 0 && buttonIndex < gridLayout.getChildCount()) {
-//                    View buttonView = gridLayout.getChildAt(buttonIndex);
-//                    if (buttonView instanceof Button) {
-//                        Button stepButton = (Button) buttonView;
-//                        stepButton.setBackgroundColor(getResources().getColor(R.color.answeredButtonColor));
-//                        isQuestionAnswered.set(currentQuestionIndex, true);
-//                    }
-//                }
-//            }
-//        }
-
 
         if (currentQuestionIndex >= 0 && currentQuestionIndex < questionsArray.length) {
             String enteredAnswer = answerEditText.getText().toString();
-            enteredAnswers.set(currentQuestionIndex, enteredAnswer);  // ✅ FIX
+            //enteredAnswers.add(enteredAnswer);
+            enteredAnswers.set(currentQuestionIndex, enteredAnswer);
 
             Log.e("DebugTag", "Index: " + currentQuestionIndex);
             Log.e("DebugTag", "Entered Answer: " + enteredAnswer);
@@ -470,12 +442,6 @@ public class TopicPracticeActivity extends AppCompatActivity {
             boolean attempted = !enteredAnswer.isEmpty();
             isQuestionAttempted.add(attempted);
 
-//            if (originalAnswers != null && currentQuestionIndex < originalAnswers.size()) {
-//                boolean correctAnswer = enteredAnswer.equals(originalAnswers.get(currentQuestionIndex));
-//                isQuestionCorrect.add(correctAnswer);
-//            } else {
-//                isQuestionCorrect.add(false); // Default to false
-//            }
 
             int previousButtonIndex = (currentQuestionIndex - 1) * 2; // Previous button index
             int currentButtonIndex = currentQuestionIndex * 2;       // Current button index
@@ -518,8 +484,6 @@ public class TopicPracticeActivity extends AppCompatActivity {
         }
 
         if (questionsArray != null && questionsArray.length > 0) {
-            startTimer();
-
             enteredAnswers.set(currentQuestionIndex, answer);
 
 
@@ -540,8 +504,9 @@ public class TopicPracticeActivity extends AppCompatActivity {
             }
         } else {
         }
-  }
-  private void navigateToPreviousQuestion() {
+    }
+
+    private void navigateToPreviousQuestion() {
         if (currentQuestionIndex > 0) {
 
             currentQuestionIndex--;
@@ -894,6 +859,8 @@ public class TopicPracticeActivity extends AppCompatActivity {
         dialog.setNegativeButton("cancel",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                restoreTimerState();
+                startTimer();          // 🔥 IMPORTANT: timer restart
                 dialog.dismiss();
             }
         });

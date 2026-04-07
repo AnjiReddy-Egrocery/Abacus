@@ -57,8 +57,10 @@ public class CartActivity extends AppCompatActivity {
     RecyclerView recyclerCartList;
     CartDetailAdapter cartDetalAdapter;
     TextView textAmount;
+
     Button butCheckOut;
     String studentId;
+    int totalAmount;
 
 
 
@@ -80,8 +82,11 @@ public class CartActivity extends AppCompatActivity {
         workSheetRnm = getIntent().getStringExtra("WorkSheetRnm");
         StudentRegistationResponse.Result result= SharedPrefManager.getInstance(CartActivity.this).getUserData();
         studentId=result.getStudentId();
+        totalAmount = getIntent().getIntExtra("TOTAL_AMOUNT", 0);
 
-        Log.e("Reddy",workSheetRnm);
+        Log.d("Anji",workSheetRnm);
+        Log.d("Anji",studentId);
+        Log.d("Anji", String.valueOf(totalAmount));
 
         recyclerCartList.setLayoutManager(new LinearLayoutManager(this));
         cartDetalAdapter = new CartDetailAdapter(CartActivity.this, new CartDetailAdapter.OnDeleteCart() {
@@ -116,7 +121,7 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void SubmitCartData(String workSheetRnm, String studentId, String totalAmount) {
-        Log.d("Reddy","Amount"+totalAmount);
+        Log.d("Anji","Amount"+totalAmount);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();

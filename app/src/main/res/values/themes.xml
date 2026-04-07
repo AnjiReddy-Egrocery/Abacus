@@ -2,22 +2,29 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.AbacusTrainer" parent="Theme.Material3.DayNight.NoActionBar">
 
-        <item name="android:windowBackground">@color/white</item>
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Dynamic colors -->
+        <item name="colorPrimary">@color/primary</item>
+
+        <!-- Correct Material colors -->
+        <item name="colorSurface">@color/background</item>
+        <item name="colorOnSurface">@color/textColor</item>
+
+        <!-- ADD THESE -->
+
+
+
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
+
     </style>
 
+    <style name="Theme.AbacusTrainer" parent="Base.Theme.AbacusTrainer"/>
+
+    <!-- Splash Theme -->
     <style name="Theme.Splash" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:windowBackground">@android:color/black</item> <!-- Use Black or Transparent -->
+        <item name="android:windowBackground">@color/splash_bg</item>
     </style>
 
-
-
-
-    <style name="Theme.AbacusTrainer" parent="Base.Theme.AbacusTrainer"
-        >
-        <item name="android:windowBackground">@color/white</item>
-    </style>
 
     <style name="floatingAdd2" parent="Widget.Design.FloatingActionButton">
         <item name = "android:foreground"> @drawable/notes</item>

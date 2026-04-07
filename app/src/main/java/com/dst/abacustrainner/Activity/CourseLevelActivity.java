@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.dst.abacustrainner.Adapter.LevelTopicAdapter;
@@ -57,6 +58,13 @@ public class CourseLevelActivity extends AppCompatActivity {
         recyclerCourseType.setLayoutManager(new LinearLayoutManager(this));
         courseTypeLevelTopicAdapter = new LevelTopicAdapter(this);
         recyclerCourseType.setAdapter(courseTypeLevelTopicAdapter);
+
+        layoutBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 
         loadCoursesList(studentId,courseLevelId);

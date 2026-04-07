@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 
 public class AllocatedAssignmentPracticeWorkSheetResultActivity extends AppCompatActivity {
 
-    TextView txtTopicName,txtName,txtStartedOn,txtTotalQuestions,txtCorrectAnswer,txtWrongAnswer,txtAttemtedQuestion,txtNotAttemtedQuestion,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers,txtTotalTime;
+    TextView txtTopicName,txtName,txtStartedOn,txtNotAttemtedQuestion,showLevelTop,showLevelCompleted,dateTime,txtTotalQuestion,txtAttemtedQuestons,txtCorrectAnswers,txtworngAnswers,txtTotalTime;
     private PieChart pieChart;
     LinearLayout btnSubmit,RetakeTest,NextLevel;
     String topicName="";
@@ -58,7 +58,7 @@ public class AllocatedAssignmentPracticeWorkSheetResultActivity extends AppCompa
     long time;
     String totalTime;
 
-    ScrollView scrollView;
+
     LinearLayout layoutFirst,layoutSecond;
 
 
@@ -73,10 +73,6 @@ public class AllocatedAssignmentPracticeWorkSheetResultActivity extends AppCompa
         //txtTopicName = findViewById(R.id.txt_subject);
 //        txtName =findViewById(R.id.txt_name);
 //        txtStartedOn = findViewById(R.id.txt_date);
-        txtTotalQuestions = findViewById(R.id.txt_questions);
-        txtCorrectAnswer = findViewById(R.id.txt_correct_answer);
-        txtWrongAnswer =findViewById(R.id.txt_wrong_answer);
-        txtAttemtedQuestion = findViewById(R.id.txt_attemted_question);
         btnSubmit =findViewById(R.id.but_submit_result_first);
         dateTime = findViewById(R.id.txtDate);
         txtTotalQuestion=findViewById(R.id.txt_question);
@@ -87,21 +83,13 @@ public class AllocatedAssignmentPracticeWorkSheetResultActivity extends AppCompa
         showLevelCompleted=findViewById(R.id.combined_text_view);
 //        txtNotAttemtedQuestion = findViewById(R.id.txt_not_questions);
 
-        scrollView= findViewById(R.id.scroll_view);
+        pieChart = findViewById(R.id.pieChart);
+
+
+        //  scrollView= findViewById(R.id.scroll_view);
         layoutFirst = findViewById(R.id.layout_first);
         layoutSecond = findViewById(R.id.layout_second);
 
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
-            int scrollY = scrollView.getScrollY();
-
-            if (scrollY > 100 && layoutFirst.getVisibility() == View.VISIBLE) {
-                fadeOut(layoutFirst);
-                fadeIn(layoutSecond);
-            } else if (scrollY <= 100 && layoutSecond.getVisibility() == View.VISIBLE) {
-                fadeOut(layoutSecond);
-                fadeIn(layoutFirst);
-            }
-        });
 
         txtTotalTime = findViewById(R.id.txt_total_time);
 
@@ -157,9 +145,9 @@ public class AllocatedAssignmentPracticeWorkSheetResultActivity extends AppCompa
 
         int wrongAnswerCount = attemptedQuestions - correctCount;
 
-        txtTotalQuestions.setText(String.valueOf(totalQuestions));
+       // txtTotalQuestions.setText(String.valueOf(totalQuestions));
         txtTotalQuestion.setText(String.valueOf(totalQuestions));
-        txtAttemtedQuestion.setText(String.valueOf(attemptedCount));
+      //  txtAttemtedQuestion.setText(String.valueOf(attemptedCount));
         txtAttemtedQuestons.setText(String.valueOf(attemptedCount));
 //        txtNotAttemtedQuestion.setText(String.valueOf(notAttemptedQuestions));
 
@@ -219,7 +207,6 @@ public class AllocatedAssignmentPracticeWorkSheetResultActivity extends AppCompa
                 Log.e("Error", "Index out of bounds for questionTimes: " + i);
             }
 
-            pieChart = findViewById(R.id.pieChart);
 
             ArrayList<PieEntry> pieEntries = new ArrayList<>();
             pieEntries.add(new PieEntry(attemptedCount, "Attempted"));
@@ -234,9 +221,9 @@ public class AllocatedAssignmentPracticeWorkSheetResultActivity extends AppCompa
                     ContextCompat.getColor(this, R.color.orange),
                     ContextCompat.getColor(this, R.color.dark_green),
                     ContextCompat.getColor(this, R.color.dark_red),});
-            dataSet.setValueTextSize(14f);
+            dataSet.setValueTextSize(12f);
             dataSet.setValueTextColor(Color.BLACK);
-            dataSet.setDrawIcons(false);
+
 
 
             PieData pieData = new PieData(dataSet);
@@ -252,7 +239,7 @@ public class AllocatedAssignmentPracticeWorkSheetResultActivity extends AppCompa
 
             // Set labels and values outside the slices
             dataSet.setValueLinePart1Length(0.5f);
-            dataSet.setValueLinePart2Length(0.8f);
+            dataSet.setValueLinePart2Length(1.0f);
             dataSet.setValueLineColor(Color.BLACK);
             dataSet.setUsingSliceColorAsValueLineColor(true);
             dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
@@ -260,6 +247,7 @@ public class AllocatedAssignmentPracticeWorkSheetResultActivity extends AppCompa
 
             // Set offset for better visibility
             dataSet.setValueLineVariableLength(true);
+            pieChart.setExtraOffsets(7f, 7f, 7f, 7f);
 
             // Disable description text
             Description description = new Description();
@@ -387,9 +375,9 @@ public class AllocatedAssignmentPracticeWorkSheetResultActivity extends AppCompa
             }
         }
 
-        txtCorrectAnswer.setText(String.valueOf(correctCount));
+      //  txtCorrectAnswer.setText(String.valueOf(correctCount));
         txtCorrectAnswers.setText(String.valueOf(correctCount));
-        txtWrongAnswer.setText(String.valueOf(wrongCount));
+       // txtWrongAnswer.setText(String.valueOf(wrongCount));
         txtworngAnswers.setText(String.valueOf(wrongCount));
     }
 

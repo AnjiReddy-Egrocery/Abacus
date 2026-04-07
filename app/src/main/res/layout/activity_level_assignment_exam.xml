@@ -393,6 +393,7 @@
                                 android:id="@+id/btnNext"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="25dp"
                                 android:background="@drawable/save_next_btn"
                                 android:orientation="horizontal">
 
@@ -400,6 +401,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="2dp"
+
                                     android:orientation="horizontal">
 
                                     <TextView

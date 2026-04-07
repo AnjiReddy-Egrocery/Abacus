@@ -121,6 +121,8 @@ public class ProfileFragment extends Fragment {
 
                     Glide.with(requireContext())
                             .load(imageUrl)
+                            .placeholder(R.drawable.headerprofile) // loading time lo
+                            .error(R.drawable.headerprofile)       // fail ayithe
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .signature(new ObjectKey(System.currentTimeMillis())) // forces fresh load
                             .circleCrop()

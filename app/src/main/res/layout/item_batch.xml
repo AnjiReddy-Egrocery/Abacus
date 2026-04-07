@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_margin="6dp"
     android:background="@drawable/bg_level_item"
     android:orientation="vertical">
 
@@ -17,11 +17,13 @@
         card_view:cardElevation="4dp"
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
+        android:background="#fff"
         android:focusable="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#fff"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"

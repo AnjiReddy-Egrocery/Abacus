@@ -831,6 +831,8 @@ public class LevelTopicExamActivity extends AppCompatActivity {
         dialog.setNegativeButton("cancel",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                restoreTimerState();
+                startTimer();
                 dialog.dismiss();
             }
         });

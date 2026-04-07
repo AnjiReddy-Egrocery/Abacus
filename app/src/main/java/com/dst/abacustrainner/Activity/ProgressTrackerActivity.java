@@ -46,7 +46,7 @@ public class ProgressTrackerActivity extends AppCompatActivity {
         SpannableStringBuilder spannable = new SpannableStringBuilder(termsText);
         // Headings list
         String[] headings = {
-                "Abacus Trainer Profile Progress Tracker"
+                "Profile Progress Tracker"
 
         };
 

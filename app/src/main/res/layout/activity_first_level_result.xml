@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
+    android:background="#fff"
     android:padding="6dp">
 
     <LinearLayout
@@ -13,7 +14,7 @@
         android:orientation="vertical"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        >
+        android:background="#fff">
 
         <TextView
             android:layout_width="match_parent"
@@ -39,6 +40,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textSize="18dp"
+                android:textColor="#000"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -50,7 +52,7 @@
             android:gravity="center"
             android:textSize="18dp"
             android:textStyle="bold"
-            />
+            android:textColor="#000"/>
 
 
         <LinearLayout
@@ -286,6 +288,7 @@
                             android:layout_height="wrap_content"
                             android:text="Performance OverView"
                             android:textSize="18dp"
+                            android:textColor="#000"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -295,7 +298,7 @@
                         android:layout_height="200dp"
                         android:layout_margin="16dp"
                         android:padding="10dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="18dp"
                         tools:ignore="MissingClass" />
 
 

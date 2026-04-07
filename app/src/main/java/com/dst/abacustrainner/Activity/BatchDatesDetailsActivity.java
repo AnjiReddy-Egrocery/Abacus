@@ -58,9 +58,9 @@ public class BatchDatesDetailsActivity extends AppCompatActivity {
 
         txtName=findViewById(R.id.txt_batch_name);
         btnBack=findViewById(R.id.btn_back_to_home);
-        Bundle bundle=getIntent().getExtras();
-        bactchId=bundle.getString("BatchId");
-        name=bundle.getString("BatchName");
+        //Bundle bundle=getIntent().getExtras();
+        bactchId=getIntent().getStringExtra("BatchId");
+        name= getIntent().getStringExtra("BatchName");
         StudentRegistationResponse.Result result= SharedPrefManager.getInstance(getApplicationContext()).getUserData();
         id=result.getStudentId();
         String batchName = "\"" + name + "\"" + " Schedule Details";
@@ -78,8 +78,7 @@ public class BatchDatesDetailsActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(BatchDatesDetailsActivity.this, HomeActivity.class);
-                startActivity(intent);
+              finish();
             }
         });
 

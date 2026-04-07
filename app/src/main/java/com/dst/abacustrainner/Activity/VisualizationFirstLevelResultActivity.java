@@ -99,7 +99,7 @@ public class VisualizationFirstLevelResultActivity extends AppCompatActivity {
         String combinedText1 =String.format("Level Visualization game level %s.", levelValue);
         showLevelTop.setText(String.valueOf(combinedText1));
 
-        String combinedText =String.format("Great job on completing level %s. Keep practicing!", levelValue);
+        String combinedText =String.format("Great job on Completed level %s. Keep practicing!", levelValue);
         showLevelCompleted.setText(combinedText);
 
         // Retrieve ParcelableLong list and convert it back to Long list

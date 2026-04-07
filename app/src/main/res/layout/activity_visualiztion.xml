@@ -85,7 +85,6 @@
 
                     <Spinner
                         android:id="@+id/spinnerSelectedLevel"
-                        style="@android:style/Widget.Holo.Light.Spinner"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginLeft="10dp"
@@ -138,14 +137,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="1dp"
-                            android:text="Select Total Operations"
+                            android:text="Operation To Perform"
                             android:textColor="#000"
                             android:textSize="14dp"
                             android:textStyle="bold" />
 
                         <Spinner
                             android:id="@+id/spinnerOperation"
-                            style="@android:style/Widget.Holo.Light.Spinner"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginLeft="10dp"
@@ -170,14 +168,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="12dp"
-                            android:text="Select Total Numbers"
+                            android:text="Total Numbers of rows"
                             android:textColor="#000"
                             android:textSize="14dp"
                             android:textStyle="bold" />
 
                         <Spinner
                             android:id="@+id/spinnerOperands"
-                            style="@android:style/Widget.Holo.Light.Spinner"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginLeft="10dp"
@@ -210,14 +207,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="12dp"
-                            android:text="Select Total Questions"
+                            android:text="Total No of Questions"
                             android:textColor="#000"
                             android:textSize="14dp"
                             android:textStyle="bold" />
 
                         <Spinner
                             android:id="@+id/spinnerTotalQuestions"
-                            style="@android:style/Widget.Holo.Light.Spinner"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginLeft="10dp"
@@ -241,14 +237,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="12dp"
-                            android:text="Select Time Interval"
+                            android:text=" Total Time Interval"
                             android:textColor="#000"
                             android:textSize="14dp"
                             android:textStyle="bold" />
 
                         <Spinner
                             android:id="@+id/spinnerTimeInterval"
-                            style="@android:style/Widget.Holo.Light.Spinner"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginLeft="10dp"

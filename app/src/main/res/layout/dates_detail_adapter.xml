@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#fff"
     xmlns:card_view="http://schemas.android.com/apk/res-auto">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="12dp"
+        android:layout_margin="6dp"
         tools:ignore="MissingConstraints">
 
         <androidx.cardview.widget.CardView
@@ -59,6 +60,7 @@
                         android:layout_weight="1"
                         android:textStyle="bold"
                         android:id="@+id/but_viewTopic"
+                        android:textColor="#fff"
                         android:backgroundTint="#ff6600"/>
                     <Button
                         android:layout_width="wrap_content"
@@ -69,6 +71,7 @@
                         android:fontFamily="@font/regular"
                         android:layout_weight="1"
                         android:textStyle="bold"
+                        android:textColor="#fff"
                         android:id="@+id/but_viewAssignments"
                         android:backgroundTint="#198754"/>
 

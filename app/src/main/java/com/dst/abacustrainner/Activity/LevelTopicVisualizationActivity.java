@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,6 +22,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -144,6 +146,8 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
 
     private boolean isQuestionActive = false;
 
+    LinearLayout linearRepeat;
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -172,6 +176,7 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
         btnBack=findViewById(R.id.btn_back_level_select);
         scrollView = findViewById(R.id.horizontalScrollView);
         questionImageView = findViewById(R.id.questionImageView);
+        linearRepeat = findViewById(R.id.layout_repeat);
 
         butSubmit.setEnabled(false);
         butSubmit.setClickable(false);
@@ -349,6 +354,14 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
             }
         });
 
+        linearRepeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                repeatCurrentQuestion();
+            }
+        });
+
+
         butPreviousQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -372,7 +385,7 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
                 // Navigate to the previous question
                 navigateToPreviousQuestion();
                 restoreTimerState(); // Restore timer state for the previous question
-                startTimer();
+
             }
 
         });
@@ -426,16 +439,52 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
 
 
 
-        startTimer();
         VerifyMethod(studentId, topicId);
 
     }
+
+    private void repeatCurrentQuestion() {
+        if (isQuestionActive) return; // avoid multiple clicks
+
+        isQuestionActive = true;
+
+        // Hide repeat while replaying
+        linearRepeat.setVisibility(View.GONE);
+
+        // Stop previous speech
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+        }
+
+        // Reset UI
+        answerEditText.setVisibility(View.GONE);
+        butSave.setEnabled(false);
+        butSubmit.setEnabled(false);
+
+        // Re-run same question
+        String questionHtml = questionsArray[currentQuestionIndex];
+        String cleanedHtml = questionHtml.replaceAll("<img[^>]+>", "");
+
+        Spanned spannedText =
+                HtmlCompat.fromHtml(cleanedHtml, HtmlCompat.FROM_HTML_MODE_LEGACY);
+
+        String questionTextOnly = spannedText.toString()
+                .replace("\u00A0", "")
+                .trim();
+
+        List<String> elements =
+                Arrays.asList(questionTextOnly.split("\\s+"));
+
+        speakAndDisplayOneByOne(elements);
+
+    }
+
     private void saveAnswerAndMoveToNextQuestion() {
         stopTimer();
         saveTimerState();
 
 
-
+        linearRepeat.setVisibility(View.GONE);
         String answer = answerEditText.getText().toString();
 
         originalAnswer = answerArray[currentQuestionIndex];
@@ -514,7 +563,7 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
                 answerEditText.setText(""); // Clear the answer field for the next question
                 currentTime = questionTimes.get(currentQuestionIndex); // Restore timer state for the next question
                 restoreTimerState();
-                startTimer();
+
             }else {
                 showCompletionDialog();
             }
@@ -522,6 +571,7 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
         }
     }
     private void navigateToPreviousQuestion() {
+        linearRepeat.setVisibility(View.GONE);
         if (currentQuestionIndex > 0) {
 
             currentQuestionIndex--;
@@ -602,7 +652,7 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
                 questionImageView.setVisibility(View.VISIBLE);
                 questionTextView.setVisibility(View.VISIBLE);
 
-                questionTextView.setMaxLines(1);
+                questionTextView.setMaxLines(5);
                 questionTextView.setEllipsize(TextUtils.TruncateAt.END);
                 questionTextView.setText("Beads question not available for visualization practice.");
 
@@ -790,7 +840,6 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
             answerEditText.setText(storedAnswer);
             currentTime = questionTimes.get(currentQuestionIndex);
             restoreTimerState();
-            startTimer();
 
             // Invalidate GridLayout to ensure changes are visible
             gridLayout.invalidate();
@@ -909,6 +958,8 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
         dialog.setNegativeButton("cancel",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                restoreTimerState();
+                startTimer();
                 dialog.dismiss();
             }
         });
@@ -1174,6 +1225,26 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
                         if (isTtsReady) {
                             textToSpeech.speak("Answer is", TextToSpeech.QUEUE_ADD, null, null);
                         }
+                        currentTime = questionTimes.get(currentQuestionIndex); // restore if needed
+                        startTimer();
+                        linearRepeat.setVisibility(View.VISIBLE);
+                        answerEditText.setVisibility(View.VISIBLE);
+                        answerEditText.setFocusable(true);
+                        answerEditText.setFocusableInTouchMode(true);
+                        answerEditText.setClickable(true);
+
+
+
+                        answerEditText.post(() -> {
+                            answerEditText.requestFocus();
+
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (imm != null) {
+                                imm.showSoftInput(answerEditText, InputMethodManager.SHOW_IMPLICIT);
+                            }
+                        });
+
+
 
                         // 🔥 IMPORTANT — Always show here
                         answerEditText.setVisibility(View.VISIBLE);

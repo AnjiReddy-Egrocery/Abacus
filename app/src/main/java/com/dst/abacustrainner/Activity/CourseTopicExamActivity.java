@@ -169,6 +169,9 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         topicName = bundle.getString("TopicName");
         txtTopicName.setText(topicName);
 
+        Log.d("Reddy",topicId);
+        Log.d("Reddy",studentId);
+
         displayQuestion(currentQuestionIndex);
         questionTimers = new ArrayList<>();
         for (int i = 0; i < MAX_QUESTIONS; i++) {
@@ -516,6 +519,8 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                 Log.d("QuestionDebug", "Image URL: " + imageUrl);
             }
 
+
+
             // Remove <img> tag and backslashes from HTML to get plain text
            // String questionTextOnly = questionHtml.replaceAll("<img[^>]+>", "").replaceAll("\\\\", "");
             //Log.d("QuestionDebug", "Cleaned Text: " + questionTextOnly);
@@ -813,6 +818,8 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         dialog.setNegativeButton("cancel",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                restoreTimerState();
+                startTimer();
                 dialog.dismiss();
             }
         });
