@@ -11,8 +11,8 @@ android {
         applicationId "com.dst.abacustrainner"
         minSdk 21
         targetSdk 35
-        versionCode 23
-        versionName "1.24" +
+        versionCode 24
+        versionName "1.25" +
                 "" +
                 "" +
                 "" +
