@@ -24,6 +24,7 @@ import com.dst.abacustrainner.Adapter.DurationAdapter;
 import com.dst.abacustrainner.Adapter.LevelsAdapter;
 import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.Model.CartResponse;
+import com.dst.abacustrainner.Model.CartResponseResult;
 import com.dst.abacustrainner.Model.CourseLevel;
 import com.dst.abacustrainner.Model.CourseLevelCart;
 import com.dst.abacustrainner.Model.CourseLevelResponse;
@@ -150,15 +151,32 @@ public class CourseDetailActivity extends AppCompatActivity {
                 }
                 tvDurationError.setVisibility(View.GONE);
                 if (level == null) return;
-
                 if (level.isSelected()) {
-                    if (!selectedLevels.contains(level)) {
-                        selectedLevels.add(level);
+                boolean alreadyExists = false;
+
+                for (CourseLevel l : selectedLevels) {
+                    if (l.getCourseLevelId().equals(level.getCourseLevelId())) {
+                        alreadyExists = true;
+                        break;
                     }
-                } else {
-                    selectedLevels.remove(level);
                 }
 
+                if (!alreadyExists) {
+                    selectedLevels.add(level);
+                }
+
+            } else {
+
+                // 🔥 FIX HERE
+                for (int i = 0; i < selectedLevels.size(); i++) {
+                    if (selectedLevels.get(i).getCourseLevelId()
+                            .equals(level.getCourseLevelId())) {
+
+                        selectedLevels.remove(i);
+                        break;
+                    }
+                }
+            }
                 Log.e("Reddy",
                         "Selected courseTypeId = " + courseId +
                                 " | Selected levels count = " + selectedLevels.size());
@@ -179,7 +197,7 @@ public class CourseDetailActivity extends AppCompatActivity {
         butAddCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("Reddy", "Button clicked");
+                Log.e("Anji", "Button clicked");
 
 
                 if (selectedDurationId == null) {
@@ -196,15 +214,15 @@ public class CourseDetailActivity extends AppCompatActivity {
                         CartManager.getInstance(CourseDetailActivity.this).getWorksheetRnm();
 
 
-                Log.e("Reddy", "worksheetRnm = " + worksheetRnm);
-                Log.e("Reddy", "courseTypeId = " + courseId);
+                Log.e("Anji", "worksheetRnm = " + worksheetRnm);
+                Log.e("Anji", "courseTypeId = " + courseId);
 
-                Log.e("Reddy", "durationId = " + selectedDurationId);
+                Log.e("Anji", "durationId = " + selectedDurationId);
 
                 for (CourseLevel level : selectedLevels) {
 
 
-                    Log.e("Reddy",
+                    Log.e("Anji",
                             "Adding CourseLevelId = " + level.getCourseLevelId());
 
                     addToCartApi(
@@ -367,16 +385,19 @@ public class CourseDetailActivity extends AppCompatActivity {
 
                     CartResponse cartResponse = response.body();
 
-                    if ("Success".equals(cartResponse.getStatus())
-                            && cartResponse.getResult() != null
-                            && cartResponse.getResult().getCourseLevels() != null
-                            && !cartResponse.getResult().getCourseLevels().isEmpty()) {
+                    List<CartResponseResult> results = cartResponse.getResult();
 
-                        CourseLevelCart level =
-                                cartResponse.getResult().getCourseLevels().get(0);
+                    if (results != null && !results.isEmpty()) {
 
-                        Log.e("Reddy", "CartId = " + level.getCartId());
-                        updateCartUI();
+                        CartResponseResult first = results.get(0);
+
+                        if (first.getCourseLevels() != null && !first.getCourseLevels().isEmpty()) {
+
+                            CourseLevelCart level = first.getCourseLevels().get(0);
+
+                            Log.e("Reddy", "CartId = " + level.getCartId());
+                            updateCartUI();
+                        }
                     }
                 }
             }
@@ -408,14 +429,11 @@ public class CourseDetailActivity extends AppCompatActivity {
     }
     private void updateSummary() {
         int totalAmount = 0;
-        int selectedCount = 0;
+        int selectedCount = selectedLevels.size();
 
-        for (CourseLevel level : levelList) {
+        for (CourseLevel level : selectedLevels) {
 
-            if (level.isSelected() && level.getPrice() != null) {
-
-                selectedCount++;
-
+            if (level.getPrice() != null) {
                 try {
                     totalAmount += Integer.parseInt(level.getPrice());
                 } catch (Exception e) {

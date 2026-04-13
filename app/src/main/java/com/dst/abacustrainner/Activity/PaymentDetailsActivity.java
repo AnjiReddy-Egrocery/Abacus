@@ -59,7 +59,17 @@ public class PaymentDetailsActivity extends AppCompatActivity {
 
         imageUrl = getIntent().getStringExtra("imageUrl");
 
-        long timestamp = Long.parseLong(date) * 1000; // seconds → milliseconds
+        long timestamp = 0;
+
+        if (date != null && !date.isEmpty()) {
+            try {
+                timestamp = Long.parseLong(date) * 1000; // seconds → ms
+            } catch (Exception e) {
+                Log.e("Anji", "Date parse error: " + e.getMessage());
+            }
+        } else {
+            Log.e("Anji", "Date is null or empty");
+        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
         String formattedDate = sdf.format(new Date(timestamp));

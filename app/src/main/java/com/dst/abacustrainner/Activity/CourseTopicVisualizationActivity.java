@@ -148,6 +148,8 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
     LinearLayout linearRepeat;
     private boolean isAnswerDisplayed = false;
 
+    private boolean isFromPreviousClick = false;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -377,7 +379,7 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
 
                 // Reset the timer to the saved time
                 saveTimerState();
-
+                isFromPreviousClick = true; // 🔥 KEY FIX
 
                 // Start the timer for the current question
 
@@ -592,7 +594,7 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
 
 
         // 🔥 If question already answered
-        if (isQuestionAnswered != null &&
+        if (!isFromPreviousClick && isQuestionAnswered != null &&
                 isQuestionAnswered.size() > currentQuestionIndex &&
                 isQuestionAnswered.get(currentQuestionIndex)) {
 
@@ -711,6 +713,7 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
             }
 
             generateButtons();
+            isFromPreviousClick = false;
         } else {
             if (questionsArray == null) {
                 Log.d("QuestionDebug", "questionsArray is null.");
@@ -720,6 +723,27 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
                 showCompletionDialog();
             }
         }
+    }
+
+    private List<String> processElements(List<String> elements) {
+        List<String> result = new ArrayList<>();
+
+        if (elements.size() == 3 && elements.get(1).equalsIgnoreCase("x")) {
+            try {
+                int start = Integer.parseInt(elements.get(0));
+                int end = Integer.parseInt(elements.get(2));
+
+                for (int i = start; i <= end; i++) {
+                    result.add(String.valueOf(i));
+                }
+
+                return result;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return elements;
     }
 
 
@@ -1204,6 +1228,7 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
     private void speakAndDisplayOneByOne(List<String> elements) {
         Log.d("TTS_DEBUG", "Elements: " + elements.toString());
 
+        List<String> processedElements = processElements(elements);
 
         questionTextView.setText("");
 
@@ -1212,7 +1237,7 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
 
         for (int i = 0; i < elements.size(); i++) {
 
-            String clean = elements.get(i).trim();
+            String clean =  processedElements.get(i).trim();;
             if (clean.isEmpty()) continue;
 
             int index = i;
@@ -1225,16 +1250,21 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
                 if (clean.startsWith("+")) {
                     String num = clean.substring(1);
                     speakText = "plus " + num;
-                    displayText = "+ " + num;
+                    displayText = "+" + clean;   // ✅ FIXED
                 }
                 else if (clean.startsWith("-")) {
                     String num = clean.substring(1);
                     speakText = "minus " + num;
-                    displayText = "- " + num;
+                    displayText = "-" + clean;   // ✅ FIXED
                 }
                 else {
-                    speakText = "plus " + clean;
-                    displayText = "+ " + clean;
+                    try {
+                        Integer.parseInt(clean); // allow only numbers
+                        speakText = "plus " + clean;
+                        displayText = "+" + clean;   // ✅ FIXED
+                    } catch (NumberFormatException e) {
+                        return; // ❌ skip x
+                    }
                 }
 
                 questionTextView.setText(displayText);
@@ -1249,7 +1279,7 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
                 }
 
                 // ✅ LAST ELEMENT ayyaka
-                if (index == elements.size() - 1) {
+                if (index ==  elements .size() - 1) {
 
                     new Handler().postDelayed(() -> {
 

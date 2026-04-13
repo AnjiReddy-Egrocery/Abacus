@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spanned;
@@ -27,6 +28,7 @@ import com.dst.abacustrainner.Model.AllocatedViewSubTopicResultResponse;
 import com.dst.abacustrainner.Model.ViewSubTopicResultResponse;
 import com.dst.abacustrainner.Model.ViewTopicResultResponse;
 import com.dst.abacustrainner.Services.ApiClient;
+import com.dst.abacustrainner.User.HomeActivity;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
@@ -69,6 +71,7 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
     int correct ;
     int incorrect;
     int notAttempted;
+    LinearLayout layoutSubmit;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -90,6 +93,7 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
         scrollView= findViewById(R.id.scroll_view);
         layoutFirst = findViewById(R.id.layout_first);
         layoutSecond = findViewById(R.id.layout_second);
+        layoutSubmit = findViewById(R.id.but_submit_result_first);
 
 
         Bundle bundle=getIntent().getExtras();
@@ -104,6 +108,15 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
         txtCorrectAnswers.setText(Correct);
         txtworngAnswers.setText(inCorrect);
         pieChart = findViewById(R.id.pieChart);
+
+
+        layoutSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewSubResultDetailsActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
      /*   int notAttempted = totalQuestions - attempted;
         updatePieChart(attempted, notAttempted, correct, incorrect);*/
@@ -317,8 +330,13 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
                                         String finalText = spannedText.toString()
                                                 .replace("\u00A0", "")
                                                 .trim();
+                                        String formattedQuestion = finalText
+                                                .replace("+", "\n+")
+                                                .replace("-", "\n-")
+                                                .replace("*", "\n×")
+                                                .replace("/", "\n÷");
 
-                                        questionTextView.setText(finalText);
+                                        questionTextView.setText(formattedQuestion);
                                         questionTextView.setTextSize(18);
                                         questionTextView.setTextColor(Color.BLACK);
                                         questionTextView.setGravity(Gravity.CENTER);

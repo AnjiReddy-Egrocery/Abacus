@@ -141,7 +141,7 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
 
     private boolean isQuestionActive = false;
     LinearLayout linearRepeat;
-
+    private boolean isFromPreviousClick = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -364,7 +364,7 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
                 // Reset the timer to the saved time
                 saveTimerState();
 
-
+                isFromPreviousClick = true; // 🔥 KEY FIX
                 // Start the timer for the current question
 
                 // Navigate to the previous question
@@ -542,7 +542,7 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
 
 
         // 🔥 If question already answered
-        if (isQuestionAnswered != null &&
+        if (!isFromPreviousClick && isQuestionAnswered != null &&
                 isQuestionAnswered.size() > currentQuestionIndex &&
                 isQuestionAnswered.get(currentQuestionIndex)) {
 
@@ -659,6 +659,7 @@ public class LevelAssignmentVisualizationActivity extends AppCompatActivity {
             }
 
             generateButtons();
+            isFromPreviousClick = false;
         } else {
             if (questionsArray == null) {
                 Log.d("QuestionDebug", "questionsArray is null.");

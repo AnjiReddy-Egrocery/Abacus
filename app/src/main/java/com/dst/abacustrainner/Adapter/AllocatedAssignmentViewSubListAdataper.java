@@ -24,11 +24,13 @@ public class AllocatedAssignmentViewSubListAdataper extends RecyclerView.Adapter
 
     Context mContext;
     List<AlloactedViewSubTopicListResponse.Result.PracticesList> practicesList;
+    private String mainTopicName;
 
-    public AllocatedAssignmentViewSubListAdataper(AllocatedAssignmentViewPracticeActivity viewPracticeListActivity, List<AlloactedViewSubTopicListResponse.Result.PracticesList> result) {
+    public AllocatedAssignmentViewSubListAdataper(AllocatedAssignmentViewPracticeActivity viewPracticeListActivity, List<AlloactedViewSubTopicListResponse.Result.PracticesList> result, String topicName) {
 
         this.mContext=viewPracticeListActivity;
         this.practicesList=result;
+        this.mainTopicName = topicName; // 🔥 store here
 
     }
 
@@ -44,7 +46,7 @@ public class AllocatedAssignmentViewSubListAdataper extends RecyclerView.Adapter
         AlloactedViewSubTopicListResponse.Result.PracticesList  practices=practicesList.get(position);
         String practiceDate="Practiced On : " + practices.getStartedOn() + "";
         String examNo=practices.getExamRnm();
-        String topicName=practices.getTopicName();
+        String topicName=mainTopicName;
         String totalattamtedquestion = "0";
         String attamted= "0";
         String correect = "0";

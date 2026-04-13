@@ -1,6 +1,7 @@
 package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spanned;
@@ -10,6 +11,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -27,6 +29,7 @@ import com.dst.abacustrainner.Model.AllocatedViewSubTopicResultResponse;
 import com.dst.abacustrainner.Model.ViewAssignmentResultResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
+import com.dst.abacustrainner.User.HomeActivity;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
@@ -62,8 +65,9 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
     private PieChart pieChart;
     ScrollView scrollView;
     LinearLayout layoutFirst,layoutSecond;
+    LinearLayout butSubmit;
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +84,7 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
         txtCorrectAnswers=findViewById(R.id.txt_correct_answers);
         txtworngAnswers=findViewById(R.id.txt_wrong_answers);
         txtNotAttemptedQuestions = findViewById(R.id.txt_notattemted_questions);
+        butSubmit = findViewById(R.id.but_submit_result);
 
         scrollView= findViewById(R.id.scroll_view);
         layoutFirst = findViewById(R.id.layout_first);
@@ -90,6 +95,14 @@ public class ViewResultAssignmentDetailsActivity extends AppCompatActivity {
         examRnm=bundle.getString("examRnm");
 
         Log.d("Reddy","Id"+examRnm);
+
+        butSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewResultAssignmentDetailsActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         txtTotalQuestion.setText(AttentQuestions);

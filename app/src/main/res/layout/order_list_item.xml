@@ -35,11 +35,11 @@
                 <!-- Course Image -->
                 <ImageView
                     android:id="@+id/imgorder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/abacus_logo"
-                    android:layout_marginEnd="6dp"
-                    android:padding="5dp"/>
+                    android:layout_width="80dp"
+                    android:layout_height="100dp"
+                    android:scaleType="centerInside"
+                    android:layout_margin="8dp"
+                    android:adjustViewBounds="true"/>
 
                 <!-- 2-Row Level Boxes -->
                 <LinearLayout

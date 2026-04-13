@@ -19,6 +19,7 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.dst.abacustrainner.R;
@@ -179,6 +180,7 @@ public class AllocatedVisualizationWorkSheetResultActivity extends AppCompatActi
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(AllocatedVisualizationWorkSheetResultActivity.this,"Hello",Toast.LENGTH_LONG).show();
                 Intent intent =new Intent(AllocatedVisualizationWorkSheetResultActivity.this, HomeActivity.class);
                 startActivity(intent);
             }

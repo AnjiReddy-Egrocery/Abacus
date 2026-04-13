@@ -141,6 +141,7 @@ public class TopicPracticeVisualizationActivity extends AppCompatActivity {
     private boolean isQuestionActive = false;
     LinearLayout linearRepeat;
     private static final int REQ_CODE_SPEECH_INPUT = 100;
+    private boolean isFromPreviousClick = false;
 
 
 
@@ -365,9 +366,8 @@ public class TopicPracticeVisualizationActivity extends AppCompatActivity {
         butPreviousQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isQuestionActive) {
-                    return;
-                }
+                if (isQuestionActive) return;
+
                 stopTimer();
 
                 int currentX = scrollView.getScrollX();
@@ -377,7 +377,7 @@ public class TopicPracticeVisualizationActivity extends AppCompatActivity {
 
                 // Reset the timer to the saved time
                 saveTimerState();
-
+                isFromPreviousClick = true; // 🔥 KEY FIX
 
                 // Start the timer for the current question
 
@@ -626,7 +626,7 @@ public class TopicPracticeVisualizationActivity extends AppCompatActivity {
 
 
         // 🔥 If question already answered
-        if (isQuestionAnswered != null &&
+        if (!isFromPreviousClick &&isQuestionAnswered != null &&
                 isQuestionAnswered.size() > currentQuestionIndex &&
                 isQuestionAnswered.get(currentQuestionIndex)) {
 
@@ -744,6 +744,7 @@ public class TopicPracticeVisualizationActivity extends AppCompatActivity {
             }
 
             generateButtons();
+            isFromPreviousClick = false;
         } else {
             if (questionsArray == null) {
                 Log.d("QuestionDebug", "questionsArray is null.");

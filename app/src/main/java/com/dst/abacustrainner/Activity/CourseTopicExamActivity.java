@@ -584,7 +584,15 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                         .replace("\u00A0", "")
                         .trim();
 
-                questionTextView.setText(questionTextOnly);
+                String formattedQuestion = questionTextOnly
+                        .replace("+", "\n+")
+                        .replace("-", "\n-")
+                        .replace("*", "\n×")
+                        .replace("/", "\n÷");
+
+                questionTextView.setText(formattedQuestion);
+
+
 
                 ViewGroup.MarginLayoutParams layoutParams =
                         (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();

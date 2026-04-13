@@ -6,8 +6,18 @@ public class CartDetailsResponse {
 
     private String status;
     private String errorCode;
-    private Result result;
+    private List<Result> result;
     private String message;
+
+    public List<Result> getResult() {
+        return result;
+    }
+
+    public void setResult(List<Result> result) {
+        this.result = result;
+    }
+
+
 
     public String getStatus() {
         return status;
@@ -25,13 +35,7 @@ public class CartDetailsResponse {
         this.errorCode = errorCode;
     }
 
-    public Result getResult() {
-        return result;
-    }
 
-    public void setResult(Result result) {
-        this.result = result;
-    }
 
     public String getMessage() {
         return message;
@@ -44,7 +48,6 @@ public class CartDetailsResponse {
     public static class Result{
         private String courseTypeId;
         private String courseType;
-
         private List<CourseLevels> courseLevels;
 
         public String getCourseTypeId() {
@@ -77,6 +80,15 @@ public class CartDetailsResponse {
         private String courseLevelId;
         private String courseLevel;
         private String courseLevelPrice;
+        private String courseType;
+
+        public String getCourseType() {
+            return courseType;
+        }
+
+        public void setCourseType(String courseType) {
+            this.courseType = courseType;
+        }
 
         public String getCartId() {
             return cartId;

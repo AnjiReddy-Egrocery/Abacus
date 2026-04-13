@@ -286,83 +286,76 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void logPaymentDetails(OrderStatusResponse status) {
-        String orderState = status.getState() != null ? status.getState().toUpperCase() : "UNKNOWN";
-        if ("COMPLETED".equals(orderState) || "SUCCESS".equals(orderState)) {
-            Log.d("Anji", "✅ Payment Success");
-            // continue success flow
+        String orderState = status.getState() != null
+                ? status.getState().toUpperCase()
+                : "UNKNOWN";
+
+        switch (orderState) {
+
+            case "COMPLETED":
+                Log.d("Anji", "✅ Payment Success");
+                handlePaymentDetails(status, "SUCCESS");
+                break;
+
+            case "FAILED":
+                Log.d("Anji", "❌ Payment Failed");
+                handlePaymentDetails(status, "FAILED");
+                break;
+
+            case "EXPIRED":
+                Log.d("Anji", "⛔ Order Expired → Retrying");
+                Toast.makeText(this, "Session expired. Retrying...", Toast.LENGTH_SHORT).show();
+                createOrder(accessTokenGlobal);
+                break;
+
+            case "PENDING":
+                Log.d("Anji", "⏳ Payment Pending...");
+                break;
+
+            default:
+                Log.d("Anji", "⚠ Unknown state: " + orderState);
+                break;
         }
+    }
 
-// ❌ FAILED → OPEN FAILURE SCREEN
-        else if ("FAILED".equals(orderState)) {
-
-            Log.d("Anji", "❌ Payment Failed");
-
-            String errorCode = status.getErrorContext() != null &&
-                    status.getErrorContext().getErrorCode() != null
-                    ? status.getErrorContext().getErrorCode()
-                    : "PAYMENT_FAILED";
-
-            Intent intent = new Intent(PaymentActivity.this, PaymentDetailsActivity.class);
-            intent.putExtra("StudentId", studentId);
-            intent.putExtra("Status", orderState);
-            intent.putExtra("ErrorCode", errorCode);
-            intent.putExtra("Amount", totalAmount);
-            intent.putExtra("Currency", "INR");
-
-            startActivity(intent);
-            return; // ✅ STOP HERE
-        }
-
-// ⛔ EXPIRED → RETRY
-        else if ("EXPIRED".equals(orderState)) {
-
-            Log.d("Anji", "⛔ Order Expired → Retrying");
-
-            Toast.makeText(this, "Session expired. Retrying...", Toast.LENGTH_SHORT).show();
-
-            createOrder(accessTokenGlobal); // 🔁 NEW ORDER
-
-            return;
-        }
-
-// ⏳ PENDING
-        else if ("PENDING".equals(orderState)) {
-            Log.d("Anji", "⏳ Payment still pending...");
-            return;
-        }
-
+    private void handlePaymentDetails(OrderStatusResponse status, String success) {
         if (status.getPaymentDetails() == null || status.getPaymentDetails().isEmpty()) {
             Log.d("Anji", "No payment attempts yet.");
             return;
         }
 
         for (OrderStatusResponse.PaymentDetail detail : status.getPaymentDetails()) {
+
             String worksheetRnm = workRnm != null ? workRnm : "UNKNOWN";
             String studentID = studentId != null ? studentId : "UNKNOWN";
             String totalAmt = totalAmount != null ? totalAmount : "0";
 
             String transactionId = detail.getTransactionId() != null ? detail.getTransactionId() : "UNKNOWN";
-            String state = detail.getState() != null ? detail.getState().toUpperCase() : "UNKNOWN";
+            String state = status.getState() != null
+                    ? status.getState().toUpperCase()
+                    : "UNKNOWN";
             String currency = "INR";
             long amount = detail.getAmount();
             String orderId = status.getOrderId() != null ? status.getOrderId() : "UNKNOWN";
             String paymentMode = detail.getPaymentMode() != null ? detail.getPaymentMode() : "UNKNOWN";
             long timestamp = detail.getTimestamp();
 
-            Log.d("Anji", "✅ Payment Successful Details:");
-            Log.d("Anji", "WorksheetRnm: " + worksheetRnm);
-            Log.d("Anji", "StudentId: " + studentID);
-            Log.d("Anji", "TotalAmount: " + totalAmt);
-            Log.d("Anji", "TransactionId: " + transactionId);
-            Log.d("Anji", "State: " + state);
-            Log.d("Anji", "Currency: " + currency);
-            Log.d("Anji", "Amount: " + amount);
-            Log.d("Anji", "OrderId: " + orderId);
-            Log.d("Anji", "PaymentMode: " + paymentMode);
-            Log.d("Anji", "Timestamp: " + timestamp);
+            Log.d("Anji", "📌 Final Payment State: " + state);
 
-            showPaymentSuccessDialog(worksheetRnm, studentID, totalAmt, transactionId, state, currency, amount, orderId, paymentMode, timestamp);
+            showPaymentSuccessDialog(
+                    worksheetRnm,
+                    studentID,
+                    totalAmt,
+                    transactionId,
+                    state,
+                    currency,
+                    amount,
+                    orderId,
+                    paymentMode,
+                    timestamp
+            );
         }
+
     }
 
     private void showPaymentSuccessDialog(String worksheetRnm, String studentId, String totalAmount,
@@ -441,7 +434,16 @@ public class PaymentActivity extends AppCompatActivity {
 
                             Log.d("Anji", "⚠ Payment cancelled by user");
 
-                            checkOrderStatusWithRetry(merchantOrderId, 1);
+                           // checkOrderStatusWithRetry(merchantOrderId, 1);
+                            Intent intent = new Intent(PaymentActivity.this, PaymentDetailsActivity.class);
+                            intent.putExtra("StudentId", studentId);
+                            intent.putExtra("Status", "CANCELLED");
+                            intent.putExtra("Amount", totalAmount);
+                            intent.putExtra("Currency", "INR");
+
+                            startActivity(intent);
+                            finish(); // optional but recommended
+
                         }
                     });
 }

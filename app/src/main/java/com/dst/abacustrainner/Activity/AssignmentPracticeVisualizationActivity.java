@@ -124,6 +124,7 @@ public class AssignmentPracticeVisualizationActivity extends AppCompatActivity {
     private boolean isQuestionActive = false;
     LinearLayout linearRepeat;
     private boolean isAnswerDisplayed = false;
+    private boolean isFromPreviousClick = false;
 
 
 
@@ -333,6 +334,8 @@ public class AssignmentPracticeVisualizationActivity extends AppCompatActivity {
 
                 // Reset the timer to the saved time
                 saveTimerState();
+
+                isFromPreviousClick = true; // 🔥 KEY FIX
 
                 //txtTimer.setText("Countdown: 0 sec");
                 navigateToPreviousQuestion();
@@ -694,7 +697,7 @@ public class AssignmentPracticeVisualizationActivity extends AppCompatActivity {
 
 
         // 🔥 If question already answered
-        if (isQuestionAnswered != null &&
+        if (!isFromPreviousClick && isQuestionAnswered != null &&
                 isQuestionAnswered.size() > currentQuestionIndex &&
                 isQuestionAnswered.get(currentQuestionIndex)) {
 
@@ -760,6 +763,7 @@ public class AssignmentPracticeVisualizationActivity extends AppCompatActivity {
             layoutParams.leftMargin = (int) getResources().getDimension(R.dimen.question_margin_left);
             questionTextView.setLayoutParams(layoutParams);
             generateButtons();
+            isFromPreviousClick = false;
         } else {
             if (questionsArray == null) {
                 // Handle the case where questionsArray is null (not fetched yet)

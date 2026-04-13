@@ -241,25 +241,58 @@ public class CartActivity extends AppCompatActivity {
 
                 if (res != null && "200".equals(res.getErrorCode())) {
 
-                    if (res.getResult() != null) {
+                    List<CartDetailsResponse.Result> resultList = res.getResult();
 
-                        // ✅ SET courseType TO TEXTVIEW
-                        String courseType = res.getResult().getCourseType();
+                    if (resultList != null && !resultList.isEmpty()) {
 
-                        if (courseType != null && !courseType.isEmpty()) {
-                            txtCourseType.setText(courseType);
+                        // 👉 First course type display
+                       /* StringBuilder builder = new StringBuilder();
+
+                        for (int i = 0; i < resultList.size(); i++) {
+
+                            String courseType = resultList.get(i).getCourseType();
+
+                            if (courseType != null && !courseType.isEmpty()) {
+                                Log.e("COURSE_TYPE", courseType);
+
+                                builder.append(courseType).append("\n"); // add line by line
+                            }
                         }
 
-                        // ✅ SET LEVELS TO ADAPTER
-                        if (res.getResult().getCourseLevels() != null &&
-                                !res.getResult().getCourseLevels().isEmpty()) {
 
-                            List<CartDetailsResponse.CourseLevels> levels =
-                                    res.getResult().getCourseLevels();
 
-                            cartDetalAdapter.setLevels(levels);
-                            updateCartTotal(levels);
-                        }else {
+// 👉 TextView lo set cheyyi
+                        txtCourseType.setText(builder.toString());*/
+
+
+                        List<CartDetailsResponse.CourseLevels> allLevels = new ArrayList<>();
+
+                        for (CartDetailsResponse.Result r : resultList) {
+
+                            String courseType = r.getCourseType();
+
+                            if (r.getCourseLevels() != null) {
+
+                                for (CartDetailsResponse.CourseLevels level : r.getCourseLevels()) {
+
+                                    level.setCourseType(courseType); // 🔥 attach
+                                    allLevels.add(level);
+                                }
+                            }
+                        }
+                        // 👉 Merge all levels
+                        List<CartDetailsResponse.CourseLevels> allLevels1 = new ArrayList<>();
+
+                        for (CartDetailsResponse.Result r : resultList) {
+                            if (r.getCourseLevels() != null) {
+                                allLevels1.addAll(r.getCourseLevels());
+                            }
+                        }
+
+                        if (!allLevels1.isEmpty()) {
+                            cartDetalAdapter.setLevels(allLevels);
+                            updateCartTotal(allLevels1);
+                        } else {
                             cartDetalAdapter.setLevels(new ArrayList<>());
                             textAmount.setText("₹0/-");
                         }

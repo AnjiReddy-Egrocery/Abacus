@@ -5,7 +5,7 @@ import java.util.List;
 public class CartResponse {
     private String status;
     private String errorCode;
-    private CartResponseResult result;
+    private  List<CartResponseResult> result;
     private String message;
 
     public String getStatus() {
@@ -24,11 +24,12 @@ public class CartResponse {
         this.errorCode = errorCode;
     }
 
-    public CartResponseResult getResult() {
+
+    public List<CartResponseResult> getResult() {
         return result;
     }
 
-    public void setResult(CartResponseResult result) {
+    public void setResult(List<CartResponseResult> result) {
         this.result = result;
     }
 

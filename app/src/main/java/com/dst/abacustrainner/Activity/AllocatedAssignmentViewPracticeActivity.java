@@ -101,13 +101,14 @@ public class AllocatedAssignmentViewPracticeActivity extends AppCompatActivity {
                     Toast.makeText(AllocatedAssignmentViewPracticeActivity.this, "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
                 } else if (viewTopicListResponse.getErrorCode().equals("200")) {
                     AlloactedViewSubTopicListResponse.Result result = viewTopicListResponse.getResult();
+                    String topicName = result.getTopicName();
                     List<AlloactedViewSubTopicListResponse.Result.PracticesList> topicsList = result.getPracticesList();
 
                     if (topicsList.isEmpty()) {
                         recyclerViewSubTopics.setVisibility(View.GONE); // Hide RecyclerView
                     } else {
                         Collections.reverse(topicsList);
-                        viewListTopicAdapter = new AllocatedAssignmentViewSubListAdataper(AllocatedAssignmentViewPracticeActivity.this, topicsList);
+                        viewListTopicAdapter = new AllocatedAssignmentViewSubListAdataper(AllocatedAssignmentViewPracticeActivity.this, topicsList,topicName);
                         recyclerViewSubTopics.setAdapter(viewListTopicAdapter);
                     }
                 } else {

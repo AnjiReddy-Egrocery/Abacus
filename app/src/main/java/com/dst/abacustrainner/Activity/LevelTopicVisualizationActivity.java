@@ -147,6 +147,7 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
     private boolean isQuestionActive = false;
 
     LinearLayout linearRepeat;
+    private boolean isFromPreviousClick = false;
 
 
 
@@ -379,7 +380,7 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
                 // Reset the timer to the saved time
                 saveTimerState();
 
-
+                isFromPreviousClick = true; // 🔥 KEY FIX
                 // Start the timer for the current question
 
                 // Navigate to the previous question
@@ -594,7 +595,7 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
 
 
         // 🔥 If question already answered
-        if (isQuestionAnswered != null &&
+        if (!isFromPreviousClick && isQuestionAnswered != null &&
                 isQuestionAnswered.size() > currentQuestionIndex &&
                 isQuestionAnswered.get(currentQuestionIndex)) {
 
@@ -711,6 +712,7 @@ public class LevelTopicVisualizationActivity extends AppCompatActivity {
             }
 
             generateButtons();
+            isFromPreviousClick = false;
         } else {
             if (questionsArray == null) {
                 Log.d("QuestionDebug", "questionsArray is null.");

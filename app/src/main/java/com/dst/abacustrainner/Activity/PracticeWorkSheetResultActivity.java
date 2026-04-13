@@ -306,7 +306,13 @@ public class PracticeWorkSheetResultActivity extends AppCompatActivity {
                         .replace("\u00A0", "")   // remove &nbsp;
                         .trim();
 
-                questionText.setText(finalText);
+                String formattedQuestion = finalText
+                        .replace("+", "\n+")
+                        .replace("-", "\n-")
+                        .replace("*", "\n×")
+                        .replace("/", "\n÷");
+
+                questionText.setText(formattedQuestion);
                 questionText.setTextSize(18);
                 questionText.setGravity(Gravity.CENTER);
                 questionText.setTextColor(Color.BLACK);

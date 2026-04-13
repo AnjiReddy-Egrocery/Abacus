@@ -56,35 +56,26 @@ public class LevelsAdapter extends RecyclerView.Adapter<LevelsAdapter.ViewHolder
 
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            if (isChecked) {
-                Log.e("Reddy",
-                        "Clicked CourseLevelId = " + level.getCourseLevelId());
+            Log.e("Reddy",
+                    "Clicked CourseLevelId = " + level.getCourseLevelId() +
+                            " | isChecked = " + isChecked);
 
-                // 🚫 Duration select avvakapothe
-                if (!listener.isDurationSelected()) {
-                    holder.checkBox.setChecked(false);
+            // 🚫 If selecting but duration not selected
+            if (isChecked && !listener.isDurationSelected()) {
+                holder.checkBox.setChecked(false);
 
-                    Toast.makeText(mContext,
-                            "Please Select Preferred Duration to Purchase..!",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // ✅ Valid selection
-                level.setSelected(isChecked);
-
-                // 🔥 Notify activity
-                listener.onLevelSelected(level);
-
-
+                Toast.makeText(mContext,
+                        "Please Select Preferred Duration to Purchase..! ",
+                        Toast.LENGTH_SHORT).show();
+                return;
             }
 
+            // ✅ ALWAYS update selection (important)
+            level.setSelected(isChecked);
 
+            // 🔥 ALWAYS notify activity (for both check & uncheck)
+            listener.onLevelSelected(level);
         });
-
-
-
-
 
     }
 

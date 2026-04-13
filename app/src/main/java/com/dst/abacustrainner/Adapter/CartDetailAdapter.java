@@ -48,6 +48,15 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
 
         holder.txtName.setText(levelName);
         holder.txtPrice.setText(levelPrice);
+        if (position == 0 ||
+                !courseLevels.getCourseType().equals(levels.get(position - 1).getCourseType())) {
+
+            holder.txtCourseType.setVisibility(View.VISIBLE);
+            holder.txtCourseType.setText(courseLevels.getCourseType());
+
+        } else {
+            holder.txtCourseType.setVisibility(View.GONE);
+        }
         holder.imgDelete.setOnClickListener(v -> {
             if (deleteListener != null) {
                 deleteListener.onDeleteClick(courseLevels.getCartId()); // ✅ fixed
@@ -81,7 +90,7 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtName,txtPrice;
+        TextView txtName,txtPrice,txtCourseType;
         ImageView imgDelete;
 
         public ViewHolder(@NonNull View itemView) {
@@ -90,6 +99,7 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
             txtName= itemView.findViewById(R.id.tvLevelText);
             txtPrice= itemView.findViewById(R.id.tvLevelprice);
             imgDelete = itemView.findViewById(R.id.img_delete);
+            txtCourseType = itemView.findViewById(R.id.txtCourseType);
         }
     }
 

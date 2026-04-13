@@ -1,6 +1,7 @@
 package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spanned;
@@ -28,6 +29,7 @@ import com.dst.abacustrainner.Model.AllocatedViewSubTopicResultResponse;
 import com.dst.abacustrainner.Model.ViewTopicResultResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
+import com.dst.abacustrainner.User.HomeActivity;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
@@ -70,6 +72,7 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
     int correct ;
     int incorrect;
     int notAttempted;
+    LinearLayout btnSubmit;
 
 
 
@@ -94,6 +97,7 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
         scrollView= findViewById(R.id.scroll_view);
         layoutFirst = findViewById(R.id.layout_first);
         layoutSecond = findViewById(R.id.layout_second);
+        btnSubmit =findViewById(R.id.but_submit_result_first);
 
 
         Bundle bundle=getIntent().getExtras();
@@ -101,6 +105,14 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
         topicName=bundle.getString("topicName");
 
         txtTopicName.setText(topicName);
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(ViewResultDetailsActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
 //        txtTotalQuestions.setText(AttentQuestions);
 
