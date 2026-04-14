@@ -79,6 +79,7 @@
             android:layout_height="wrap_content"
             android:text="• Concentration"
             android:textSize="18sp"
+            android:textColor="#000"
             android:textStyle="bold" />
 
         <TextView
@@ -86,6 +87,7 @@
             android:layout_height="wrap_content"
             android:text="• Memory"
             android:textSize="18sp"
+            android:textColor="#000"
             android:textStyle="bold" />
 
         <TextView
@@ -93,6 +95,7 @@
             android:layout_height="wrap_content"
             android:text="• Visualization"
             android:textSize="18sp"
+            android:textColor="#000"
             android:textStyle="bold" />
 
         <TextView
@@ -100,6 +103,7 @@
             android:layout_height="wrap_content"
             android:text="• Speed"
             android:textSize="18sp"
+            android:textColor="#000"
             android:textStyle="bold" />
 
         <TextView
@@ -107,6 +111,7 @@
             android:layout_height="wrap_content"
             android:text="• Understanding"
             android:textSize="18sp"
+            android:textColor="#000"
             android:textStyle="bold" />
 
         <TextView
@@ -114,6 +119,7 @@
             android:layout_height="wrap_content"
             android:text="• Problem-Solving"
             android:textSize="18sp"
+            android:textColor="#000"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -134,6 +140,7 @@
             android:layout_height="wrap_content"
             android:text="• Discipline"
             android:textSize="18sp"
+            android:textColor="#000"
             android:textStyle="bold" />
 
         <TextView
@@ -141,6 +148,7 @@
             android:layout_height="wrap_content"
             android:text="• Performance"
             android:textSize="18sp"
+            android:textColor="#000"
             android:textStyle="bold" />
 
         <TextView
@@ -155,6 +163,7 @@
             android:layout_height="wrap_content"
             android:text="• Flexibility"
             android:textSize="18sp"
+            android:textColor="#000"
             android:textStyle="bold" />
 
         <TextView
@@ -162,12 +171,14 @@
             android:layout_height="wrap_content"
             android:text="• Listening"
             android:textSize="18sp"
+            android:textColor="#000"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="• Creativity"
+            android:textColor="#000"
             android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>

@@ -87,7 +87,7 @@ public class CoursesActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<CoursesListResponse> call, Response<CoursesListResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    adapter.setData(response.body().getResult());
+                    adapter.setData(response.body().getResult(),studentId);
                 }
             }
 

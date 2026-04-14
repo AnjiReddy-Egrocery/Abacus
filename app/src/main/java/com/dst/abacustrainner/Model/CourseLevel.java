@@ -7,6 +7,8 @@ public class CourseLevel {
     private String price;
     private boolean selected;
 
+    private boolean isSubscribed;
+
     public boolean isSelected() {
         return selected;
     }
@@ -38,4 +40,13 @@ public class CourseLevel {
     public void setCourseLevel(String courseLevel) {
         this.courseLevel = courseLevel;
     }
+
+    public boolean isSubscribed() {
+        return isSubscribed;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        isSubscribed = subscribed;
+    }
+
 }

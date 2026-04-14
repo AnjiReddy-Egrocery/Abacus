@@ -32,6 +32,7 @@ public class WorkSheetFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.worksheet_fragment,container,false);
+
         if (getArguments() != null) {
            studentId = getArguments().getString("studentId");
            batchId   = getArguments().getString("batchId");

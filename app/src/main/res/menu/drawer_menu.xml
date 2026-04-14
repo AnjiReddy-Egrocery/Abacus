@@ -12,27 +12,27 @@
 
         <item
             android:id="@+id/nav_worksheet"
-            android:title="Subscriptions"
+            android:title="WorkSheet Subscriptions"
             android:icon="@drawable/worksheet"/>
 
 
-        <item
+        <!--<item
             android:id="@+id/nav_video"
             android:title="Video Tutorials"
-            android:icon="@drawable/nav_videos" />
+            android:icon="@drawable/nav_videos" />-->
         <item
             android:id="@+id/nav_play"
             android:title="Play with Numbers"
-            android:icon="@drawable/nav_videos" />
+            android:icon="@drawable/playwithnumbers" />
         <item
             android:id="@+id/nav_visualization"
             android:title="Visualization"
-            android:icon="@drawable/nav_videos" />
+            android:icon="@drawable/oral" />
 
 
         <item
             android:id="@+id/nav_schedules"
-            android:title="Schedules"
+            android:title="Batches"
             android:icon="@drawable/nav_schedule"/>
 
         <item
@@ -60,15 +60,15 @@
         <item
             android:id="@+id/nav_help"
             android:title="Help &amp; Support"
-            android:icon="@drawable/nav_help"/>
+            android:icon="@drawable/helpandsupport"/>
         <item
             android:id="@+id/nav_about_us"
             android:title="About Us"
-            android:icon="@drawable/nav_help"/>
+            android:icon="@drawable/aboutus"/>
         <item
             android:id="@+id/nav_terms_conditions"
             android:title="Terms &amp; Conditions"
-            android:icon="@drawable/nav_help"/>
+            android:icon="@drawable/termsandconditions"/>
 
         <item
             android:id="@+id/nav_profile"
@@ -78,12 +78,12 @@
         <item
             android:id="@+id/nav_privacypolicy"
             android:title="Privacy Policy"
-            android:icon="@drawable/nav_help"/>
+            android:icon="@drawable/privacypolicy"/>
 
         <item
             android:id="@+id/nav_refoundpolicy"
             android:title="Refund Policy"
-            android:icon="@drawable/nav_help"/>
+            android:icon="@drawable/refundpolicy"/>
 
         <item
             android:id="@+id/nav_logout"

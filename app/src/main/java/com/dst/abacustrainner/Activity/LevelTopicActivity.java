@@ -38,7 +38,8 @@ public class LevelTopicActivity extends AppCompatActivity {
     private TopicsAdapter adapter;
 
     LinearLayout layoutBack;
-    private String studentId,courseLevelId;
+    private String studentId,courseLevelId, levelName;
+    TextView txtLevelTopic;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -49,6 +50,7 @@ public class LevelTopicActivity extends AppCompatActivity {
 
         recyclerTopics = findViewById(R.id.recycler_topic);
         layoutBack = findViewById(R.id.fragment_container);
+        txtLevelTopic = findViewById(R.id.txt_lavel_topic);
 
 
         layoutBack.setOnClickListener(new View.OnClickListener() {
@@ -61,10 +63,14 @@ public class LevelTopicActivity extends AppCompatActivity {
 
         studentId = getIntent().getStringExtra("StudentId");
         courseLevelId = getIntent().getStringExtra("LevelId");
-        Log.e("Reddy",studentId);
-        Log.e("Reddy",courseLevelId);
+        levelName = getIntent().getStringExtra("LevelName");
+
+        Log.d("Reddy",studentId);
+        Log.d("Reddy",courseLevelId);
         // Load static topics based on level
         //loadTopicsForLevel(levelName);
+
+        txtLevelTopic.setText(levelName);
 
         adapter = new TopicsAdapter(this);
         recyclerTopics.setLayoutManager(new LinearLayoutManager(this));

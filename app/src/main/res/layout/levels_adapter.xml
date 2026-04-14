@@ -34,7 +34,19 @@
             android:textSize="16dp"
             android:textColor="#000"/>
 
-        <TextView
+            <TextView
+                android:id="@+id/tvSubscribed"
+                android:layout_alignParentEnd="true"
+                android:text="Subscribed"
+                android:textColor="@android:color/holo_green_dark"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+            <TextView
             android:id="@+id/level_price"
             android:textSize="16dp"
             android:textStyle="bold"
@@ -44,6 +56,7 @@
             android:textColor="@android:color/holo_green_dark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
 
         </LinearLayout>
 

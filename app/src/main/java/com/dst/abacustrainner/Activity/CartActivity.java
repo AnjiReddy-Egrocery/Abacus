@@ -61,6 +61,7 @@ public class CartActivity extends AppCompatActivity {
     Button butCheckOut;
     String studentId;
     int totalAmount;
+    ArrayList<String> subscribedIds;
 
 
 
@@ -83,6 +84,7 @@ public class CartActivity extends AppCompatActivity {
         StudentRegistationResponse.Result result= SharedPrefManager.getInstance(CartActivity.this).getUserData();
         studentId=result.getStudentId();
         totalAmount = getIntent().getIntExtra("TOTAL_AMOUNT", 0);
+        subscribedIds = getIntent().getStringArrayListExtra("SUB_IDS");
 
         Log.d("Anji",workSheetRnm);
         Log.d("Anji",studentId);
@@ -274,6 +276,12 @@ public class CartActivity extends AppCompatActivity {
                             if (r.getCourseLevels() != null) {
 
                                 for (CartDetailsResponse.CourseLevels level : r.getCourseLevels()) {
+
+                                    if (subscribedIds != null &&
+                                            subscribedIds.contains(level.getCourseLevelId())) {
+                                        continue; // ❌ skip subscribed
+                                    }
+
 
                                     level.setCourseType(courseType); // 🔥 attach
                                     allLevels.add(level);

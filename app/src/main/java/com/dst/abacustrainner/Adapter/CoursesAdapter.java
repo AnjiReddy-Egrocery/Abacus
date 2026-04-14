@@ -23,6 +23,7 @@ import java.util.List;
 public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHolder> {
     private Context context;
     private List<CourseResult> list = new ArrayList<>();
+    String StudentId;
     public CoursesAdapter(CoursesActivity coursesActivity) {
         this.context = coursesActivity;
     }
@@ -61,6 +62,8 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHold
             public void onClick(View v) {
                 Intent intent =new Intent(context, CourseDetailActivity.class);
                 intent.putExtra("CoursesTypeId",coursesId);
+                intent.putExtra("HeaderName",name);
+                intent.putExtra("studentId",StudentId);
                 context.startActivity(intent);
             }
         });
@@ -103,8 +106,9 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHold
         return list.size();
     }
 
-    public void setData(List<CourseResult> result) {
+    public void setData(List<CourseResult> result, String studentId) {
         this.list = result;
+        this.StudentId = studentId;
         notifyDataSetChanged();
 
     }

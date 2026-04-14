@@ -15,13 +15,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dst.abacustrainner.Adapter.CourseLevelAdapter;
+import com.dst.abacustrainner.Adapter.CourseLevelTypeAdaper;
 import com.dst.abacustrainner.Adapter.OrderListAdapter;
 import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.Model.CourseListResponse;
 import com.dst.abacustrainner.Model.OrderListResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +47,7 @@ public class PurchasedActivity extends AppCompatActivity {
     private String studentId;
     RecyclerView recyclerCourses;
     CourseLevelAdapter courseLevelAdapter;
+    TextView tvEmptyMessage;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -52,10 +58,16 @@ public class PurchasedActivity extends AppCompatActivity {
 
 
         layoutBack = findViewById(R.id.fragment_container);
+        tvEmptyMessage = findViewById(R.id.tvEmptyMessage);
         recyclerCourses = findViewById(R.id.recycler_course);
+        recyclerCourses.setLayoutManager(new LinearLayoutManager(this));
 
-        studentId = getIntent().getStringExtra("StudentId");
-        Log.e("Reddy",studentId);
+        studentId = getIntent().getStringExtra("studentId");
+
+        recyclerCourses.setLayoutManager(new LinearLayoutManager(this));
+
+        courseLevelAdapter = new CourseLevelAdapter(this);
+        recyclerCourses.setAdapter(courseLevelAdapter);
 
         layoutBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,12 +76,9 @@ public class PurchasedActivity extends AppCompatActivity {
             }
         });
 
-        recyclerCourses.setLayoutManager(new LinearLayoutManager(this));
-        courseLevelAdapter = new CourseLevelAdapter(this);
-        recyclerCourses.setAdapter(courseLevelAdapter);
 
+            loadCourses(studentId);
 
-        loadCourses(studentId);
 
 
 
@@ -95,51 +104,46 @@ public class PurchasedActivity extends AppCompatActivity {
 
                     CourseListResponse res = response.body();
 
-                    // ✅ SUCCESS CASE
                     if ("200".equals(res.getErrorCode())) {
 
-                        if (res.getResult() != null &&
-                                res.getResult().getCourseType() != null &&
-                                !res.getResult().getCourseType().isEmpty()) {
+                        // ✅ Correct data mapping
+                        if (res.getResult() != null && !res.getResult().isEmpty()) {
 
-/*
-                            List<CourseListResponse.CourseLevels> levels =
-                                    res.getResult().getCourseLevels();
-*/
+                            // 👉 result = Course Types
+                            List<CourseListResponse.Result> courseTypes = res.getResult();
 
-                            List<CourseListResponse.CourseLevels> levels = res.getResult().getCourseLevels();
-
-                            courseLevelAdapter.setLevels(levels,studentId);
+                            // 👉 Adapter ki set cheyyali
+                            courseLevelAdapter.setCourseTypes(courseTypes, studentId);
 
                         } else {
-                            //showEmptyMessage(res.getEmptyAssignmentTopicsessage());
+                            showEmptyMessage(res.getEmptyAssignmentTopicsessage());
                         }
 
-                    }
-                    // ⚠️ NO ACTIVE SUBSCRIPTION
-                    else if ("202".equals(res.getErrorCode())) {
+                    } else if ("202".equals(res.getErrorCode())) {
 
-                       /* showEmptyMessage(
+                        showEmptyMessage(
                                 "You do not have any active worksheet subscriptions. " +
-                                        "Please contact the administrator for more information."
-                        );*/
+                                        "Please contact administrator."
+                        );
+
+                    } else {
+                        showEmptyMessage(res.getMessage());
                     }
-                    // ❌ OTHER ERROR
-                    else {
-                       // showEmptyMessage(res.getMessage());
-                    }
+                } else {
+                    showEmptyMessage("Response error");
                 }
             }
 
             @Override
             public void onFailure(Call<CourseListResponse> call, Throwable t) {
-                //showEmptyMessage("Server error. Please try again.");
-
+                showEmptyMessage("Server error. Please try again.");
             }
         });
-
-
     }
 
-
+    private void showEmptyMessage(String message) {
+        recyclerCourses.setVisibility(View.GONE);
+        tvEmptyMessage.setVisibility(View.VISIBLE);
+        tvEmptyMessage.setText(message);
+    }
 }

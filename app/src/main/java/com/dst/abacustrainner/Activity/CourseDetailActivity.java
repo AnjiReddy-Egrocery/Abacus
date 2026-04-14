@@ -30,6 +30,7 @@ import com.dst.abacustrainner.Model.CourseLevelCart;
 import com.dst.abacustrainner.Model.CourseLevelResponse;
 import com.dst.abacustrainner.Model.DurationListResponse;
 import com.dst.abacustrainner.Model.LevelPriceResponse;
+import com.dst.abacustrainner.Model.SubscribedLevelsResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 
@@ -61,19 +62,22 @@ public class CourseDetailActivity extends AppCompatActivity {
     RelativeLayout layoutCart;
 
     String courseId;
+    String headerName;
     LinearLayout layoutCourseBack;
     RecyclerView recyclerViewDurationList, recyclerViewLevelList;
     DurationAdapter durationAdapter;
     LevelsAdapter levelsAdapter;
     List<CourseLevel> levelList = new ArrayList<>();
     private String selectedDurationId = null;
-    TextView txtAmount, txtLevel;
+    TextView txtAmount, txtLevel,txtHeadername;
 
     private int selectedCourseLevelId = -1;   // ✅ GLOBAL
 
 
     private List<CourseLevel> selectedLevels = new ArrayList<>();
     TextView tvDurationError;
+    String studentId;
+    private List<String> subscribedLevelIds = new ArrayList<>();
 
 
 
@@ -95,12 +99,18 @@ public class CourseDetailActivity extends AppCompatActivity {
         butAddCart = findViewById(R.id.but_addCart);
         butViewCart = findViewById(R.id.but_view_cart);
         tvDurationError = findViewById(R.id.tvDurationError);
+        txtHeadername = findViewById(R.id.txt_header_name);
 
         layoutCourseBack = findViewById(R.id.layout_course_back);
 
         courseId = getIntent().getStringExtra("CoursesTypeId");
+        headerName = getIntent().getStringExtra("HeaderName");
+        studentId = getIntent().getStringExtra("studentId");
 
-        Log.e("Reddy", courseId);
+        txtHeadername.setText(headerName);
+
+        Log.d("Reddy", courseId);
+        Log.d("Reddy",studentId);
 
         recyclerViewDurationList = findViewById(R.id.recycler_course_duration);
         recyclerViewDurationList.setLayoutManager(new GridLayoutManager(this,3));
@@ -236,7 +246,8 @@ public class CourseDetailActivity extends AppCompatActivity {
 
                     Intent intent =new Intent(CourseDetailActivity.this, CartActivity.class);
                     intent.putExtra("WorkSheetRnm",worksheetRnm);
-                    startActivity(intent);
+                    intent.putStringArrayListExtra("SUB_IDS", new ArrayList<>(subscribedLevelIds));
+                startActivity(intent);
 
 
             }
@@ -429,22 +440,30 @@ public class CourseDetailActivity extends AppCompatActivity {
     }
     private void updateSummary() {
         int totalAmount = 0;
-        int selectedCount = selectedLevels.size();
+        int selectedCount = 0;
 
-        for (CourseLevel level : selectedLevels) {
+        for (CourseLevel level : levelList) {
 
-            if (level.getPrice() != null) {
-                try {
-                    totalAmount += Integer.parseInt(level.getPrice());
-                } catch (Exception e) {
-                    e.printStackTrace();
+            // 🔥 Skip subscribed levels
+            if (level.isSubscribed()) continue;
+
+            // 🔥 Only selected levels
+            if (level.isSelected()) {
+
+                selectedCount++;
+
+                if (level.getPrice() != null) {
+                    try {
+                        totalAmount += Integer.parseInt(level.getPrice());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
 
         txtAmount.setText("₹" + totalAmount + "/-");
         txtLevel.setText(selectedCount + " levels selected");
-
     }
 
     private void fetchPricesForLevels(String  durationId) {
@@ -549,6 +568,8 @@ public class CourseDetailActivity extends AppCompatActivity {
                         if (selectedDurationId != null) {
                             fetchPricesForLevels(selectedDurationId);
                         }
+
+                        fetchSubscribedLevels(studentId);
                     }
                 }
             }
@@ -556,6 +577,60 @@ public class CourseDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CourseLevelResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private void fetchSubscribedLevels(String studentId) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+        ApiClient apiClient = retrofit.create(ApiClient.class);
+
+        RequestBody studentIdPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
+
+        Call<SubscribedLevelsResponse> call= apiClient.getSubscribed(studentIdPart);
+        call.enqueue(new Callback<SubscribedLevelsResponse>() {
+            @Override
+            public void onResponse(Call<SubscribedLevelsResponse> call, Response<SubscribedLevelsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    subscribedLevelIds = response.body().getResult();
+
+                    Log.e("SUB_IDS", subscribedLevelIds.toString());
+
+                    selectedLevels.clear();
+
+
+                    // 🔥 STEP 2: Update levelList
+                    for (CourseLevel level : levelList) {
+
+                        if (subscribedLevelIds.contains(level.getCourseLevelId())) {
+
+                            level.setSubscribed(true);   // ✅ mark subscribed
+                            level.setSelected(false);   // ❌ prevent selection
+
+                        } else {
+                            level.setSubscribed(false);
+                        }
+                    }
+
+                    // 🔥 STEP 3: Refresh UI
+                    levelsAdapter.notifyDataSetChanged();
+                    updateSummary();
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<SubscribedLevelsResponse> call, Throwable t) {
 
             }
         });

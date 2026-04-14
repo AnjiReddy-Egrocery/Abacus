@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dst.abacustrainner.Activity.AllSchedulesActivity;
 import com.dst.abacustrainner.Activity.AllocatedCoursesActivity;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
+import com.dst.abacustrainner.Activity.PurchasedActivity;
 import com.dst.abacustrainner.Activity.PurchasedVideoTutorialsActivity;
 import com.dst.abacustrainner.Activity.SubscriptionDetailsActivity;
 import com.dst.abacustrainner.Activity.VisualiztionActivity;
@@ -88,6 +89,8 @@ public class HomeFragment extends Fragment {
 
 
 
+
+
     @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -132,7 +135,7 @@ public class HomeFragment extends Fragment {
         butSubdetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), SubscriptionDetailsActivity.class);
+                Intent intent = new Intent(getContext(), PurchasedActivity.class);
                 intent.putExtra("studentId",id);
                 startActivity(intent);
             }

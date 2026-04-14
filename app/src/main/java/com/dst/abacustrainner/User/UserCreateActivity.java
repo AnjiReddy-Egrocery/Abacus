@@ -587,13 +587,18 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                 apiDob = apiFormat.format(calendar.getTime());
             }
         };
-        new DatePickerDialog(
+        DatePickerDialog dialog = new DatePickerDialog(
                 UserCreateActivity.this,
+                android.R.style.Theme_Holo_Light_Dialog_MinWidth, // 👈 fix
                 dateListener,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
-        ).show();
+        );
+
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        dialog.show();
     }
 
 

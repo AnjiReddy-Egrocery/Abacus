@@ -274,15 +274,13 @@ public class HomeActivity extends AppCompatActivity {
                     String firstName = capitalizeFirstLetter(studentTotalDetails.getResult().getFirstName());
                     String middleNem = capitalizeFirstLetter(studentTotalDetails.getResult().getMiddleName());
                     String lastName = capitalizeFirstLetter(studentTotalDetails.getResult().getLastName());
-                    String fullName = "Hello,  " + firstName + middleNem + lastName;
+                    String fullName = "Hello,  " + firstName + middleNem + " " + lastName;
                     txtName.setText(fullName);
 
                     String imageUrl = studentTotalDetails.getImageUrl() + studentTotalDetails.getResult().getProfilePic();
 
                     Glide.with(getApplicationContext())
                             .load(imageUrl)
-                            .placeholder(R.drawable.headerprofile) // loading time lo
-                            .error(R.drawable.headerprofile)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .signature(new ObjectKey(System.currentTimeMillis())) // forces fresh load
                             .circleCrop()
@@ -357,12 +355,12 @@ public class HomeActivity extends AppCompatActivity {
                 WorksheetSubscriptionMethod();
 
 
-            }else if (itemView == R.id.nav_video){
-             /*   Intent intent= new Intent(HomeActivity.this, VideoTutorialsActivity.class);
-                startActivity(intent);*/
+            }/*else if (itemView == R.id.nav_video){
+             *//*   Intent intent= new Intent(HomeActivity.this, VideoTutorialsActivity.class);
+                startActivity(intent);*//*
 
                videotutorialsmethod();
-            }
+            }*/
             else if (itemView == R.id.nav_play ) {
                 Intent intent = new Intent(HomeActivity.this, PlayWithNumbersActivity.class);
                 intent.putExtra("studentId",studentId);

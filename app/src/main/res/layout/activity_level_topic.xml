@@ -44,9 +44,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Level Topics"
+                android:text=""
                 android:textStyle="bold"
                 android:textSize="20dp"
+                android:id="@+id/txt_lavel_topic"
                 android:gravity="center"
                 android:textColor="#FFF"/>
          </LinearLayout>

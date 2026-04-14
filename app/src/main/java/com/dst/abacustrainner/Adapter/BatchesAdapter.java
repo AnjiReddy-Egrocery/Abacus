@@ -41,8 +41,8 @@ public class BatchesAdapter extends RecyclerView.Adapter<BatchesAdapter.ViewHold
         BachDetailsResponse.Result detailsResponse = batchList.get(position);
 
         String bactchName = detailsResponse.getBatchName();
-        String satrtDate = "Start Date:" + detailsResponse.getStartDate();
-        String startTime = "Timings:" + detailsResponse.getStartTime() + "-" + detailsResponse.getEndTime();
+        String satrtDate = "Start Date  :   " + detailsResponse.getStartDate();
+        String startTime = "Timings     :  " + detailsResponse.getStartTime() + "-" + detailsResponse.getEndTime();
         String batchId = detailsResponse.getBatchId();
 
         holder.txtBatchName.setText(bactchName);

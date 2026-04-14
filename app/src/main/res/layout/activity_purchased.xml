@@ -44,7 +44,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Course Levels"
+                android:text="Worksheet Subscriptions"
                 android:textStyle="bold"
                 android:textSize="20dp"
                 android:gravity="center"
@@ -63,6 +63,15 @@
                 android:layout_height="match_parent"
                 android:id="@+id/recycler_course"
                 android:layout_margin="12dp"/>
+            <TextView
+                android:id="@+id/tvEmptyMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No Data"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"/>
         </LinearLayout>
 
     </LinearLayout>

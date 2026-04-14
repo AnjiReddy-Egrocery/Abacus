@@ -3,11 +3,15 @@ package com.dst.abacustrainner.User;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +37,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     EditText edtEmail;
 
     Button butSend;
+    LinearLayout layoutBack;
+    TextView txtemail;
 
 
 
@@ -43,20 +49,48 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forgot_password);
         edtEmail = findViewById(R.id.edt_forgot_email);
         butSend=findViewById(R.id.but_send);
+        layoutBack = findViewById(R.id.layout_back);
+        txtemail = findViewById(R.id.txt_email);
+
+        layoutBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        edtEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                txtemail.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         butSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                  String email = edtEmail.getText().toString().trim();
                 Log.d("API_ERROR", "Entered Email: " + email);
+                boolean isValid = true;
+
+                if (!isValidEmail(email)) {
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    resetPasswordMethod(email);
+
+                } else {
+                    //Toast.makeText(UserCreateActivity.this, "Validation failed. Please check your input.", Toast.LENGTH_SHORT).show();
+                }
 
 
-                if (isValidEmail(email)){
-
-                    Log.d("API_ERROR", "Valid Email, calling API");
-
-                     resetPasswordMethod(email);
-                 }
             }
         });
     }
@@ -129,6 +163,19 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private boolean isValidEmail(String email) {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        if (email.isEmpty()) {
+            //txtemail.setText("Enter Email");
+            txtemail.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            txtemail.setText("Enter Valid Email");
+            txtemail.setVisibility(View.VISIBLE);
+            return false;
+        }
+
+        txtemail.setVisibility(View.GONE);
+        return true;
     }
 }

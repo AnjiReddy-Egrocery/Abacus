@@ -34,6 +34,7 @@ import com.dst.abacustrainner.Model.StudentTotalDetails;
 import com.dst.abacustrainner.Model.StudentUpdateProfile;
 import com.dst.abacustrainner.Model.StudentUserMethod;
 import com.dst.abacustrainner.Model.SubmitDataResponse;
+import com.dst.abacustrainner.Model.SubscribedLevelsResponse;
 import com.dst.abacustrainner.Model.TopicExamResponse;
 import com.dst.abacustrainner.Model.TopicListResponse;
 import com.dst.abacustrainner.Model.ViewAssignmentListResponse;
@@ -200,6 +201,12 @@ public interface ApiClient {
     @Multipart
     @POST("apicalls/Index/getStudentWorksheetCoursesList")
     Call<CourseListResponse> getCourseList(
+            @Part("studentId") RequestBody studentId
+    );
+
+    @Multipart
+    @POST("apicalls/Index/getStudentSubscribedCourseLevels")
+    Call<SubscribedLevelsResponse> getSubscribed(
             @Part("studentId") RequestBody studentId
     );
 

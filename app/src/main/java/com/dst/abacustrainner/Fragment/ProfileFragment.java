@@ -25,10 +25,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.signature.ObjectKey;
+import com.dst.abacustrainner.Activity.AllocatedCoursesActivity;
+import com.dst.abacustrainner.Activity.PurchasedActivity;
 import com.dst.abacustrainner.Activity.UpdateProfileActivity;
 import com.dst.abacustrainner.Model.BachDetailsResponse;
 import com.dst.abacustrainner.Model.StudentTotalDetails;
@@ -37,7 +40,10 @@ import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.User.HomeActivity;
 import com.dst.abacustrainner.database.SharedPrefManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -54,10 +60,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ProfileFragment extends Fragment {
 
     private String studentId, fullName, imageUrl;
-    TextView txtName;
+    TextView txtName,txtEmail,txtnumber,txtdob;
     ImageView imageProfile;
 
     Button butEditProfile;
+    Button butViewMoreDetails, butSubdetails, butCourses;
+
 
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -67,14 +75,22 @@ public class ProfileFragment extends Fragment {
 
         txtName = view.findViewById(R.id.txt_name);
         imageProfile = view.findViewById(R.id.image_profile);
+        txtEmail = view.findViewById(R.id.txt_email);
+        txtnumber = view.findViewById(R.id.txt_mobilenumber);
+        txtdob = view.findViewById(R.id.txt_dateofbirth);
+
+        butViewMoreDetails = view.findViewById(R.id.but_viewmoredetails);
+        butSubdetails = view.findViewById(R.id.but_subscription_details);
+        butCourses = view.findViewById(R.id.but_view_courses);
 
         butEditProfile = view.findViewById(R.id.but_edit_profile);
 
         StudentTotalDetails.Result studentdetails = SharedPrefManager.getInstance(getContext()).getUser();
 
-        String studentid = studentdetails.getStudentId();
+        studentId = studentdetails.getStudentId();
+        Log.d("Reddy",studentId);
 
-        StudentDetailsMethod(studentid);
+        StudentDetailsMethod(studentId);
         butEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,9 +104,49 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        butViewMoreDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openScheduleFragment();
+            }
+        });
+
+        butSubdetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), PurchasedActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }
+        });
+
+        butCourses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), AllocatedCoursesActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }
+        });
+
+
 
         return view;
     }
+
+    private void openScheduleFragment() {
+        SchedulesFragment scheduleFragment = new SchedulesFragment();
+        Bundle args = new Bundle();
+        args.putString("studentId", studentId);
+        //args.putString("batchId",batchId);// pass studentId if needed
+        scheduleFragment.setArguments(args);
+
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.flFragment, scheduleFragment); // Make sure R.id.fragment_container is the correct container in your activity layout
+        transaction.addToBackStack(null);  // So you can navigate back
+        transaction.commit();
+    }
+
 
     private void StudentDetailsMethod(String studentId) {
 
@@ -121,17 +177,45 @@ public class ProfileFragment extends Fragment {
 
                     Glide.with(requireContext())
                             .load(imageUrl)
-                            .placeholder(R.drawable.headerprofile) // loading time lo
-                            .error(R.drawable.headerprofile)       // fail ayithe
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .signature(new ObjectKey(System.currentTimeMillis())) // forces fresh load
                             .circleCrop()
                             .into(imageProfile);
 
                     String firstName = capitalizeFirstLetter(studentTotalDetails.getResult().getFirstName());
+                    String middleName = capitalizeFirstLetter(studentTotalDetails.getResult().getMiddleName());
                     String lastName = capitalizeFirstLetter(studentTotalDetails.getResult().getLastName());
-                    String fullName = firstName + " " + lastName;
+
+                    String email = studentTotalDetails.getResult().getParentEmail();
+                    String mobileNumber = studentTotalDetails.getResult().getFatherMobile();
+                    String dateOfBirth = studentTotalDetails.getResult().getDateOfBirth();
+
+                    try {
+                        // 🔥 Convert string to long
+                        long timestamp = Long.parseLong(dateOfBirth);
+
+                        // 🔥 Convert seconds → milliseconds
+                        Date date = new Date(timestamp * 1000);
+
+                        // 🔥 Format date
+                        SimpleDateFormat outputFormat =
+                                new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+
+                        String formattedDate = outputFormat.format(date);
+
+                        txtdob.setText(formattedDate);
+
+                        Log.d("DOB", formattedDate);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    String fullName = firstName +  middleName + " " + lastName;
                     txtName.setText(fullName);
+                    txtEmail.setText(email);
+                    txtnumber.setText(mobileNumber);
+
 
 
 

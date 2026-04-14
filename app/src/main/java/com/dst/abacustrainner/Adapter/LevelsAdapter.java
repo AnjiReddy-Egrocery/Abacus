@@ -51,6 +51,19 @@ public class LevelsAdapter extends RecyclerView.Adapter<LevelsAdapter.ViewHolder
             holder.levelPrice.setText("—");
         }
 
+        if (level.isSubscribed()) {
+
+            holder.checkBox.setVisibility(View.GONE);
+            holder.tvSubscribed.setVisibility(View.VISIBLE);
+
+        } else {
+
+            holder.checkBox.setVisibility(View.VISIBLE);
+            holder.tvSubscribed.setVisibility(View.GONE);
+        }
+
+
+
         holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(level.isSelected());
 
@@ -109,7 +122,7 @@ public class LevelsAdapter extends RecyclerView.Adapter<LevelsAdapter.ViewHolder
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewLevelName,levelPrice;
+        TextView textViewLevelName,levelPrice,tvSubscribed;
         CheckBox checkBox;
 
         public ViewHolder(@NonNull View itemView) {
@@ -117,6 +130,7 @@ public class LevelsAdapter extends RecyclerView.Adapter<LevelsAdapter.ViewHolder
 
             textViewLevelName = itemView.findViewById(R.id.level_name);
             levelPrice = itemView.findViewById(R.id.level_price);
+            tvSubscribed = itemView.findViewById(R.id.tvSubscribed);
             checkBox = itemView.findViewById(R.id.check_levels);
         }
     }

@@ -5,7 +5,7 @@ import java.util.List;
 public class CourseListResponse {
     private String status;
     private String errorCode;
-    private Result result;
+    private List<Result> result;
     private String message;
     private String emptyAssignmentTopicsessage;
 
@@ -25,11 +25,11 @@ public class CourseListResponse {
         this.errorCode = errorCode;
     }
 
-    public Result getResult() {
+    public List<Result> getResult() {
         return result;
     }
 
-    public void setResult(Result result) {
+    public void setResult(List<Result> result) {
         this.result = result;
     }
 

@@ -23,8 +23,7 @@
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:scaleType="centerCrop"
-            android:layout_marginEnd="12dp"
-            android:background="@drawable/headerprofile" />
+            android:layout_marginEnd="12dp"/>
 
         <!-- Welcome Text -->
         <LinearLayout
@@ -37,7 +36,7 @@
                 android:id="@+id/user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Divya"
+                android:text=""
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:textSize="16dp" />
