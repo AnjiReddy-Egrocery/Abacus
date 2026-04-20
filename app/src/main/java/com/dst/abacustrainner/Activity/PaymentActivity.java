@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dst.abacustrainner.Model.CartDetailsResponse;
+import com.dst.abacustrainner.Model.CartManager;
 import com.dst.abacustrainner.Model.MetaInfo;
 import com.dst.abacustrainner.Model.OrderCreateResponse;
 import com.dst.abacustrainner.Model.OrderRequest;
@@ -389,6 +390,15 @@ public class PaymentActivity extends AppCompatActivity {
                         "200".equals(response.body().getErrorCode())) {
 
                     PaymentRefrence.Result result = response.body().getResult();
+
+                    CartManager.getInstance(PaymentActivity.this).clearCart();
+                    CartManager.getInstance(PaymentActivity.this).clearWorksheetRnm();
+
+                    // ✅ ALSO RESET CART COUNT
+                    getSharedPreferences("cart_pref", MODE_PRIVATE)
+                            .edit()
+                            .putInt("cart_count", 0)
+                            .apply();
 
                     String transction = result.getTransactionID();
                     String status = result.getState();

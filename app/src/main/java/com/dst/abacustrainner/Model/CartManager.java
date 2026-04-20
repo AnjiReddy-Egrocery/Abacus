@@ -27,8 +27,10 @@ public class CartManager {
 
     private static CartManager instance;
     private SharedPreferences prefs;
+    private Context context;
 
     private CartManager(Context context) {
+        this.context = context.getApplicationContext(); // ✅ FIX
         prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
@@ -55,6 +57,7 @@ public class CartManager {
     }
 
     public void clearCart() {
+        SharedPreferences prefs = context.getSharedPreferences("cart_pref", Context.MODE_PRIVATE);
         prefs.edit().clear().apply();   // 🔥 clear everything
     }
 
@@ -116,5 +119,10 @@ public class CartManager {
         }
 
         return ids;
+    }
+
+    public void clearWorksheetRnm() {
+        SharedPreferences prefs = context.getSharedPreferences("cart_pref", Context.MODE_PRIVATE);
+        prefs.edit().remove("worksheet_rnm").apply();
     }
 }

@@ -2,6 +2,7 @@ package com.dst.abacustrainner.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +61,9 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHold
         holder.buttonSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("Anji","StudentId"+StudentId);
+                Log.d("Anji","CousesTypeId"+coursesId);
+
                 Intent intent =new Intent(context, CourseDetailActivity.class);
                 intent.putExtra("CoursesTypeId",coursesId);
                 intent.putExtra("HeaderName",name);

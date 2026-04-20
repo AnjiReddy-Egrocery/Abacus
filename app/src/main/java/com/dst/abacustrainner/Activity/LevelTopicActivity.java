@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dst.abacustrainner.Adapter.TopicsAdapter;
 
@@ -18,7 +17,6 @@ import com.dst.abacustrainner.Model.CourseLevelTopicResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -38,7 +36,7 @@ public class LevelTopicActivity extends AppCompatActivity {
     private TopicsAdapter adapter;
 
     LinearLayout layoutBack;
-    private String studentId,courseLevelId, levelName;
+    private String studentId,courseLevelId, levelName, orderId;
     TextView txtLevelTopic;
 
     @SuppressLint("MissingInflatedId")
@@ -64,9 +62,12 @@ public class LevelTopicActivity extends AppCompatActivity {
         studentId = getIntent().getStringExtra("StudentId");
         courseLevelId = getIntent().getStringExtra("LevelId");
         levelName = getIntent().getStringExtra("LevelName");
+        orderId = getIntent().getStringExtra("OrderId");
 
-        Log.d("Reddy",studentId);
-        Log.d("Reddy",courseLevelId);
+
+        Log.d("LEVEL_DEBUG",studentId);
+        Log.d("LEVEL_DEBUG",courseLevelId);
+        Log.d("LEVEL_DEBUG", orderId);
         // Load static topics based on level
         //loadTopicsForLevel(levelName);
 
@@ -76,10 +77,10 @@ public class LevelTopicActivity extends AppCompatActivity {
         recyclerTopics.setLayoutManager(new LinearLayoutManager(this));
         recyclerTopics.setAdapter(adapter);
 
-        loadTopics(studentId,courseLevelId);
+        loadTopics(studentId,courseLevelId, orderId);
     }
 
-    private void loadTopics(String studentId, String courseLevelId) {
+    private void loadTopics(String studentId, String courseLevelId, String orderId) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -91,8 +92,10 @@ public class LevelTopicActivity extends AppCompatActivity {
         ApiClient apiClient = retrofit.create(ApiClient.class);
         RequestBody CourseLevelPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
         RequestBody CourseTopicLevelPart = RequestBody.create(MediaType.parse("text/plain"),courseLevelId);
+        RequestBody OrderLevelPart = RequestBody.create(MediaType.parse("text/plain"),orderId);
 
-        Call<CourseLevelTopicResponse> call = apiClient.getCourseLevelTopic(CourseLevelPart,CourseTopicLevelPart);
+
+        Call<CourseLevelTopicResponse> call = apiClient.getCourseLevelTopic(CourseLevelPart,CourseTopicLevelPart,OrderLevelPart);
         call.enqueue(new Callback<CourseLevelTopicResponse>() {
             @Override
             public void onResponse(Call<CourseLevelTopicResponse> call, Response<CourseLevelTopicResponse> response) {

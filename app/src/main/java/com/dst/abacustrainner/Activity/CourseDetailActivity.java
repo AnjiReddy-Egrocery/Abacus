@@ -33,6 +33,7 @@ import com.dst.abacustrainner.Model.LevelPriceResponse;
 import com.dst.abacustrainner.Model.SubscribedLevelsResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,8 +110,21 @@ public class CourseDetailActivity extends AppCompatActivity {
 
         txtHeadername.setText(headerName);
 
-        Log.d("Reddy", courseId);
-        Log.d("Reddy",studentId);
+        if (courseId != null) {
+            Log.d("Reddy", "courseId: " + courseId);
+        } else {
+            Log.d("Reddy", "courseId is NULL ❌");
+        }
+
+        if (studentId != null) {
+            Log.d("Reddy", "studentId: " + studentId);
+        } else {
+            Log.d("Reddy", "studentId is NULL ❌");
+        }
+
+
+
+
 
         recyclerViewDurationList = findViewById(R.id.recycler_course_duration);
         recyclerViewDurationList.setLayoutManager(new GridLayoutManager(this,3));
@@ -220,6 +234,22 @@ public class CourseDetailActivity extends AppCompatActivity {
                     return;
                 }
 
+                // 🔴 STEP 1: Block if ANY subscribed level selected
+                List<CourseLevel> validLevels = new ArrayList<>();
+
+                for (CourseLevel level : selectedLevels) {
+                    if (!level.isSubscribed()) {
+                        validLevels.add(level);
+                    }
+                }
+
+                if (validLevels.isEmpty()) {
+                    Toast.makeText(CourseDetailActivity.this,
+                            "All selected levels already subscribed",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 String worksheetRnm =
                         CartManager.getInstance(CourseDetailActivity.this).getWorksheetRnm();
 
@@ -229,36 +259,136 @@ public class CourseDetailActivity extends AppCompatActivity {
 
                 Log.e("Anji", "durationId = " + selectedDurationId);
 
-                for (CourseLevel level : selectedLevels) {
+                int totalCalls = validLevels.size();
+                int[] completedCalls = {0};
 
 
-                    Log.e("Anji",
-                            "Adding CourseLevelId = " + level.getCourseLevelId());
+                // ✅ STEP 3: Call API
+                for (CourseLevel level : validLevels) {
+
+                    Log.d("Anji", "Adding CourseLevelId = " + level.getCourseLevelId());
 
                     addToCartApi(
                             worksheetRnm,
                             courseId,
                             level.getCourseLevelId(),
-                            selectedDurationId
+                            selectedDurationId,
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    completedCalls[0]++;
+
+                                    if (completedCalls[0] == totalCalls) {
+                                        // ✅ Navigate after all calls
+
+                                        Intent intent = new Intent(
+                                                CourseDetailActivity.this,
+                                                CartActivity.class
+                                        );
+
+                                        intent.putExtra("WorkSheetRnm", worksheetRnm);
+                                        intent.putStringArrayListExtra(
+                                                "SUB_IDS",
+                                                new ArrayList<>(subscribedLevelIds)
+                                        );
+
+                                        startActivity(intent);
+                                    }
+                                }
+                            }
                     );
                 }
-
-
-                    Intent intent =new Intent(CourseDetailActivity.this, CartActivity.class);
-                    intent.putExtra("WorkSheetRnm",worksheetRnm);
-                    intent.putStringArrayListExtra("SUB_IDS", new ArrayList<>(subscribedLevelIds));
-                startActivity(intent);
-
-
             }
-
-
         });
 
-        butViewCart.setOnClickListener(new View.OnClickListener() {
+
+
+   layoutCart.setOnClickListener(new View.OnClickListener() {
+       @Override
+       public void onClick(View v) {
+           Log.e("Anji", "Button clicked");
+
+
+           if (selectedDurationId == null) {
+               Toast.makeText(CourseDetailActivity.this, "Please select duration", Toast.LENGTH_SHORT).show();
+               return;
+           }
+
+           if (selectedLevels == null || selectedLevels.isEmpty()) {
+               Toast.makeText(CourseDetailActivity.this, "Please select level", Toast.LENGTH_SHORT).show();
+               return;
+           }
+
+           // 🔴 STEP 1: Block if ANY subscribed level selected
+           List<CourseLevel> validLevels = new ArrayList<>();
+
+           for (CourseLevel level : selectedLevels) {
+               if (!level.isSubscribed()) {
+                   validLevels.add(level);
+               }
+           }
+
+           if (validLevels.isEmpty()) {
+               Toast.makeText(CourseDetailActivity.this,
+                       "All selected levels already subscribed",
+                       Toast.LENGTH_SHORT).show();
+               return;
+           }
+
+           String worksheetRnm =
+                   CartManager.getInstance(CourseDetailActivity.this).getWorksheetRnm();
+
+
+           Log.e("Anji", "worksheetRnm = " + worksheetRnm);
+           Log.e("Anji", "courseTypeId = " + courseId);
+
+           Log.e("Anji", "durationId = " + selectedDurationId);
+
+           int totalCalls = validLevels.size();
+           int[] completedCalls = {0};
+
+
+           // ✅ STEP 3: Call API
+           for (CourseLevel level : validLevels) {
+
+               Log.d("Anji", "Adding CourseLevelId = " + level.getCourseLevelId());
+
+               addToCartApi(
+                       worksheetRnm,
+                       courseId,
+                       level.getCourseLevelId(),
+                       selectedDurationId,
+                       new Runnable() {
+                           @Override
+                           public void run() {
+                               completedCalls[0]++;
+
+                               if (completedCalls[0] == totalCalls) {
+                                   // ✅ Navigate after all calls
+
+                                   Intent intent = new Intent(
+                                           CourseDetailActivity.this,
+                                           CartActivity.class
+                                   );
+
+                                   intent.putExtra("WorkSheetRnm", worksheetRnm);
+                                   intent.putStringArrayListExtra(
+                                           "SUB_IDS",
+                                           new ArrayList<>(subscribedLevelIds)
+                                   );
+
+                                   startActivity(intent);
+                               }
+                           }
+                       }
+               );
+           }
+       }
+   });
+   butViewCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("Reddy", "Button clicked");
+                Log.e("Anji", "Button clicked");
 
 
                 if (selectedDurationId == null) {
@@ -271,52 +401,73 @@ public class CourseDetailActivity extends AppCompatActivity {
                     return;
                 }
 
-                String worksheetRnm =
-                        CartManager.getInstance(CourseDetailActivity.this).getWorksheetRnm();
-
-                int totalAmount = 0;
+                // 🔴 STEP 1: Block if ANY subscribed level selected
+                List<CourseLevel> validLevels = new ArrayList<>();
 
                 for (CourseLevel level : selectedLevels) {
-                    try {
-                        if (level.getPrice() != null) {
-                            totalAmount += Integer.parseInt(level.getPrice());
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (!level.isSubscribed()) {
+                        validLevels.add(level);
                     }
                 }
 
+                if (validLevels.isEmpty()) {
+                    Toast.makeText(CourseDetailActivity.this,
+                            "All selected levels already subscribed",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                Log.e("Reddy", "worksheetRnm = " + worksheetRnm);
-                Log.e("Reddy", "courseTypeId = " + courseId);
-
-                Log.e("Reddy", "durationId = " + selectedDurationId);
-                Log.d("Anji", String.valueOf(totalAmount));
-
-                for (CourseLevel level : selectedLevels) {
+                String worksheetRnm =
+                        CartManager.getInstance(CourseDetailActivity.this).getWorksheetRnm();
 
 
-                    Log.e("Reddy",
-                            "Adding CourseLevelId = " + level.getCourseLevelId());
+                Log.e("Anji", "worksheetRnm = " + worksheetRnm);
+                Log.e("Anji", "courseTypeId = " + courseId);
+
+                Log.e("Anji", "durationId = " + selectedDurationId);
+
+                int totalCalls = validLevels.size();
+                int[] completedCalls = {0};
+
+
+                // ✅ STEP 3: Call API
+                for (CourseLevel level : validLevels) {
+
+                    Log.d("Anji", "Adding CourseLevelId = " + level.getCourseLevelId());
 
                     addToCartApi(
                             worksheetRnm,
                             courseId,
                             level.getCourseLevelId(),
-                            selectedDurationId
+                            selectedDurationId,
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    completedCalls[0]++;
+
+                                    if (completedCalls[0] == totalCalls) {
+                                        // ✅ Navigate after all calls
+
+                                        Intent intent = new Intent(
+                                                CourseDetailActivity.this,
+                                                CartActivity.class
+                                        );
+
+                                        intent.putExtra("WorkSheetRnm", worksheetRnm);
+                                        intent.putStringArrayListExtra(
+                                                "SUB_IDS",
+                                                new ArrayList<>(subscribedLevelIds)
+                                        );
+
+                                        startActivity(intent);
+                                    }
+                                }
+                            }
                     );
                 }
-
-                    Intent intent =new Intent(CourseDetailActivity.this, CartActivity.class);
-                    intent.putExtra("WorkSheetRnm",worksheetRnm);
-                    intent.putExtra("TOTAL_AMOUNT",totalAmount);
-                    startActivity(intent);
-
-
             }
-
-
         });
+
 
         restoreSelections();
         loadDurations();
@@ -354,14 +505,14 @@ public class CourseDetailActivity extends AppCompatActivity {
     }
 
 
-    private void addToCartApi(String worksheetRnm, String courseId, String courseLevelId, String selectedDurationId) {
+    private void addToCartApi(String worksheetRnm, String courseId, String courseLevelId, String selectedDurationId,Runnable onComplete) {
 
-        Log.e("Reddy", "API CALL STARTED");
+        Log.d("Anji", "API CALL STARTED");
 
-        Log.e("Reddy", "worksheetRnm=" + worksheetRnm);
-        Log.e("Reddy", "courseTypeId=" + courseId);
-        Log.e("Reddy", "courseLevelId=" + courseLevelId);
-        Log.e("Reddy", "durationId=" + selectedDurationId);
+        Log.d("Anji", "worksheetRnm=" + worksheetRnm);
+        Log.d("Anji", "courseTypeId=" + courseId);
+        Log.d("Anji", "courseLevelId=" + courseLevelId);
+        Log.d("Anji", "durationId=" + selectedDurationId);
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor()
@@ -390,7 +541,9 @@ public class CourseDetailActivity extends AppCompatActivity {
         call.enqueue(new Callback<CartResponse>() {
             @Override
             public void onResponse(Call<CartResponse> call, Response<CartResponse> response) {
-                Log.e("Reddy", "Response code = " + response.code());
+                Log.d("Anji", "Response code = " + response.code());
+                Log.d("Anji", "Full Response = " + new Gson().toJson(response.body()));
+
 
                 if (response.isSuccessful() && response.body() != null) {
 
@@ -411,6 +564,9 @@ public class CourseDetailActivity extends AppCompatActivity {
                         }
                     }
                 }
+
+                // 🔥 ADD THIS LINE
+                if (onComplete != null) onComplete.run();
             }
 
             @Override
@@ -601,40 +757,74 @@ public class CourseDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SubscribedLevelsResponse> call, Response<SubscribedLevelsResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
+
                     subscribedLevelIds = response.body().getResult();
 
                     Log.e("SUB_IDS", subscribedLevelIds.toString());
 
+                    // ✅ IMPORTANT: clear old selections
                     selectedLevels.clear();
 
+                    String worksheetRnm =
+                            CartManager.getInstance(CourseDetailActivity.this)
+                                    .getWorksheetRnm();
 
-                    // 🔥 STEP 2: Update levelList
+                    List<String> savedLevelIds =
+                            CartManager.getInstance(CourseDetailActivity.this)
+                                    .getSelectedLevelIds(worksheetRnm, courseId);
+
+                    // ✅ LOOP all levels
                     for (CourseLevel level : levelList) {
 
-                        if (subscribedLevelIds.contains(level.getCourseLevelId())) {
+                        boolean isSubscribed = false;
 
-                            level.setSubscribed(true);   // ✅ mark subscribed
-                            level.setSelected(false);   // ❌ prevent selection
+                        // 🔥 SAFE CHECK (avoid crash)
+                        if (subscribedLevelIds != null) {
+
+                            for (String subId : subscribedLevelIds) {
+
+                                if (subId.equals(level.getCourseLevelId())) {
+                                    isSubscribed = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (isSubscribed) {
+
+                            // 🔴 Subscribed level
+                            level.setSubscribed(true);
+                            level.setSelected(false);
 
                         } else {
+
+                            // 🟢 Not subscribed
                             level.setSubscribed(false);
+
+                            // ✅ restore previous selection
+                            if (savedLevelIds != null &&
+                                    savedLevelIds.contains(level.getCourseLevelId())) {
+
+                                level.setSelected(true);
+                                selectedLevels.add(level);
+
+                            } else {
+                                level.setSelected(false);
+                            }
                         }
                     }
 
-                    // 🔥 STEP 3: Refresh UI
+                    // ✅ refresh UI
                     levelsAdapter.notifyDataSetChanged();
                     updateSummary();
-
                 }
-
             }
 
             @Override
             public void onFailure(Call<SubscribedLevelsResponse> call, Throwable t) {
-
+                Log.e("SUB_ERROR", t.getMessage());
             }
         });
-
     }
 
     private void loadDurations() {
@@ -672,6 +862,7 @@ public class CourseDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
 
         if (cartCount > 0) {
             tvCartCount.setVisibility(View.VISIBLE);

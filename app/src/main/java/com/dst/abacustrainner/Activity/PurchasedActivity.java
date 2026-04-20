@@ -64,6 +64,8 @@ public class PurchasedActivity extends AppCompatActivity {
 
         studentId = getIntent().getStringExtra("studentId");
 
+        Log.d("Anji","Student Details"+ studentId);
+
         recyclerCourses.setLayoutManager(new LinearLayoutManager(this));
 
         courseLevelAdapter = new CourseLevelAdapter(this);

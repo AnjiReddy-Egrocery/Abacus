@@ -49,6 +49,7 @@ public class CourseLevelAdapter extends RecyclerView.Adapter<CourseLevelAdapter.
         CourseListResponse.Result item = courseTypes.get(position);
 
         String name = item.getCourseType();
+        String orderId = item.getOrderId();
 
         List<CourseListResponse.CourseLevels> levels = item.getCourseLevels();
 
@@ -86,11 +87,13 @@ public class CourseLevelAdapter extends RecyclerView.Adapter<CourseLevelAdapter.
             // ✅ LOG here
             Log.d("LEVEL_DEBUG", "Sending Levels JSON: " + levelsJson);
             Log.d("LEVEL_DEBUG", "StudentId: " + studentId);
+            Log.d("LEVEL_DEBUG", "OrderID" + orderId);
 
             Intent intent = new Intent(context, CoursesLevelsActivity.class);
 
             intent.putExtra("StudentId", studentId);
             intent.putExtra("HeaderName",name);
+            intent.putExtra("OrderId",orderId);
 
             // 👉 send levels list
             intent.putExtra("levels", levelsJson);

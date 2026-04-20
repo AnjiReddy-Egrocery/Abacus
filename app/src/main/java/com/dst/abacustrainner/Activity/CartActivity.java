@@ -101,6 +101,8 @@ public class CartActivity extends AppCompatActivity {
 
         btnContinueShopping.setOnClickListener(view -> {
             Intent intent = new Intent(CartActivity.this, CoursesActivity.class);
+            intent.putExtra("studentId", studentId);  // ✅ ADD THIS
+            //intent.putExtra("batchId", batchId);      // (if needed)
             startActivity(intent);
         });
 

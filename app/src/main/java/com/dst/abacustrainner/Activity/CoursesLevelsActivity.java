@@ -47,6 +47,8 @@ public class CoursesLevelsActivity extends AppCompatActivity {
         String studentId = getIntent().getStringExtra("StudentId");
         String headerName = getIntent().getStringExtra("HeaderName");
 
+        String orderId = getIntent().getStringExtra("OrderId");
+
 
         txtHeader.setText(headerName);
 
@@ -69,7 +71,7 @@ public class CoursesLevelsActivity extends AppCompatActivity {
                 new Gson().fromJson(levelsJson, type);
 
         // ✅ Set to adapter
-        adapter.setLevels(levels,studentId);
+        adapter.setLevels(levels,studentId,orderId);
 
     }
 }

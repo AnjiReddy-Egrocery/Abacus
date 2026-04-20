@@ -49,6 +49,8 @@ public class CourseListResponse {
         this.emptyAssignmentTopicsessage = emptyAssignmentTopicsessage;
     }
     public static class Result {
+
+        private String orderId;
         private String courseTypeId;
 
         private String courseType;
@@ -56,6 +58,14 @@ public class CourseListResponse {
 
         public String getCourseTypeId() {
             return courseTypeId;
+        }
+
+        public String getOrderId() {
+            return orderId;
+        }
+
+        public void setOrderId(String orderId) {
+            this.orderId = orderId;
         }
 
         public void setCourseTypeId(String courseTypeId) {

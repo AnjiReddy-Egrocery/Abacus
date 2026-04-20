@@ -50,30 +50,33 @@ public class LevelsAdapter extends RecyclerView.Adapter<LevelsAdapter.ViewHolder
         } else {
             holder.levelPrice.setText("—");
         }
-
+        holder.checkBox.setOnCheckedChangeListener(null);
         if (level.isSubscribed()) {
 
-            holder.checkBox.setVisibility(View.GONE);
+            holder.checkBox.setChecked(false);
+            holder.checkBox.setEnabled(false);
             holder.tvSubscribed.setVisibility(View.VISIBLE);
 
         } else {
 
-            holder.checkBox.setVisibility(View.VISIBLE);
+            holder.checkBox.setEnabled(true);
+            holder.checkBox.setChecked(level.isSelected()); // ✅ only here
             holder.tvSubscribed.setVisibility(View.GONE);
         }
 
 
-
-        holder.checkBox.setOnCheckedChangeListener(null);
-        holder.checkBox.setChecked(level.isSelected());
-
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+// 🚫 Block subscribed (extra safety)
+            if (level.isSubscribed()) {
+                Toast.makeText(mContext,
+                        "Already subscribed",
+                        Toast.LENGTH_SHORT).show();
 
-            Log.e("Reddy",
-                    "Clicked CourseLevelId = " + level.getCourseLevelId() +
-                            " | isChecked = " + isChecked);
+                holder.checkBox.setChecked(false);
+                return;
+            }
 
-            // 🚫 If selecting but duration not selected
+            // 🚫 Duration check
             if (isChecked && !listener.isDurationSelected()) {
                 holder.checkBox.setChecked(false);
 
@@ -83,13 +86,12 @@ public class LevelsAdapter extends RecyclerView.Adapter<LevelsAdapter.ViewHolder
                 return;
             }
 
-            // ✅ ALWAYS update selection (important)
+            // ✅ Update model
             level.setSelected(isChecked);
 
-            // 🔥 ALWAYS notify activity (for both check & uncheck)
+            // 🔥 Notify activity
             listener.onLevelSelected(level);
         });
-
     }
 
     @Override

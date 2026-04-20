@@ -25,6 +25,7 @@ public class CourseLevelsAdapter extends RecyclerView.Adapter<CourseLevelsAdapte
     private Context context;
     private List<CourseListResponse.CourseLevels> levels = new ArrayList<>();
     private String studentId;
+    private String OrderId;
 
     public CourseLevelsAdapter(Context context) {
         this.context = context;
@@ -51,11 +52,13 @@ public class CourseLevelsAdapter extends RecyclerView.Adapter<CourseLevelsAdapte
             String levelId = level.getCourseLevelId();
 
             Log.d("LEVEL_DEBUG", "Clicked LevelId: " + levelId);
+            Log.d("LEVEL_DEBUG","Clicked OrderId" + OrderId);
 
             Intent intent = new Intent(context, LevelTopicActivity.class);
             intent.putExtra("StudentId", studentId);   // 👈 important
             intent.putExtra("LevelId", levelId);
             intent.putExtra("LevelName",lavelName);
+            intent.putExtra("OrderId", OrderId);
 
             context.startActivity(intent);
         });
@@ -66,12 +69,13 @@ public class CourseLevelsAdapter extends RecyclerView.Adapter<CourseLevelsAdapte
         return levels.size();
     }
 
-    public void setLevels(List<CourseListResponse.CourseLevels> list, String studentId) {
+    public void setLevels(List<CourseListResponse.CourseLevels> list, String studentId, String orderId) {
         this.levels.clear();
         if (list != null) {
             this.levels.addAll(list);
         }
         this.studentId = studentId;
+        this.OrderId = orderId;
         notifyDataSetChanged();
     }
 
