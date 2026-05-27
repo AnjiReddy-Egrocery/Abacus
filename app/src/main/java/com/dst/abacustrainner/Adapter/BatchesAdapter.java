@@ -43,11 +43,13 @@ public class BatchesAdapter extends RecyclerView.Adapter<BatchesAdapter.ViewHold
         String bactchName = detailsResponse.getBatchName();
         String satrtDate = "Start Date  :   " + detailsResponse.getStartDate();
         String startTime = "Timings     :  " + detailsResponse.getStartTime() + "-" + detailsResponse.getEndTime();
+        String CourseName = "Course Info  :  " + detailsResponse.getCourseType() + "-" + detailsResponse.getCourseLevel();
         String batchId = detailsResponse.getBatchId();
 
         holder.txtBatchName.setText(bactchName);
         holder.txtDate.setText(satrtDate);
         holder.txtTime.setText(startTime);
+        holder.txtCourseInfo.setText(CourseName);
 
         holder.butViewSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +82,7 @@ public class BatchesAdapter extends RecyclerView.Adapter<BatchesAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtBatchName,txtDate,txtTime;
+        TextView txtBatchName,txtDate,txtTime,txtCourseInfo;
         Button butViewSchedule;
 
         public ViewHolder(@NonNull View itemView) {
@@ -90,6 +92,7 @@ public class BatchesAdapter extends RecyclerView.Adapter<BatchesAdapter.ViewHold
             txtDate = itemView.findViewById(R.id.txtdate);
             txtTime = itemView.findViewById(R.id.txttime);
             butViewSchedule = itemView.findViewById(R.id.btnViewSchedule);
+            txtCourseInfo = itemView.findViewById(R.id.txtCourseInfo);
         }
     }
 }

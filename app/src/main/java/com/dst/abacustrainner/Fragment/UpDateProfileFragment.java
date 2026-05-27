@@ -92,7 +92,6 @@ public class UpDateProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -121,7 +120,7 @@ public class UpDateProfileFragment extends Fragment {
 
         studentid = studentdetails.getStudentId();
 
-          StudentDetailsMethod(studentid);
+        StudentDetailsMethod(studentid);
 
         calendar = Calendar.getInstance();
 

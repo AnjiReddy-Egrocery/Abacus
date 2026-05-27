@@ -44,6 +44,7 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
     private TextView dynamicTextView;
 
     private  TextView textViewTotalNumbers;
+    TextView tvLevelError, tvOperationError, tvrowserror,tvquestionserror,tvtimeerror;
 
 
     @SuppressLint("MissingInflatedId")
@@ -61,6 +62,11 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
         butStartNumberGame = findViewById(R.id.but_start_game);
         textViewTotalNumbers = findViewById(R.id.txt_total_numbers);
         btnBack=findViewById(R.id.btn_back_to_home);
+        tvLevelError = findViewById(R.id.tvLevelError);
+        tvOperationError = findViewById(R.id.tvoperationerror);
+        tvrowserror= findViewById(R.id.tvtotalrowws);
+        tvquestionserror = findViewById(R.id.tvquestion);
+
 
         Bundle bundle=getIntent().getExtras();
         studentid=bundle.getString("studentId");
@@ -75,6 +81,11 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
                 if (view instanceof TextView) {
                     ((TextView) view).setTextColor(Color.BLACK);
                 }
+
+                if (i != 0) {
+                    tvLevelError.setVisibility(View.GONE); // ✅ user selected → hide error
+                }
+
 
                 String  selectedLevel = spinnerSelectedLevel.getSelectedItem().toString();
                 Log.e("Reddy","Level"+selectedLevel);
@@ -95,12 +106,70 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
         butStartNumberGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (spinnerSelectedLevel.getSelectedItemPosition() == 0) {
+                    tvLevelError.setVisibility(View.VISIBLE); // ❌ show error
+                    return;
+                } else {
+                    tvLevelError.setVisibility(View.GONE); // ✅ hide error
+                }
                 StartNumberGame(view);
             }
         });
         btnStartPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean isValid = true;
+                String operation = spinnerOperation.getSelectedItem().toString();
+
+                // ✅ Operation
+                if (spinnerOperation.getSelectedItemPosition() == 0) {
+                    tvOperationError.setVisibility(View.VISIBLE);
+                    isValid = false;
+                } else {
+                    tvOperationError.setVisibility(View.GONE);
+                }
+
+                // ✅ Operands → ONLY for Addition
+                if ("Addition".equals(operation)) {
+                    if (spinnerOperands.getSelectedItemPosition() == 0) {
+                        tvrowserror.setVisibility(View.VISIBLE);
+                        isValid = false;
+                    } else {
+                        tvrowserror.setVisibility(View.GONE);
+                    }
+                } else {
+                    tvrowserror.setVisibility(View.GONE);
+                }
+
+                // ✅ Questions
+                if (spinnerTotalQuestions.getSelectedItemPosition() == 0) {
+                    tvquestionserror.setVisibility(View.VISIBLE);
+                    isValid = false;
+                } else {
+                    tvquestionserror.setVisibility(View.GONE);
+                }
+
+                // ✅ Time
+
+
+                // ✅ Dynamic Spinners (IMPORTANT FIX)
+                if ("Addition".equals(operation)) {
+                    if (!validateDynamicSpinnersForAddition()) {
+                        Toast.makeText(PlayWithNumbersActivity.this,
+                                "Please select all ranges for Addition",
+                                Toast.LENGTH_SHORT).show();
+                        isValid = false;
+                    }
+                } else if ("Multiplication".equals(operation)) {
+                    if (!validateDynamicSpinnersForMultiplication()) {
+                        Toast.makeText(PlayWithNumbersActivity.this,
+                                "Please select all ranges for Multiplication",
+                                Toast.LENGTH_SHORT).show();
+                        isValid = false;
+                    }
+                }
+
+                if (!isValid) return;
 
                 onPlayButtonClick(view);
             }
@@ -111,6 +180,11 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
                 if (selectedItemView instanceof TextView) {
                     ((TextView) selectedItemView).setTextColor(Color.BLACK);
                 }
+
+                if (position != 0) {
+                    tvOperationError.setVisibility(View.GONE);
+                }
+
 
                 String selectedOperation = spinnerOperation.getSelectedItem().toString();
                 Log.e("Spinner", "Selected Operation: " + selectedOperation);
@@ -139,7 +213,9 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
                 if (selectedItemView instanceof TextView) {
                     ((TextView) selectedItemView).setTextColor(Color.BLACK);
                 }
-
+                if (position != 0) {
+                    tvrowserror.setVisibility(View.GONE);
+                }
                 String selectedOperand = spinnerOperands.getSelectedItem().toString();
 
                 // Check if the selected item is a valid number
@@ -165,7 +241,9 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
                     ((TextView) selectedItemView).setTextColor(Color.BLACK);
                 }
 
-
+                if (position != 0) {
+                    tvquestionserror.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -355,6 +433,10 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                     if (selectedItemView instanceof TextView) {
                         ((TextView) selectedItemView).setTextColor(Color.BLACK);
+                    }
+
+                    if (position != 0) {
+                        // you can hide a global error here if needed
                     }
 
                     // Display selected item in the corresponding TextView

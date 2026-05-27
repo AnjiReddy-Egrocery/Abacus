@@ -97,6 +97,17 @@ public class HomeActivity extends AppCompatActivity {
                     .getStudentId();
         }
 
+        String openFragment =
+                getIntent().getStringExtra("openFragment");
+
+        if ("schedules".equals(openFragment)) {
+
+            String studentId =
+                    getIntent().getStringExtra("studentId");
+
+            openSchedulesFragment(studentId);
+        }
+
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);

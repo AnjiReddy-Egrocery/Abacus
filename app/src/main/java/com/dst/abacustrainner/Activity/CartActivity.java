@@ -305,7 +305,30 @@ public class CartActivity extends AppCompatActivity {
                         } else {
                             cartDetalAdapter.setLevels(new ArrayList<>());
                             textAmount.setText("₹0/-");
+                            Toast.makeText(
+                                    CartActivity.this,
+                                    "No Data",
+                                    Toast.LENGTH_SHORT
+                            ).show();
                         }
+                    }else {
+
+                        // API ERROR / EMPTY
+
+                        cartDetalAdapter
+                                .setLevels(
+                                        new ArrayList<>()
+                                );
+
+                        textAmount.setText(
+                                "₹0/-"
+                        );
+
+                        Toast.makeText(
+                                CartActivity.this,
+                                "No Data",
+                                Toast.LENGTH_SHORT
+                        ).show();
                     }
                 }
             }

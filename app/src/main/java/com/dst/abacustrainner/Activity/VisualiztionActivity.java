@@ -47,6 +47,7 @@ public class VisualiztionActivity extends AppCompatActivity {
     String selectedTimeInterval;
 
     String studentid="",studentName="";
+    TextView tvLevelError, tvOperationError, tvrowserror,tvquestionserror,tvtimeerror;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -65,6 +66,11 @@ public class VisualiztionActivity extends AppCompatActivity {
         spinnerSelectedLevel = findViewById(R.id.spinnerSelectedLevel);
         butStartNumberGame = findViewById(R.id.but_start_game);
         btnBack=findViewById(R.id.btn_back_to_home_vis);
+        tvLevelError = findViewById(R.id.tvLevelError);
+        tvOperationError = findViewById(R.id.tvoperationerror);
+        tvrowserror= findViewById(R.id.tvtotalrowws);
+        tvquestionserror = findViewById(R.id.tvquestion);
+        tvtimeerror = findViewById(R.id.tvtimeintervel);
 
         Bundle bundle=getIntent().getExtras();
         studentid=bundle.getString("studentId");
@@ -81,6 +87,64 @@ public class VisualiztionActivity extends AppCompatActivity {
         butStartGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean isValid = true;
+
+                String operation = spinnerOperation.getSelectedItem().toString();
+
+                // ✅ Operation
+                if (spinnerOperation.getSelectedItemPosition() == 0) {
+                    tvOperationError.setVisibility(View.VISIBLE);
+                    isValid = false;
+                } else {
+                    tvOperationError.setVisibility(View.GONE);
+                }
+
+                // ✅ Operands → ONLY for Addition
+                if ("Addition".equals(operation)) {
+                    if (spinnerOperands.getSelectedItemPosition() == 0) {
+                        tvrowserror.setVisibility(View.VISIBLE);
+                        isValid = false;
+                    } else {
+                        tvrowserror.setVisibility(View.GONE);
+                    }
+                } else {
+                    tvrowserror.setVisibility(View.GONE);
+                }
+
+                // ✅ Questions
+                if (spinnerTotalQuestions.getSelectedItemPosition() == 0) {
+                    tvquestionserror.setVisibility(View.VISIBLE);
+                    isValid = false;
+                } else {
+                    tvquestionserror.setVisibility(View.GONE);
+                }
+
+                // ✅ Time
+                if (spinnerTimeInterval.getSelectedItemPosition() == 0) {
+                    tvtimeerror.setVisibility(View.VISIBLE);
+                    isValid = false;
+                } else {
+                    tvtimeerror.setVisibility(View.GONE);
+                }
+
+                // ✅ Dynamic Spinners (IMPORTANT FIX)
+                if ("Addition".equals(operation)) {
+                    if (!validateDynamicSpinnersForAddition()) {
+                        Toast.makeText(VisualiztionActivity.this,
+                                "Please select all ranges for Addition",
+                                Toast.LENGTH_SHORT).show();
+                        isValid = false;
+                    }
+                } else if ("Multiplication".equals(operation)) {
+                    if (!validateDynamicSpinnersForMultiplication()) {
+                        Toast.makeText(VisualiztionActivity.this,
+                                "Please select all ranges for Multiplication",
+                                Toast.LENGTH_SHORT).show();
+                        isValid = false;
+                    }
+                }
+
+                if (!isValid) return;
 
                 onPlayButtonClick(view);
             }
@@ -90,6 +154,11 @@ public class VisualiztionActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (view instanceof TextView) {
                     ((TextView) view).setTextColor(Color.BLACK);
+                }
+
+
+                if (i != 0) {
+                    tvLevelError.setVisibility(View.GONE); // ✅ user selected → hide error
                 }
 
                 String  selectedLevel = spinnerSelectedLevel.getSelectedItem().toString();
@@ -104,6 +173,13 @@ public class VisualiztionActivity extends AppCompatActivity {
         butStartNumberGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (spinnerSelectedLevel.getSelectedItemPosition() == 0) {
+                    tvLevelError.setVisibility(View.VISIBLE); // ❌ show error
+                    return;
+                } else {
+                    tvLevelError.setVisibility(View.GONE); // ✅ hide error
+                }
+
                 StartNumberGame(view);
             }
         });
@@ -113,6 +189,10 @@ public class VisualiztionActivity extends AppCompatActivity {
                // selectedTimeInterval  = spinnerTimeInterval.getSelectedItem().toString();
                 if (view instanceof TextView) {
                     ((TextView) view).setTextColor(Color.BLACK);
+                }
+
+                if (i != 0) {
+                    tvtimeerror.setVisibility(View.GONE);
                 }
 
 
@@ -128,6 +208,10 @@ public class VisualiztionActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (selectedItemView instanceof TextView) {
                     ((TextView) selectedItemView).setTextColor(Color.BLACK);
+                }
+
+                if (position != 0) {
+                    tvOperationError.setVisibility(View.GONE);
                 }
 
                 String selectedOperation = spinnerOperation.getSelectedItem().toString();
@@ -158,6 +242,10 @@ public class VisualiztionActivity extends AppCompatActivity {
                     ((TextView) selectedItemView).setTextColor(Color.BLACK);
                 }
 
+                if (position != 0) {
+                    tvrowserror.setVisibility(View.GONE);
+                }
+
                 String selectedOperand = spinnerOperands.getSelectedItem().toString();
 
                 // Check if the selected item is a valid number
@@ -180,6 +268,10 @@ public class VisualiztionActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (selectedItemView instanceof TextView) {
                     ((TextView) selectedItemView).setTextColor(Color.BLACK);
+                }
+
+                if (position != 0) {
+                    tvquestionserror.setVisibility(View.GONE);
                 }
 
             }
@@ -227,7 +319,7 @@ public class VisualiztionActivity extends AppCompatActivity {
 
         } else {
             // Show a toast message indicating that the user needs to select a level
-            Toast.makeText(VisualiztionActivity.this, "Please select a level", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(VisualiztionActivity.this, "Please select a level", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -291,7 +383,9 @@ public class VisualiztionActivity extends AppCompatActivity {
                     if (selectedItemView instanceof TextView) {
                         ((TextView) selectedItemView).setTextColor(Color.BLACK);
                     }
-
+                    if (position != 0) {
+                        // you can hide a global error here if needed
+                    }
                     // Display selected item in the corresponding TextView
                     String selectedValue = parentView.getItemAtPosition(position).toString();
                     Log.e("Spinner", "Selected Value: " + selectedValue);
@@ -388,6 +482,7 @@ public class VisualiztionActivity extends AppCompatActivity {
     }
 
     private boolean validateDynamicSpinnersForAddition() {
+        boolean isValid = true;
         String selectedOperandsValue = spinnerOperands.getSelectedItem().toString();
 
         // Check if the selected value is a valid number

@@ -91,6 +91,16 @@
                             android:id="@+id/spinnerSelectedLevel"
                             android:entries="@array/levels"
                             android:layout_marginBottom="2dp"/>
+                        <TextView
+                            android:id="@+id/tvLevelError"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Please select a level"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginRight="12dp"/>
 
                         <Button
                             android:id="@+id/but_start_game"
@@ -147,6 +157,16 @@
                                 android:id="@+id/spinnerOperation"
                                 android:entries="@array/operations"
                                 android:layout_marginBottom="2dp"/>
+                            <TextView
+                                android:id="@+id/tvoperationerror"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Please select Operation"
+                                android:textColor="@android:color/holo_red_dark"
+                                android:textSize="12sp"
+                                android:visibility="gone"
+                                android:layout_marginLeft="12dp"
+                                android:layout_marginRight="12dp"/>
                         </LinearLayout>
 
 
@@ -177,6 +197,16 @@
                                 android:id="@+id/spinnerOperands"
                                 android:entries="@array/operands"
                                 android:layout_marginBottom="2dp"/>
+                            <TextView
+                                android:id="@+id/tvtotalrowws"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Please select Total Number of Rows"
+                                android:textColor="@android:color/holo_red_dark"
+                                android:textSize="12sp"
+                                android:visibility="gone"
+                                android:layout_marginLeft="12dp"
+                                android:layout_marginRight="12dp"/>
                         </LinearLayout>
 
 
@@ -215,6 +245,16 @@
                                 android:entries="@array/total_questions"
                                 android:layout_marginTop="2dp"
                                 android:layout_marginBottom="2dp"/>
+                            <TextView
+                                android:id="@+id/tvquestion"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Please select Total No of Questions"
+                                android:textColor="@android:color/holo_red_dark"
+                                android:textSize="12sp"
+                                android:visibility="gone"
+                                android:layout_marginLeft="12dp"
+                                android:layout_marginRight="12dp"/>
 
                         </LinearLayout>
 

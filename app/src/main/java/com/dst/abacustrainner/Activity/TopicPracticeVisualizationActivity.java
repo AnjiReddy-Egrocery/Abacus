@@ -502,6 +502,10 @@ public class TopicPracticeVisualizationActivity extends AppCompatActivity {
 
         String questionTextOnly = spannedText.toString()
                 .replace("\u00A0", "")
+                .replace("= ____", "")
+                .replace("=____", "")
+                .replace("=", "")
+                .replace("_", "")
                 .trim();
 
         List<String> elements =
@@ -727,6 +731,10 @@ public class TopicPracticeVisualizationActivity extends AppCompatActivity {
 
                 String questionTextOnly = spannedText.toString()
                         .replace("\u00A0", "")
+                        .replace("= ____", "")
+                        .replace("=____", "")
+                        .replace("=", "")
+                        .replace("_", "")
                         .trim();
 
                 // 🔵 Split correctly (space / newline / tabs)
@@ -1231,19 +1239,42 @@ public class TopicPracticeVisualizationActivity extends AppCompatActivity {
                 String speakText;
                 String displayText;
 
-                if (clean.startsWith("+")) {
-                    String num = clean.substring(1);
+                if (clean.contains("÷")) {
+
+                    String[] parts = clean.split("÷");
+
+                    if (parts.length == 2) {
+
+                        String first = parts[0].trim();
+                        String second = parts[1].replace("=", "")
+                                .replace("_", "")
+                                .trim();
+
+                        speakText = first + " divide by " + second;
+                        displayText = first + " ÷ " + second;
+                    } else {
+                        speakText = clean;
+                        displayText = clean;
+                    }
+                }
+                else if (clean.startsWith("+")) {
+
+                    String num = clean.substring(1).trim();
+
                     speakText = "plus " + num;
                     displayText = "+ " + num;
                 }
                 else if (clean.startsWith("-")) {
-                    String num = clean.substring(1);
+
+                    String num = clean.substring(1).trim();
+
                     speakText = "minus " + num;
                     displayText = "- " + num;
                 }
                 else {
-                    speakText = "plus " + clean;
-                    displayText = "+ " + clean;
+
+                    speakText = clean;
+                    displayText = clean;
                 }
 
                 questionTextView.setText(displayText);

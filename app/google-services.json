@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "818173956692",
+    "project_id": "abacustrainer-ee939",
+    "storage_bucket": "abacustrainer-ee939.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818173956692:android:0c79ae967d94044cab53c1",
+        "android_client_info": {
+          "package_name": "com.dst.abacustrainner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlKatRK6ZiZh1sfoCSjMiL6Wazktq5dK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

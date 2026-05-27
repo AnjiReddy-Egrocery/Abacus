@@ -94,6 +94,17 @@
                         android:entries="@array/levels"
                         android:padding="10dp"
                         android:paddingLeft="4dp" />
+                    <!-- ✅ Error TextView (Spinner కింద) -->
+                    <TextView
+                        android:id="@+id/tvLevelError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Please select a level"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="12dp"/>
 
                     <Button
                         android:id="@+id/but_start_game"
@@ -154,6 +165,16 @@
                             android:entries="@array/operations"
                             android:padding="10dp"
                             android:paddingLeft="4dp" />
+                        <TextView
+                            android:id="@+id/tvoperationerror"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Please select Operation"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginRight="12dp"/>
                     </LinearLayout>
 
 
@@ -185,6 +206,16 @@
                             android:entries="@array/operands"
                             android:padding="10dp"
                             android:paddingLeft="4dp" />
+                        <TextView
+                            android:id="@+id/tvtotalrowws"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Please select Total Number of Rows"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginRight="12dp"/>
                     </LinearLayout>
 
 
@@ -224,6 +255,16 @@
                             android:entries="@array/total_questions"
                             android:padding="10dp"
                             android:paddingLeft="4dp" />
+                        <TextView
+                            android:id="@+id/tvquestion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Please select Total No of Questions"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginRight="12dp"/>
 
                     </LinearLayout>
 
@@ -254,6 +295,17 @@
                             android:entries="@array/time_inerval"
                             android:padding="10dp"
                             android:paddingLeft="4dp" />
+
+                        <TextView
+                            android:id="@+id/tvtimeintervel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Please select Total time intervel"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginRight="12dp"/>
 
                     </LinearLayout>
 

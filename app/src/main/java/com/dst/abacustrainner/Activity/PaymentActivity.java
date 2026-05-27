@@ -291,6 +291,8 @@ public class PaymentActivity extends AppCompatActivity {
                 ? status.getState().toUpperCase()
                 : "UNKNOWN";
 
+        Log.d("Anji", "Order State: " + orderState);
+
         switch (orderState) {
 
             case "COMPLETED":
@@ -303,14 +305,65 @@ public class PaymentActivity extends AppCompatActivity {
                 handlePaymentDetails(status, "FAILED");
                 break;
 
-            case "EXPIRED":
-                Log.d("Anji", "⛔ Order Expired → Retrying");
-                Toast.makeText(this, "Session expired. Retrying...", Toast.LENGTH_SHORT).show();
-                createOrder(accessTokenGlobal);
+            case "CANCELLED":
+                Log.d("Anji", "⏳ Payment Pending");
+
+                // user cancelled before attempting payment
+                if (status.getPaymentDetails() == null ||
+                        status.getPaymentDetails().isEmpty()) {
+
+                    showPaymentSuccessDialog(
+                            workRnm,
+                            studentId,
+                            totalAmount,
+                            merchantOrderId, // transaction id
+                            "CANCELLED",
+                            "INR",
+                            0,
+                            status.getOrderId(),
+                            "PHONEPE",
+                            System.currentTimeMillis()
+                    );
+                }
                 break;
 
             case "PENDING":
-                Log.d("Anji", "⏳ Payment Pending...");
+                Log.d("Anji", "⏳ Payment Pending");
+
+                // user cancelled before attempting payment
+                if (status.getPaymentDetails() == null ||
+                        status.getPaymentDetails().isEmpty()) {
+
+                    showPaymentSuccessDialog(
+                            workRnm,
+                            studentId,
+                            totalAmount,
+                            merchantOrderId, // transaction id
+                            "CANCELLED",
+                            "INR",
+                            0,
+                            status.getOrderId(),
+                            "PHONEPE",
+                            System.currentTimeMillis()
+                    );
+                }
+                break;
+
+            case "EXPIRED":
+                Log.d("Anji", "⛔ Payment Expired");
+
+                showPaymentSuccessDialog(
+                        workRnm,
+                        studentId,
+                        totalAmount,
+                        merchantOrderId,
+                        "EXPIRED",
+                        "INR",
+                        0,
+                        status.getOrderId(),
+                        "PHONEPE",
+                        System.currentTimeMillis()
+                );
                 break;
 
             default:
@@ -321,7 +374,26 @@ public class PaymentActivity extends AppCompatActivity {
 
     private void handlePaymentDetails(OrderStatusResponse status, String success) {
         if (status.getPaymentDetails() == null || status.getPaymentDetails().isEmpty()) {
-            Log.d("Anji", "No payment attempts yet.");
+
+            Log.d("Anji", "No payment attempts found");
+
+            showPaymentSuccessDialog(
+                    workRnm != null ? workRnm : "UNKNOWN",
+                    studentId != null ? studentId : "UNKNOWN",
+                    totalAmount != null ? totalAmount : "0",
+                    "N/A", // transactionId
+                    status.getState() != null
+                            ? status.getState().toUpperCase()
+                            : "CANCELLED",
+                    "INR",
+                    0,
+                    status.getOrderId() != null
+                            ? status.getOrderId()
+                            : "UNKNOWN",
+                    "N/A", // payment mode
+                    System.currentTimeMillis()
+            );
+
             return;
         }
 
@@ -331,15 +403,29 @@ public class PaymentActivity extends AppCompatActivity {
             String studentID = studentId != null ? studentId : "UNKNOWN";
             String totalAmt = totalAmount != null ? totalAmount : "0";
 
-            String transactionId = detail.getTransactionId() != null ? detail.getTransactionId() : "UNKNOWN";
+            String transactionId = detail.getTransactionId() != null
+                    ? detail.getTransactionId()
+                    : "N/A";
+
             String state = status.getState() != null
                     ? status.getState().toUpperCase()
                     : "UNKNOWN";
+
             String currency = "INR";
+
             long amount = detail.getAmount();
-            String orderId = status.getOrderId() != null ? status.getOrderId() : "UNKNOWN";
-            String paymentMode = detail.getPaymentMode() != null ? detail.getPaymentMode() : "UNKNOWN";
-            long timestamp = detail.getTimestamp();
+
+            String orderId = status.getOrderId() != null
+                    ? status.getOrderId()
+                    : "UNKNOWN";
+
+            String paymentMode = detail.getPaymentMode() != null
+                    ? detail.getPaymentMode()
+                    : "N/A";
+
+            long timestamp = detail.getTimestamp() != 0
+                    ? detail.getTimestamp()
+                    : System.currentTimeMillis();
 
             Log.d("Anji", "📌 Final Payment State: " + state);
 
@@ -444,16 +530,16 @@ public class PaymentActivity extends AppCompatActivity {
 
                             Log.d("Anji", "⚠ Payment cancelled by user");
 
-                           // checkOrderStatusWithRetry(merchantOrderId, 1);
-                            Intent intent = new Intent(PaymentActivity.this, PaymentDetailsActivity.class);
-                            intent.putExtra("StudentId", studentId);
-                            intent.putExtra("Status", "CANCELLED");
-                            intent.putExtra("Amount", totalAmount);
-                            intent.putExtra("Currency", "INR");
+                            String sdkResponse = "";
 
-                            startActivity(intent);
-                            finish(); // optional but recommended
+                            if (result.getData() != null) {
+                                sdkResponse = result.getData().getStringExtra("response");
+                            }
 
+                            Log.d("Anji", "SDK Cancel Response: " + sdkResponse);
+
+                            // ✅ VERIFY FROM SERVER
+                            checkOrderStatusWithRetry(merchantOrderId, 1);
                         }
                     });
 }
