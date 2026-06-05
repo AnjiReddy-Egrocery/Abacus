@@ -24,6 +24,7 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.dst.abacustrainner.Activity.AboutUsActivity;
 import com.dst.abacustrainner.Activity.AllocatedCoursesActivity;
 import com.dst.abacustrainner.Activity.AppSettindsActivity;
+import com.dst.abacustrainner.Activity.ChangePasswordActivity;
 import com.dst.abacustrainner.Activity.HelpActivity;
 import com.dst.abacustrainner.Activity.OrdersActivity;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
@@ -387,6 +388,11 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }else if (itemView == R.id.nav_orders) {
                 Intent intent = new Intent(HomeActivity.this, OrdersActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }
+            else if (itemView == R.id.nav_change_password) {
+                Intent intent = new Intent(HomeActivity.this, ChangePasswordActivity.class);
                 intent.putExtra("studentId",studentId);
                 startActivity(intent);
             }

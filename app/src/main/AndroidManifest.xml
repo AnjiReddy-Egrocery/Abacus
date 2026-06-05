@@ -10,8 +10,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission
-        android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
@@ -28,6 +27,9 @@
         android:theme="@style/Theme.AbacusTrainer"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".Activity.ChangePasswordActivity"
+            android:exported="false" />
         <activity
             android:name=".Activity.CoursesLevelsActivity"
             android:exported="false" />
@@ -199,7 +201,6 @@
         <activity
             android:name=".Activity.LevelExamPracticeActivity"
             android:exported="false" />
-
         <activity
             android:name=".Activity.LevelResultDetailsActivity"
             android:exported="false" />
@@ -419,7 +420,7 @@
             android:name=".Services.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 

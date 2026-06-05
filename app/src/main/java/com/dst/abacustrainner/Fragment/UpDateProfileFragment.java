@@ -145,10 +145,7 @@ public class UpDateProfileFragment extends Fragment {
                 fatherName = edtFathername.getText().toString().trim();
                 mothername = edtMotherName.getText().toString().trim();
 
-                if (imageFile == null || !imageFile.exists()) {
-                    Toast.makeText(getContext(), "Please select a profile picture", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+
                 ProfileUpdateMethod(studentid, firstName, middlename, lastName, dateofBirth, gender, motherTongue, fatherName, mothername, imageFile);
 
                 /*Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
@@ -304,20 +301,29 @@ public class UpDateProfileFragment extends Fragment {
 
     private void ProfileUpdateMethod(String studentId, String firstName, String middlename, String lastName, String dateofBirth, String gender, String motherTongue, String fatherName, String mothername, File imageFile) {
 
-        Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getPath());
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
+        if (imageFile != null && imageFile.exists()) {
 
-        // ✅ 2. Save scaled image to a new file
-        File resizedFile = new File(getContext().getCacheDir(), "resized_image.jpg");
-        try (FileOutputStream out = new FileOutputStream(resizedFile)) {
-            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getPath());
+
+            if (bitmap != null) {
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(
+                        bitmap,
+                        bitmap.getWidth(),
+                        bitmap.getHeight(),
+                        true
+                );
+
+                File resizedFile = new File(getContext().getCacheDir(), "resized_image.jpg");
+
+                try (FileOutputStream out = new FileOutputStream(resizedFile)) {
+                    scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                imageFile = resizedFile;
+            }
         }
-
-        // ✅ 3. Replace original file with resized one
-        imageFile = resizedFile;
 
 
         OkHttpClient client = new OkHttpClient.Builder()

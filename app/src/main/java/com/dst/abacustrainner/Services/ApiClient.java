@@ -86,6 +86,12 @@ public interface ApiClient {
                                                  @Part("password") RequestBody password);
 
     @Multipart
+    @POST("apicalls/Index/studentChangePassword")
+    Call<StudentUserMethod> changepassword(@Part("studentId") RequestBody studentId,
+                                       @Part("oldPassword") RequestBody oldPassword,
+                                       @Part("newPassword") RequestBody newPassword);
+
+    @Multipart
     @POST("apicalls/Index/loginStudents")
     Call<StudentRegistationResponse> LoginPost(@Part("parentEmail") RequestBody parentEmail,
                                                @Part("password") RequestBody password);
