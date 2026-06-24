@@ -1040,7 +1040,8 @@ public class VisualQuizActivity extends AppCompatActivity  {
             displayquestion.setText("Question " + (currentQuestionIndex + 1) + ": ");
             questionTextView.setGravity(Gravity.CENTER);
             String[] questionsArray = questions.toArray(new String[0]);
-            String[] numberParts = questionsArray[currentQuestionIndex].split("(?<=\\D)(?=\\d)");
+            String[] numberParts = questionsArray[currentQuestionIndex]
+                    .split("\\n");
 
             Log.e("Test", "Question: " + Arrays.toString(numberParts));
 
@@ -1054,70 +1055,124 @@ public class VisualQuizActivity extends AppCompatActivity  {
         }
     }
 
-    private void readNumbersAloud (String[] numbers) {
-        for (int i = 0; i < numbers.length; i++) {
-            Log.e("Test", "Element at index " + i + ": " + numbers[i]);
-        }
+    private void readNumbersAloud(String[] numbers) {
 
         int totalNumbers = numbers.length;
 
-        // Rest of the code...
 
-        // The following part assumes that the rest of the code includes the processing of each element in the numbers array.
         for (int i = 0; i < totalNumbers; i++) {
+
             int finalI = i;
 
+
             new CountDownTimer(i * 1500, 500) {
+
+                @Override
                 public void onTick(long millisUntilFinished) {
-                    // Do nothing on tick
+
                 }
 
+
+                @Override
                 public void onFinish() {
+
+
                     if (finalI < totalNumbers) {
+
+
                         currentNumber = numbers[finalI];
 
-                        // Read the original question aloud
+
+                        // Speak question line
                         speak(currentNumber);
 
-                        // Display the original question
-                        questionTextView.setText(currentNumber.replace(" ", ""));
+
+                        // Display
+                        questionTextView.setText(currentNumber);
+
+
 
                         if (finalI == totalNumbers - 1) {
-                            // Delay for a short duration
+
+
                             new Handler().postDelayed(new Runnable() {
+
                                 @Override
                                 public void run() {
-                                    // Split the currentNumber into parts based on commas and spaces
-                                    String[] numberParts = currentNumber.split("(?<=\\D)(?=\\d)");
 
-                                    if (numberParts.length > 0) {
-                                        String lastNumber = numberParts[numberParts.length - 1];
 
-                                        // Replace the last number with " Answer is " in the currentNumber
-                                        currentNumber = currentNumber.replace(lastNumber, "Answer \t is");
+                                    // Last line remove operator
+                                    currentNumber =
+                                            currentNumber
+                                                    .replace("+","")
+                                                    .replace("-","")
+                                                    .replace("÷","")
+                                                    .replace("*","")
+                                                    .trim();
 
-                                        // Set the modified current number to txtDisplayQuestion
-                                        questionTextView.setText(currentNumber.replace(" ", ""));
-                                        txtTimer.setVisibility(View.VISIBLE);
-                                        edtAnswer.requestFocus();
 
-                                        // Show the keyboard
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        if (imm != null) {
-                                            imm.showSoftInput(edtAnswer, InputMethodManager.SHOW_IMPLICIT);
-                                        }
-                                        startTimer();
-                                        // Read the modified question aloud
-                                        speak(currentNumber);
-                                        enableComponents();
+
+                                    // show Answer is
+                                    currentNumber = "Answer is";
+
+
+
+                                    questionTextView.setText(currentNumber);
+
+
+
+                                    txtTimer.setVisibility(View.VISIBLE);
+
+
+
+                                    edtAnswer.requestFocus();
+
+
+
+                                    InputMethodManager imm =
+                                            (InputMethodManager)
+                                                    getSystemService(Context.INPUT_METHOD_SERVICE);
+
+
+
+                                    if(imm != null){
+
+                                        imm.showSoftInput(
+                                                edtAnswer,
+                                                InputMethodManager.SHOW_IMPLICIT
+                                        );
+
                                     }
+
+
+
+                                    startTimer();
+
+
+
+                                    // Speak Answer is
+                                    speak(currentNumber);
+
+
+
+                                    enableComponents();
+
+
                                 }
-                            }, 2000); // Adjust the delay time as needed (2 seconds in this example)
+
+                            },2000);
+
                         }
+
                     }
+
                 }
+
+
             }.start();
+
         }
+
     }
 
     private void enableComponents() {
@@ -1151,27 +1206,94 @@ public class VisualQuizActivity extends AppCompatActivity  {
     }
 
     private void speak(String text) {
-        String[] elements = text.split("\\s+");
+
+
+        text = text.replace("\n"," ").trim();
+
 
         StringBuilder finalText = new StringBuilder();
-        for (String element : elements) {
-            if (element.equals("+")) {
-                // Replace "+" with "plus"
+
+
+        String[] words = text.split("\\s+");
+
+
+
+        for(String word : words){
+
+
+            if(word.equals("+")){
+
+
                 finalText.append("plus ");
-            } else if (element.equals("*")) {
-                // Replace "*" with "into"
-                finalText.append("into ");
-            } else {
-                // Not "+" or "*", keep it as it is
-                finalText.append(element).append(" ");
+
+
             }
+            else if(word.equals("-")){
+
+
+                finalText.append("minus ");
+
+
+            }
+            else if(word.equals("÷")){
+
+
+                finalText.append("divide by ");
+
+
+            }
+            else if(word.equals("*")){
+
+
+                finalText.append("into ");
+
+
+            }
+            else{
+
+
+                finalText.append(word)
+                        .append(" ");
+
+            }
+
+
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            textToSpeech.speak(finalText.toString().trim(), TextToSpeech.QUEUE_FLUSH, null, null);
-        } else {
-            textToSpeech.speak(finalText.toString().trim(), TextToSpeech.QUEUE_FLUSH, null);
+
+
+        String speakText =
+                finalText.toString().trim();
+
+
+
+        Log.d("SPEAK",speakText);
+
+
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+
+
+            textToSpeech.speak(
+                    speakText,
+                    TextToSpeech.QUEUE_FLUSH,
+                    null,
+                    null
+            );
+
+
+        }else{
+
+
+            textToSpeech.speak(
+                    speakText,
+                    TextToSpeech.QUEUE_FLUSH,
+                    null
+            );
+
         }
+
+
     }
     @Override
     protected void onDestroy() {

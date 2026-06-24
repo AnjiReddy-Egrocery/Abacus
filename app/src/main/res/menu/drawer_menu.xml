@@ -63,7 +63,7 @@
 
         <item
             android:id="@+id/nav_help"
-            android:title="Help &amp; Support"
+            android:title="FAQ"
             android:icon="@drawable/helpandsupport"/>
         <item
             android:id="@+id/nav_about_us"

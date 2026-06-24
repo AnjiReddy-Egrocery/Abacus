@@ -32,12 +32,14 @@
                 android:id="@+id/txtNoData"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No Schedule Found"
-                android:textSize="16sp"
-                android:textColor="#FF0000"
+                android:text="Batches not allocated for you, Please contact your instructor for more details ...  "
+                android:textSize="18dp"
+                android:textColor="#000"
                 android:gravity="center"
                 android:visibility="gone"
                 android:layout_marginTop="20dp"/>
+
+
 
         </LinearLayout>
 </LinearLayout>

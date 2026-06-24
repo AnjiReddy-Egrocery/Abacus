@@ -376,14 +376,14 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="First Name"
+                            android:text="Full Name"
                             android:textSize="20dp"
                             android:textColor="#000"
                             android:textStyle="bold" />
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            android:hint="First Name"
+                            android:hint="FUll Name"
                             android:inputType="text"
                             android:importantForAutofill="noExcludeDescendants"
                             android:paddingLeft="12dp"
@@ -399,13 +399,13 @@
                             android:id="@+id/txt_first_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Please Enter First Name"
+                            android:text="Please Enter Full Name"
                             android:layout_marginTop="6dp"
                             android:layout_marginLeft="4dp"
                             android:textColor="#D80B0B"
                             android:textSize="14sp"
                             android:visibility="gone"/>
-                        <TextView
+                       <!-- <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Middle Name"
@@ -471,7 +471,7 @@
                             android:textColor="#D80B0B"
                             android:textSize="14sp"
                             android:visibility="gone"/>
-
+-->
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -664,6 +664,33 @@
                             android:textColor="#D80B0B"
                             android:textSize="14sp"
                             android:visibility="gone"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="15dp"
+                            android:gravity="center_vertical">
+
+
+                            <CheckBox
+                                android:id="@+id/check_terms"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:buttonTint="#FD6801"/>
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="I agree to the Terms &amp; Condition"
+                                android:textSize="15sp"
+                                android:textColor="#000"
+                                android:id="@+id/txt_terms"
+                                android:textStyle="bold"/>
+
+
+                        </LinearLayout>
 
                         <Button
                             android:layout_width="match_parent"

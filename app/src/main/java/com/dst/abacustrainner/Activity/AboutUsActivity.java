@@ -43,9 +43,11 @@ public class AboutUsActivity extends AppCompatActivity {
                 "Our Abacus Trainer Team believes that every child holds an essence of imagination, creativity, and profound insight. " +
                 "The ability to reveal this potential can be found in the ancient tools of the Abacus and Vedic Maths. We are an interdisciplinary team integrating" +
                 " mathematics, technology, and education. We have empowered over 5,000 children (ages 4-15) with advanced concentration, mental calculation skills, " +
-                "and self-assurance, guiding them to become global achievers.\n" +
+                "and self-assurance, guiding them to become global achievers.\n\n" +
                 "What Sets Us Apart\n\n" +
                 "Certified Expert Instructors\n\n" +
+                "Every tutor has undergone a rigorous assessment process, is engaged in lesson innovation, and possesses adept qualifications in Abacus teaching or Vedic Maths.\n\n"+
+                "Personalized Learning Paths\n\n"+
                 "We help all learners with Junior Abacus (5 to 8 years) and Advanced Vedic Maths (12 to 15 years) in 6 to 10 progressive levels while tailoring to their" +
                 " pace and distinctive strengths.\n\n" +
                 "Flexible, Online Delivery\n\n" +
@@ -57,32 +59,94 @@ public class AboutUsActivity extends AppCompatActivity {
 
         SpannableStringBuilder spannable = new SpannableStringBuilder(termsText);
         // Headings list
-        String[] headings = {
+        String[] bigHeadings = {
                 "Who We Are",
-                "What Sets Us Apart",
+                "What Sets Us Apart"
+        };
+
+
+        String[] smallHeadings = {
                 "Certified Expert Instructors",
                 "Personalized Learning Paths",
                 "Flexible, Online Delivery",
-                "Transparent Progress Tracking",
-               };
+                "Transparent Progress Tracking"
+        };
 
-        for (String heading : headings) {
+
+        for(String heading : bigHeadings){
+
             int start = termsText.indexOf(heading);
-            if (start >= 0) {
+
+            if(start >= 0){
+
                 int end = start + heading.length();
 
-                // Bold
-                spannable.setSpan(new StyleSpan(Typeface.BOLD),
-                        start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                // Color #4d148c
-                spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#4d148c")),
-                        start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannable.setSpan(
+                        new ForegroundColorSpan(Color.parseColor("#4E148C")),
+                        start,
+                        end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
 
-                spannable.setSpan(new AbsoluteSizeSpan(18, true),
-                        start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                spannable.setSpan(
+                        new StyleSpan(Typeface.BOLD),
+                        start,
+                        end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+
+                // BIG heading
+                spannable.setSpan(
+                        new AbsoluteSizeSpan(20,true),
+                        start,
+                        end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
             }
         }
+
+
+
+        for(String heading : smallHeadings){
+
+            int start = termsText.indexOf(heading);
+
+            if(start >= 0){
+
+                int end = start + heading.length();
+
+
+                spannable.setSpan(
+                        new ForegroundColorSpan(Color.parseColor("#4E148C")),
+                        start,
+                        end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+
+                spannable.setSpan(
+                        new StyleSpan(Typeface.BOLD),
+                        start,
+                        end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+
+                // SMALL heading
+                spannable.setSpan(
+                        new AbsoluteSizeSpan(16,true),
+                        start,
+                        end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+            }
+        }
+
 
         tvTerms.setText(spannable);
 

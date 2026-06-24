@@ -59,10 +59,9 @@ public interface ApiClient {
     @Multipart
     @POST("apicalls/Index/studentRegistration")
     Call<StudentUserMethod> studentRegisterPost(@Part("firstName") RequestBody firstName,
-                                                @Part("middleName") RequestBody middleName,
-                                                @Part("lastName") RequestBody lastName,
                                                 @Part("gender") RequestBody gender,
-                                                @Part("dateOfBirth") RequestBody dateOfBirth, @Part("motherTongue") RequestBody motherTongue,
+                                                @Part("dateOfBirth") RequestBody dateOfBirth,
+                                                @Part("motherTongue") RequestBody motherTongue,
                                                 @Part("emailId") RequestBody emailId,
                                                 @Part("mobileNumber") RequestBody mobileNumber);
 
@@ -70,8 +69,6 @@ public interface ApiClient {
     @POST("apicalls/Index/updateStudentProfile")
     Call<StudentUpdateProfile> studentUpdatePost(@Part("studentId") RequestBody studentId,
                                                  @Part("firstName") RequestBody firstName,
-                                                 @Part("middleName") RequestBody middleName,
-                                                 @Part("lastName") RequestBody lastName,
                                                  @Part("dateOfBirth") RequestBody dateOfBirth,
                                                  @Part("gender") RequestBody gender,
                                                  @Part("motherTongue") RequestBody motherTongue,

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -44,6 +45,9 @@ public class CoursePracticesActivity extends AppCompatActivity {
 
     LinearLayout layoutBack;
 
+    ProgressDialog progressDialog;
+    TextView txtNoPractices;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +62,7 @@ public class CoursePracticesActivity extends AppCompatActivity {
         studentid=bundle.getString("StudentId");
 
         layoutBack = findViewById(R.id.layout_payment_back);
-
+        txtNoPractices = findViewById(R.id.txtNoPractices);
 
 
         Log.e("Reddy",""+topicid);
@@ -79,6 +83,10 @@ public class CoursePracticesActivity extends AppCompatActivity {
     }
 
     private void VerifyMethod(String studentid, String topicid) {
+        progressDialog = new ProgressDialog(CoursePracticesActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -95,6 +103,9 @@ public class CoursePracticesActivity extends AppCompatActivity {
         call.enqueue(new Callback<ViewSubTopicListResponse>() {
             @Override
             public void onResponse(Call<ViewSubTopicListResponse> call, Response<ViewSubTopicListResponse> response) {
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
                 ViewSubTopicListResponse viewTopicListResponse = response.body();
 
                 if (viewTopicListResponse.getErrorCode().equals("202")) {
@@ -103,9 +114,16 @@ public class CoursePracticesActivity extends AppCompatActivity {
                     ViewSubTopicListResponse.Result result = viewTopicListResponse.getResult();
                     List<ViewSubTopicListResponse.Result.PracticesList> topicsList = result.getPracticesList();
 
-                    if (topicsList.isEmpty()) {
+                    if (topicsList == null || topicsList.isEmpty()) {
                         recyclerViewSubTopics.setVisibility(View.GONE); // Hide RecyclerView
+                        txtNoPractices.setVisibility(View.VISIBLE);
+
+                        txtNoPractices.setText("No Practices List");
                     } else {
+                        recyclerViewSubTopics.setVisibility(View.VISIBLE);
+
+                        txtNoPractices.setVisibility(View.GONE);
+
                         Collections.reverse(topicsList);
                         viewListTopicAdapter = new ViewSubListTopicAdapter(CoursePracticesActivity.this, topicsList);
                         recyclerViewSubTopics.setAdapter(viewListTopicAdapter);
@@ -118,7 +136,9 @@ public class CoursePracticesActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ViewSubTopicListResponse> call, Throwable t) {
-
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
             }
         });
 

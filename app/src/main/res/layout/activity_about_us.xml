@@ -81,7 +81,11 @@
                             android:layout_height="wrap_content"
                             android:textSize="16dp"
                             android:textColor="#000000"
-                            android:padding="16dp"/>
+                            android:lineSpacingExtra="6dp"
+                            android:fontFamily="@font/regular"
+                            android:includeFontPadding="false"
+                            android:justificationMode="inter_word"
+                            android:padding="5dp"/>
 
 
                     </LinearLayout>

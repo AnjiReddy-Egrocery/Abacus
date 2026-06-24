@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import com.dst.abacustrainner.User.HomeActivity;
 public class HelpActivity extends AppCompatActivity {
     private LinearLayout btnBack;
     LinearLayout container;
+    private TextView openAnswer = null;
+    private TextView openIcon = null;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,16 +82,43 @@ public class HelpActivity extends AppCompatActivity {
             LinearLayout header = view.findViewById(R.id.header);
 
             question.setText(faq[0]);
+            question.setTextColor(Color.parseColor("#4d148c"));
             answer.setText(faq[1]);
 
             header.setOnClickListener(v -> {
 
-                if (answer.getVisibility() == View.GONE) {
+                if(openAnswer != null && openAnswer != answer){
+
+                    openAnswer.setVisibility(View.GONE);
+                    openIcon.setText("+");
+
+                }
+
+
+
+                if(answer.getVisibility() == View.GONE){
+
+
                     answer.setVisibility(View.VISIBLE);
+
                     icon.setText("−");
-                } else {
+
+
+                    openAnswer = answer;
+                    openIcon = icon;
+
+
+                }else{
+
+
                     answer.setVisibility(View.GONE);
+
                     icon.setText("+");
+
+
+                    openAnswer = null;
+                    openIcon = null;
+
                 }
 
             });

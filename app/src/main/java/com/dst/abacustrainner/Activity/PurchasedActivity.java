@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,6 +50,8 @@ public class PurchasedActivity extends AppCompatActivity {
     CourseLevelAdapter courseLevelAdapter;
     TextView tvEmptyMessage;
 
+    ProgressDialog progressDialog;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +90,12 @@ public class PurchasedActivity extends AppCompatActivity {
     }
 
     private void loadCourses(String studentId) {
+        progressDialog = new ProgressDialog(PurchasedActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        recyclerCourses.setVisibility(View.GONE);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -103,6 +112,11 @@ public class PurchasedActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<CourseListResponse> call, Response<CourseListResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
+
+                    if(progressDialog != null && progressDialog.isShowing()){
+                        progressDialog.dismiss();
+                    }
+                    recyclerCourses.setVisibility(View.VISIBLE);
 
                     CourseListResponse res = response.body();
 

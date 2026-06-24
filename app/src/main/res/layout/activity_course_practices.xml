@@ -59,6 +59,18 @@
             android:layout_margin="12dp"
             android:id="@+id/recycler_practices"/>
 
+        <TextView
+            android:id="@+id/txtNoPractices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No Practices List"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:gravity="center"
+            android:visibility="gone"
+            android:padding="20dp"/>
+
     </LinearLayout>
 
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -44,7 +45,7 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
     TextView txtTopicName, txtNodata;
     ViewAssignmentAdapter viewAssignmentAdapter;
 
-    ProgressBar progressBar;
+    ProgressDialog progressDialog;
     LinearLayout layoutBack;
 
     @SuppressLint("MissingInflatedId")
@@ -65,7 +66,7 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
         studentid=bundle.getString("studentId");
         name=bundle.getString("firstName");
         topicname=bundle.getString("topicName");
-        progressBar= findViewById(R.id.progress_bar);
+
         //txtName.setText(name);
         txtTopicName.setText(topicname);
 
@@ -89,7 +90,10 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
     }
 
     private void VerifyMethod(String studentid, String topicid) {
-        progressBar.setVisibility(View.VISIBLE);
+        progressDialog = new ProgressDialog(ViewAssignmentListActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         /*HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
         OkHttpClient client = new OkHttpClient.Builder()
@@ -108,8 +112,9 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
         call.enqueue(new Callback<ViewAssignmentListResponse>() {
             @Override
             public void onResponse(Call<ViewAssignmentListResponse> call, Response<ViewAssignmentListResponse> response) {
-                progressBar.setVisibility(View.GONE);
-                ViewAssignmentListResponse assignmentListResponse=response.body();
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }                ViewAssignmentListResponse assignmentListResponse=response.body();
                 if (assignmentListResponse.getErrorCode().equals("202")){
                     Toast.makeText(ViewAssignmentListActivity.this, "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
                     txtNodata.setVisibility(View.VISIBLE); // Show No Data Found TextView
@@ -138,7 +143,9 @@ public class ViewAssignmentListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ViewAssignmentListResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
             }
         });
     }

@@ -33,8 +33,7 @@ public class RefoundPolicyActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(RefoundPolicyActivity.this, HomeActivity.class);
-                startActivity(intent);
+                finish();   // previous activity ki return
             }
         });
 

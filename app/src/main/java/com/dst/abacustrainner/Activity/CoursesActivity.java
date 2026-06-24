@@ -1,5 +1,6 @@
 package com.dst.abacustrainner.Activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,7 +38,7 @@ public class CoursesActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     CoursesAdapter adapter;
 
-
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +74,11 @@ public class CoursesActivity extends AppCompatActivity {
     }
 
     private void loadCourses() {
+        progressDialog = new ProgressDialog(CoursesActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        recyclerView.setVisibility(View.GONE);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -87,6 +93,10 @@ public class CoursesActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<CoursesListResponse> call, Response<CoursesListResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    if(progressDialog != null && progressDialog.isShowing()){
+                        progressDialog.dismiss();
+                    }
+                    recyclerView.setVisibility(View.VISIBLE);
                     adapter.setData(response.body().getResult(),studentId);
                 }
             }

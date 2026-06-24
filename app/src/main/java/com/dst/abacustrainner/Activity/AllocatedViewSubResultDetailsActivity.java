@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spanned;
@@ -25,6 +26,7 @@ import com.dst.abacustrainner.Model.AllocatedViewSubTopicResultResponse;
 import com.dst.abacustrainner.Model.ViewSubTopicResultResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
+import com.dst.abacustrainner.User.HomeActivity;
 import com.dst.abacustrainner.ViewSubResultDetailsActivity;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -67,6 +69,8 @@ public class AllocatedViewSubResultDetailsActivity extends AppCompatActivity {
     int attempted ;
     int correct ;
     int incorrect,notAttempted;
+    LinearLayout layoutSubmit;
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -105,6 +109,17 @@ public class AllocatedViewSubResultDetailsActivity extends AppCompatActivity {
         txtCorrectAnswers.setText(Correct);
         txtworngAnswers.setText(inCorrect);
         pieChart = findViewById(R.id.pieChart);
+
+        layoutSubmit = findViewById(R.id.but_submit_result_first);
+
+        layoutSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AllocatedViewSubResultDetailsActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
      /*   int notAttempted = totalQuestions - attempted;
         updatePieChart(attempted, notAttempted, correct, incorrect);*/

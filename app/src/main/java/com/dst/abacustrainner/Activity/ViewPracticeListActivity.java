@@ -1,6 +1,7 @@
 package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -43,7 +44,7 @@ public class ViewPracticeListActivity extends AppCompatActivity {
     String topicname="";
     TextView txtName,txtTopicName, txtNodata;
     ViewListTopicAdapter viewListTopicAdapter;
-    ProgressBar progressBar;
+    ProgressDialog progressDialog;
     LinearLayout layoutBack;
 
     @SuppressLint("MissingInflatedId")
@@ -54,7 +55,7 @@ public class ViewPracticeListActivity extends AppCompatActivity {
         txtName=findViewById(R.id.txt_name);
         txtTopicName=findViewById(R.id.txt_topic_name);
         recyclerViewTopic=findViewById(R.id.recycler_view_topic);
-        progressBar= findViewById(R.id.progress_bar);
+
 
         Bundle bundle=getIntent().getExtras();
         topicid=bundle.getString("topicId");
@@ -84,7 +85,10 @@ public class ViewPracticeListActivity extends AppCompatActivity {
         VerifyMethod(studentid,topicid);
     }
     private void VerifyMethod(String studentid, String topicid) {
-        progressBar.setVisibility(View.VISIBLE);
+        progressDialog = new ProgressDialog(ViewPracticeListActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
        /* HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
         OkHttpClient client = new OkHttpClient.Builder()
@@ -103,7 +107,9 @@ public class ViewPracticeListActivity extends AppCompatActivity {
         call.enqueue(new Callback<ViewTopicListResponse>() {
             @Override
             public void onResponse(Call<ViewTopicListResponse> call, Response<ViewTopicListResponse> response) {
-                progressBar.setVisibility(View.GONE);
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
                 ViewTopicListResponse viewTopicListResponse = response.body();
 
                 if (viewTopicListResponse.getErrorCode().equals("202")) {
@@ -134,7 +140,9 @@ public class ViewPracticeListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ViewTopicListResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
             }
         });
 

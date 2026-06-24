@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,7 @@ public class CoursesLevelsActivity extends AppCompatActivity {
     CourseLevelsAdapter adapter;
     private LinearLayout layoutBack;
     TextView txtHeader;
+
 
     @SuppressLint("MissingInflatedId")
     @Override

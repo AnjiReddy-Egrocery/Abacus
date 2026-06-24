@@ -1,5 +1,6 @@
 package com.dst.abacustrainner.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -9,7 +10,9 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.User.HomeActivity;
+import com.dst.abacustrainner.database.SharedPrefManager;
 
 public class AppSettindsActivity extends AppCompatActivity {
     private LinearLayout btnBack;
@@ -38,7 +42,12 @@ public class AppSettindsActivity extends AppCompatActivity {
             }
         });
 
+
+
          TextView tvTerms = findViewById(R.id.tvSettings);
+
+        tvTerms.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+
 
         String termsText = "Account Settings \n\n" +
                 "Manage your personal information and account details. You can update your profile, change password, and manage your login details to keep your account secure.\n\n" +
@@ -74,28 +83,107 @@ public class AppSettindsActivity extends AppCompatActivity {
 
         };
 
-        for (String heading : headings) {
-            int start = termsText.indexOf(heading);
-            if (start >= 0) {
-                int end = start + heading.length();
+        for(String heading : headings){
+
+
+            int start =
+                    termsText.indexOf(heading);
+
+
+            if(start >= 0){
+
+
+                int end =
+                        start + heading.length();
+
+
 
                 // Bold
-                spannable.setSpan(new StyleSpan(Typeface.BOLD),
-                        start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannable.setSpan(
+                        new StyleSpan(Typeface.BOLD),
+                        start,
+                        end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
 
-                // Color #4d148c
-                spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#4d148c")),
-                        start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                spannable.setSpan(new AbsoluteSizeSpan(20, true),
-                        start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                // Color
+                spannable.setSpan(
+                        new ForegroundColorSpan(
+                                Color.parseColor("#4d148c")
+                        ),
+                        start,
+                        end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+
+
+                // Size
+                spannable.setSpan(
+                        new AbsoluteSizeSpan(
+                                20,
+                                true
+                        ),
+                        start,
+                        end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+
+
+                // Logout Click
+                if(heading.equals("Logout")){
+
+
+                    spannable.setSpan(
+
+                            new ClickableSpan() {
+
+                                @Override
+                                public void onClick(@NonNull View widget) {
+
+
+                                    SharedPrefManager
+                                            .getInstance(
+                                                    getApplicationContext()
+                                            )
+                                            .isLoggedOut();
+
+
+
+
+                                }
+
+                            },
+
+
+                            start,
+                            end,
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+
+                    );
+
+                }
+
             }
+
         }
+
+
 
         tvTerms.setText(spannable);
 
 
+        tvTerms.setMovementMethod(
+                LinkMovementMethod.getInstance()
+        );
+
 
     }
+
+
+
 
 }

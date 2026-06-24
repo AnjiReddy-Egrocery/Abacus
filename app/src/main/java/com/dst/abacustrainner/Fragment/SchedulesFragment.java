@@ -1,6 +1,7 @@
 package com.dst.abacustrainner.Fragment;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -78,6 +79,9 @@ public class SchedulesFragment extends Fragment {
  BatchesAdapter batchesAdapter;
     TextView txtNoData;
 
+
+    ProgressDialog progressDialog;
+
     @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
@@ -91,9 +95,11 @@ public class SchedulesFragment extends Fragment {
             Log.d("Reddy","StudentId"+studentId);
         }
         txtNoData = view1.findViewById(R.id.txtNoData);
+
         recyclerSchedules = view1.findViewById(R.id.recycler_batches);
         recyclerSchedules.setLayoutManager(new LinearLayoutManager(getContext()));
         batchesAdapter = new BatchesAdapter(getContext(),studentId);
+
         recyclerSchedules.setAdapter(batchesAdapter);
 
 
@@ -103,6 +109,13 @@ public class SchedulesFragment extends Fragment {
     }
 
     private void batchesMethod(String studentId) {
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        recyclerSchedules.setVisibility(View.GONE);
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(3, TimeUnit.SECONDS)
                 .readTimeout(3, TimeUnit.SECONDS)
@@ -122,11 +135,15 @@ public class SchedulesFragment extends Fragment {
             public void onResponse(Call<BachDetailsResponse> call, Response<BachDetailsResponse> response) {
 
                 if (response.isSuccessful()){
+                    if(progressDialog != null && progressDialog.isShowing()){
+                        progressDialog.dismiss();
+                    }
+                    recyclerSchedules.setVisibility(View.VISIBLE);
                     BachDetailsResponse bachDetailsResponse=response.body();
                     if (bachDetailsResponse.getErrorCode().equals("202")){
                         //Toast.makeText(getContext(), "Invalid Request, no data found for your request", Toast.LENGTH_SHORT).show();
                         txtNoData.setVisibility(View.VISIBLE);
-                        txtNoData.setText(bachDetailsResponse.getErrorMessage());
+                        txtNoData.setText("Batches not allocated for you, Please contact your instructor for more details ...");
 
                         recyclerSchedules.setVisibility(View.GONE);
                     }else if (bachDetailsResponse.getErrorCode().equals("200")){

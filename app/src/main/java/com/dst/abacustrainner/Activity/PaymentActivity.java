@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,7 +37,10 @@ import com.phonepe.intent.sdk.api.PhonePeKt;
 import com.phonepe.intent.sdk.api.models.PhonePeEnvironment;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -61,6 +65,8 @@ public class PaymentActivity extends AppCompatActivity {
 
     private String accessTokenGlobal, orderIdGlobal, orderTokenGlobal;
     private String merchantOrderId;
+    private CheckBox checkRefundPolicy;
+    private TextView tvRefundPolicy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +88,9 @@ public class PaymentActivity extends AppCompatActivity {
         tvTotal = findViewById(R.id.tvTotal);
         btnPayNow = findViewById(R.id.btnPayNow);
         layoutBack = findViewById(R.id.layout_payment_back);
+
+        checkRefundPolicy = findViewById(R.id.checkRefundPolicy);
+        tvRefundPolicy = findViewById(R.id.tvRefundPolicy);
     }
 
     private void receiveIntentData() {
@@ -122,8 +131,30 @@ public class PaymentActivity extends AppCompatActivity {
     private void clickListeners() {
         layoutBack.setOnClickListener(v -> finish());
         btnPayNow.setOnClickListener(v -> {
+            if (!checkRefundPolicy.isChecked()) {
+
+                Toast.makeText(
+                        PaymentActivity.this,
+                        "Please accept Refund Policy before payment",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                return;
+            }
+
             Log.d("Anji", "Pay Now clicked");
             generateToken();
+        });
+
+        tvRefundPolicy.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    PaymentActivity.this,
+                    RefoundPolicyActivity.class
+            );
+
+            startActivity(intent);
+
         });
     }
 
@@ -312,6 +343,8 @@ public class PaymentActivity extends AppCompatActivity {
                 if (status.getPaymentDetails() == null ||
                         status.getPaymentDetails().isEmpty()) {
 
+                    long timestamp = System.currentTimeMillis();
+
                     showPaymentSuccessDialog(
                             workRnm,
                             studentId,
@@ -322,7 +355,7 @@ public class PaymentActivity extends AppCompatActivity {
                             0,
                             status.getOrderId(),
                             "PHONEPE",
-                            System.currentTimeMillis()
+                            timestamp
                     );
                 }
                 break;
@@ -333,6 +366,7 @@ public class PaymentActivity extends AppCompatActivity {
                 // user cancelled before attempting payment
                 if (status.getPaymentDetails() == null ||
                         status.getPaymentDetails().isEmpty()) {
+                    long timestamp = System.currentTimeMillis();
 
                     showPaymentSuccessDialog(
                             workRnm,
@@ -344,13 +378,14 @@ public class PaymentActivity extends AppCompatActivity {
                             0,
                             status.getOrderId(),
                             "PHONEPE",
-                            System.currentTimeMillis()
+                            timestamp
                     );
                 }
                 break;
 
             case "EXPIRED":
                 Log.d("Anji", "⛔ Payment Expired");
+                long timestamp = System.currentTimeMillis();
 
                 showPaymentSuccessDialog(
                         workRnm,
@@ -362,7 +397,7 @@ public class PaymentActivity extends AppCompatActivity {
                         0,
                         status.getOrderId(),
                         "PHONEPE",
-                        System.currentTimeMillis()
+                        timestamp
                 );
                 break;
 
@@ -376,22 +411,26 @@ public class PaymentActivity extends AppCompatActivity {
         if (status.getPaymentDetails() == null || status.getPaymentDetails().isEmpty()) {
 
             Log.d("Anji", "No payment attempts found");
+            long timestamp = System.currentTimeMillis();
+
+            if(status.getOrderId() != null){
+
+                // fallback current time
+                timestamp = System.currentTimeMillis();
+
+            }
 
             showPaymentSuccessDialog(
-                    workRnm != null ? workRnm : "UNKNOWN",
-                    studentId != null ? studentId : "UNKNOWN",
-                    totalAmount != null ? totalAmount : "0",
-                    "N/A", // transactionId
-                    status.getState() != null
-                            ? status.getState().toUpperCase()
-                            : "CANCELLED",
+                    workRnm,
+                    studentId,
+                    totalAmount,
+                    merchantOrderId,          // transaction id
+                    status.getState(),
                     "INR",
                     0,
-                    status.getOrderId() != null
-                            ? status.getOrderId()
-                            : "UNKNOWN",
-                    "N/A", // payment mode
-                    System.currentTimeMillis()
+                    status.getOrderId(),
+                    "PhonePe Gateway",
+                    timestamp
             );
 
             return;
@@ -405,7 +444,7 @@ public class PaymentActivity extends AppCompatActivity {
 
             String transactionId = detail.getTransactionId() != null
                     ? detail.getTransactionId()
-                    : "N/A";
+                    : "";
 
             String state = status.getState() != null
                     ? status.getState().toUpperCase()
@@ -421,7 +460,7 @@ public class PaymentActivity extends AppCompatActivity {
 
             String paymentMode = detail.getPaymentMode() != null
                     ? detail.getPaymentMode()
-                    : "N/A";
+                    : "";
 
             long timestamp = detail.getTimestamp() != 0
                     ? detail.getTimestamp()
@@ -466,7 +505,7 @@ public class PaymentActivity extends AppCompatActivity {
         RequestBody amountPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(amount));
         RequestBody orderPart = RequestBody.create(MediaType.parse("text/plain"), orderId);
         RequestBody paymentModePart = RequestBody.create(MediaType.parse("text/plain"), paymentMode);
-        RequestBody timeStampPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(timestamp));
+        RequestBody timeStampPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(timestamp / 1000));
 
         Call<PaymentRefrence> call = apiClient.getPaymentInfo(WorksheetPart,StudentPartPart,AmountPart,TransctionPartPart,statePart,currencyPart,amountPart,orderPart,paymentModePart,timeStampPart);
         call.enqueue(new Callback<PaymentRefrence>() {
@@ -489,17 +528,47 @@ public class PaymentActivity extends AppCompatActivity {
                     String transction = result.getTransactionID();
                     String status = result.getState();
                     String currency = result.getCurrency();
-                    String Amount = result.getAmount();
+                    String Amount = result.getPrice();
                     String paymentMethod = result.getPaymentMethod();
-                    String created = result.getDateCreated();
+
+
+
+                    String created = result.getOrderedOn();
+
+                    long timestamp = Long.parseLong(created) * 1000;
+
+                    Date date = new Date(timestamp);
+
+                    SimpleDateFormat sdf =
+                            new SimpleDateFormat(
+                                    "dd-MM-yyyy hh:mm:ss a",
+                                    Locale.ENGLISH
+                            );
+
+                    sdf.setTimeZone(
+                            java.util.TimeZone.getTimeZone("UTC")
+                    );
+
+                    String formattedDate = sdf.format(date);
+
+                    Log.d("Anji","Date = "+formattedDate);
                     Intent intent = new Intent(PaymentActivity.this, PaymentDetailsActivity.class);
                     intent.putExtra("StudentId",studentId);
-                    intent.putExtra("Transaction",transction);
+
                     intent.putExtra("Status",status);
                     intent.putExtra("Currency",currency);
                     intent.putExtra("Amount",Amount);
-                    intent.putExtra("Payment",paymentMethod);
-                    intent.putExtra("Date",created);
+                    intent.putExtra("Transaction", transction);
+
+                    intent.putExtra(
+                            "Payment",
+                            paymentMethod
+                    );
+
+                    intent.putExtra(
+                            "Date",
+                            formattedDate
+                    );
                     startActivity(intent);
                 }
             }

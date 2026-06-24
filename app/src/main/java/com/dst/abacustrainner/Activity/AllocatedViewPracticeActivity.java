@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,6 +43,7 @@ public class AllocatedViewPracticeActivity extends AppCompatActivity {
     AllocatedViewSubListAdataper viewListTopicAdapter;
 
     LinearLayout layoutBack;
+    ProgressDialog progressDialog;
 
 
     @SuppressLint("MissingInflatedId")
@@ -79,6 +81,10 @@ public class AllocatedViewPracticeActivity extends AppCompatActivity {
     }
 
     private void VerifyMethod(String studentid, String topicid) {
+        progressDialog = new ProgressDialog(AllocatedViewPracticeActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -95,6 +101,9 @@ public class AllocatedViewPracticeActivity extends AppCompatActivity {
         call.enqueue(new Callback<AlloactedViewSubTopicListResponse>() {
             @Override
             public void onResponse(Call<AlloactedViewSubTopicListResponse> call, Response<AlloactedViewSubTopicListResponse> response) {
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
                 AlloactedViewSubTopicListResponse viewTopicListResponse = response.body();
 
                 if (viewTopicListResponse.getErrorCode().equals("202")) {
@@ -118,7 +127,9 @@ public class AllocatedViewPracticeActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<AlloactedViewSubTopicListResponse> call, Throwable t) {
-
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
             }
         });
 

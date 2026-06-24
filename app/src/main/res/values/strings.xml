@@ -29,7 +29,13 @@
     <string-array name="operations">
         <item>Select the Operation</item>
         <item>Addition</item>
+
+        <item>Subtraction</item>
+
         <item>Multiplication</item>
+
+        <item>Division</item>
+
     </string-array>
 
     <string-array name="operands">

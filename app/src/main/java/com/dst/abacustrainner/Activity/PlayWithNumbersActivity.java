@@ -153,10 +153,19 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
 
 
                 // ✅ Dynamic Spinners (IMPORTANT FIX)
-                if ("Addition".equals(operation)) {
+                if ("Addition".equals(operation)  || "Subtraction".equals(operation)
+                        ) {
                     if (!validateDynamicSpinnersForAddition()) {
                         Toast.makeText(PlayWithNumbersActivity.this,
                                 "Please select all ranges for Addition",
+                                Toast.LENGTH_SHORT).show();
+                        isValid = false;
+                    }
+                } else if ("Subtraction".equals(operation)
+                ) {
+                    if (!validateDynamicSpinnersForAddition()) {
+                        Toast.makeText(PlayWithNumbersActivity.this,
+                                "Please select all ranges for Subtraction",
                                 Toast.LENGTH_SHORT).show();
                         isValid = false;
                     }
@@ -164,6 +173,15 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
                     if (!validateDynamicSpinnersForMultiplication()) {
                         Toast.makeText(PlayWithNumbersActivity.this,
                                 "Please select all ranges for Multiplication",
+                                Toast.LENGTH_SHORT).show();
+                        isValid = false;
+                    }
+
+
+                }else if ("Division".equals(operation)) {
+                    if (!validateDynamicSpinnersForMultiplication()) {
+                        Toast.makeText(PlayWithNumbersActivity.this,
+                                "Please select all ranges for Division",
                                 Toast.LENGTH_SHORT).show();
                         isValid = false;
                     }
@@ -190,7 +208,8 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
                 Log.e("Spinner", "Selected Operation: " + selectedOperation);
                 onOperationChange();
 
-                if ("Multiplication".equals(selectedOperation)) {
+                if ("Multiplication".equals(selectedOperation) ||
+                        "Division".equals(selectedOperation)) {
                     // If multiplication is selected, hide spinnerOperands
                     spinnerOperands.setVisibility(View.GONE);
                     textViewTotalNumbers.setVisibility(View.GONE);
@@ -503,11 +522,149 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
                 }
 
                 generateMultiplicationBaseValues();
+            }else if ("Subtraction".equals(selectedOperation)) {
+                // Check if dynamic spinners have valid selections for Multiplication operation
+                if (!validateDynamicSpinnersForMultiplication()) {
+                    // Show a toast message indicating that the user needs to select valid options in dynamic spinners
+                    Toast.makeText(this, "Please select valid options in dynamic spinners for Subtraction", Toast.LENGTH_SHORT).show();
+                    return; // Stop execution if dynamic spinner values are not valid
+                }
+
+                generateSubtractionQuestions();
+            }
+            else if ("Division".equals(selectedOperation)) {
+                // Check if dynamic spinners have valid selections for Multiplication operation
+                if (!validateDynamicSpinnersForMultiplication()) {
+                    // Show a toast message indicating that the user needs to select valid options in dynamic spinners
+                    Toast.makeText(this, "Please select valid options in dynamic spinners for Division", Toast.LENGTH_SHORT).show();
+                    return; // Stop execution if dynamic spinner values are not valid
+                }
+
+                generateDivisionQuestions();
             }
         } else {
             // Handle the case where "Select the Total Questions" is selected
             Log.e("NumberFormatException", "Invalid number format: " + selectedTotalQuestions);
         }
+    }
+
+    private void generateSubtractionQuestions() {
+        List<List<String>> selectedRanges = getSelectedRanges();
+
+        List<String> correctAnswers = new ArrayList<>();
+
+        questions = new ArrayList<>();
+
+
+        for(int i = 0; i < Integer.parseInt(selectedTotalQuestions); i++) {
+
+
+            String question = generateQuestion(
+                    "Subtraction",
+                    selectedRanges
+            );
+
+
+            questions.add(question);
+
+
+            String answer =
+                    calculateSubtractionAnswer(question);
+
+
+            correctAnswers.add(answer);
+
+
+            Log.d("GeneratedQuestion", question);
+            Log.d("GeneratedQuestion"+"Answer", answer);
+
+        }
+
+
+        startQuizActivity(
+                questions,
+                correctAnswers,
+                studentid,
+                studentName
+        );
+    }
+
+    private String calculateSubtractionAnswer(String question) {
+
+        String[] lines = question.split("\\n");
+
+        int result = Integer.parseInt(lines[0].trim());
+
+        for (int i = 1; i < lines.length; i++) {
+
+            String line = lines[i].trim();
+
+            if (line.isEmpty()) continue;
+
+            line = line.replace("-", "").trim();
+
+            if (!line.isEmpty()) {
+                result -= Integer.parseInt(line);
+            }
+        }
+
+        return String.valueOf(result);
+    }
+
+    private void generateDivisionQuestions() {
+        List<List<String>> selectedRanges = getSelectedRanges();
+
+        List<String> correctAnswers = new ArrayList<>();
+
+        questions = new ArrayList<>();
+
+
+        for(int i=0;i<Integer.parseInt(selectedTotalQuestions);i++){
+
+
+            String question = generateQuestion("Division", selectedRanges);
+
+
+            questions.add(question);
+
+
+            String answer = calculateDivisionAnswer(question);
+
+
+            correctAnswers.add(answer);
+
+        }
+
+
+        startQuizActivity(
+                questions,
+                correctAnswers,
+                studentid,
+                studentName
+        );
+
+    }
+
+    private String calculateDivisionAnswer(String question) {
+
+        String[] nums = question.split("÷");
+
+        double result = Double.parseDouble(nums[0].trim());
+
+        for (int i = 1; i < nums.length; i++) {
+
+            double value = Double.parseDouble(nums[i].trim());
+
+            if (value != 0) {
+                result = result / value;
+            }
+        }
+
+
+        // Only 2 decimal places
+        java.text.DecimalFormat df = new java.text.DecimalFormat("0.00");
+
+        return df.format(result);
     }
 
     private boolean validateDynamicSpinnersForMultiplication() {
@@ -677,7 +834,8 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
 
 
         //int selectedOperands = Integer.parseInt(selectedOperandsStr); // ✅ Safe now
-        int selectedOperands = (selectedOperation.equals("Multiplication")) ? 2 : Integer.parseInt(selectedOperandsStr);
+        int selectedOperands = (selectedOperation.equals("Multiplication") ||
+                selectedOperation.equals("Division")) ? 2 : Integer.parseInt(selectedOperandsStr);
 
         Log.e("Spinner", "Operation To Perform: " + selectedOperation);
         Log.e("Spinner", "Selected Operands: " + selectedOperands);
@@ -782,25 +940,62 @@ public class PlayWithNumbersActivity extends AppCompatActivity {
         return range;
     }
 
-    private String generateQuestion(String selectedOperation, List<List<String>> operandCount) {
+    private String generateQuestion(
+            String selectedOperation,
+            List<List<String>> operandCount) {
+
+
         Random random = new Random();
+
         StringBuilder questionBuilder = new StringBuilder();
 
-        // Ensure that there is at least one operandCount
-        if (!operandCount.isEmpty()) {
-            // Generate operands based on the selected ranges
-            for (List<String> range : operandCount) {
-                int index = random.nextInt(range.size());
-                String operand = range.get(index);
-                questionBuilder.append(operand).append("\n").append(" + ");
+
+        for (int i = 0; i < operandCount.size(); i++) {
+
+
+            String operand =
+                    operandCount.get(i)
+                            .get(random.nextInt(
+                                    operandCount.get(i).size()
+                            ));
+
+
+            if (i == 0) {
+
+                // First number
+                questionBuilder.append(operand);
+
+            }
+            else {
+
+                questionBuilder.append("\n");
+
+
+                if ("Subtraction".equals(selectedOperation)) {
+
+                    questionBuilder.append("-");
+
+                }
+                else if ("Addition".equals(selectedOperation)) {
+
+                    questionBuilder.append("+");
+
+                }
+                else if ("Division".equals(selectedOperation)) {
+
+                    questionBuilder.append("÷");
+
+                }
+
+
+                questionBuilder.append(operand);
+
             }
 
-            // Check if the length is greater than or equal to 2 before removing the last characters
-            if (questionBuilder.length() >= 2) {
-                // Remove the trailing space and the last "+"
-                questionBuilder.setLength(questionBuilder.length() - 2);
-            }
         }
+
+
+        Log.d("GeneratedQuestion", questionBuilder.toString());
 
         return questionBuilder.toString();
     }

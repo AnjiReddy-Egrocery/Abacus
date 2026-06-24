@@ -1,6 +1,7 @@
 package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,10 +42,12 @@ public class AssignmentListActivity extends AppCompatActivity {
     TextView txtName;
 
     AssignmentListAdapter assignmentListAdapter;
-    ProgressBar progressBar;
+
 
     LinearLayout btnBack;
     TextView txtEmpty;
+
+    ProgressDialog progressDialog;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -61,7 +64,7 @@ public class AssignmentListActivity extends AppCompatActivity {
         date=bundle.getString("scheduleDate");
         startTime=bundle.getString("startTime");
         endTime=bundle.getString("endTime");
-        progressBar= findViewById(R.id.progress);
+
         String header = name + "||" + date;
         txtEmpty = findViewById(R.id.txt_empty);
 
@@ -88,7 +91,11 @@ public class AssignmentListActivity extends AppCompatActivity {
     }
 
     private void VerifyMethod(String dateid, String studentid) {
-        progressBar.setVisibility(View.VISIBLE);
+        progressDialog = new ProgressDialog(AssignmentListActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
@@ -107,7 +114,9 @@ public class AssignmentListActivity extends AppCompatActivity {
         call.enqueue(new Callback<AssignmentListResponse>() {
             @Override
             public void onResponse(Call<AssignmentListResponse> call, Response<AssignmentListResponse> response) {
-                progressBar.setVisibility(View.GONE);
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
                 AssignmentListResponse assignmentListResponse=response.body();
 
                 if (assignmentListResponse.getErrorCode().equals("202")) {

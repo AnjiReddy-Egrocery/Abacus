@@ -59,22 +59,6 @@ public class PaymentDetailsActivity extends AppCompatActivity {
 
         imageUrl = getIntent().getStringExtra("imageUrl");
 
-        long timestamp = 0;
-
-        if (date != null && !date.isEmpty()) {
-            try {
-                timestamp = Long.parseLong(date) * 1000; // seconds → ms
-            } catch (Exception e) {
-                Log.e("Anji", "Date parse error: " + e.getMessage());
-            }
-        } else {
-            Log.e("Anji", "Date is null or empty");
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
-        String formattedDate = sdf.format(new Date(timestamp));
-
-        Log.d("Anji", "Formatted Date: " + formattedDate);
 
         if ("COMPLETED".equalsIgnoreCase(status)) {
 
@@ -84,13 +68,29 @@ public class PaymentDetailsActivity extends AppCompatActivity {
         }
         else if ("FAILED".equalsIgnoreCase(status)) {
 
-            txtResult.setText("Payment Failed");
+            if("TXN_CANCELLED".equalsIgnoreCase(errorcode)
+                    || "ORDER_CANCELLED_BY_USER".equalsIgnoreCase(errorcode)) {
 
-            if (errorcode != null) {
-                txtResult.append("\nReason: " + errorcode);
+
+                txtResult.setText(
+                        "Payment Cancelled by User\nPayment Failed"
+                );
+
+            }
+            else {
+
+                txtResult.setText(
+                        "Payment Failed"
+                );
+
             }
 
-            txtResult.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+
+            txtResult.setTextColor(
+                    getResources().getColor(
+                            android.R.color.holo_red_dark
+                    )
+            );
         }
 
         txtTransction.setText(transction);
@@ -98,7 +98,7 @@ public class PaymentDetailsActivity extends AppCompatActivity {
         txtCurrency.setText(currency);
         txtAmount.setText(amount);
         txtmethod.setText(method);
-        txtDate.setText(formattedDate);
+        txtDate.setText(date);
 
         butDashboard.setOnClickListener(new View.OnClickListener() {
             @Override

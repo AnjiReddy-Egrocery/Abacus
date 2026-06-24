@@ -60,7 +60,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/recycler_course"
                 android:layout_margin="12dp"/>
             <TextView
@@ -68,9 +68,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="No Data"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:visibility="gone"
-                android:textSize="16sp"
+                android:textSize="18dp"
+                android:layout_margin="12dp"
                 android:textColor="@android:color/black"/>
         </LinearLayout>
 

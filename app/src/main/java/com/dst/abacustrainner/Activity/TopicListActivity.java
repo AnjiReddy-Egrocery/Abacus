@@ -1,6 +1,7 @@
 package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,11 +42,11 @@ public class TopicListActivity extends AppCompatActivity {
     String name="",date="";
     TopicListAdapter topicListAdapter;
     TextView txtName;
-    ProgressBar progressBar;
+
     LinearLayout layoutBack;
     TextView txtEmpty;
 
-
+    ProgressDialog progressDialog;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class TopicListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_topic_list);
 
         txtName=findViewById(R.id.txt_batch_name);
-        progressBar=findViewById(R.id.progress);
+
         layoutBack = findViewById(R.id.btn_back_to_home);
         txtEmpty = findViewById(R.id.txt_empty);
 
@@ -90,7 +91,11 @@ public class TopicListActivity extends AppCompatActivity {
         VerifyMethod(dateid,studentid);
     }
     private void VerifyMethod(String dateid, String studentid) {
-        progressBar.setVisibility(View.VISIBLE);
+        progressDialog = new ProgressDialog(TopicListActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
@@ -109,7 +114,9 @@ public class TopicListActivity extends AppCompatActivity {
         call.enqueue(new Callback<TopicListResponse>() {
             @Override
             public void onResponse(Call<TopicListResponse> call, Response<TopicListResponse> response) {
-                progressBar.setVisibility(View.GONE);
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
                 TopicListResponse topicListResponse = response.body();
                 if (topicListResponse.getErrorCode().equals("202")) {
 

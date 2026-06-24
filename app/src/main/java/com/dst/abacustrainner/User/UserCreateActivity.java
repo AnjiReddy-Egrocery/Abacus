@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,16 +16,20 @@ import android.os.Looper;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,6 +49,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.dst.abacustrainner.Activity.TermsConditionsActivity;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.Model.StudentUserMethod;
 import com.dst.abacustrainner.R;
@@ -84,11 +90,11 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
     View lineSignIn,lineSignUp;
     String parentEmail,password;
     EditText edtEmail,edtPassword;
-    EditText edtFirstName,edtLastName,edtDate,edtMotherTongue,edtRegisterEmail,edtNumber,edtMiddleName;
+    EditText edtFirstName,edtDate,edtMotherTongue,edtRegisterEmail,edtNumber;
     TextView txtForgotPassword;
     private RadioGroup genderRadioGroup;
     private Calendar calendar;
-    String firstName,lastName,mobileNumber,registeremail,date,tongue,selectedGender,middlename;
+    String firstName,mobileNumber,registeremail,date,tongue,selectedGender;
     private SharedPreferences sharedPreferences;
 
     Button butSchools;
@@ -105,7 +111,10 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
     private static final int CREDENTIAL_PICKER_REQUEST = 1001;
     private String apiDob = "";
     String parentEmailId ;
-    TextView genderErrorText,txtfirstname,txtmothertongue,txtlastname,txtmiddlename,txtmobilenumber,txtemail,txtdob,txtPasswordError;
+
+    CheckBox checkTerms;
+    TextView txtTerms;
+    TextView genderErrorText,txtfirstname,txtmothertongue,txtmobilenumber,txtemail,txtdob,txtPasswordError;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -137,36 +146,61 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         parentEmailId= getIntent().getStringExtra("parentEmail");
 
         edtFirstName=findViewById(R.id.edt_first_name);
-        edtMiddleName = findViewById(R.id.edt_middle_Name);
-        edtLastName=findViewById(R.id.edt_last_name);
+
         edtMotherTongue=findViewById(R.id.edt_tongue);
         edtRegisterEmail=findViewById(R.id.edt_email);
         edtNumber=findViewById(R.id.edt_number);
         butRegister=findViewById(R.id.but_register);
         edtDate=findViewById(R.id.edt_date);
         genderRadioGroup=findViewById(R.id.radio);
+        checkTerms = findViewById(R.id.check_terms);
+        txtTerms = findViewById(R.id.txt_terms);
 
         genderErrorText = findViewById(R.id.txt_gender_error);
         txtfirstname = findViewById(R.id.txt_first_name);
-        txtlastname = findViewById(R.id.txt_last_name);
+
         txtmothertongue = findViewById(R.id.txt_mother_tongue);
-        txtmiddlename = findViewById(R.id.txt_middle_name);
+
         txtmobilenumber = findViewById(R.id.txt_mobile_number);
         txtemail = findViewById(R.id.txt_email);
         txtdob = findViewById(R.id.txt_date);
         txtPasswordError = findViewById(R.id.txt_password);
 
+        String text = "I agree to the Terms & Condition";
+
+        SpannableString spannableString = new SpannableString(text);
+
+        spannableString.setSpan(
+                new ForegroundColorSpan(Color.parseColor("#FD6801")),
+                text.indexOf("Terms"),
+                text.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+
+        txtTerms.setText(spannableString);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             edtFirstName.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-            edtMiddleName.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-            edtLastName.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
             edtRegisterEmail.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
             edtNumber.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
             edtMotherTongue.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
         //butSchools = findViewById(R.id.but_schools);
+
+        txtTerms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(
+                        UserCreateActivity.this,
+                        TermsConditionsActivity.class
+                );
+
+                startActivity(intent);
+
+            }
+        });
 
         calendar = Calendar.getInstance();
 
@@ -276,18 +310,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
             public void afterTextChanged(Editable s) {}
         });
 
-        edtLastName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                txtlastname.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
         edtMotherTongue.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -301,18 +324,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
             public void afterTextChanged(Editable s) {}
         });
 
-        edtMiddleName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                txtmiddlename.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
 
         edtNumber.addTextChangedListener(new TextWatcher() {
             @Override
@@ -604,7 +616,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
 
     public void ShowHidePass(View view) {
 
-        if(view.getId()==R.id.show_pass_btn){
+        if(view.getId()==R.id.show_pass){
             if(edtPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())){
                 ((ImageView)(view)).setImageResource(R.drawable.visiablityoff);
                 //Show Password
@@ -678,9 +690,19 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         butRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(!checkTerms.isChecked()){
+
+                    Toast.makeText(
+                            UserCreateActivity.this,
+                            "Please accept Terms & Condition",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    return;
+                }
                 firstName = edtFirstName.getText().toString().trim();
-                middlename = edtMiddleName.getText().toString().trim();
-                lastName = edtLastName.getText().toString().trim();
+
                 mobileNumber = edtNumber.getText().toString().trim();
                 registeremail = edtRegisterEmail.getText().toString().trim();
                 date = edtDate.getText().toString().trim();
@@ -694,13 +716,6 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                     isValid = false;
                 }
 
-                if (!isValidMiddleName(middlename)) {
-                    isValid = false;
-                }
-
-                if (!isValidLastName(lastName)) {
-                    isValid = false;
-                }
 
                 if (!isValidMotherTongue(tongue)) {
                     isValid = false;
@@ -723,7 +738,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                 }
 
                 if (isValid) {
-                    registerMenthod(firstName,middlename, lastName, mobileNumber, registeremail, apiDob, tongue);
+                    registerMenthod(firstName, mobileNumber, registeremail, apiDob, tongue);
 
                 } else {
                     //Toast.makeText(UserCreateActivity.this, "Validation failed. Please check your input.", Toast.LENGTH_SHORT).show();
@@ -732,16 +747,8 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         });
     }
 
-    private boolean isValidMiddleName(String middlename) {
-        if (middlename.isEmpty()) {
-            txtmiddlename.setVisibility(View.VISIBLE);
 
-            return false;
-        }
-        return true;
-    }
-
-    private void registerMenthod(String firstName,String middlename, String lastName, String mobileNumber, String registeremail, String date, String tongue) {
+    private void registerMenthod(String firstName, String mobileNumber, String registeremail, String date, String tongue) {
         String selectedGender = getSelectedGender();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -760,15 +767,14 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
                 .build();
         ApiClient apiClient=retrofit.create(ApiClient.class);
         RequestBody firstNamePart = RequestBody.create(MediaType.parse("text/plain"), firstName);
-        RequestBody middleNamePart = RequestBody.create(MediaType.parse("text/plain"), middlename);
-        RequestBody lastnamePart = RequestBody.create(MediaType.parse("text/plain"), lastName);
+
         RequestBody genderPart = RequestBody.create(MediaType.parse("text/plain"), selectedGender);
         RequestBody dateofbirthPart = RequestBody.create(MediaType.parse("text/plain"), date);
         RequestBody mothertonguePart = RequestBody.create(MediaType.parse("text/plain"), tongue);
         RequestBody emailPart = RequestBody.create(MediaType.parse("text/plain"), registeremail);
         RequestBody mobilenumberPart = RequestBody.create(MediaType.parse("text/plain"), mobileNumber);
 
-        Call<StudentUserMethod> call=apiClient.studentRegisterPost(firstNamePart,middleNamePart,lastnamePart,genderPart,dateofbirthPart,mothertonguePart, emailPart,mobilenumberPart);
+        Call<StudentUserMethod> call=apiClient.studentRegisterPost(firstNamePart,genderPart,dateofbirthPart,mothertonguePart, emailPart,mobilenumberPart);
         call.enqueue(new Callback<StudentUserMethod>() {
             @Override
             public void onResponse(Call<StudentUserMethod> call, Response<StudentUserMethod> response) {
@@ -844,15 +850,7 @@ public class UserCreateActivity extends AppCompatActivity implements GoogleApiCl
         return true;
     }
 
-    private boolean isValidLastName(String lastName) {
-        if (lastName.isEmpty()) {
-            txtlastname.setVisibility(View.VISIBLE);
 
-            return false;
-        }
-
-        return true;
-    }
 
     private boolean isValidFirstName(String firstName) {
         if (firstName.isEmpty()) {

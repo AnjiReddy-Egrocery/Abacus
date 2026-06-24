@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Is Currently Pending"
+            android:text="We are Coming Soon"
             android:textColor="#000"
             android:gravity="center"
             android:textSize="20dp"

@@ -66,14 +66,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UpDateProfileFragment extends Fragment {
 
-    String studentId, firstName, middlename, lastName, dateofBirth, gender, motherTongue, fatherName, mothername;
+    String studentId, firstName,  dateofBirth, gender, motherTongue, fatherName, mothername;
 
-    EditText edtfirstName, edtmiddlename, edtLastname, edtDateofbirth, edtgender, edtmotherTongue, edtFathername, edtMotherName;
+    EditText edtfirstName, edtDateofbirth, edtgender, edtmotherTongue, edtFathername, edtMotherName;
     private LinearLayout btnBack;
 
     private Button butUpdateProfile;
     String profilePic;
     ImageView imageView;
+    ImageView imageCamera;
     private static final int CAMERA_REQUEST = 100;
     private static final int GALLERY_REQUEST = 101;
 
@@ -103,8 +104,6 @@ public class UpDateProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         edtfirstName = view.findViewById(R.id.edt_first_name);
-        edtmiddlename =view. findViewById(R.id.edt_middle_name);
-        edtLastname = view.findViewById(R.id.edt_last_name);
         edtDateofbirth =view. findViewById(R.id.edt_date_birth);
         edtgender =view. findViewById(R.id.edt_gender);
         edtmotherTongue =view. findViewById(R.id.edt_mother_tongue);
@@ -113,6 +112,8 @@ public class UpDateProfileFragment extends Fragment {
         butUpdateProfile =view. findViewById(R.id.but_update_profile);
 
         imageView =view. findViewById(R.id.image_profile);
+
+        imageCamera = view.findViewById(R.id.image_camera);
 
         btnBack =view. findViewById(R.id.btn_back_to_home);
 
@@ -137,8 +138,7 @@ public class UpDateProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 firstName = edtfirstName.getText().toString().trim();
-                middlename = edtmiddlename.getText().toString().trim();
-                lastName = edtLastname.getText().toString().trim();
+
                 dateofBirth = edtDateofbirth.getText().toString().trim();
                 gender = edtgender.getText().toString().trim();
                 motherTongue = edtmotherTongue.getText().toString().trim();
@@ -146,7 +146,7 @@ public class UpDateProfileFragment extends Fragment {
                 mothername = edtMotherName.getText().toString().trim();
 
 
-                ProfileUpdateMethod(studentid, firstName, middlename, lastName, dateofBirth, gender, motherTongue, fatherName, mothername, imageFile);
+                ProfileUpdateMethod(studentid, firstName,  dateofBirth, gender, motherTongue, fatherName, mothername, imageFile);
 
                 /*Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
                 startActivity(intent);*/
@@ -154,7 +154,7 @@ public class UpDateProfileFragment extends Fragment {
 
         });
 
-        imageView.setOnClickListener(new View.OnClickListener() {
+        imageCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Show a dialog or a menu to choose between camera or gallery
@@ -299,7 +299,7 @@ public class UpDateProfileFragment extends Fragment {
 
 
 
-    private void ProfileUpdateMethod(String studentId, String firstName, String middlename, String lastName, String dateofBirth, String gender, String motherTongue, String fatherName, String mothername, File imageFile) {
+    private void ProfileUpdateMethod(String studentId, String firstName, String dateofBirth, String gender, String motherTongue, String fatherName, String mothername, File imageFile) {
 
         if (imageFile != null && imageFile.exists()) {
 
@@ -344,8 +344,6 @@ public class UpDateProfileFragment extends Fragment {
         // Create RequestBody for the fields
         RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), studentId);
         RequestBody firstNamePart = RequestBody.create(MediaType.parse("text/plain"), firstName);
-        RequestBody middlenamePart = RequestBody.create(MediaType.parse("text/plain"), middlename);
-        RequestBody lastnamePart = RequestBody.create(MediaType.parse("text/plain"), lastName);
         RequestBody dateofbirthPart = RequestBody.create(MediaType.parse("text/plain"), dateofBirth);
         RequestBody genderPart = RequestBody.create(MediaType.parse("text/plain"), gender);
         RequestBody mothertonguePart = RequestBody.create(MediaType.parse("text/plain"), motherTongue);
@@ -361,7 +359,7 @@ public class UpDateProfileFragment extends Fragment {
 
         // Call API with the data
         Call<StudentUpdateProfile> call = apiClient.studentUpdatePost(
-                idPart, firstNamePart, middlenamePart, lastnamePart, dateofbirthPart, genderPart,
+                idPart, firstNamePart,  dateofbirthPart, genderPart,
                 mothertonguePart, fatherNamePart, matherNamePart, imagePart
         );
 
@@ -423,8 +421,6 @@ public class UpDateProfileFragment extends Fragment {
                     Log.d("DEBUG", "Error Code: " + studentTotalDetails.getErrorCode());
 
                     edtfirstName.setText(studentTotalDetails.getResult().getFirstName());
-                    edtmiddlename.setText(studentTotalDetails.getResult().getMiddleName());
-                    edtLastname.setText(studentTotalDetails.getResult().getLastName());
                     edtgender.setText(studentTotalDetails.getResult().getGender());
                     edtmotherTongue.setText(studentTotalDetails.getResult().getMotherTongue());
                     edtFathername.setText(studentTotalDetails.getResult().getFatherName());

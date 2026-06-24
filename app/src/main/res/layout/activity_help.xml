@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Help &amp; Support"
+                android:text="FAQ"
                 android:textStyle="bold"
                 android:textSize="25dp"
                 android:gravity="center_vertical"
@@ -70,7 +70,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Abacus Trainer Help &amp; Support"
+                            android:text="Abacus Frequently Ask Question"
                             android:textSize="18dp"
                             android:textColor="#000"
                             android:layout_margin="12dp"

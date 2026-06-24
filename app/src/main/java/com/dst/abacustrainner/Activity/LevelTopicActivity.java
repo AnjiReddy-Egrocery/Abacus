@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +40,7 @@ public class LevelTopicActivity extends AppCompatActivity {
     private String studentId,courseLevelId, levelName, orderId;
     TextView txtLevelTopic;
 
+    ProgressDialog progressDialog;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,10 @@ public class LevelTopicActivity extends AppCompatActivity {
     }
 
     private void loadTopics(String studentId, String courseLevelId, String orderId) {
+        progressDialog = new ProgressDialog(LevelTopicActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -101,6 +107,10 @@ public class LevelTopicActivity extends AppCompatActivity {
             public void onResponse(Call<CourseLevelTopicResponse> call, Response<CourseLevelTopicResponse> response) {
 
                             if (response.isSuccessful() && response.body() != null) {
+
+                                if(progressDialog != null && progressDialog.isShowing()){
+                                    progressDialog.dismiss();
+                                }
 
                                 CourseLevelTopicResponse res = response.body();
 
@@ -136,7 +146,9 @@ public class LevelTopicActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CourseLevelTopicResponse> call, Throwable t) {
-
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
             }
         });
     }

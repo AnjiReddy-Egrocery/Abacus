@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 import com.dst.abacustrainner.Activity.AllSchedulesActivity;
@@ -78,13 +79,15 @@ public class HomeFragment extends Fragment {
     String id="",dateId ="",name="",time="",time1="",date="",firsstname="",startedOn="";
     LinearLayout layoutData,layoutPlayWithNumbers,layoutvisualization;
     BatchDetailsAdapter batchDetailsAdapter;
-    ProgressBar progressBar;
+
     String startTime,endTime,timeText;
     private Map<String, String> scheduledDatesMap = new HashMap<>();
     Map<String, String> dateIdMap = new HashMap<>();
     LinearLayout layoutSchedule, layoutScheduleInfo;
 
     String EmployeeId = String.valueOf(2251);
+
+    SwipeRefreshLayout swipeRefresh;
 
 
 
@@ -110,12 +113,12 @@ public class HomeFragment extends Fragment {
 
         butSubdetails = view.findViewById(R.id.but_subscription_details);
         butCourses = view.findViewById(R.id.but_view_courses);
+        swipeRefresh = view.findViewById(R.id.swipeRefresh);
 
        // layoutVideoTutorials = view.findViewById(R.id.layout_video_tutorials);
         txtEmpty = view.findViewById(R.id.tvEmptyMessage);
 
         layoutData=view.findViewById(R.id.layout_data);
-        progressBar= view.findViewById(R.id.progress);
         layoutPlayWithNumbers=view.findViewById(R.id.layout_play_number);
         layoutvisualization=view.findViewById(R.id.layout_visualization);
         calendar = Calendar.getInstance();
@@ -159,11 +162,16 @@ public class HomeFragment extends Fragment {
         }*/
 
 
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                loadHomeData();
+
+            }
+        });
 
 
-
-        VerifyMethod(id,currentDate);
-        VerifyBatchDetails(id);
 
         /*if (getArguments() != null && getArguments().getString("StudentId") != null) {
             studentId = getArguments().getString("StudentId");
@@ -226,6 +234,18 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    private void loadHomeData() {
+        VerifyMethod(id,currentDate);
+
+        VerifyBatchDetails(id);
+
+
+        if(swipeRefresh != null){
+
+            swipeRefresh.setRefreshing(false);
+
+        }
+    }
 
 
     private void openScheduleFragment() {

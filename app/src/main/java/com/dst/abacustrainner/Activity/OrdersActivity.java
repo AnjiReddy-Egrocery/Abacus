@@ -2,6 +2,7 @@ package com.dst.abacustrainner.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -43,7 +44,7 @@ public class OrdersActivity extends AppCompatActivity {
     private String studentId;
     LinearLayout layoutBack;
     TextView txtNoOrders;
-
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,10 @@ public class OrdersActivity extends AppCompatActivity {
     }
 
     private void loadOrders(String studentId) {
+        progressDialog = new ProgressDialog(OrdersActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -85,7 +90,9 @@ public class OrdersActivity extends AppCompatActivity {
             public void onResponse(Call<StudentOrdersResponse> call, Response<StudentOrdersResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
 
-
+                    if(progressDialog != null && progressDialog.isShowing()){
+                        progressDialog.dismiss();
+                    }
                     List<WorksheetOrder> list =
                             response.body()
                                     .getResult()

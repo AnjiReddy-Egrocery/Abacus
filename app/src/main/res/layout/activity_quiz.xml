@@ -310,7 +310,7 @@
 
                                 android:background="@drawable/submit_btn_border"
                                 android:gravity="center"
-                                android:inputType="number"
+                                android:inputType="numberDecimal"
                                 android:paddingLeft="10dp"
                                 android:textColor="#000"
                                 android:textColorHint="#000" />

@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +37,9 @@ public class CourseLevelActivity extends AppCompatActivity {
     LinearLayout layoutBack;
     RecyclerView recyclerCourseType;
     LevelTopicAdapter courseTypeLevelTopicAdapter;
+
+    ProgressDialog progressDialog;
+
 
 
 
@@ -74,6 +78,10 @@ public class CourseLevelActivity extends AppCompatActivity {
     }
 
     private void loadCoursesList(String studentId, String courseLevelId) {
+        progressDialog = new ProgressDialog(CourseLevelActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -91,7 +99,9 @@ public class CourseLevelActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<CoursesResponse> call, Response<CoursesResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
+                    if(progressDialog != null && progressDialog.isShowing()){
+                        progressDialog.dismiss();
+                    }
                     CoursesResponse res = response.body();
 
                     if ("200".equals(res.getErrorCode())) {
@@ -112,7 +122,11 @@ public class CourseLevelActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CoursesResponse> call, Throwable t) {
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
                 Log.e("API", "Error: " + t.getMessage());
+
             }
         });
     }

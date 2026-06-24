@@ -87,6 +87,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         butDownloadReceipt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 generatePDF();
             }
         });
@@ -106,59 +107,108 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private void generatePDF() {
         View view = findViewById(R.id.rootLayout);
 
-        Bitmap bitmap = Bitmap.createBitmap(
-                view.getWidth(),
-                view.getHeight(),
-                Bitmap.Config.ARGB_8888
-        );
+        view.post(() -> {
 
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
+            Bitmap bitmap = Bitmap.createBitmap(
+                    view.getWidth(),
+                    view.getHeight(),
+                    Bitmap.Config.ARGB_8888
+            );
 
-        PdfDocument document = new PdfDocument();
+            Canvas canvas = new Canvas(bitmap);
+            view.draw(canvas);
 
-        PdfDocument.PageInfo pageInfo =
-                new PdfDocument.PageInfo.Builder(
-                        bitmap.getWidth(),
-                        bitmap.getHeight(),
-                        1
-                ).create();
 
-        PdfDocument.Page page = document.startPage(pageInfo);
+            PdfDocument document = new PdfDocument();
 
-        Canvas pdfCanvas = page.getCanvas();
-        pdfCanvas.drawBitmap(bitmap, 0, 0, null);
+            PdfDocument.PageInfo pageInfo =
+                    new PdfDocument.PageInfo.Builder(
+                            bitmap.getWidth(),
+                            bitmap.getHeight(),
+                            1
+                    ).create();
 
-        document.finishPage(page);
 
-        File file = new File(
-                Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DOWNLOADS),
-                "OrderReceipt.pdf"
-        );
+            PdfDocument.Page page = document.startPage(pageInfo);
 
-        try {
-            document.writeTo(new FileOutputStream(file));
-            document.close();
-            Toast.makeText(this, "PDF Saved in Downloads", Toast.LENGTH_LONG).show();
-            openPDF(file);
+            Canvas pdfCanvas = page.getCanvas();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            pdfCanvas.drawBitmap(bitmap, 0, 0, null);
+
+            document.finishPage(page);
+
+
+            File pdfFolder = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS
+            );
+
+            if (!pdfFolder.exists()) {
+                pdfFolder.mkdirs();
+            }
+
+
+            File file = new File(
+                    pdfFolder,
+                    "OrderReceipt_" + System.currentTimeMillis() + ".pdf"
+            );
+
+
+            try {
+
+                document.writeTo(new FileOutputStream(file));
+
+                document.close();
+
+
+                Toast.makeText(
+                        OrderDetailsActivity.this,
+                        "PDF Saved",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+
+                openPDF(file);
+
+
+            } catch (Exception e){
+
+                e.printStackTrace();
+
+                Toast.makeText(
+                        OrderDetailsActivity.this,
+                        e.getMessage(),
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+
+        });
     }
     private void openPDF(File file) {
         Uri uri = FileProvider.getUriForFile(
                 this,
-                getPackageName() + ".provider",
+                getPackageName()+".provider",
                 file
         );
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(uri, "application/pdf");
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        startActivity(intent);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+
+        intent.setDataAndType(uri,"application/pdf");
+
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+
+        try {
+            startActivity(intent);
+        }
+        catch(Exception e){
+
+            Toast.makeText(
+                    this,
+                    "No PDF Viewer Installed",
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
     }
 
 

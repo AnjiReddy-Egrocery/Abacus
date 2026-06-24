@@ -96,8 +96,7 @@ public class UpdateProfileActivity extends FragmentActivity {
 
 
         edtfirstName = findViewById(R.id.edt_first_name);
-        edtmiddlename = findViewById(R.id.edt_middle_name);
-        edtLastname = findViewById(R.id.edt_last_name);
+
         edtDateofbirth = findViewById(R.id.edt_date_birth);
         edtgender = findViewById(R.id.edt_gender);
         edtmotherTongue = findViewById(R.id.edt_mother_tongue);
@@ -340,7 +339,7 @@ public class UpdateProfileActivity extends FragmentActivity {
 
         // Call API with the data
         Call<StudentUpdateProfile> call = apiClient.studentUpdatePost(
-                idPart, firstNamePart, middlenamePart, lastnamePart, dateofbirthPart, genderPart,
+                idPart, firstNamePart, dateofbirthPart, genderPart,
                 mothertonguePart, fatherNamePart, matherNamePart, imagePart
         );
 

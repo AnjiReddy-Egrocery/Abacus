@@ -1,6 +1,7 @@
 package com.dst.abacustrainner.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,7 +48,7 @@ public class BatchDatesDetailsActivity extends AppCompatActivity {
     TextView txtName;
     BatchDatesDetailsAdapter batchDatesDetailsAdapter;
 
-    ProgressBar progressBar;
+    ProgressDialog progressDialog;
     private LinearLayout btnBack;
 
     @SuppressLint("MissingInflatedId")
@@ -66,7 +67,7 @@ public class BatchDatesDetailsActivity extends AppCompatActivity {
         String batchName = "\"" + name + "\"" + " Schedule Details";
         txtName.setText(batchName);
 
-        progressBar = findViewById(R.id.progressBar);
+
 
         Log.e("Reddy","Id"+id);
         Log.e("Reddy","BatchId"+bactchId);
@@ -88,7 +89,12 @@ public class BatchDatesDetailsActivity extends AppCompatActivity {
     }
 
     private void VerifyMethod(String id, String bactchId) {
-        progressBar.setVisibility(View.VISIBLE);
+        progressDialog = new ProgressDialog(BatchDatesDetailsActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        recyclerBatchDates.setVisibility(View.GONE);
         /*HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
         OkHttpClient client = new OkHttpClient.Builder()
@@ -107,7 +113,10 @@ public class BatchDatesDetailsActivity extends AppCompatActivity {
         call.enqueue(new Callback<DatedetailsResponse>() {
             @Override
             public void onResponse(Call<DatedetailsResponse> call, Response<DatedetailsResponse> response) {
-                progressBar.setVisibility(View.GONE);
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
+                recyclerBatchDates.setVisibility(View.VISIBLE);
                 DatedetailsResponse details=response.body();
                 if (details.getErrorCode().equals("202")){
                     Toast.makeText(BatchDatesDetailsActivity.this,"No Schedule, for the given details",Toast.LENGTH_LONG).show();
@@ -135,7 +144,10 @@ public class BatchDatesDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<DatedetailsResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+                if(progressDialog != null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
+                //recyclerSchedules.setVisibility(View.VISIBLE);
             }
         });
 

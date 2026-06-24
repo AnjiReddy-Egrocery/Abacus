@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,6 +41,8 @@ public class AllocatedCoursesActivity extends AppCompatActivity {
     CourseTypeAdapter coursetypeAdapter;
     TextView txtNoCourses;
 
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +72,13 @@ public class AllocatedCoursesActivity extends AppCompatActivity {
 
     private void loadCourses(String studentId) {
 
+        progressDialog = new ProgressDialog(AllocatedCoursesActivity.this);
+        progressDialog.setMessage("Loading Please wait ......");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        recyclerCourseType.setVisibility(View.GONE);
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -85,6 +95,12 @@ public class AllocatedCoursesActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<CourseTypeResponse> call, Response<CourseTypeResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
+
+                    if(progressDialog != null && progressDialog.isShowing()){
+                        progressDialog.dismiss();
+                    }
+                    recyclerCourseType.setVisibility(View.VISIBLE);
+
 
                     CourseTypeResponse res = response.body();
 
