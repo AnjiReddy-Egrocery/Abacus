@@ -440,9 +440,8 @@ public class UpdateProfileActivity extends FragmentActivity {
                     StudentTotalDetails studentTotalDetails = response.body();
                     Log.d("DEBUG", "Error Code: " + studentTotalDetails.getErrorCode());
 
-                    edtfirstName.setText(studentTotalDetails.getResult().getFirstName());
-                    edtmiddlename.setText(studentTotalDetails.getResult().getMiddleName());
-                    edtLastname.setText(studentTotalDetails.getResult().getLastName());
+                    edtfirstName.setText(studentTotalDetails.getResult().getFullName());
+
                     edtgender.setText(studentTotalDetails.getResult().getGender());
                     edtmotherTongue.setText(studentTotalDetails.getResult().getMotherTongue());
                     edtFathername.setText(studentTotalDetails.getResult().getFatherName());

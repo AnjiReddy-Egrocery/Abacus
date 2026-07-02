@@ -46,7 +46,7 @@ public class StudentAdapter  extends RecyclerView.Adapter<StudentAdapter.ViewHol
     public void onBindViewHolder(@NonNull StudentAdapter.ViewHolder holder, int position) {
         StudentRegistationResponse.Result student = list.get(position);
 
-        holder.name.setText(student.getFirstName() + " " + student.getLastName());
+        holder.name.setText(student.getFullName() );
 
         String StudentId = student.getStudentId();
 

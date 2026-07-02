@@ -240,7 +240,7 @@ public class ViewSubResultDetailsActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
 
                     ViewSubTopicResultResponse.Result viewTopicResult = response.body().getResult();
-                        firstName = viewTopicResult.getFirstName();
+                        firstName = viewTopicResult.getFullName();
                         startDate = viewTopicResult.getStartedOn();
 
                         // Set Name and Start Date if required

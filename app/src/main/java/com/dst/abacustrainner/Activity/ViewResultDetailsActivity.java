@@ -246,7 +246,7 @@ public class ViewResultDetailsActivity extends AppCompatActivity {
 
                     ViewTopicResultResponse.Result result = response.body().getResult();
 
-                    firstName = result.getFirstName();
+                    firstName = result.getFullName();
                     startDate = result.getStartedOn();
 
                     // Set Name and Start Date if required

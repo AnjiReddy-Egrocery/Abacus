@@ -16,8 +16,8 @@ public class SharedPrefManager {
     Context mContext;
     private static final String SHARED_PREF_NAME = "userProfile";
     private static final String STUDENT_ID="studentId";
-    private static final String FIRST_NAME="firstName";
-    private static final String LAST_NAME="lastName";
+    private static final String FIRST_NAME="fullName";
+
     private static final String EMAIL_ID="emailId";
     private static final String FATHER_MOBILE="fatherMobile";
     private static final String PARENT_EMAIL="parentEmail";
@@ -50,8 +50,7 @@ public class SharedPrefManager {
             StudentRegistationResponse.Result result = userInfo.getResult().get(0);
 
             editor.putString(STUDENT_ID, result.getStudentId());
-            editor.putString(FIRST_NAME, result.getFirstName());
-            editor.putString(LAST_NAME, result.getLastName());
+            editor.putString(FIRST_NAME, result.getFullName());
             editor.putString(EMAIL_ID, result.getEmailId());
             editor.putString(FATHER_MOBILE, result.getFatherMobile());
             editor.putString(PARENT_EMAIL, result.getParentEmail());
@@ -68,7 +67,6 @@ public class SharedPrefManager {
         StudentRegistationResponse.Result userInfo=new StudentRegistationResponse.Result(
                 sharedPreferences.getString(STUDENT_ID,null),
                 sharedPreferences.getString(FIRST_NAME,null),
-                sharedPreferences.getString(LAST_NAME,null),
                 sharedPreferences.getString(EMAIL_ID,null),
                 sharedPreferences.getString(FATHER_MOBILE,null),
                 sharedPreferences.getString(PARENT_EMAIL,null),
@@ -81,7 +79,7 @@ public class SharedPrefManager {
         StudentTotalDetails.Result userinfo=new StudentTotalDetails.Result(
                 sharedPreferences.getString(STUDENT_ID,null),
                 sharedPreferences.getString(FIRST_NAME,null),
-                sharedPreferences.getString(LAST_NAME,null),
+
                 sharedPreferences.getString(Profile_PIC,null));
         return userinfo;
     }
@@ -117,8 +115,8 @@ public class SharedPrefManager {
     public void saveUserData(StudentTotalDetails.Result result) {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences("user_data", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("firstName", result.getFirstName());
-        editor.putString("lastName", result.getLastName());
+        editor.putString("firstName", result.getFullName());
+
         editor.putString("profilePic", result.getProfilePic());
         //editor.putString("email", result.getEmailId());
         editor.apply();

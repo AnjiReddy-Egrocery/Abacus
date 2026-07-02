@@ -283,10 +283,9 @@ public class HomeActivity extends AppCompatActivity {
             public void onResponse(Call<StudentTotalDetails> call, Response<StudentTotalDetails> response) {
                 if (response.isSuccessful()) {
                     StudentTotalDetails studentTotalDetails = response.body();
-                    String firstName = capitalizeFirstLetter(studentTotalDetails.getResult().getFirstName());
-                    String middleNem = capitalizeFirstLetter(studentTotalDetails.getResult().getMiddleName());
-                    String lastName = capitalizeFirstLetter(studentTotalDetails.getResult().getLastName());
-                    String fullName = "Hello,  " + firstName + middleNem + " " + lastName;
+                    String firstName = capitalizeFirstLetter(studentTotalDetails.getResult().getFullName());
+
+                    String fullName = "Hello,  " + firstName ;
                     txtName.setText(fullName);
 
                     String imageUrl = studentTotalDetails.getImageUrl() + studentTotalDetails.getResult().getProfilePic();

@@ -63,10 +63,8 @@ public class StudentRegistationResponse {
         private String mId;
         private Object ufMid;
         private Object joinDate;
-        private String firstName;
-        private String middleName;
-        private String lastName;
-        private String dateOfBirth;
+        private String fullName;
+       private String dateOfBirth;
         private String dobMonth;
         private String dobDate;
         private String gender;
@@ -126,10 +124,9 @@ public class StudentRegistationResponse {
         private Object courseLevel;
         private Object instructorName;
 
-        public Result(String studentId, String firstName, String lastName, String emailId, String fatherMobile, String parentEmail,String profilePic) {
+        public Result(String studentId, String fullName, String emailId, String fatherMobile, String parentEmail,String profilePic) {
             this.studentId=studentId;
-            this.firstName=firstName;
-            this.lastName=lastName;
+            this.fullName=fullName;
             this.emailId=emailId;
             this.fatherMobile=fatherMobile;
             this.parentEmail=parentEmail;
@@ -185,28 +182,12 @@ public class StudentRegistationResponse {
             this.joinDate = joinDate;
         }
 
-        public String getFirstName() {
-            return firstName;
+        public String getFullName() {
+            return fullName;
         }
 
-        public void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
-
-        public String getMiddleName() {
-            return middleName;
-        }
-
-        public void setMiddleName(String middleName) {
-            this.middleName = middleName;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
+        public void setFullName(String fullName) {
+            this.fullName = fullName;
         }
 
         public String getDateOfBirth() {

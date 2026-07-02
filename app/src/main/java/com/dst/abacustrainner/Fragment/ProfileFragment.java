@@ -182,9 +182,8 @@ public class ProfileFragment extends Fragment {
                             .circleCrop()
                             .into(imageProfile);
 
-                    String firstName = capitalizeFirstLetter(studentTotalDetails.getResult().getFirstName());
-                    String middleName = capitalizeFirstLetter(studentTotalDetails.getResult().getMiddleName());
-                    String lastName = capitalizeFirstLetter(studentTotalDetails.getResult().getLastName());
+                    String firstName = capitalizeFirstLetter(studentTotalDetails.getResult().getFullName());
+
 
                     String email = studentTotalDetails.getResult().getParentEmail();
                     String mobileNumber = studentTotalDetails.getResult().getFatherMobile();
@@ -211,7 +210,7 @@ public class ProfileFragment extends Fragment {
                         e.printStackTrace();
                     }
 
-                    String fullName = firstName +  middleName + " " + lastName;
+                    String fullName = firstName ;
                     txtName.setText(fullName);
                     txtEmail.setText(email);
                     txtnumber.setText(mobileNumber);

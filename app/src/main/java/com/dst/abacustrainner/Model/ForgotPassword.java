@@ -57,9 +57,8 @@ public class ForgotPassword {
         private String mId;
         private Object ufMid;
         private Object joinDate;
-        private String firstName;
-        private Object middleName;
-        private String lastName;
+        private String fullname;
+
         private String dateOfBirth;
         private String dobMonth;
         private String dobDate;
@@ -153,28 +152,12 @@ public class ForgotPassword {
             this.joinDate = joinDate;
         }
 
-        public String getFirstName() {
-            return firstName;
+        public String getFullname() {
+            return fullname;
         }
 
-        public void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
-
-        public Object getMiddleName() {
-            return middleName;
-        }
-
-        public void setMiddleName(Object middleName) {
-            this.middleName = middleName;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
+        public void setFullname(String fullname) {
+            this.fullname = fullname;
         }
 
         public String getDateOfBirth() {

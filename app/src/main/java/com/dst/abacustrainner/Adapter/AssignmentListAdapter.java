@@ -49,7 +49,7 @@ public class AssignmentListAdapter extends RecyclerView.Adapter<AssignmentListAd
         String topicId=assignmentTopics.getTopicId();
         String topicName=assignmentTopics.getTopicName();
         StudentRegistationResponse.Result result= SharedPrefManager.getInstance(mContext.getApplicationContext()).getUserData();
-        String studentName =result.getFirstName();
+        String studentName =result.getFullName();
         String studentId=result.getStudentId();
         holder.txtAssignmentName.setText(assignmentTopics.getTopicName());
         holder.txtAssignPracticeCount.setText(count);

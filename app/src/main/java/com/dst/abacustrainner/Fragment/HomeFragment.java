@@ -128,7 +128,7 @@ public class HomeFragment extends Fragment {
         id=result.getStudentId();
 
          Log.e("Pranisha","StudentId" + id);
-        firsstname=" Hello " +  result.getFirstName() + "";
+        firsstname=" Hello " +  result.getFullName() + "";
         butViewMoreDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -420,7 +420,7 @@ public class UpDateProfileFragment extends Fragment {
                     StudentTotalDetails studentTotalDetails = response.body();
                     Log.d("DEBUG", "Error Code: " + studentTotalDetails.getErrorCode());
 
-                    edtfirstName.setText(studentTotalDetails.getResult().getFirstName());
+                    edtfirstName.setText(studentTotalDetails.getResult().getFullName());
                     edtgender.setText(studentTotalDetails.getResult().getGender());
                     edtmotherTongue.setText(studentTotalDetails.getResult().getMotherTongue());
                     edtFathername.setText(studentTotalDetails.getResult().getFatherName());

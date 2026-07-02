@@ -44,7 +44,7 @@ public class TopicListAdapter extends RecyclerView.Adapter<TopicListAdapter.Topi
         String topicId=topic.getTopicId();
         String topicName=topic.getTopicName();
         StudentRegistationResponse.Result result= SharedPrefManager.getInstance(mContext.getApplicationContext()).getUserData();
-        String studentName =result.getFirstName();
+        String studentName =result.getFullName();
         String studentId=result.getStudentId();
         holder.txtTopicName.setText(topic.getTopicName());
         holder.txtPracticeCount.setText(count);
