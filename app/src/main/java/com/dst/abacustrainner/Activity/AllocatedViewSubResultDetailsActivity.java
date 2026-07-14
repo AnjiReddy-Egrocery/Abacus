@@ -354,6 +354,17 @@ public class AllocatedViewSubResultDetailsActivity extends AppCompatActivity {
                         givenView.setLayoutParams(new TableRow.LayoutParams(
                                 0, TableRow.LayoutParams.WRAP_CONTENT, 1));
 
+                        if (given.isEmpty()) {
+                            givenView.setBackgroundColor(Color.WHITE); // Set background color to white
+                        } else if (given.equals(answer)) {
+                            givenView.setBackgroundColor(Color.parseColor("#008000"));
+                            //correctCount++;// Set background color to green
+                        } else {
+                            givenView.setBackgroundColor(Color.RED);
+                            // wrongCount++;// Set background color to red
+
+                        }
+
                         TextView timeView = new TextView(AllocatedViewSubResultDetailsActivity.this);
                         timeView.setText(timeTaken);
                         timeView.setGravity(Gravity.CENTER);

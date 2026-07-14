@@ -322,7 +322,7 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
                 scrollView.smoothScrollTo(moveX, 0);
 
                 if (currentQuestionIndex >= 0 && currentQuestionIndex < answerArray.length) {
-                    answer = answerEditText.getText().toString();
+                    answer = answerEditText.getText().toString().trim();
                     enteredAnswers.set(currentQuestionIndex, answer);
 
                     String originalAnswer = answerArray[currentQuestionIndex];
@@ -486,7 +486,7 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
 
 
 
-        String answer = answerEditText.getText().toString();
+        String answer = answerEditText.getText().toString().trim();
 
         originalAnswer = answerArray[currentQuestionIndex];
         if (!answer.isEmpty()) {
@@ -498,7 +498,7 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
 
 
         if (currentQuestionIndex >= 0 && currentQuestionIndex < questionsArray.length) {
-            String enteredAnswer = answerEditText.getText().toString();
+            String enteredAnswer = answerEditText.getText().toString().trim();
             //enteredAnswers.add(enteredAnswer);
             enteredAnswers.set(currentQuestionIndex, enteredAnswer);
 

@@ -401,7 +401,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         stopTimer();
         saveTimerState();
 
-        String answer = answerEditText.getText().toString();
+        String answer = answerEditText.getText().toString().trim();
 
         originalAnswer = answerArray[currentQuestionIndex];
         if (!answer.isEmpty()) {
@@ -413,7 +413,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
 
 
         if (currentQuestionIndex >= 0 && currentQuestionIndex < questionsArray.length) {
-            String enteredAnswer = answerEditText.getText().toString();
+            String enteredAnswer = answerEditText.getText().toString().trim();
             enteredAnswers.add(enteredAnswer);
 
             Log.e("DebugTag", "Index: " + currentQuestionIndex);

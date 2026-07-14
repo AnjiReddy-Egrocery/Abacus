@@ -275,7 +275,7 @@ public class LevelAssignmentExamActivity extends AppCompatActivity {
                 scrollView.smoothScrollTo(moveX, 0);
 
                 if (currentQuestionIndex >= 0 && currentQuestionIndex < answerArray.length) {
-                    answer = answerEditText.getText().toString();
+                    answer = answerEditText.getText().toString().trim();
                     enteredAnswers.set(currentQuestionIndex, answer);
 
                     String originalAnswer = answerArray[currentQuestionIndex];
@@ -397,7 +397,7 @@ public class LevelAssignmentExamActivity extends AppCompatActivity {
         stopTimer();
         saveTimerState();
 
-        String answer = answerEditText.getText().toString();
+        String answer = answerEditText.getText().toString().trim();
 
         originalAnswer = answerArray[currentQuestionIndex];
         if (!answer.isEmpty()) {
