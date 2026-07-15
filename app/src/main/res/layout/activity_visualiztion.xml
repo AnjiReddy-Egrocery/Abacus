@@ -21,31 +21,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="20dp"
-            >
-            <LinearLayout
-                android:id="@+id/btn_back_to_home_vis"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:orientation="vertical"
-                android:background="@drawable/circle_image">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="12dp"
-                    android:src="@drawable/baseline_arrow_back_ios_new_24"/>
-            </LinearLayout>
+            android:layout_margin="16dp"
+            android:id="@+id/btn_back_to_home"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/round_arrow" />
+
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Visualization game"
-                android:textStyle="bold"
-                android:textSize="25dp"
-                android:gravity="center_vertical"
-                android:textColor="#FFF"
-                android:layout_marginLeft="16dp"/>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:gravity="center"
+                android:text="Visualization Game"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+
         </LinearLayout>
 
         <!--        <ImageView-->

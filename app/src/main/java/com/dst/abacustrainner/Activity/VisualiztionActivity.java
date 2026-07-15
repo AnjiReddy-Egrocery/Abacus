@@ -9,6 +9,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -65,7 +66,7 @@ public class VisualiztionActivity extends AppCompatActivity {
         textViewTotalNumbers = findViewById(R.id.txt_total_numbers);
         spinnerSelectedLevel = findViewById(R.id.spinnerSelectedLevel);
         butStartNumberGame = findViewById(R.id.but_start_game);
-        btnBack=findViewById(R.id.btn_back_to_home_vis);
+        btnBack=findViewById(R.id.btn_back_to_home);
         tvLevelError = findViewById(R.id.tvLevelError);
         tvOperationError = findViewById(R.id.tvoperationerror);
         tvrowserror= findViewById(R.id.tvtotalrowws);
@@ -75,6 +76,17 @@ public class VisualiztionActivity extends AppCompatActivity {
         Bundle bundle=getIntent().getExtras();
         studentid=bundle.getString("studentId");
         studentName = bundle.getString("firstName");
+
+        spinnerSelectedLevel.setPopupBackgroundResource(R.drawable.spinner_popup_bg);
+        spinnerOperation.setPopupBackgroundResource(R.drawable.spinner_popup_bg);
+        spinnerOperands.setPopupBackgroundResource(R.drawable.spinner_popup_bg);
+        spinnerTotalQuestions.setPopupBackgroundResource(R.drawable.spinner_popup_bg);
+
+        spinnerSelectedLevel.setDropDownVerticalOffset(130);
+        spinnerOperation.setDropDownVerticalOffset(130);
+        spinnerOperands.setDropDownVerticalOffset(180);
+        spinnerTotalQuestions.setDropDownVerticalOffset(500);
+
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -368,6 +380,10 @@ public class VisualiztionActivity extends AppCompatActivity {
             dropdownContainer.addView(textView);
             // Create Spinner with the same style and layout attributes as in XML
             Spinner spinner = new Spinner(this, null, android.R.attr.spinnerStyle);
+            spinner.setPopupBackgroundResource(R.drawable.spinner_popup_bg);
+            spinner.setDropDownVerticalOffset(5);
+            spinner.setDropDownWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+
 
             // Set layout parameters with fixed height and margins
             // (you can customize these parameters)
@@ -387,9 +403,13 @@ public class VisualiztionActivity extends AppCompatActivity {
             spinner.setPadding(10, 10, 10, 10);
             spinner.setBackground(getResources().getDrawable(R.drawable.spinner_bg));
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.operand_values));
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter<String> adapter =
+                    new ArrayAdapter<>(this,
+                            R.layout.spinner_item,
+                            getResources().getStringArray(R.array.operand_values));
+
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+
             spinner.setAdapter(adapter);
 
 

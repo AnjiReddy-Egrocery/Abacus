@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginLeft="14dp"
+            android:layout_marginTop="12dp"
             android:layout_marginRight="14dp">
 
             <FrameLayout
@@ -166,18 +167,26 @@
                 android:background="@drawable/back_ground"
                 android:textColorHint="#000"/>
 
-            <Button
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Update Profile"
-                android:id="@+id/but_update_profile"
-                android:textSize="16dp"
-                android:fontFamily="@font/regular"
-                android:textStyle="bold"
-                android:textColor="#FFF"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="#FD6801"/>
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Update Profile"
+                    android:id="@+id/but_update_profile"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/regular"
+                    android:textStyle="bold"
+                    android:textColor="#FFF"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="10dp"
+                    android:backgroundTint="#FD6801"/>
+
+            </LinearLayout>
+
 
 
         </LinearLayout>

@@ -315,6 +315,7 @@
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
                                 android:layout_marginStart="-280dp">
 
                                 <TextView
@@ -394,7 +395,7 @@
                         android:id="@+id/btnNext"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="50dp"
+                        android:layout_marginLeft="60dp"
                         android:background="@drawable/save_next_btn"
                         android:orientation="horizontal">
 
@@ -420,7 +421,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="4dp"
-
                                 android:background="@drawable/circle_image_white"
                                 android:orientation="horizontal">
 
@@ -448,7 +448,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="18dp"
+                    android:layout_marginTop="18dp"
                     android:gravity="center">
 
                     <LinearLayout

@@ -63,8 +63,8 @@ public class ProfileFragment extends Fragment {
     TextView txtName,txtEmail,txtnumber,txtdob;
     ImageView imageProfile;
 
-    Button butEditProfile;
-    Button butViewMoreDetails, butSubdetails, butCourses;
+    ImageView imageEditProfile;
+    ImageView butViewMoreDetails, butSubdetails, butCourses;
 
 
     @SuppressLint("MissingInflatedId")
@@ -83,7 +83,7 @@ public class ProfileFragment extends Fragment {
         butSubdetails = view.findViewById(R.id.but_subscription_details);
         butCourses = view.findViewById(R.id.but_view_courses);
 
-        butEditProfile = view.findViewById(R.id.but_edit_profile);
+        imageEditProfile = view.findViewById(R.id.imgEdit);
 
         StudentTotalDetails.Result studentdetails = SharedPrefManager.getInstance(getContext()).getUser();
 
@@ -91,7 +91,7 @@ public class ProfileFragment extends Fragment {
         Log.d("Reddy",studentId);
 
         StudentDetailsMethod(studentId);
-        butEditProfile.setOnClickListener(new View.OnClickListener() {
+        imageEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("DEBUG", "Button clicked");

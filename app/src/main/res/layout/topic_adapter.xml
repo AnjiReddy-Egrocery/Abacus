@@ -41,8 +41,9 @@
                         android:layout_margin="10dp"
                         android:textColor="#000"
                         android:text=""
+                        android:textStyle="normal"
                         android:fontFamily="@font/regular"
-                        android:textSize="18dp" />
+                        android:textSize="16dp" />
                 </LinearLayout>
 
                 <LinearLayout

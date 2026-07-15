@@ -71,9 +71,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
-    TextView txtName,   txtPurchases, txtTime,txtTime1,txtClckSchedule,txtNextSchedule,txtNextTime,txtCompleted,txtRemaining,txtEmpty;
+    TextView txtName,   txtPurchases, txtTime,txtTime1,txtClckSchedule,txtNextTime,txtCompleted,txtRemaining,txtEmpty;
     Button butViewMoreDetails, butSubdetails, butCourses;
-    String currentDate,textWithBrackets;
+    String currentDate ,textWithBrackets;
     private Calendar calendar;
     private String studentId, batchId;
     String id="",dateId ="",name="",time="",time1="",date="",firsstname="",startedOn="";
@@ -103,7 +103,6 @@ public class HomeFragment extends Fragment {
         txtName=view.findViewById(R.id.txt_name);
         txtTime=view.findViewById(R.id.txt_time);
         txtTime1=view.findViewById(R.id.txtdate);
-        txtNextSchedule = view.findViewById(R.id.txt_nxtSchedule);
         txtNextTime = view.findViewById(R.id.txt_nextTime);
         txtCompleted = view.findViewById(R.id.txt_Completed);
         txtRemaining = view.findViewById(R.id.txt_upComing);
@@ -122,12 +121,14 @@ public class HomeFragment extends Fragment {
         layoutPlayWithNumbers=view.findViewById(R.id.layout_play_number);
         layoutvisualization=view.findViewById(R.id.layout_visualization);
         calendar = Calendar.getInstance();
-        updateDateText();
         //get the user id from sharedpref manager
         StudentRegistationResponse.Result result= SharedPrefManager.getInstance(getContext().getApplicationContext()).getUserData();
         id=result.getStudentId();
 
-         Log.e("Pranisha","StudentId" + id);
+        updateDateText();
+
+
+        Log.e("Reddy","StudentId" + id);
         firsstname=" Hello " +  result.getFullName() + "";
         butViewMoreDetails.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,18 +180,7 @@ public class HomeFragment extends Fragment {
             studentId = id; // fallback to SharedPref ID
         }*/
 
-        txtClckSchedule.setText(Html.fromHtml("<u>Click Here</u>"));
-        txtClckSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               /* if (studentId != null && !studentId.isEmpty()) {
-                    openScheduleFragment();
-                } else {
-                    Toast.makeText(getContext(), "Student ID is missing", Toast.LENGTH_SHORT).show();
-                }*/
-                openScheduleFragment();
-            }
-        });
+
         layoutPlayWithNumbers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -235,6 +225,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadHomeData() {
+
         VerifyMethod(id,currentDate);
 
         VerifyBatchDetails(id);
@@ -338,96 +329,106 @@ public class HomeFragment extends Fragment {
         call.enqueue(new Callback<DatedetailsResponse>() {
             @Override
             public void onResponse(Call<DatedetailsResponse> call, Response<DatedetailsResponse> response) {
-                if (response.body() != null) {
-                    DatedetailsResponse details = response.body();
+                if (response.body() == null) return;
 
-                    if (details.getErrorCode().equals("202")) {
-                        Toast.makeText(getContext(), "No Schedule for the given details", Toast.LENGTH_LONG).show();
-                    } else if (details.getErrorCode().equals("200")) {
-                        List<DatedetailsResponse.Result> daResult = details.getResult();
-                        if (daResult != null && !daResult.isEmpty()) {
-                            DatedetailsResponse.Result batchDetails = daResult.get(0);
+                DatedetailsResponse details = response.body();
 
-                            startTime = batchDetails.getStartTime();
-                            endTime = batchDetails.getEndTime();
-                            timeText = startTime + " - " + endTime; // e.g., "4:00 PM - 5:00 PM"
-                        } else {
-                            txtTime.setText("No data available");
-                        }
+                if (details.getErrorCode().equals("202")) {
 
-                        scheduledDatesMap.clear();
-                        dateIdMap.clear();
+                    layoutScheduleInfo.setVisibility(View.GONE);
+                    return;
+                }
 
-                        int classNumber = 1;
-                        int completedSchedules = 0;
-                        int totalSchedules = 0;
-                        int remainingSchedules = 0;
-                        for (DatedetailsResponse.Result result : daResult) {
-                            if (result.getDates() != null) {
-                                List<DatedetailsResponse.Result.Date> datesList = result.getDates();
+                if (details.getErrorCode().equals("200")) {
 
-                                SimpleDateFormat inputFormat = new SimpleDateFormat("dd - MMMM - yyyy", Locale.ENGLISH);
-                                SimpleDateFormat displayFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-                                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                                Date today = new Date();
+                    List<DatedetailsResponse.Result> daResult = details.getResult();
 
-                                boolean nextScheduleFound = false;
+                    if (daResult == null || daResult.isEmpty()) {
 
-                                for (DatedetailsResponse.Result.Date dateObj : datesList) {
-                                    String scheduleDateStr = dateObj.getScheduleDate().trim();
-                                    dateId = dateObj.getDateId();
+                        layoutScheduleInfo.setVisibility(View.GONE);
+                        return;
+                    }
 
-                                    try {
-                                        Date scheduleDate = inputFormat.parse(scheduleDateStr);
-                                        totalSchedules++;
+                    DatedetailsResponse.Result batchDetails = daResult.get(0);
 
-                                        if (scheduleDate.before(today)) {
-                                            completedSchedules++;
-                                        } else {
-                                            remainingSchedules++;
-                                        }
+                    startTime = batchDetails.getStartTime();
+                    endTime = batchDetails.getEndTime();
+                    timeText = startTime + " - " + endTime;
 
-                                        String formattedDate = outputFormat.format(scheduleDate);
-                                        scheduledDatesMap.put(formattedDate, "Class - " + classNumber);
-                                        dateIdMap.put(formattedDate, dateId);
-                                        classNumber++;
+                    scheduledDatesMap.clear();
+                    dateIdMap.clear();
 
-                                        if (!nextScheduleFound && scheduleDate.after(today)) {
-                                            String displayDate = displayFormat.format(scheduleDate);
-                                            String fullSchedule = displayDate + ", [" + timeText + "]";
-                                            txtNextSchedule.setText(fullSchedule);
-                                            txtNextTime.setText(timeText);
-                                            nextScheduleFound = true;
-                                        }
+                    int classNumber = 1;
+                    int completedSchedules = 0;
+                    int remainingSchedules = 0;
 
-                                    } catch (ParseException e) {
-                                        Log.e("ScheduleDebug", "Date Parsing Error: " + scheduleDateStr, e);
-                                    }
+                    boolean todayScheduleFound = false;
+
+                    SimpleDateFormat inputFormat =
+                            new SimpleDateFormat("dd - MMMM - yyyy", Locale.ENGLISH);
+
+                    SimpleDateFormat displayFormat =
+                            new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+
+                    SimpleDateFormat compareFormat =
+                            new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+                    String todayDate = compareFormat.format(new Date());
+
+                    for (DatedetailsResponse.Result result : daResult) {
+
+                        if (result.getDates() == null)
+                            continue;
+
+                        List<DatedetailsResponse.Result.Date> datesList = result.getDates();
+
+                        for (DatedetailsResponse.Result.Date dateObj : datesList) {
+
+                            try {
+
+                                String scheduleDateStr = dateObj.getScheduleDate().trim();
+                                dateId = dateObj.getDateId();
+
+                                Date scheduleDate = inputFormat.parse(scheduleDateStr);
+
+                                String formattedDate = compareFormat.format(scheduleDate);
+
+                                scheduledDatesMap.put(formattedDate, "Class - " + classNumber);
+                                dateIdMap.put(formattedDate, dateId);
+                                classNumber++;
+
+                                if (formattedDate.compareTo(todayDate) < 0) {
+                                    completedSchedules++;
+                                } else {
+                                    remainingSchedules++;
                                 }
 
-                                if (!nextScheduleFound) {
-                                    txtNextSchedule.setText("No upcoming schedule found");
-                                    txtNextTime.setText(""); // clear time
+                                // Today's Schedule
+                                if (formattedDate.equals(todayDate)) {
+
+                                    txtNextTime.setText(timeText);
+
+                                    layoutScheduleInfo.setVisibility(View.VISIBLE);
+
+                                    todayScheduleFound = true;
                                 }
-                            }
-                        }
 
-                        // ✅ Now show the totals (initialize these TextViews at the top)
-
-                        txtCompleted.setText("Completed: " + completedSchedules);
-                        txtRemaining.setText("Remaining: " + remainingSchedules);
-                        if (completedSchedules == 0 && remainingSchedules == 0) {
-                            layoutSchedule.setVisibility(View.GONE);
-                            layoutScheduleInfo.setVisibility(View.GONE);
-                        } else {
-                            layoutSchedule.setVisibility(View.VISIBLE);
-                            layoutScheduleInfo.setVisibility(View.VISIBLE);
-                        }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     }
 
+                    if (!todayScheduleFound) {
+                        layoutScheduleInfo.setVisibility(View.GONE);
 
+                        txtNextTime.setText("");
+                    }
+
+                    txtCompleted.setText("Completed: " + completedSchedules);
+                    txtRemaining.setText("Remaining: " + remainingSchedules);
+                }
+            }
 
             @Override
             public void onFailure(Call<DatedetailsResponse> call, Throwable t) {
@@ -528,15 +529,32 @@ public class HomeFragment extends Fragment {
     private void handleApiResult(StudentDetails details) {
         if (details.getErrorCode().equals("202")) {
 
+            // No Class Today / No Next Class
+            layoutScheduleInfo.setVisibility(View.GONE);
+
+            txtNextTime.setText("");
+            txtClckSchedule.setText("");
+            txtCompleted.setText("");
+            txtRemaining.setText("");
+
         } else if (details.getErrorCode().equals("200")) {
+
             List<StudentDetails.Result> list = details.getResult();
-            if (!list.isEmpty()) {
+
+            if (list != null && !list.isEmpty()) {
+
                 StudentDetails.Result result = list.get(0);
+
                 dateId = result.getDateId();
-                name = "Batch Name : " + result.getBatchName() + "";
-                time1 = result.getEndTime();
-                time = result.getStartTime();
-                date=result.getScheduleDate();
+
+                txtNextTime.setText(result.getScheduleDate());
+                txtClckSchedule.setText(result.getStartTime() + "-" + result.getEndTime());
+                txtCompleted.setText(String.valueOf(result.getTopicsCount()));
+                txtRemaining.setText(String.valueOf(result.getAssignmentTopicsCount()));
+
+                layoutScheduleInfo.setVisibility(View.VISIBLE);
+            } else {
+                layoutScheduleInfo.setVisibility(View.GONE);
             }
         }
     }

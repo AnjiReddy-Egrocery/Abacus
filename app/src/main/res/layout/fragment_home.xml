@@ -90,7 +90,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="dd/mm/yyyy"
+                                android:text="Class Date "
                                 android:textColor="#000"
                                 android:gravity="center"
                                 android:id="@+id/txt_nxtSchedule"
@@ -99,7 +99,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text=","
+                                android:text=" : "
                                 android:textColor="#000"
                                 android:gravity="center"
                                 android:textStyle="bold"
@@ -107,7 +107,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text=" []"
+                                android:text="  "
                                 android:textColor="#000"
                                 android:id="@+id/txt_nextTime"
                                 android:gravity="center"
@@ -125,7 +125,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="H/W(Last Class)"
+                                android:text="Class Time"
                                 android:textColor="#000"
                                 android:textSize="16dp"
                                 android:textStyle="bold"/>
@@ -139,11 +139,11 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Click Here"
+                                android:text=""
                                 android:textColor="#000"
-                                android:textSize="16dp"
+                                android:textSize="14dp"
                                 android:id="@+id/txt_clcik_schedule"
-                                android:textStyle="bold"/>
+                                android:textStyle="normal"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -156,7 +156,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="#000"
-                                android:text="Total Class"
+                                android:text="Topics "
                                 android:textStyle="bold"
                                 android:textSize="14dp" />
                             <TextView
@@ -173,18 +173,43 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="27dp"
                                 android:layout_marginLeft="4dp"
-                                android:text="Completed:0"
+                                android:text=""
                                 android:textColor="#000"
+                                android:textSize="14dp" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginLeft="14dp"
+                            android:layout_marginRight="14dp"
+                            android:layout_marginBottom="8dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#000"
+                                android:text="Assignments "
+                                android:textStyle="bold"
                                 android:textSize="14dp" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="#000"
-                                android:id="@+id/txt_upComing"
+                                android:text=":"
                                 android:layout_marginLeft="4dp"
-                                android:text="UpComing:0"
+                                android:textStyle="bold"
+                                android:textSize="16dp" />
+
+                            <TextView
+                                android:id="@+id/txt_upComing"
+                                android:layout_width="wrap_content"
+                                android:layout_height="27dp"
+                                android:layout_marginLeft="4dp"
+                                android:text=""
+                                android:textColor="#000"
                                 android:textSize="14dp" />
                         </LinearLayout>
+
                     </LinearLayout>
 
 

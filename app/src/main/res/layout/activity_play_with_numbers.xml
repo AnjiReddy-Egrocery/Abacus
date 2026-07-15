@@ -24,12 +24,12 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:orientation="vertical"
+                android:gravity="center"
                 android:background="@drawable/circle_image">
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="11dp"
-                    android:layout_margin="12dp"
+                    android:layout_height="wrap_content"
                     android:src="@drawable/baseline_arrow_back_ios_new_24" />
             </LinearLayout>
 
@@ -88,6 +88,9 @@
                             android:padding="10dp"
                             android:background="@drawable/spinner_bg"
                             android:paddingLeft="4dp"
+                            android:dropDownHeight="250dp"
+                            android:dropDownVerticalOffset="50dp"
+                            android:spinnerMode="dropdown"
                             android:id="@+id/spinnerSelectedLevel"
                             android:entries="@array/levels"
                             android:layout_marginBottom="2dp"/>
@@ -152,6 +155,9 @@
                                 android:layout_marginRight="10dp"
                                 android:layout_marginTop="2dp"
                                 android:padding="10dp"
+                                android:dropDownHeight="250dp"
+                                android:dropDownVerticalOffset="50dp"
+                                android:spinnerMode="dropdown"
                                 android:background="@drawable/spinner_bg"
                                 android:paddingLeft="4dp"
                                 android:id="@+id/spinnerOperation"
@@ -182,7 +188,8 @@
                                 android:textSize="14dp"
                                 android:id="@+id/txt_total_numbers"
                                 android:layout_marginLeft="10dp"
-                                android:textColor="#000"                                android:layout_marginTop="12dp"
+                                android:textColor="#000"
+                                android:layout_marginTop="12dp"
                                 android:textStyle="bold"/>
                             <Spinner
                                 android:layout_width="match_parent"
@@ -190,7 +197,9 @@
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginRight="10dp"
                                 android:layout_marginTop="2dp"
-
+                                android:dropDownHeight="250dp"
+                                android:dropDownVerticalOffset="350dp"
+                                android:spinnerMode="dropdown"
                                 android:padding="10dp"
                                 android:background="@drawable/spinner_bg"
                                 android:paddingLeft="4dp"
@@ -242,6 +251,9 @@
                                 android:padding="10dp"
                                 android:background="@drawable/spinner_bg"
                                 android:paddingLeft="4dp"
+                                android:dropDownHeight="250dp"
+                                android:dropDownVerticalOffset="5dp"
+                                android:spinnerMode="dropdown"
                                 android:entries="@array/total_questions"
                                 android:layout_marginTop="2dp"
                                 android:layout_marginBottom="2dp"/>

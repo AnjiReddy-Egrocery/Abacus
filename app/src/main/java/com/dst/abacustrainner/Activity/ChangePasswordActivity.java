@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     String id;
     EditText edtOldPassword,edtNewPassword,edtReEnterPwd;
     TextView txtOldPassword,txtPassword,txtConfirmPassword;
+    private LinearLayout layoutBack;
 
 
     @SuppressLint("MissingInflatedId")
@@ -49,6 +51,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         edtOldPassword=findViewById(R.id.edt_old_password);
         edtNewPassword=findViewById(R.id.newpassword);
         edtReEnterPwd=findViewById(R.id.edt_reenter_password);
+        layoutBack = findViewById(R.id.layout_back);
 
         txtOldPassword = findViewById(R.id.txt_oldpassword);
         txtPassword = findViewById(R.id.txt_newpassword);
@@ -57,6 +60,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
         Bundle bundle=getIntent().getExtras();
 
         id=bundle.getString("studentId");
+
+
+        layoutBack.setOnClickListener(v -> finish());
 
 
 

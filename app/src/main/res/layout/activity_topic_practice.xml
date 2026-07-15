@@ -36,6 +36,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:textSize="16dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:textStyle="bold"
                     android:fontFamily="@font/regular"
@@ -305,7 +306,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="00:00"
-
+                            android:gravity="right"
                             android:layout_weight="0.8"
                             android:layout_marginStart="10dp"
                             android:textColor="#000"
