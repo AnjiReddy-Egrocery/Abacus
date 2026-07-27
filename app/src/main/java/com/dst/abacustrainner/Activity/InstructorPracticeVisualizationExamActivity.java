@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,7 +14,11 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
+import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -29,15 +34,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.dst.abacustrainner.Model.AllocatedTopicExamResponse;
-import com.dst.abacustrainner.Model.CourseLevelTopicResponse;
-import com.dst.abacustrainner.Model.CourseTopicExamResponse;
+import com.dst.abacustrainner.Model.PaperExamResponse;
+import com.dst.abacustrainner.Model.PaperSubmitDataResponse;
 import com.dst.abacustrainner.Model.SendData;
 import com.dst.abacustrainner.Model.SubmitDataResponse;
 import com.dst.abacustrainner.Model.TopicExamResponse;
-import com.dst.abacustrainner.Model.WorkSheetSubmitDataResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.database.ParcelableLong;
@@ -51,6 +52,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,7 +66,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class CourseTopicExamActivity extends AppCompatActivity {
+public class InstructorPracticeVisualizationExamActivity extends AppCompatActivity {
 
     LinearLayout butPreviousQuestion, butSave, butSubmit,btnBack;
     TextView txtTimer, questionTextView, txtTopicName,txtdisplayquestion,txtTotalTimer;
@@ -77,6 +79,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
     private long interval = 1000;
 
     private boolean timerRunning = false;
+    //ImageView imageLeft, imageRight;
 
     GridLayout gridLayout;
 
@@ -84,6 +87,9 @@ public class CourseTopicExamActivity extends AppCompatActivity {
     ArrayList<String> enteredAnswers;
     List<Button> questionButtons = new ArrayList<>();
 
+    String studentid = "";
+    String paperid = "";
+    String topicName = "";
 
     String[] questionsArray = new String[]{""};
     String[] answerArray = new String[]{""};
@@ -130,20 +136,18 @@ public class CourseTopicExamActivity extends AppCompatActivity {
     private static final int MAX_QUESTIONS = 20;
     LinearLayout leftIcon,rightIcon;
     ImageView questionImageView;
-
-
-
-    String studentId,topicId,topicName;
+    private TextToSpeech textToSpeech;
+    private boolean isTtsReady = false;
+    private boolean isQuestionActive = false;
+    LinearLayout linearRepeat;
+    private static final int REQ_CODE_SPEECH_INPUT = 100;
+    private boolean isFromPreviousClick = false;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_course_topic_exam);
-
-
-        studentId= getIntent().getStringExtra("StudentId");
-        topicId = getIntent().getStringExtra("TopicId");
+        setContentView(R.layout.activity_instructor_practice_visualization_exam);
 
         butPreviousQuestion = findViewById(R.id.prv_qus);
         questionTextView = findViewById(R.id.questionTextView);
@@ -162,17 +166,19 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         btnBack=findViewById(R.id.btn_back_level_select);
         scrollView = findViewById(R.id.horizontalScrollView);
         questionImageView = findViewById(R.id.questionImageView);
+        linearRepeat = findViewById(R.id.layout_repeat);
 
+
+        butSubmit.setEnabled(false);
+        butSubmit.setClickable(false);
 
         Bundle bundle = getIntent().getExtras();
 
-        studentId = bundle.getString("StudentId");
-        topicId = bundle.getString("TopicId");
-        topicName = bundle.getString("TopicName");
+        studentid = bundle.getString("StudentId");
+        paperid = bundle.getString("PaperId");
+        topicName = bundle.getString("PaperName");
+        studentName =bundle.getString("firstName");
         txtTopicName.setText(topicName);
-
-        Log.d("Reddy",topicId);
-        Log.d("Reddy",studentId);
 
         displayQuestion(currentQuestionIndex);
         questionTimers = new ArrayList<>();
@@ -184,6 +190,23 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         //questionButtons = new ArrayList<>();
         questionTimes = new ArrayList<>(20);
         listData = new ArrayList<>();
+
+        answerEditText.setFocusable(true);
+        answerEditText.setFocusableInTouchMode(true);
+        answerEditText.setClickable(true);
+
+        linearRepeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                repeatCurrentQuestion();
+            }
+        });
+
+
+
+
+        Log.d("Reddy","StudentId"+ studentid);
+        Log.e("Reddy","TopicId"+paperid);
 
         Log.e("Anji","Data"+listData);
         Log.e("Anji","isQuestionAnswered"+isQuestionAnswered);
@@ -223,9 +246,24 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                 }
 
                 showCompletionDialog();
-
             }
         });
+
+        textToSpeech = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.SUCCESS) {
+                int result = textToSpeech.setLanguage(Locale.US); // or Locale.ENGLISH
+
+                if (result == TextToSpeech.LANG_MISSING_DATA ||
+                        result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Log.e("TTS", "Language not supported");
+                } else {
+                    isTtsReady = true;
+                }
+            } else {
+                Log.e("TTS", "Initialization failed");
+            }
+        });
+
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,11 +312,6 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         butSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null && getCurrentFocus() != null) {
-                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                }
-                answerEditText.clearFocus();
 
                 int currentX = scrollView.getScrollX();
                 int moveX = currentX + 100;  // Move 100 pixels to the left
@@ -286,7 +319,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                 scrollView.smoothScrollTo(moveX, 0);
 
                 if (currentQuestionIndex >= 0 && currentQuestionIndex < answerArray.length) {
-                    answer = answerEditText.getText().toString();
+                    answer = answerEditText.getText().toString().trim();
                     enteredAnswers.set(currentQuestionIndex, answer);
 
                     String originalAnswer = answerArray[currentQuestionIndex];
@@ -330,6 +363,8 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         butPreviousQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isQuestionActive) return;
+
                 stopTimer();
 
                 int currentX = scrollView.getScrollX();
@@ -339,14 +374,13 @@ public class CourseTopicExamActivity extends AppCompatActivity {
 
                 // Reset the timer to the saved time
                 saveTimerState();
-
+                isFromPreviousClick = true; // 🔥 KEY FIX
 
                 // Start the timer for the current question
 
                 // Navigate to the previous question
                 navigateToPreviousQuestion();
                 restoreTimerState(); // Restore timer state for the previous question
-                startTimer();
             }
 
         });
@@ -399,21 +433,98 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         });
 
 
+        /*imageLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageLeft.setVisibility(View.GONE);
+                imageRight.setVisibility(View.VISIBLE);
+                gridLayout.setVisibility(View.VISIBLE);
 
-        startTimer();
-        VerifyMethod(studentId, topicId);
+            }
+        });
+
+        imageRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageLeft.setVisibility(View.VISIBLE);
+                imageRight.setVisibility(View.GONE);
+                gridLayout.setVisibility(View.GONE);
+
+            }
+        });*/
+
+        //startTimer();
+        VerifyMethod(studentid, paperid);
 
     }
+
+    private void promptSpeechInput() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something");
+
+        try {
+            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getApplicationContext(), "Speech input not supported", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void repeatCurrentQuestion() {
+        if (isQuestionActive) return; // avoid multiple clicks
+
+        isQuestionActive = true;
+
+        // Hide repeat while replaying
+        linearRepeat.setVisibility(View.GONE);
+
+
+        // Stop previous speech
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+        }
+
+        // Reset UI
+        answerEditText.setVisibility(View.GONE);
+        butSave.setEnabled(false);
+        butSubmit.setEnabled(false);
+
+        // Re-run same question
+        String questionHtml = questionsArray[currentQuestionIndex];
+        String cleanedHtml = questionHtml.replaceAll("<img[^>]+>", "");
+
+        Spanned spannedText =
+                HtmlCompat.fromHtml(cleanedHtml, HtmlCompat.FROM_HTML_MODE_LEGACY);
+
+        String questionTextOnly = spannedText.toString()
+                .replace("\u00A0", "")
+                .replace("= ____", "")
+                .replace("=____", "")
+                .replace("=", "")
+                .replace("_", "")
+                .trim();
+
+        List<String> elements =
+                Arrays.asList(questionTextOnly.split("\\s+"));
+
+        speakAndDisplayOneByOne(elements);
+    }
+
     private void saveAnswerAndMoveToNextQuestion() {
         stopTimer();
         saveTimerState();
+
+        linearRepeat.setVisibility(View.GONE);
+
+
 
         String answer = answerEditText.getText().toString().trim();
 
         originalAnswer = answerArray[currentQuestionIndex];
         if (!answer.isEmpty()) {
             questionTimes.set(currentQuestionIndex,currentTime);
-            listData.add(new SendData(questionTextView.getText().toString(),answer,originalAnswer, isCorrected,currentTime / 1000, status));
+            listData.add(new SendData(questionTextView.getText().toString(),  originalAnswer,answer, isCorrected,currentTime / 1000, status));
         }
 
         Log.e("Anji","Data"+listData);
@@ -421,7 +532,8 @@ public class CourseTopicExamActivity extends AppCompatActivity {
 
         if (currentQuestionIndex >= 0 && currentQuestionIndex < questionsArray.length) {
             String enteredAnswer = answerEditText.getText().toString().trim();
-            enteredAnswers.add(enteredAnswer);
+            //enteredAnswers.add(enteredAnswer);
+            enteredAnswers.set(currentQuestionIndex, enteredAnswer);
 
             Log.e("DebugTag", "Index: " + currentQuestionIndex);
             Log.e("DebugTag", "Entered Answer: " + enteredAnswer);
@@ -478,27 +590,23 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                 isQuestionAnswered.set(currentQuestionIndex, true);
 
             }
-            if (currentQuestionIndex == questionsArray.length - 1) {
-                // 👉 LAST QUESTION
-                showCompletionDialog();
-                return;
-            }
             if (currentQuestionIndex < questionsArray.length-1) {
-
                 currentQuestionIndex++; // Increment index first
                 currentStep = currentQuestionIndex; // Sync the step index
                 displayQuestion(currentQuestionIndex); // Display next question
                 answerEditText.setText(""); // Clear the answer field for the next question
                 currentTime = questionTimes.get(currentQuestionIndex); // Restore timer state for the next question
                 restoreTimerState();
-                startTimer();
+                //startTimer();
             }else {
-               //showCompletionDialog();
+                showCompletionDialog();
             }
         } else {
         }
     }
     private void navigateToPreviousQuestion() {
+        linearRepeat.setVisibility(View.GONE);
+
         if (currentQuestionIndex > 0) {
 
             currentQuestionIndex--;
@@ -510,75 +618,106 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         }
     }
     private void displayQuestion(int currentQuestionIndex) {
-        if (questionsArray != null && questionsArray.length > currentQuestionIndex) {
+        isQuestionActive = true;
+        answerEditText.setVisibility(View.GONE);   // 🔥 Always hide first
+        answerEditText.setText("");
 
-            String questionHtml = questionsArray[currentQuestionIndex];
+        butSave.setEnabled(false);
+        butSubmit.setEnabled(false);
 
-            if (questionHtml == null || questionHtml.trim().isEmpty()) {
-                questionTextView.setVisibility(View.GONE);
-                questionImageView.setVisibility(View.GONE);
-                return;
-            }
+
+        // 🔥 If question already answered
+        if (!isFromPreviousClick &&isQuestionAnswered != null &&
+                isQuestionAnswered.size() > currentQuestionIndex &&
+                isQuestionAnswered.get(currentQuestionIndex)) {
 
             txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":");
 
-            // =========================
-            // 🔥 CLEAN HTML
-            // =========================
-            String cleanHtml = questionHtml;
+            questionImageView.setVisibility(View.GONE);
+            questionTextView.setVisibility(View.VISIBLE);
+            questionTextView.setText("Answer is ?");
 
+            answerEditText.setVisibility(View.VISIBLE);
+            answerEditText.setText(enteredAnswers.get(currentQuestionIndex));
 
+            butSave.setEnabled(true);
+            butSave.setClickable(true);
 
-            // remove unwanted attributes
-            cleanHtml = cleanHtml.replaceAll("data-start=\".*?\"", "");
-            cleanHtml = cleanHtml.replaceAll("data-end=\".*?\"", "");
+            butPreviousQuestion.setEnabled(true);
+            butPreviousQuestion.setClickable(true);
 
-// normalize paragraph
-            cleanHtml = cleanHtml.replaceAll("<p>", "");
-            cleanHtml = cleanHtml.replaceAll("</p>", "<br>");
+            isQuestionActive = false;
 
-// remove extra breaks
-            cleanHtml = cleanHtml.replaceAll("(<br>\\s*){2,}", "<br><br>");
+            return;   // 🔥 VERY IMPORTANT
+        }
+        butPreviousQuestion.setEnabled(false);
+        butPreviousQuestion.setClickable(false);
 
-// 🔥 IMPORTANT: numbers vertical ga undali
-            cleanHtml = cleanHtml.replaceAll("(\\d+)\\s*<br>\\s*(\\d+)", "$1<br>$2");
+        if (questionsArray != null && questionsArray.length > currentQuestionIndex) {
+            String questionHtml = questionsArray[currentQuestionIndex];
 
-// list fix
-            cleanHtml = cleanHtml.replace("<li>", "• ");
-            cleanHtml = cleanHtml.replace("</li>", "<br>");
+            // Log question length and raw content
+            if (questionHtml == null || questionHtml.trim().isEmpty()) {
+                Log.d("QuestionDebug", "Empty or null question at index: " + currentQuestionIndex);
+            } else {
+                Log.d("QuestionDebug", "Raw HTML: " + questionHtml);
+                Log.d("QuestionDebug", "Question Length: " + questionHtml.length());
+            }
 
-            // =========================
-            // 🔥 EXTRACT IMAGE
-            // =========================
+            // Extract <img src="...">
             Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
             Matcher matcher = pattern.matcher(questionHtml);
 
-            boolean hasImage = false;
-            String finalUrl = null;
+            String imageUrl = null;
 
             if (matcher.find()) {
-
-                hasImage = true;
-
-                String imagePath = matcher.group(1).replace("\\", "");
-
-                if (imagePath.startsWith("http")) {
-                    finalUrl = imagePath;
-                } else {
-                    finalUrl = "https://www.abacustrainer.com/" +
-                            imagePath.replace("../../../", "");
-                }
+                imageUrl = matcher.group(1);
+                Log.d("QuestionDebug", "Image URL: " + imageUrl);
             }
+            // Remove <img> tag and backslashes from HTML to get plain text
+            // String questionTextOnly = questionHtml.replaceAll("<img[^>]+>", "").replaceAll("\\\\", "");
+            //Log.d("QuestionDebug", "Cleaned Text: " + questionTextOnly);
 
-            // =========================
-            // 🔥 TEXT PART
-            // =========================
-            String textOnlyHtml = cleanHtml.replaceAll("<img[^>]+>", "").trim();
+            // Set question number
+            txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":");
 
-            boolean hasText = !textOnlyHtml.isEmpty();
-
-            if (hasText) {
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                // ✅ Show only image
+                questionImageView.setVisibility(View.VISIBLE);
                 questionTextView.setVisibility(View.VISIBLE);
+
+                questionTextView.setMaxLines(5);
+                questionTextView.setEllipsize(TextUtils.TruncateAt.END);
+                questionTextView.setText("Beads question not available for visualization practice.");
+
+
+                /*Glide.with(this)
+                        .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .dontAnimate()
+                        .into(questionImageView);
+*/
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finish();  // Go to previous activity
+                    }
+                }, 2000);  // 3 seconds delay
+            } else {
+                // ✅ Show only text
+                questionImageView.setVisibility(View.GONE);
+                questionTextView.setVisibility(View.VISIBLE);
+
+                if (textToSpeech != null) {
+                    textToSpeech.stop();
+                }
+
+                // 🔴 Stop previous TTS
+                if (textToSpeech != null) {
+                    textToSpeech.stop();
+                }
+
+
                 String cleanedHtml = questionHtml.replaceAll("<img[^>]+>", "");
 
                 Spanned spannedText =
@@ -589,56 +728,35 @@ public class CourseTopicExamActivity extends AppCompatActivity {
 
                 String questionTextOnly = spannedText.toString()
                         .replace("\u00A0", "")
+                        .replace("= ____", "")
+                        .replace("=____", "")
+                        .replace("=", "")
+                        .replace("_", "")
                         .trim();
 
-                String formattedQuestion = questionTextOnly
-                        .replace("+", "\n+")
-                        .replace("-", "\n-")
-                        .replace("*", "\n×")
-                        .replace("/", "\n÷");
+                // 🔵 Split correctly (space / newline / tabs)
+                List<String> elements =
+                        Arrays.asList(questionTextOnly.split("\\s+"));
 
-                questionTextView.setText(formattedQuestion);
+                Log.d("TTS_DEBUG", "Elements: " + elements);
 
+                // 🔊 Speak + display one by one
+                speakAndDisplayOneByOne(elements);
 
-
-                ViewGroup.MarginLayoutParams layoutParams =
-                        (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();
-
-                layoutParams.leftMargin =
-                        (int) getResources().getDimension(R.dimen.question_margin_left);
-
+                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();
+                layoutParams.leftMargin = (int) getResources().getDimension(R.dimen.question_margin_left);
                 questionTextView.setLayoutParams(layoutParams);
-            } else {
-                questionTextView.setVisibility(View.GONE);
             }
 
-            // =========================
-            // 🔥 IMAGE PART
-            // =========================
-            if (hasImage && finalUrl != null) {
-                questionImageView.setVisibility(View.VISIBLE);
-
-                Glide.with(this)
-                        .load(finalUrl)
-                        .into(questionImageView);
-
-            } else {
-                questionImageView.setVisibility(View.GONE);
-            }
-
-
-
-            // =========================
-            // 🔥 BUTTONS
-            // =========================
             generateButtons();
+            isFromPreviousClick = false;
         } else {
             if (questionsArray == null) {
                 Log.d("QuestionDebug", "questionsArray is null.");
                 Toast.makeText(this, "Questions not loaded.", Toast.LENGTH_SHORT).show();
             } else {
                 Log.d("QuestionDebug", "Index out of bounds: " + currentQuestionIndex);
-               // showCompletionDialog();
+                showCompletionDialog();
             }
         }
     }
@@ -761,12 +879,22 @@ public class CourseTopicExamActivity extends AppCompatActivity {
             answerEditText.setText(storedAnswer);
             currentTime = questionTimes.get(currentQuestionIndex);
             restoreTimerState();
-            startTimer();
 
             // Invalidate GridLayout to ensure changes are visible
             gridLayout.invalidate();
         }
     }
+    /* private void onButtonClicked(int tag) {
+         saveTimerState();
+         currentQuestionIndex = tag;
+         Log.e("Reddy","CurrentQuestion"+currentQuestionIndex);
+         displayQuestion(currentQuestionIndex);
+         String storedAnswer = enteredAnswers.get(currentQuestionIndex);
+         answerEditText.setText(storedAnswer);
+         restoreTimerState();
+        // startTimerForQuestion(currentQuestionIndex);
+     }
+ */
     private void saveTimerState() {
         questionTimes.set(currentQuestionIndex, currentTime);
     }
@@ -784,34 +912,44 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         questionTimers.get(questionIndex).cancel();
     }
 
-    private void VerifyMethod(String studentid, String topicid) {
-        /*HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
+    private void VerifyMethod(String studentid, String paperid) {
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        ApiClient apiClient=retrofit.create(ApiClient.class);
+
+        ApiClient apiClient = retrofit.create(ApiClient.class);
 
         RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), studentid);
-        RequestBody topicIdPart=RequestBody.create(MediaType.parse("text/plain"), topicid);
+        RequestBody paperIdPart = RequestBody.create(MediaType.parse("text/plain"), paperid);
 
-        Call<CourseTopicExamResponse> call=apiClient.topicExamList(idPart,topicIdPart);
-        call.enqueue(new Callback<CourseTopicExamResponse>() {
+        Call<PaperExamResponse> call = apiClient.paperexamList(idPart, paperIdPart);
+
+        call.enqueue(new Callback<PaperExamResponse>() {
             @Override
-            public void onResponse(Call<CourseTopicExamResponse> call, Response<CourseTopicExamResponse> response) {
+            public void onResponse(Call<PaperExamResponse> call, Response<PaperExamResponse> response) {
+
                 if (response.isSuccessful()) {
-                    CourseTopicExamResponse examResponse = response.body();
+
+                    PaperExamResponse examResponse = response.body();
+
                     if (examResponse != null) {
-                        CourseTopicExamResponse.Result examResponseResult = examResponse.getResult();
+
+                        PaperExamResponse.Result examResponseResult =
+                                examResponse.getResult();
 
                         examNum = examResponseResult.getExamRnm();
                         startedDate = examResponseResult.getStartedOn();
-                        List<CourseTopicExamResponse.Question> questionsListJsonString =
+
+                        Log.e("Reddy", "ExamRnm: " + examNum);
+
+                        List<PaperExamResponse.QuestionItem> questionsListJsonString =
                                 examResponseResult.getQuestionsList();
 
                         int questionCount = questionsListJsonString.size();
@@ -829,7 +967,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                             isQuestionAnswered.add(false);
                             questionTimes.add(0L);
 
-                            CourseTopicExamResponse.Question question = questionsListJsonString.get(i);
+                            PaperExamResponse.QuestionItem question = questionsListJsonString.get(i);
 
                             questionsArray[i] = question.getQuestion();
 
@@ -845,12 +983,11 @@ public class CourseTopicExamActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CourseTopicExamResponse> call, Throwable t) {
-
+            public void onFailure(Call<PaperExamResponse> call, Throwable t) {
+                Log.e("API", "Failure: " + t.getMessage());
             }
         });
     }
-
     private CountDownTimer createCountDownTimer(final int questionIndex) {
         final long smallerInterval = 500;
         return new CountDownTimer(Long.MAX_VALUE, interval) {
@@ -872,7 +1009,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
 
         stopTimer();
 
-        AlertDialog.Builder dialog=new AlertDialog.Builder(CourseTopicExamActivity.this);
+        AlertDialog.Builder dialog=new AlertDialog.Builder(InstructorPracticeVisualizationExamActivity.this);
         dialog.setMessage("Are you sure you want to submit exam. You are not able to modify any thing after submiting.?");
         dialog.setTitle("www.abacustrainer.com");
         dialog.setPositiveButton("OK",
@@ -886,7 +1023,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 restoreTimerState();
-                startTimer();
+                startTimer();          // 🔥 IMPORTANT: timer restart
                 dialog.dismiss();
             }
         });
@@ -894,26 +1031,6 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         alertDialog.show();
     }
     private void showReportACtivity() {
-       /* JSONArray jsonArray = new JSONArray();
-        try {
-            for (int i=0;i<listData.size();i++) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("question",listData.get(i).getQuestion());
-                jsonObject.put("given",listData.get(i).getEnterAnswer());
-                jsonObject.put("answer",listData.get(i).getCorrectAnswer());
-                jsonObject.put("is_currect",listData.get(i).getIsCorrect());
-                jsonObject.put("time_taken",listData.get(i).getTimeTaken());
-                jsonObject.put("status",listData.get(i).getStatus());
-
-                jsonArray.put(jsonObject);
-
-            }
-            Log.e("Reddy", "Formatted JSON Array Contents: " + jsonArray.toString());
-            ResultMethod(examNum,jsonArray);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }*/
-
         JSONArray jsonArray = new JSONArray();
         try {
             for (int i=0;i<questionsArray.length;i++) {
@@ -952,43 +1069,40 @@ public class CourseTopicExamActivity extends AppCompatActivity {
             Log.e(tag, message.substring(start, end));
         }
     }
-
     private void ResultMethod(String examRnm, JSONArray jsonArray) {
         Log.e("Reddy","id"+examRnm);
+        // Log.e("Reddy","Array"+jsonArray.toString());
         logLargeString("Reddy", jsonArray.toString());
-
-
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        ApiClient apiClient=retrofit.create(ApiClient.class);
-        RequestBody examNumPart = RequestBody.create(MediaType.parse("text/plain"), examRnm);
-        RequestBody questionListPart=RequestBody.create(MediaType.parse("application/json"), String.valueOf(jsonArray));
-        Call<WorkSheetSubmitDataResponse> call=apiClient.worksheetDataResponse(examNumPart,questionListPart);
+        ApiClient apiClient = retrofit.create(ApiClient.class);
 
+        RequestBody examNumPart = RequestBody.create(MediaType.parse("text/plain"), examNum);
+        RequestBody questionListPart = RequestBody.create(MediaType.parse("application/json"), jsonArray.toString());
 
-
-        call.enqueue(new Callback<WorkSheetSubmitDataResponse>() {
+        Call<PaperSubmitDataResponse> call = apiClient.papersubmitData(examNumPart, questionListPart);
+        call.enqueue(new Callback<PaperSubmitDataResponse>() {
             @Override
-            public void onResponse(Call<WorkSheetSubmitDataResponse> call, Response<WorkSheetSubmitDataResponse> response) {
+            public void onResponse(Call<PaperSubmitDataResponse> call, Response<PaperSubmitDataResponse> response) {
                 Log.e("Reddy","Response"+response);
                 if (response.isSuccessful()) {
                     if(response.body()==null){
                         Log.e("Reddy","Response Body NULL");
                         return;
                     }
-                    WorkSheetSubmitDataResponse submitDataResponse = response.body();
 
+                    PaperSubmitDataResponse res = response.body();
 
-                    Log.e("Reddy","Status : "+submitDataResponse.getStatus());
-                    Log.e("Reddy","Message : "+submitDataResponse.getMessage());
+                    Log.e("Reddy","Status : "+res.getStatus());
+                    Log.e("Reddy","Message : "+res.getMessage());
 
-                    if("Success".equalsIgnoreCase(submitDataResponse.getStatus())){
+                    if("Success".equalsIgnoreCase(res.getStatus())){
 
                     /*    Toast.makeText(LevelTopicExamActivity.this,
                                 "All Questions Submitted",
@@ -998,8 +1112,8 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                                 convertBooleanListToStringList(isQuestionAttempted);
 
                         Intent intent =
-                                new Intent(CourseTopicExamActivity.this,
-                                        PracticeWorkSheetResultActivity.class);
+                                new Intent(InstructorPracticeVisualizationExamActivity.this,
+                                        InstructorVisualizationResultActivity.class);
 
                         intent.putExtra("topicName", topicName);
                         intent.putExtra("firstName", studentName);
@@ -1029,13 +1143,13 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                         finish();
 
 
-
                     }
                 }
             }
-            @Override
-            public void onFailure(Call<WorkSheetSubmitDataResponse> call, Throwable t) {
 
+            @Override
+            public void onFailure(Call<PaperSubmitDataResponse> call, Throwable t) {
+                Toast.makeText(InstructorPracticeVisualizationExamActivity.this, "Submit failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -1046,7 +1160,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
     }
 
     private void showExitConfirmationDialog() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(CourseTopicExamActivity.this);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(InstructorPracticeVisualizationExamActivity.this);
         dialog.setMessage("Do you want to exit the exam? Your progress will be lost.");
         dialog.setTitle("www.abacustrainer.com");
         dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -1100,5 +1214,125 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         int scrollX =(view.getLeft()+ view.getRight())/2-scrollViewWidth/2;
         scrollView.smoothScrollTo(scrollX,0);
     }
+
+    private void speakAndDisplayOneByOne(List<String> elements) {
+        Log.d("TTS_DEBUG", "Elements: " + elements.toString());
+
+
+        questionTextView.setText("");
+
+        Handler handler = new Handler();
+        long delay = 0;
+
+        for (int i = 0; i < elements.size(); i++) {
+
+            String clean = elements.get(i).trim();
+            if (clean.isEmpty()) continue;
+
+            int index = i;
+
+            handler.postDelayed(() -> {
+
+                String speakText;
+                String displayText;
+
+                if (clean.contains("÷")) {
+
+                    String[] parts = clean.split("÷");
+
+                    if (parts.length == 2) {
+
+                        String first = parts[0].trim();
+                        String second = parts[1].replace("=", "")
+                                .replace("_", "")
+                                .trim();
+
+                        speakText = first + " divide by " + second;
+                        displayText = first + " ÷ " + second;
+                    } else {
+                        speakText = clean;
+                        displayText = clean;
+                    }
+                }
+                else if (clean.startsWith("+")) {
+
+                    String num = clean.substring(1).trim();
+
+                    speakText = "plus " + num;
+                    displayText = "+ " + num;
+                }
+                else if (clean.startsWith("-")) {
+
+                    String num = clean.substring(1).trim();
+
+                    speakText = "minus " + num;
+                    displayText = "- " + num;
+                }
+                else {
+
+                    speakText = clean;
+                    displayText = clean;
+                }
+
+                questionTextView.setText(displayText);
+
+                if (isTtsReady) {
+                    textToSpeech.speak(
+                            speakText,
+                            TextToSpeech.QUEUE_ADD,
+                            null,
+                            null
+                    );
+                }
+
+                // ✅ LAST ELEMENT ayyaka
+                if (index == elements.size() - 1) {
+
+                    new Handler().postDelayed(() -> {
+
+                        questionTextView.setText("Answer is ?");
+
+                        if (isTtsReady) {
+                            textToSpeech.speak("Answer is", TextToSpeech.QUEUE_ADD, null, null);
+                        }
+                        currentTime = questionTimes.get(currentQuestionIndex); // restore if needed
+                        startTimer();
+                        linearRepeat.setVisibility(View.VISIBLE);
+
+                        // 🔥 IMPORTANT — Always show here
+                        answerEditText.setVisibility(View.VISIBLE);
+                        answerEditText.setFocusable(true);
+                        answerEditText.setFocusableInTouchMode(true);
+                        answerEditText.setClickable(true);
+
+
+
+                        answerEditText.post(() -> {
+                            answerEditText.requestFocus();
+
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (imm != null) {
+                                imm.showSoftInput(answerEditText, InputMethodManager.SHOW_IMPLICIT);
+                            }
+                        });
+
+                        butSave.setEnabled(true);
+                        butSubmit.setEnabled(true);
+                        isQuestionActive = false;
+                        butPreviousQuestion.setEnabled(true);
+                        butPreviousQuestion.setClickable(true);
+                        butPreviousQuestion.setVisibility(View.VISIBLE); // 🔥 Add this
+
+                        //
+
+                    }, 1200);
+                }
+
+            }, delay);
+
+            delay += 1200;
+        }
+    }
+
 
 }

@@ -112,6 +112,8 @@ public class AllocatedViewPracticeActivity extends AppCompatActivity {
                     AlloactedViewSubTopicListResponse.Result result = viewTopicListResponse.getResult();
                     List<AlloactedViewSubTopicListResponse.Result.PracticesList> topicsList = result.getPracticesList();
 
+                    Log.d("PRACTICE_COUNT", "Practice Size = " + topicsList.size());
+
                     if (topicsList.isEmpty()) {
                         recyclerViewSubTopics.setVisibility(View.GONE); // Hide RecyclerView
                     } else {

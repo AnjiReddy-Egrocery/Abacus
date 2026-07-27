@@ -27,6 +27,7 @@ import com.dst.abacustrainner.Activity.AppSettindsActivity;
 import com.dst.abacustrainner.Activity.ChangePasswordActivity;
 import com.dst.abacustrainner.Activity.HelpActivity;
 import com.dst.abacustrainner.Activity.OrdersActivity;
+import com.dst.abacustrainner.Activity.PaperAllocatedInstructorActivity;
 import com.dst.abacustrainner.Activity.PlayWithNumbersActivity;
 import com.dst.abacustrainner.Activity.PrivacyPolicyActivity;
 import com.dst.abacustrainner.Activity.ProgressTrackerActivity;
@@ -199,10 +200,6 @@ public class HomeActivity extends AppCompatActivity {
         // Set up NavigationView listener for the Drawer
         navigationView.setNavigationItemSelectedListener(navDrawerListener);
         StudentDetailsMethod(studentId);
-
-
-
-
 
     }
 
@@ -383,6 +380,11 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }else if (itemView == R.id.nav_allocated_courses) {
                 Intent intent = new Intent(HomeActivity.this, AllocatedCoursesActivity.class);
+                intent.putExtra("studentId",studentId);
+                startActivity(intent);
+            }
+            else if (itemView == R.id.nav_instructor) {
+                Intent intent = new Intent(HomeActivity.this, PaperAllocatedInstructorActivity.class);
                 intent.putExtra("studentId",studentId);
                 startActivity(intent);
             }else if (itemView == R.id.nav_orders) {

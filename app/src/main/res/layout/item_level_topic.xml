@@ -62,35 +62,71 @@
                         android:layout_marginBottom="5dp"
                         android:layout_marginTop="8dp">
 
-                        <Button
-                            android:id="@+id/btnPractice"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Practice now"
+                            android:layout_height="40dp"
                             android:layout_weight="1"
+                            android:id="@+id/but_practice"
+                            android:gravity="center"
+                            android:background="@drawable/item_background_images"
+                            android:layout_marginLeft="6dp"
                             android:backgroundTint="#ff6600"
-                            android:textSize="10dp"/>
+                            android:orientation="horizontal">
 
-                        <Button
-                            android:id="@+id/btnVisualization"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Practice Now"
+                                android:fontFamily="@font/regular"
+                                android:textStyle="bold"
+                                android:textSize="10dp"
+                                android:textColor="#FFF"/>
+                        </LinearLayout>
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:text="Visualization"
+                            android:layout_height="40dp"
                             android:layout_weight="1"
+                            android:id="@+id/but_visualization"
+                            android:gravity="center"
+                            android:background="@drawable/item_background_images"
+                            android:layout_marginLeft="6dp"
                             android:backgroundTint="#198754"
-                            android:textSize="10dp"/>
+                            android:orientation="horizontal">
 
-                        <Button
-                            android:id="@+id/btnView"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Visualization"
+                                android:fontFamily="@font/regular"
+                                android:textStyle="bold"
+                                android:textSize="10dp"
+                                android:textColor="#FFF"/>
+                        </LinearLayout>
+
+
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:text="ViewPractice"
+                            android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:backgroundTint="#8F8A8A"
-                            android:textSize="10dp"/>
+                            android:id="@+id/layout_result"
+                            android:gravity="center"
+                            android:background="@drawable/item_background_images"
+                            android:layout_marginLeft="12dp"
+                            android:backgroundTint="#4E148C"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal">
 
+                            <TextView
+                                android:id="@+id/txt_count"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/regular"
+                                android:gravity="center_horizontal"
+                                android:text="hiiii"
+                                android:textColor="#FFF"
+                                android:textSize="10dp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
 
 

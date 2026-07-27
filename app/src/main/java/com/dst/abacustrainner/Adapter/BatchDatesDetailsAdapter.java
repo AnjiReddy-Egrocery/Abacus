@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ import com.dst.abacustrainner.Model.DatedetailsResponse;
 import com.dst.abacustrainner.Model.StudentRegistationResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.database.SharedPrefManager;
+import com.google.android.exoplayer2.C;
 
 import java.util.List;
 
@@ -58,6 +60,12 @@ public class BatchDatesDetailsAdapter extends RecyclerView.Adapter<BatchDatesDet
      String dateId= listdetail.getDateId();
 
      String dateName=listdetail.getScheduleDate();
+     String Count = String.valueOf(listdetail.getTopicsCount());
+     String assignmentCount = String.valueOf(listdetail.getAssignmentTopicsCount());
+
+     holder.txtTopic.setText("View Topics : [" + Count + "]");
+     holder.txtAssignment.setText("View AssignmentTopics : [" + assignmentCount + "]");
+
      holder.txtDate.setText(dateName);
 
      holder.butResult.setOnClickListener(new View.OnClickListener() {
@@ -98,14 +106,16 @@ public class BatchDatesDetailsAdapter extends RecyclerView.Adapter<BatchDatesDet
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView txtDate;
-        Button butResult, butPractice;
+        TextView txtDate,txtTopic,txtAssignment;
+        LinearLayout butResult, butPractice;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             txtDate=itemView.findViewById(R.id.txt_date);
             butResult=itemView.findViewById(R.id.but_viewAssignments);
             butPractice = itemView.findViewById(R.id.but_viewTopic);
+            txtTopic = itemView.findViewById(R.id.txt_count);
+            txtAssignment = itemView.findViewById(R.id.txt_assignments_count);
 
         }
     }

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff"
     xmlns:card_view="http://schemas.android.com/apk/res-auto">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="6dp"
+        android:layout_margin="8dp"
         tools:ignore="MissingConstraints">
 
         <androidx.cardview.widget.CardView
@@ -20,10 +20,12 @@
             android:layout_margin="5dp"
             card_view:cardBackgroundColor="#FFF">
 
+
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="16dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
@@ -33,16 +35,16 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/txt_date"
+                        android:id="@+id/txt_topic_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:textColor="#000"
                         android:text=""
+                        android:textStyle="normal"
                         android:fontFamily="@font/regular"
                         android:textSize="16dp" />
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -50,81 +52,107 @@
                     android:orientation="horizontal"
                     android:weightSum="2"
                     android:layout_marginTop="12dp"
-                    android:layout_marginBottom="10dp">
-                    <!--<Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="View Topics"
-                        android:textSize="12dp"
-                        android:fontFamily="@font/regular"
-                        android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:id="@+id/but_viewTopic"
-                        android:textColor="#fff"
-                        android:backgroundTint="#ff6600"/>
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="View AssignmentTopics"
-                        android:textSize="12dp"
-                        android:layout_marginLeft="12dp"
-                        android:fontFamily="@font/regular"
-                        android:layout_weight="1"
-                        android:textStyle="bold"
-                        android:textColor="#fff"
-                        android:id="@+id/but_viewAssignments"
-                        android:backgroundTint="#198754"/>
--->
+                    android:layout_marginBottom="1dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_weight="1"
-                        android:id="@+id/but_viewTopic"
+                        android:id="@+id/layout_practice"
+                        android:gravity="center"
+                        android:background="@drawable/item_background_images"
+                        android:layout_marginLeft="6dp"
+                        android:backgroundTint="#ff6600"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Practice Now"
+                            android:fontFamily="@font/regular"
+                            android:textStyle="bold"
+                            android:textSize="10dp"
+                            android:textColor="#FFF"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:id="@+id/layout_visualization"
+                        android:gravity="center"
+                        android:background="@drawable/item_background_images"
+                        android:layout_marginLeft="6dp"
+                        android:backgroundTint="#198754"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Visualization"
+                            android:fontFamily="@font/regular"
+                            android:textStyle="bold"
+                            android:textSize="10dp"
+                            android:textColor="#FFF"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="1dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:id="@+id/layout_view_questions"
                         android:gravity="center"
                         android:background="@drawable/item_background_images"
                         android:layout_marginLeft="12dp"
-                        android:backgroundTint="#ff6600"
+                        android:backgroundTint="#4E148C"
                         android:layout_gravity="center"
                         android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txt_questions_count"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/regular"
+                            android:gravity="center_horizontal"
+                            android:text="hiiii"
+                            android:textColor="#FFF"
+                            android:textSize="10dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:id="@+id/layout_view_result"
+                        android:gravity="center"
+                        android:background="@drawable/item_background_images"
+                        android:layout_marginLeft="12dp"
+                        android:backgroundTint="#4E148C"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/txt_count"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/regular"
                             android:gravity="center_horizontal"
-                            android:text="View Topics"
-                            android:textColor="#FFF"
-                            android:textSize="10dp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"
-                        android:id="@+id/but_viewAssignments"
-                        android:gravity="center"
-                        android:background="@drawable/item_background_images"
-                        android:layout_marginLeft="12dp"
-                        android:backgroundTint="#198754"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:id="@+id/txt_assignments_count"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/regular"
-                            android:gravity="center_horizontal"
-                            android:text="View AssignmentTopics"
+                            android:text="hiiii"
                             android:textColor="#FFF"
                             android:textSize="10dp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
                 </LinearLayout>
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

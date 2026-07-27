@@ -73,6 +73,25 @@ public class CourseLevelTopicResponse {
         private String topicId;
 
         private String topic;
+        private Object questions;
+
+        public Object getQuestions() {
+            return questions;
+        }
+
+        public void setQuestions(Object questions) {
+            this.questions = questions;
+        }
+
+        private List<TopicPractice> topicPractices;
+
+        public List<TopicPractice> getTopicPractices() {
+            return topicPractices;
+        }
+
+        public void setTopicPractices(List<TopicPractice> topicPractices) {
+            this.topicPractices = topicPractices;
+        }
 
         public String getTopicId() {
             return topicId;

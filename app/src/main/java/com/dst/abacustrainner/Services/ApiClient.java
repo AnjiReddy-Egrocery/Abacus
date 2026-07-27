@@ -12,6 +12,7 @@ import com.dst.abacustrainner.Model.CartResponse;
 import com.dst.abacustrainner.Model.CourseLevelResponse;
 import com.dst.abacustrainner.Model.CourseLevelTopicResponse;
 import com.dst.abacustrainner.Model.CourseListResponse;
+import com.dst.abacustrainner.Model.CourseQuestionsResponse;
 import com.dst.abacustrainner.Model.CourseTopicExamResponse;
 import com.dst.abacustrainner.Model.CourseTypeResponse;
 import com.dst.abacustrainner.Model.CoursesListResponse;
@@ -24,6 +25,9 @@ import com.dst.abacustrainner.Model.LevelPriceResponse;
 import com.dst.abacustrainner.Model.OrderCreateResponse;
 import com.dst.abacustrainner.Model.OrderInfoResponse;
 import com.dst.abacustrainner.Model.OrderListResponse;
+import com.dst.abacustrainner.Model.PaperExamResponse;
+import com.dst.abacustrainner.Model.PaperListResponse;
+import com.dst.abacustrainner.Model.PaperSubmitDataResponse;
 import com.dst.abacustrainner.Model.PaymentRefrence;
 
 import com.dst.abacustrainner.Model.StudentDetails;
@@ -39,6 +43,8 @@ import com.dst.abacustrainner.Model.TopicExamResponse;
 import com.dst.abacustrainner.Model.TopicListResponse;
 import com.dst.abacustrainner.Model.ViewAssignmentListResponse;
 import com.dst.abacustrainner.Model.ViewAssignmentResultResponse;
+import com.dst.abacustrainner.Model.ViewInstructorListResponse;
+import com.dst.abacustrainner.Model.ViewInstructorResultResponse;
 import com.dst.abacustrainner.Model.ViewSubTopicListResponse;
 import com.dst.abacustrainner.Model.ViewSubTopicResultResponse;
 import com.dst.abacustrainner.Model.ViewTopicListResponse;
@@ -124,8 +130,22 @@ public interface ApiClient {
                                                         @Part("topicId") RequestBody topicId);
 
     @Multipart
+    @POST("apicalls/Index/getMyInstitutePaperDetails")
+    Call<ViewInstructorListResponse> viewInstructorPracticeList(@Part("studentId") RequestBody studentId,
+                                                                @Part("paperId") RequestBody topicId);
+
+    @Multipart
+    @POST("apicalls/Index/getStudentWorksheetCourseLevelTopicInfo")
+    Call<CourseQuestionsResponse> courseQuestions(@Part("studentId") RequestBody studentId,
+                                                             @Part("topicId") RequestBody topicId);
+
+    @Multipart
     @POST("apicalls/Index/getScheduleTopicPraticeResult")
     Call<ViewTopicResultResponse> viewResult(@Part("examRnm") RequestBody examRnm);
+
+    @Multipart
+    @POST("apicalls/Index/getMyInstitutePaperPracticeResult")
+    Call<ViewInstructorResultResponse> instructorviewResult(@Part("examRnm") RequestBody examRnm);
 
     @Multipart
     @POST("apicalls/Index/getScheduleAssignmentTopicPraticeResult")
@@ -135,6 +155,12 @@ public interface ApiClient {
     @POST("apicalls/Index/startScheduleTopicExam")
     Call<TopicExamResponse> examList(@Part("studentId") RequestBody studentId,
                                      @Part("topicId") RequestBody topicId );
+
+    @Multipart
+    @POST("apicalls/Index/startInstructorPaperExam")
+    Call<PaperExamResponse> paperexamList(@Part("studentId") RequestBody studentId,
+                                     @Part("paperId") RequestBody paperId );
+
 
     @Multipart
     @POST("apicalls/Index/startScheduleAssignmentTopicExam")
@@ -159,6 +185,12 @@ public interface ApiClient {
     @POST("apicalls/Index/submitScheduleTopicExam")
     Call<SubmitDataResponse> submitData(@Part("examRnm") RequestBody examRnm,
                                         @Part("questionsList") RequestBody questionsList);
+
+    @Multipart
+    @POST("apicalls/Index/submitInstructorPaperExam")
+    Call<PaperSubmitDataResponse> papersubmitData(@Part("examRnm") RequestBody examRnm,
+                                                  @Part("questionsList") RequestBody questionsList);
+
 
     @Multipart
     @POST("apicalls/Index/submitScheduleAssignmentTopicExam")
@@ -338,6 +370,9 @@ public interface ApiClient {
             @Part("timestamp") RequestBody timestamp
     );
 
+    @Multipart
+    @POST("apicalls/Index/getMyInstitutePapersList")
+    Call<PaperListResponse> paperList (@Part("studentId") RequestBody studentId);
 
 
 }

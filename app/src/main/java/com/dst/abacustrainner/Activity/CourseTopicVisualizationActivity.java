@@ -315,6 +315,11 @@ public class CourseTopicVisualizationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null && getCurrentFocus() != null) {
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
+                answerEditText.clearFocus();
 
                 int currentX = scrollView.getScrollX();
                 int moveX = currentX + 100;  // Move 100 pixels to the left

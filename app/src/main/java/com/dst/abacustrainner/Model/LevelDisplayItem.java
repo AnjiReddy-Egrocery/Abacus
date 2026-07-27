@@ -10,6 +10,12 @@ public class LevelDisplayItem {
     private int type;
     private String title;
 
+    private int practiceCount;
+
+    private CourseLevelTopic courseLevelTopic;
+
+
+
     public String getTopicId() {
         return topicId;
     }
@@ -29,6 +35,18 @@ public class LevelDisplayItem {
         this.topicId = topicId;
     }
 
+    public LevelDisplayItem(int type,
+                            String title,
+                            String topicId,
+                            CourseLevelTopic courseLevelTopic) {
+
+        this.type = type;
+        this.title = title;
+        this.topicId = topicId;
+        this.courseLevelTopic = courseLevelTopic;
+    }
+
+
 
     public int getType() {
         return type;
@@ -36,5 +54,18 @@ public class LevelDisplayItem {
 
     public String getTitle() {
         return title;
+    }
+
+    // NEW
+    public CourseLevelTopic getCourseLevelTopic() {
+        return courseLevelTopic;
+    }
+
+    public int getPracticeCount() {
+        return practiceCount;
+    }
+
+    public void setPracticeCount(int practiceCount) {
+        this.practiceCount = practiceCount;
     }
 }

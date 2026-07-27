@@ -276,6 +276,14 @@ public class AssignmentPracticeVisualizationActivity extends AppCompatActivity {
         butSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null && getCurrentFocus() != null) {
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
+                answerEditText.clearFocus();
+
+                
                 int currentX = scrollView.getScrollX();
                 int moveX = currentX + 100;  // Move 100 pixels to the left
                 if (moveX < 0) moveX = 0; // Don't scroll beyond the leftmost position

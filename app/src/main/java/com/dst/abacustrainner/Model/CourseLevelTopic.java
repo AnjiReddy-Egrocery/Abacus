@@ -1,8 +1,27 @@
 package com.dst.abacustrainner.Model;
 
+import java.util.List;
+
 public class CourseLevelTopic {
      private String topicId;
     private String topic;
+    private List<TopicPractice> topicPractices;
+
+    public void setTopicId(String topicId) {
+        this.topicId = topicId;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public List<TopicPractice> getTopicPractices() {
+        return topicPractices;
+    }
+
+    public void setTopicPractices(List<TopicPractice> topicPractices) {
+        this.topicPractices = topicPractices;
+    }
 
     public String getTopicId() {
         return topicId;
@@ -11,5 +30,6 @@ public class CourseLevelTopic {
     public String getTopic() {
         return topic;
     }
+
 
 }

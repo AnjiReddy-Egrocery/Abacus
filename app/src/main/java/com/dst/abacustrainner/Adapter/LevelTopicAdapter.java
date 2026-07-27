@@ -3,6 +3,7 @@ package com.dst.abacustrainner.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,11 @@ import com.dst.abacustrainner.Model.CourseLevelTopic;
 import com.dst.abacustrainner.Model.CourseTypeLevel;
 import com.dst.abacustrainner.Model.CourseTypeResponse;
 import com.dst.abacustrainner.Model.LevelDisplayItem;
+import com.dst.abacustrainner.Model.Question;
+import com.dst.abacustrainner.Model.TopicPractice;
 import com.dst.abacustrainner.R;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +65,12 @@ public class LevelTopicAdapter extends RecyclerView.Adapter<LevelTopicAdapter.Vi
 
         holder.txtTopic.setText(item.getTitle());
 
+
+        holder.txtLevelCount.setText(
+                "View Practices : ["
+                        + item.getPracticeCount()
+                        + "]"
+        );
         String topicName = item.getTitle();
         String topicId = item.getTopicId();
 
@@ -238,11 +249,22 @@ public class LevelTopicAdapter extends RecyclerView.Adapter<LevelTopicAdapter.Vi
             if (topics != null && !topics.isEmpty()) {
                 for (CourseLevelTopic topic : topics) {
 
-                    displayList.add(new LevelDisplayItem(
-                            LevelDisplayItem.TYPE_TOPIC,
-                            topic.getTopic(),
-                            topic.getTopicId()   // ✅ IMPORTANT
-                    ));
+                    LevelDisplayItem item =
+                            new LevelDisplayItem(
+                                    LevelDisplayItem.TYPE_TOPIC,
+                                    topic.getTopic(),
+                                    topic.getTopicId(),
+                                    topic
+                            );
+
+
+                    item.setPracticeCount(
+                            getPracticeCount(topic.getTopicPractices())
+                    );
+
+
+                    displayList.add(item);
+
                 }
             }else {
                 // ✅ EMPTY MESSAGE
@@ -266,11 +288,20 @@ public class LevelTopicAdapter extends RecyclerView.Adapter<LevelTopicAdapter.Vi
                 // ✅ ASSIGNMENT TOPICS
                 for (CourseLevelAssignmentTopic a : assignments) {
 
-                    displayList.add(new LevelDisplayItem(
-                            LevelDisplayItem.TYPE_ASSIGNMENT_TOPIC,
-                            a.getTopic(),
-                            a.getTopicId()   // ✅ IMPORTANT
-                    ));
+                    LevelDisplayItem item =
+                            new LevelDisplayItem(
+                                    LevelDisplayItem.TYPE_ASSIGNMENT_TOPIC,
+                                    a.getTopic(),
+                                    a.getTopicId()
+                            );
+
+
+                    item.setPracticeCount(
+                            getPracticeCount(a.getTopicPractices())
+                    );;
+
+
+                    displayList.add(item);
                 }
             }else {
                 // ✅ EMPTY MESSAGE
@@ -280,19 +311,22 @@ public class LevelTopicAdapter extends RecyclerView.Adapter<LevelTopicAdapter.Vi
                 ));
             }
         }
-notifyDataSetChanged();
+
         this.studentId = studentId;
         notifyDataSetChanged();
 
     }
+    private int getPracticeCount(List<TopicPractice> practices) {
+        if (practices == null) return 0;
 
-
-
+        // Motham practice sessions enni unte adi direct ga return chestundi
+        return practices.size();
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtLevel, txtTopic;
+        TextView txtLevelCount, txtTopic;
         LinearLayout layoutLevel;
         CardView cardView;
-        Button btnPractice, btnVisualization, btnView;
+        LinearLayout btnPractice, btnVisualization, btnView;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -301,10 +335,11 @@ notifyDataSetChanged();
             txtTopic = itemView.findViewById(R.id.tvcoursename);
             layoutLevel = itemView.findViewById(R.id.layout_level);
             cardView = itemView.findViewById(R.id.cardView);
+            txtLevelCount = itemView.findViewById(R.id.txt_count);
 
-            btnView = itemView.findViewById(R.id.btnView);
-            btnPractice = itemView.findViewById(R.id.btnPractice);
-            btnVisualization = itemView.findViewById(R.id.btnVisualization);
+            btnView = itemView.findViewById(R.id.layout_result);
+            btnPractice = itemView.findViewById(R.id.but_practice);
+            btnVisualization = itemView.findViewById(R.id.but_visualization);
 
         }
     }

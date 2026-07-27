@@ -40,6 +40,10 @@
             android:title="Allocated Courses"
             android:icon="@drawable/baseline_list_24"/>
 
+        <item android:id="@+id/nav_instructor"
+            android:title="Papers by Instructor"
+            android:icon="@drawable/baseline_wallpaper_24"/>
+
         <item
             android:id="@+id/nav_orders"
             android:title="Orders"

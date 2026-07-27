@@ -31,13 +31,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.dst.abacustrainner.Model.AllocatedTopicExamResponse;
-import com.dst.abacustrainner.Model.CourseLevelTopicResponse;
-import com.dst.abacustrainner.Model.CourseTopicExamResponse;
+import com.dst.abacustrainner.Model.PaperExamResponse;
+import com.dst.abacustrainner.Model.PaperSubmitDataResponse;
 import com.dst.abacustrainner.Model.SendData;
 import com.dst.abacustrainner.Model.SubmitDataResponse;
 import com.dst.abacustrainner.Model.TopicExamResponse;
-import com.dst.abacustrainner.Model.WorkSheetSubmitDataResponse;
 import com.dst.abacustrainner.R;
 import com.dst.abacustrainner.Services.ApiClient;
 import com.dst.abacustrainner.database.ParcelableLong;
@@ -64,8 +62,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class CourseTopicExamActivity extends AppCompatActivity {
-
+public class InstructorPracticeExamActivity extends AppCompatActivity {
     LinearLayout butPreviousQuestion, butSave, butSubmit,btnBack;
     TextView txtTimer, questionTextView, txtTopicName,txtdisplayquestion,txtTotalTimer;
     private EditText answerEditText;
@@ -77,6 +74,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
     private long interval = 1000;
 
     private boolean timerRunning = false;
+    //ImageView imageLeft, imageRight;
 
     GridLayout gridLayout;
 
@@ -84,6 +82,9 @@ public class CourseTopicExamActivity extends AppCompatActivity {
     ArrayList<String> enteredAnswers;
     List<Button> questionButtons = new ArrayList<>();
 
+    String studentId = "";
+    String paperId = "";
+    String topicName = "";
 
     String[] questionsArray = new String[]{""};
     String[] answerArray = new String[]{""};
@@ -131,19 +132,11 @@ public class CourseTopicExamActivity extends AppCompatActivity {
     LinearLayout leftIcon,rightIcon;
     ImageView questionImageView;
 
-
-
-    String studentId,topicId,topicName;
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_course_topic_exam);
-
-
-        studentId= getIntent().getStringExtra("StudentId");
-        topicId = getIntent().getStringExtra("TopicId");
+        setContentView(R.layout.activity_instructor_practice_exam);
 
         butPreviousQuestion = findViewById(R.id.prv_qus);
         questionTextView = findViewById(R.id.questionTextView);
@@ -167,12 +160,9 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
 
         studentId = bundle.getString("StudentId");
-        topicId = bundle.getString("TopicId");
-        topicName = bundle.getString("TopicName");
+        paperId = bundle.getString("PaperId");
+        topicName = bundle.getString("PaperName");
         txtTopicName.setText(topicName);
-
-        Log.d("Reddy",topicId);
-        Log.d("Reddy",studentId);
 
         displayQuestion(currentQuestionIndex);
         questionTimers = new ArrayList<>();
@@ -184,6 +174,9 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         //questionButtons = new ArrayList<>();
         questionTimes = new ArrayList<>(20);
         listData = new ArrayList<>();
+
+        Log.d("Reddy","StudentId"+ studentId);
+        Log.e("Reddy","TopicId"+paperId);
 
         Log.e("Anji","Data"+listData);
         Log.e("Anji","isQuestionAnswered"+isQuestionAnswered);
@@ -223,7 +216,6 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                 }
 
                 showCompletionDialog();
-
             }
         });
 
@@ -274,11 +266,13 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         butSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null && getCurrentFocus() != null) {
                     imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 }
                 answerEditText.clearFocus();
+
 
                 int currentX = scrollView.getScrollX();
                 int moveX = currentX + 100;  // Move 100 pixels to the left
@@ -286,7 +280,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                 scrollView.smoothScrollTo(moveX, 0);
 
                 if (currentQuestionIndex >= 0 && currentQuestionIndex < answerArray.length) {
-                    answer = answerEditText.getText().toString();
+                    answer = answerEditText.getText().toString().trim();
                     enteredAnswers.set(currentQuestionIndex, answer);
 
                     String originalAnswer = answerArray[currentQuestionIndex];
@@ -399,21 +393,43 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         });
 
 
+        /*imageLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageLeft.setVisibility(View.GONE);
+                imageRight.setVisibility(View.VISIBLE);
+                gridLayout.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        imageRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageLeft.setVisibility(View.VISIBLE);
+                imageRight.setVisibility(View.GONE);
+                gridLayout.setVisibility(View.GONE);
+
+            }
+        });*/
 
         startTimer();
-        VerifyMethod(studentId, topicId);
+        VerifyMethod(studentId, paperId);
 
     }
+
     private void saveAnswerAndMoveToNextQuestion() {
         stopTimer();
         saveTimerState();
+
+
 
         String answer = answerEditText.getText().toString().trim();
 
         originalAnswer = answerArray[currentQuestionIndex];
         if (!answer.isEmpty()) {
             questionTimes.set(currentQuestionIndex,currentTime);
-            listData.add(new SendData(questionTextView.getText().toString(),answer,originalAnswer, isCorrected,currentTime / 1000, status));
+            listData.add(new SendData(questionTextView.getText().toString(),  originalAnswer,answer, isCorrected,currentTime / 1000, status));
         }
 
         Log.e("Anji","Data"+listData);
@@ -421,7 +437,8 @@ public class CourseTopicExamActivity extends AppCompatActivity {
 
         if (currentQuestionIndex >= 0 && currentQuestionIndex < questionsArray.length) {
             String enteredAnswer = answerEditText.getText().toString().trim();
-            enteredAnswers.add(enteredAnswer);
+            //enteredAnswers.add(enteredAnswer);
+            enteredAnswers.set(currentQuestionIndex, enteredAnswer);
 
             Log.e("DebugTag", "Index: " + currentQuestionIndex);
             Log.e("DebugTag", "Entered Answer: " + enteredAnswer);
@@ -478,13 +495,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                 isQuestionAnswered.set(currentQuestionIndex, true);
 
             }
-            if (currentQuestionIndex == questionsArray.length - 1) {
-                // 👉 LAST QUESTION
-                showCompletionDialog();
-                return;
-            }
             if (currentQuestionIndex < questionsArray.length-1) {
-
                 currentQuestionIndex++; // Increment index first
                 currentStep = currentQuestionIndex; // Sync the step index
                 displayQuestion(currentQuestionIndex); // Display next question
@@ -493,11 +504,12 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                 restoreTimerState();
                 startTimer();
             }else {
-               //showCompletionDialog();
+                showCompletionDialog();
             }
         } else {
         }
     }
+
     private void navigateToPreviousQuestion() {
         if (currentQuestionIndex > 0) {
 
@@ -511,74 +523,49 @@ public class CourseTopicExamActivity extends AppCompatActivity {
     }
     private void displayQuestion(int currentQuestionIndex) {
         if (questionsArray != null && questionsArray.length > currentQuestionIndex) {
-
             String questionHtml = questionsArray[currentQuestionIndex];
 
+            // Log question length and raw content
             if (questionHtml == null || questionHtml.trim().isEmpty()) {
-                questionTextView.setVisibility(View.GONE);
-                questionImageView.setVisibility(View.GONE);
-                return;
+                Log.d("QuestionDebug", "Empty or null question at index: " + currentQuestionIndex);
+            } else {
+                Log.d("QuestionDebug", "Raw HTML: " + questionHtml);
+                Log.d("QuestionDebug", "Question Length: " + questionHtml.length());
             }
 
-            txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":");
-
-            // =========================
-            // 🔥 CLEAN HTML
-            // =========================
-            String cleanHtml = questionHtml;
-
-
-
-            // remove unwanted attributes
-            cleanHtml = cleanHtml.replaceAll("data-start=\".*?\"", "");
-            cleanHtml = cleanHtml.replaceAll("data-end=\".*?\"", "");
-
-// normalize paragraph
-            cleanHtml = cleanHtml.replaceAll("<p>", "");
-            cleanHtml = cleanHtml.replaceAll("</p>", "<br>");
-
-// remove extra breaks
-            cleanHtml = cleanHtml.replaceAll("(<br>\\s*){2,}", "<br><br>");
-
-// 🔥 IMPORTANT: numbers vertical ga undali
-            cleanHtml = cleanHtml.replaceAll("(\\d+)\\s*<br>\\s*(\\d+)", "$1<br>$2");
-
-// list fix
-            cleanHtml = cleanHtml.replace("<li>", "• ");
-            cleanHtml = cleanHtml.replace("</li>", "<br>");
-
-            // =========================
-            // 🔥 EXTRACT IMAGE
-            // =========================
+            // Extract <img src="...">
             Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\"]+)\"");
             Matcher matcher = pattern.matcher(questionHtml);
 
-            boolean hasImage = false;
-            String finalUrl = null;
+            String imageUrl = null;
 
             if (matcher.find()) {
-
-                hasImage = true;
-
-                String imagePath = matcher.group(1).replace("\\", "");
-
-                if (imagePath.startsWith("http")) {
-                    finalUrl = imagePath;
-                } else {
-                    finalUrl = "https://www.abacustrainer.com/" +
-                            imagePath.replace("../../../", "");
-                }
+                imageUrl = matcher.group(1);
+                Log.d("QuestionDebug", "Image URL: " + imageUrl);
             }
+            // Remove <img> tag and backslashes from HTML to get plain text
+            // String questionTextOnly = questionHtml.replaceAll("<img[^>]+>", "").replaceAll("\\\\", "");
+            //Log.d("QuestionDebug", "Cleaned Text: " + questionTextOnly);
 
-            // =========================
-            // 🔥 TEXT PART
-            // =========================
-            String textOnlyHtml = cleanHtml.replaceAll("<img[^>]+>", "").trim();
+            // Set question number
+            txtdisplayquestion.setText("Question " + (currentQuestionIndex + 1) + ":");
 
-            boolean hasText = !textOnlyHtml.isEmpty();
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                // ✅ Show only image
+                questionImageView.setVisibility(View.VISIBLE);
+                questionTextView.setVisibility(View.GONE);
 
-            if (hasText) {
+                Glide.with(this)
+                        .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .dontAnimate()
+                        .into(questionImageView);
+
+            } else {
+                // ✅ Show only text
+                questionImageView.setVisibility(View.GONE);
                 questionTextView.setVisibility(View.VISIBLE);
+
                 String cleanedHtml = questionHtml.replaceAll("<img[^>]+>", "");
 
                 Spanned spannedText =
@@ -591,15 +578,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                         .replace("\u00A0", "")
                         .trim();
 
-                String formattedQuestion = questionTextOnly
-                        .replace("+", "\n+")
-                        .replace("-", "\n-")
-                        .replace("*", "\n×")
-                        .replace("/", "\n÷");
-
-                questionTextView.setText(formattedQuestion);
-
-
+                questionTextView.setText(questionTextOnly);
 
                 ViewGroup.MarginLayoutParams layoutParams =
                         (ViewGroup.MarginLayoutParams) questionTextView.getLayoutParams();
@@ -608,29 +587,8 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                         (int) getResources().getDimension(R.dimen.question_margin_left);
 
                 questionTextView.setLayoutParams(layoutParams);
-            } else {
-                questionTextView.setVisibility(View.GONE);
             }
 
-            // =========================
-            // 🔥 IMAGE PART
-            // =========================
-            if (hasImage && finalUrl != null) {
-                questionImageView.setVisibility(View.VISIBLE);
-
-                Glide.with(this)
-                        .load(finalUrl)
-                        .into(questionImageView);
-
-            } else {
-                questionImageView.setVisibility(View.GONE);
-            }
-
-
-
-            // =========================
-            // 🔥 BUTTONS
-            // =========================
             generateButtons();
         } else {
             if (questionsArray == null) {
@@ -638,7 +596,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                 Toast.makeText(this, "Questions not loaded.", Toast.LENGTH_SHORT).show();
             } else {
                 Log.d("QuestionDebug", "Index out of bounds: " + currentQuestionIndex);
-               // showCompletionDialog();
+                showCompletionDialog();
             }
         }
     }
@@ -767,6 +725,17 @@ public class CourseTopicExamActivity extends AppCompatActivity {
             gridLayout.invalidate();
         }
     }
+    /* private void onButtonClicked(int tag) {
+         saveTimerState();
+         currentQuestionIndex = tag;
+         Log.e("Reddy","CurrentQuestion"+currentQuestionIndex);
+         displayQuestion(currentQuestionIndex);
+         String storedAnswer = enteredAnswers.get(currentQuestionIndex);
+         answerEditText.setText(storedAnswer);
+         restoreTimerState();
+        // startTimerForQuestion(currentQuestionIndex);
+     }
+ */
     private void saveTimerState() {
         questionTimes.set(currentQuestionIndex, currentTime);
     }
@@ -784,34 +753,44 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         questionTimers.get(questionIndex).cancel();
     }
 
-    private void VerifyMethod(String studentid, String topicid) {
-        /*HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);*/
+    private void VerifyMethod(String studentid, String paperId) {
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        ApiClient apiClient=retrofit.create(ApiClient.class);
+
+        ApiClient apiClient = retrofit.create(ApiClient.class);
 
         RequestBody idPart = RequestBody.create(MediaType.parse("text/plain"), studentid);
-        RequestBody topicIdPart=RequestBody.create(MediaType.parse("text/plain"), topicid);
+        RequestBody paperIdPart = RequestBody.create(MediaType.parse("text/plain"), paperId);
 
-        Call<CourseTopicExamResponse> call=apiClient.topicExamList(idPart,topicIdPart);
-        call.enqueue(new Callback<CourseTopicExamResponse>() {
+        Call<PaperExamResponse> call = apiClient.paperexamList(idPart, paperIdPart);
+
+        call.enqueue(new Callback<PaperExamResponse>() {
             @Override
-            public void onResponse(Call<CourseTopicExamResponse> call, Response<CourseTopicExamResponse> response) {
+            public void onResponse(Call<PaperExamResponse> call, Response<PaperExamResponse> response) {
+
                 if (response.isSuccessful()) {
-                    CourseTopicExamResponse examResponse = response.body();
+
+                    PaperExamResponse examResponse = response.body();
+
                     if (examResponse != null) {
-                        CourseTopicExamResponse.Result examResponseResult = examResponse.getResult();
+
+                        PaperExamResponse.Result examResponseResult =
+                                examResponse.getResult();
 
                         examNum = examResponseResult.getExamRnm();
                         startedDate = examResponseResult.getStartedOn();
-                        List<CourseTopicExamResponse.Question> questionsListJsonString =
+
+                        Log.e("Reddy", "ExamRnm: " + examNum);
+
+                        List<PaperExamResponse.QuestionItem> questionsListJsonString =
                                 examResponseResult.getQuestionsList();
 
                         int questionCount = questionsListJsonString.size();
@@ -829,7 +808,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                             isQuestionAnswered.add(false);
                             questionTimes.add(0L);
 
-                            CourseTopicExamResponse.Question question = questionsListJsonString.get(i);
+                            PaperExamResponse.QuestionItem question = questionsListJsonString.get(i);
 
                             questionsArray[i] = question.getQuestion();
 
@@ -845,12 +824,11 @@ public class CourseTopicExamActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CourseTopicExamResponse> call, Throwable t) {
-
+            public void onFailure(Call<PaperExamResponse> call, Throwable t) {
+                Log.e("API", "Failure: " + t.getMessage());
             }
         });
     }
-
     private CountDownTimer createCountDownTimer(final int questionIndex) {
         final long smallerInterval = 500;
         return new CountDownTimer(Long.MAX_VALUE, interval) {
@@ -872,7 +850,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
 
         stopTimer();
 
-        AlertDialog.Builder dialog=new AlertDialog.Builder(CourseTopicExamActivity.this);
+        AlertDialog.Builder dialog=new AlertDialog.Builder(InstructorPracticeExamActivity.this);
         dialog.setMessage("Are you sure you want to submit exam. You are not able to modify any thing after submiting.?");
         dialog.setTitle("www.abacustrainer.com");
         dialog.setPositiveButton("OK",
@@ -886,7 +864,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 restoreTimerState();
-                startTimer();
+                startTimer();          // 🔥 IMPORTANT: timer restart
                 dialog.dismiss();
             }
         });
@@ -894,26 +872,6 @@ public class CourseTopicExamActivity extends AppCompatActivity {
         alertDialog.show();
     }
     private void showReportACtivity() {
-       /* JSONArray jsonArray = new JSONArray();
-        try {
-            for (int i=0;i<listData.size();i++) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("question",listData.get(i).getQuestion());
-                jsonObject.put("given",listData.get(i).getEnterAnswer());
-                jsonObject.put("answer",listData.get(i).getCorrectAnswer());
-                jsonObject.put("is_currect",listData.get(i).getIsCorrect());
-                jsonObject.put("time_taken",listData.get(i).getTimeTaken());
-                jsonObject.put("status",listData.get(i).getStatus());
-
-                jsonArray.put(jsonObject);
-
-            }
-            Log.e("Reddy", "Formatted JSON Array Contents: " + jsonArray.toString());
-            ResultMethod(examNum,jsonArray);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }*/
-
         JSONArray jsonArray = new JSONArray();
         try {
             for (int i=0;i<questionsArray.length;i++) {
@@ -952,43 +910,40 @@ public class CourseTopicExamActivity extends AppCompatActivity {
             Log.e(tag, message.substring(start, end));
         }
     }
-
     private void ResultMethod(String examRnm, JSONArray jsonArray) {
         Log.e("Reddy","id"+examRnm);
+        // Log.e("Reddy","Array"+jsonArray.toString());
         logLargeString("Reddy", jsonArray.toString());
-
-
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abacustrainer.com/") // Replace with your API URL
+                .baseUrl("https://www.abacustrainer.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        ApiClient apiClient=retrofit.create(ApiClient.class);
-        RequestBody examNumPart = RequestBody.create(MediaType.parse("text/plain"), examRnm);
-        RequestBody questionListPart=RequestBody.create(MediaType.parse("application/json"), String.valueOf(jsonArray));
-        Call<WorkSheetSubmitDataResponse> call=apiClient.worksheetDataResponse(examNumPart,questionListPart);
+        ApiClient apiClient = retrofit.create(ApiClient.class);
 
+        RequestBody examNumPart = RequestBody.create(MediaType.parse("text/plain"), examNum);
+        RequestBody questionListPart = RequestBody.create(MediaType.parse("application/json"), jsonArray.toString());
 
-
-        call.enqueue(new Callback<WorkSheetSubmitDataResponse>() {
+        Call<PaperSubmitDataResponse> call = apiClient.papersubmitData(examNumPart, questionListPart);
+        call.enqueue(new Callback<PaperSubmitDataResponse>() {
             @Override
-            public void onResponse(Call<WorkSheetSubmitDataResponse> call, Response<WorkSheetSubmitDataResponse> response) {
+            public void onResponse(Call<PaperSubmitDataResponse> call, Response<PaperSubmitDataResponse> response) {
                 Log.e("Reddy","Response"+response);
                 if (response.isSuccessful()) {
                     if(response.body()==null){
                         Log.e("Reddy","Response Body NULL");
                         return;
                     }
-                    WorkSheetSubmitDataResponse submitDataResponse = response.body();
 
+                    PaperSubmitDataResponse res = response.body();
 
-                    Log.e("Reddy","Status : "+submitDataResponse.getStatus());
-                    Log.e("Reddy","Message : "+submitDataResponse.getMessage());
+                    Log.e("Reddy","Status : "+res.getStatus());
+                    Log.e("Reddy","Message : "+res.getMessage());
 
-                    if("Success".equalsIgnoreCase(submitDataResponse.getStatus())){
+                    if("Success".equalsIgnoreCase(res.getStatus())){
 
                     /*    Toast.makeText(LevelTopicExamActivity.this,
                                 "All Questions Submitted",
@@ -998,8 +953,8 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                                 convertBooleanListToStringList(isQuestionAttempted);
 
                         Intent intent =
-                                new Intent(CourseTopicExamActivity.this,
-                                        PracticeWorkSheetResultActivity.class);
+                                new Intent(InstructorPracticeExamActivity.this,
+                                        InstructorPracticeListActivity.class);
 
                         intent.putExtra("topicName", topicName);
                         intent.putExtra("firstName", studentName);
@@ -1029,13 +984,13 @@ public class CourseTopicExamActivity extends AppCompatActivity {
                         finish();
 
 
-
                     }
                 }
             }
-            @Override
-            public void onFailure(Call<WorkSheetSubmitDataResponse> call, Throwable t) {
 
+            @Override
+            public void onFailure(Call<PaperSubmitDataResponse> call, Throwable t) {
+                Toast.makeText(InstructorPracticeExamActivity.this, "Submit failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -1046,7 +1001,7 @@ public class CourseTopicExamActivity extends AppCompatActivity {
     }
 
     private void showExitConfirmationDialog() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(CourseTopicExamActivity.this);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(InstructorPracticeExamActivity.this);
         dialog.setMessage("Do you want to exit the exam? Your progress will be lost.");
         dialog.setTitle("www.abacustrainer.com");
         dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {

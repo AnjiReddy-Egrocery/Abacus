@@ -14,7 +14,7 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -28,6 +28,33 @@
         android:theme="@style/Theme.AbacusTrainer"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".Activity.CourseTopicQuestionsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.InstructorPracticeViewQuestionsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ViewResultInstructorDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.InstructorViewPracticeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.InstructorVisualizationResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.InstructorPracticeVisualizationExamActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.InstructorPracticeListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.InstructorPracticeExamActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.PaperAllocatedInstructorActivity"
+            android:exported="false" />
         <activity
             android:name=".Activity.ChangePasswordActivity"
             android:exported="false" />
